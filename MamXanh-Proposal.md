@@ -1,8 +1,6 @@
 # 💡 Đề xuất dự án: Mầm Xanh (MamXanh)
 
 - **Tên dự án:** Mầm Xanh (MamXanh) - Daily Quest & Living Tree Garden
-- **Tác giả:** [Tên của bạn]
-- **Nền tảng:** Android (Kotlin, Jetpack Compose)
 - **Sứ mệnh:** Biến việc duy trì thói quen mỗi ngày (học tập, sức khỏe, nếp sống) thành một trò chơi nhẹ nhàng. Người dùng hoàn thành nhiệm vụ để nhận tiền tệ trong game, dùng tiền tệ mua hạt giống và vật phẩm để nuôi một khu vườn cây đẹp, độc đáo, thay đổi theo bốn mùa. Nhiệm vụ và cây có tầm quan trọng ngang nhau: nhiệm vụ tạo thói quen, cây là phần thưởng người dùng muốn nhìn thấy mỗi ngày.
 
 ---
@@ -31,8 +29,6 @@
 - **Cây thay đổi theo mùa ngoài đời thật**, mỗi loại cây có biểu hiện mùa khác nhau để tạo lý do sưu tầm.
 - **Vòng lặp tiền tệ → cửa hàng → cây**, thay vì mỗi lần check-in là cây tự lớn.
 - **Bộ nhiệm vụ có sẵn theo nhóm**, người dùng bắt đầu ngay mà không phải tự tạo từ đầu.
-
-> **Lưu ý:** Thông tin đối thủ ở mục này là khảo sát nhanh, cần kiểm tra lại trước khi dùng để đưa ra quyết định.
 
 ## 3. Nhóm người dùng
 
