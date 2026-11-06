@@ -92,7 +92,7 @@ class GardenDatabase(context: Context) : SQLiteOpenHelper(context, "mam_xanh.db"
                         val log=ContentValues().apply { put("date",today()); put("task_id",id); put("title",title); put("coins",reward) }
                         db.insert("logs",null,log)
                         meta(db,"coins",((getMeta(db,"coins").toIntOrNull()?:0)+reward).toString())
-                        db.execSQL("UPDATE trees SET growth=growth+?",arrayOf(reward*2))
+                        db.execSQL("UPDATE trees SET growth=MIN(120,growth+?)",arrayOf(reward*2))
                         result=true
                     }
                 }
@@ -154,7 +154,7 @@ class GardenDatabase(context: Context) : SQLiteOpenHelper(context, "mam_xanh.db"
         try {
             val count=db.rawQuery("SELECT quantity FROM inventory WHERE item='fertilizer'",null).use { if(it.moveToFirst()) it.getInt(0) else 0 }
             if(count<=0) return false
-            db.execSQL("UPDATE trees SET growth=growth+25 WHERE id=?",arrayOf(treeId))
+            db.execSQL("UPDATE trees SET growth=MIN(120,growth+25) WHERE id=?",arrayOf(treeId))
             seed(db,"fertilizer",count-1); db.setTransactionSuccessful(); return true
         } finally { db.endTransaction() }
     }
