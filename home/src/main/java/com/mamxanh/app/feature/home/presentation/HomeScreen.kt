@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import com.mamxanh.app.feature.home.domain.model.HomeDashboard
 import com.mamxanh.app.feature.home.domain.model.HomeTree
 import com.mamxanh.app.feature.home.domain.model.homeSpeciesCatalog
-import com.mamxanh.app.feature.tree.presentation.components.TreeIllustration
+import com.mamxanh.app.presentation.ui.components.TreeIllustration
 import com.mamxanh.app.presentation.ui.Deep
 import com.mamxanh.app.presentation.ui.Green
 import com.mamxanh.app.presentation.ui.Muted

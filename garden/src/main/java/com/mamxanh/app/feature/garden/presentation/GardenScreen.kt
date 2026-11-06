@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.dp
 import com.mamxanh.app.feature.garden.domain.model.Garden
 import com.mamxanh.app.feature.garden.domain.model.Species
 import com.mamxanh.app.feature.garden.domain.model.seedCatalog
-import com.mamxanh.app.feature.tree.presentation.components.TreeIllustration
+import com.mamxanh.app.presentation.ui.components.TreeIllustration
 import com.mamxanh.app.presentation.ui.*
 
 @Composable
