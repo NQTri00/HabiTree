@@ -11,12 +11,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.mamxanh.app.domain.model.*
+import com.mamxanh.app.domain.model.State as GameState
 import com.mamxanh.app.feature.tree.presentation.components.TreeIllustration
 import com.mamxanh.app.presentation.ui.*
 import com.mamxanh.app.presentation.viewmodel.GardenViewModel
 
 @Composable
-fun GardenScreen(state: State, vm: GardenViewModel, onOpenTree: (Long) -> Unit, modifier: Modifier = Modifier) {
+fun GardenScreen(state: GameState, vm: GardenViewModel, onOpenTree: (Long) -> Unit, modifier: Modifier = Modifier) {
     var selectedSeed by remember { mutableStateOf<Species?>(null) }
     var treeName by remember { mutableStateOf("") }
     val seeds = catalog.filter { (state.garden.inventory[it.id] ?: 0) > 0 }

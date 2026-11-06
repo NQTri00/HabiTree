@@ -23,6 +23,10 @@ class GardenDatabase(context: Context) : SQLiteOpenHelper(context, "mam_xanh.db"
         task(db, "Viết nhật ký 5 phút", "HABIT", "Phát triển bản thân", 5, "EVERY_DAY", "")
         task(db, "Hoàn thành một việc quan trọng", "TODO", "Công việc", 20, "ONCE", "")
     }
+    override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+        // Keep existing user data; add explicit migrations here when the schema changes.
+    }
+
     private fun meta(db: SQLiteDatabase, k: String, v: String) {
         val c = ContentValues().apply { put("k", k); put("v", v) }
         db.insertWithOnConflict("meta", null, c, SQLiteDatabase.CONFLICT_REPLACE)
