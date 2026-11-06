@@ -71,7 +71,7 @@ fun TasksScreen(state: State, onComplete: (Long) -> Unit, onDelete: (Long) -> Un
         val finished = state.tasks.filter { it.finished }
         if (finished.isNotEmpty()) {
             item { Text("Đã hoàn tất", color = Muted, fontWeight = FontWeight.Bold) }
-            items(finished, key = { "finished-" + it.id }) { TaskCard(it, {}, { vm.delete(it.id) }, true) }
+            items(finished, key = { "finished-" + it.id }) { TaskCard(it, {}, { onDelete(it.id) }, true) }
         }
     }
 }
