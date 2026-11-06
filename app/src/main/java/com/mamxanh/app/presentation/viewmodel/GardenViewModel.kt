@@ -49,6 +49,7 @@ import com.mamxanh.app.data.local.GardenDatabase
 import com.mamxanh.app.data.repository.OfflineGameRepository
 import com.mamxanh.app.domain.usecase.GameUseCases
 import com.mamxanh.app.domain.model.*
+import com.mamxanh.app.domain.model.State
 class GardenViewModel(context: Context) : ViewModel() {
     private val useCases: GameUseCases = GameUseCases(OfflineGameRepository(GardenDatabase(context)))
     private val _state=MutableStateFlow(State())
