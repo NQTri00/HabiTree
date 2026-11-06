@@ -1,4 +1,4 @@
-package com.mamxanh.app.presentation.ui.components
+package com.mamxanh.app.feature.tree.presentation.components
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.aspectRatio

@@ -40,7 +40,7 @@ import com.mamxanh.app.presentation.ui.Deep
 import com.mamxanh.app.presentation.ui.Green
 import com.mamxanh.app.presentation.ui.Muted
 import com.mamxanh.app.presentation.ui.Pale
-import com.mamxanh.app.presentation.ui.components.TreeIllustration
+import com.mamxanh.app.feature.tree.presentation.components.TreeIllustration
 import com.mamxanh.app.presentation.viewmodel.GardenViewModel
 
 @Composable
@@ -244,6 +244,22 @@ private fun TreeCard(
                     )
                 }
             }
+        }
+    }
+}
+
+
+@Composable
+private fun EmptyCard(title: String, description: String) {
+    Card(colors = CardDefaults.cardColors(containerColor = Color.White), shape = RoundedCornerShape(18.dp)) {
+        Column(
+            Modifier.fillMaxWidth().padding(22.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Text("🍃", style = MaterialTheme.typography.displaySmall)
+            Text(title, color = Deep, fontWeight = FontWeight.Bold)
+            Text(description, color = Muted, style = MaterialTheme.typography.bodySmall)
         }
     }
 }

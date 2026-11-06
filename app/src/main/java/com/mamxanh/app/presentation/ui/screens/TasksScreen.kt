@@ -129,7 +129,7 @@ private fun TaskCard(task:Task,onComplete:()->Unit,onDelete:()->Unit,readOnly:Bo
 }
 
 @Composable
-private fun AddTaskDialog(onDismiss:()->Unit,onSave:(String,String,String,Int,String,String)->Unit) {
+fun AddTaskDialog(onDismiss:()->Unit,onSave:(String,String,String,Int,String,String)->Unit) {
     var title by remember{mutableStateOf("")}
     var kind by remember{mutableStateOf("DAILY")}
     var category by remember{mutableStateOf("Học tập")}
