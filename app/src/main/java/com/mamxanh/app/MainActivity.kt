@@ -393,7 +393,7 @@ private fun TaskCard(task:Task,onComplete:()->Unit,onDelete:()->Unit,readOnly:Bo
         }
     }
     if(askDelete) AlertDialog(onDismissRequest={askDelete=false},title={Text("Xóa nhiệm vụ?")},text={Text("“"+task.title+"” sẽ bị xóa khỏi danh sách.")},
-        confirmButton={TextButton(onClick={onDelete;askDelete=false}){Text("Xóa")}},dismissButton={TextButton(onClick={askDelete=false}){Text("Giữ lại")}})
+        confirmButton={TextButton(onClick={onDelete();askDelete=false}){Text("Xóa")}},dismissButton={TextButton(onClick={askDelete=false}){Text("Giữ lại")}})
 }
 
 @Composable
