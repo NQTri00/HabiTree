@@ -17,10 +17,11 @@ import com.mamxanh.app.domain.model.Page
 import com.mamxanh.app.domain.model.State
 import com.mamxanh.app.feature.home.presentation.HomeScreen
 import com.mamxanh.app.feature.tree.presentation.TreeInteractionScreen
-import com.mamxanh.app.presentation.ui.screens.GardenScreen
-import com.mamxanh.app.presentation.ui.screens.ShopScreen
-import com.mamxanh.app.presentation.ui.screens.StatsScreen
-import com.mamxanh.app.presentation.ui.screens.TasksScreen
+import com.mamxanh.app.feature.garden.presentation.GardenScreen
+import com.mamxanh.app.feature.shop.presentation.ShopScreen
+import com.mamxanh.app.feature.stats.presentation.StatsScreen
+import com.mamxanh.app.feature.tasks.presentation.TasksScreen
+import com.mamxanh.app.feature.tasks.presentation.dialog.AddTaskDialog
 import com.mamxanh.app.presentation.viewmodel.GardenViewModel
 
 val Green = Color(0xFF356B45)
@@ -117,7 +118,7 @@ fun MamXanhApp(vm: GardenViewModel) {
                         modifier = Modifier.padding(padding)
                     )
                     AppDestination.TASKS -> TasksScreen(state, vm, Modifier.padding(padding))
-                    AppDestination.GARDEN -> GardenScreen(state, vm, Modifier.padding(padding))
+                    AppDestination.GARDEN -> GardenScreen(state, vm, onOpenTree = { selectedTreeId = it }, modifier = Modifier.padding(padding))
                     AppDestination.SHOP -> ShopScreen(state, vm, Modifier.padding(padding))
                     AppDestination.STATS -> StatsScreen(state, Modifier.padding(padding))
                 }
