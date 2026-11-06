@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mamxanh.app.data.local.GardenDatabase
-import com.mamxanh.app.data.repository.OfflineGameRepository
+import com.mamxanh.app.data.repository.GameStorage
 import com.mamxanh.app.feature.garden.data.OfflineGardenRepository
 import com.mamxanh.app.feature.garden.presentation.GardenViewModel
 import com.mamxanh.app.feature.home.data.OfflineHomeDashboardRepository
@@ -25,7 +25,7 @@ import com.mamxanh.app.presentation.ui.MamXanhApp
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val game = OfflineGameRepository(GardenDatabase(applicationContext))
+        val game = GameStorage(GardenDatabase(applicationContext))
         setContent {
             val gardenVm: GardenViewModel = viewModel(factory = vmFactory {
                 GardenViewModel(OfflineGardenRepository(game))

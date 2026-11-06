@@ -1,11 +1,11 @@
 package com.mamxanh.app.feature.home.data
 
-import com.mamxanh.app.data.repository.OfflineGameRepository
+import com.mamxanh.app.data.repository.GameStorage
 import com.mamxanh.app.feature.home.domain.HomeDashboardRepository
 import com.mamxanh.app.feature.home.domain.model.HomeDashboard
 import com.mamxanh.app.feature.home.domain.model.HomeTree
 
-class OfflineHomeDashboardRepository(private val game: OfflineGameRepository) : HomeDashboardRepository {
+class OfflineHomeDashboardRepository(private val game: GameStorage) : HomeDashboardRepository {
     override fun load(): HomeDashboard {
         val tasks = game.tasks()
         val garden = game.garden()

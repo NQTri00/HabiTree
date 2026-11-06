@@ -1,10 +1,10 @@
 package com.mamxanh.app.feature.tasks.data
 
-import com.mamxanh.app.data.repository.OfflineGameRepository
+import com.mamxanh.app.data.repository.GameStorage
 import com.mamxanh.app.feature.tasks.domain.TaskRepository
 import com.mamxanh.app.feature.tasks.domain.model.Task
 
-class OfflineTaskRepository(private val game: OfflineGameRepository) : TaskRepository {
+class OfflineTaskRepository(private val game: GameStorage) : TaskRepository {
     override fun observeSnapshot() = game.tasks().map {
         Task(it.id, it.title, it.kind, it.category, it.reward, it.frequency, it.due, it.completed, it.streak, it.lastDone)
     }

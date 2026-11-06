@@ -1,11 +1,11 @@
 package com.mamxanh.app.feature.garden.data
 
-import com.mamxanh.app.data.repository.OfflineGameRepository
+import com.mamxanh.app.data.repository.GameStorage
 import com.mamxanh.app.feature.garden.domain.GardenRepository
 import com.mamxanh.app.feature.garden.domain.model.Garden
 import com.mamxanh.app.feature.garden.domain.model.Tree
 
-class OfflineGardenRepository(private val game: OfflineGameRepository) : GardenRepository {
+class OfflineGardenRepository(private val game: GameStorage) : GardenRepository {
     override fun loadGarden(): Garden {
         val source = game.garden()
         return Garden(source.trees.map {
