@@ -1,27 +1,35 @@
 # Mầm Xanh Android
 
-Native Android application for the Mầm Xanh (MamXanh) Daily Quest & Living Tree Garden proposal.
+Mầm Xanh is an offline-first, single-player habit and task game where **trees are the only progression characters**. There are no avatars, heroes, HP, mana, or character equipment.
 
-## Current implementation
+## Stack
 
-- Kotlin, Jetpack Compose, and Material 3.
-- MVVM-style state holder using AndroidX ViewModel and StateFlow.
-- Offline local quest state stored with SharedPreferences.
-- Daily quest categories, completion rewards, a 150-coin daily earning cap, and Daily Clear bonus.
-- Initial Quests, Garden, and Store navigation.
+- Kotlin, Jetpack Compose, Material 3
+- MVVM-style UI state with AndroidX ViewModel and StateFlow
+- SQLite via Android SQLiteOpenHelper for on-device persistence
+- No account, backend, network permission, or cloud dependency
 
-## Open in Android Studio
+## Implemented gameplay
 
-Open this repository as a Gradle project and select the `:app` run configuration.
+- **Habits:** repeatable actions with categories, coin rewards, and completion streaks.
+- **Daily tasks:** repeat every day, on weekdays, or on weekends; can be completed once per day.
+- **To-dos:** one-time tasks, optional due-date text, and completed-task history.
+- **Task management:** create, filter, complete, and delete tasks.
+- **Coins:** task rewards and a daily completion bonus.
+- **Living garden:** own multiple trees, name them, and grow them through task completion.
+- **Tree stages:** sprout, seedling, young tree, and mature tree.
+- **Shop:** purchase five seed species and organic fertilizer.
+- **Inventory:** seeds and fertilizer persist locally; seeds can be planted and fertilizer can be applied to a tree.
+- **Statistics:** task completion totals, today's and this week's activity, streak, planted tree count, and coin balance.
+
+Completing a task awards its configured coins and adds growth points to every planted tree. Tree growth and all other game state are stored locally in SQLite and survive app restarts.
+
+## Run
+
+Open the repository in Android Studio and run the :app configuration.
 
 Requirements: JDK 17, Android SDK 36, Android Gradle Plugin 8.13.2, Kotlin 2.2.20.
 
-## Next milestones
+## Current scope and limitations
 
-1. Persist garden ownership, tree height, growth timestamps, and inventory.
-2. Implement seed selection and purchases.
-3. Implement growth thresholds (10 cm / 50 cm / 120 cm), daily growth cap, and slower post-maturity growth.
-4. Add timed, hold, and time-window quest confirmations.
-5. Add seasonal visuals, reminders, and statistics.
-
-All user data is intended to remain on-device. No account or backend is planned for the initial product.
+This is a functional offline single-player foundation, not a cloud/social Habitica clone. It does not include accounts, multiplayer, parties, guilds, cloud sync, push notifications, or remote services. Task due dates are currently stored as user-entered text; deadline notifications and calendar-based overdue handling are not implemented. The garden uses Compose emoji-based tree-stage visuals rather than custom animated tree artwork.
