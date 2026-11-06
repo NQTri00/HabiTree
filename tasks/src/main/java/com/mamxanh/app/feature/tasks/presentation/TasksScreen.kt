@@ -20,10 +20,9 @@ import androidx.compose.ui.unit.dp
 import com.mamxanh.app.domain.model.State
 import com.mamxanh.app.domain.model.Task
 import com.mamxanh.app.presentation.ui.*
-import com.mamxanh.app.presentation.viewmodel.GardenViewModel
 
 @Composable
-fun TasksScreen(state: State, vm: GardenViewModel, modifier: Modifier = Modifier) {
+fun TasksScreen(state: State, onComplete: (Long) -> Unit, onDelete: (Long) -> Unit, onBonus: () -> Unit, modifier: Modifier = Modifier) {
     var filter by remember { mutableStateOf("Tất cả") }
     val active = state.tasks.filter { !it.finished && when (filter) {
         "Thói quen" -> it.kind == "HABIT"; "Hằng ngày" -> it.kind == "DAILY"
@@ -56,7 +55,7 @@ fun TasksScreen(state: State, vm: GardenViewModel, modifier: Modifier = Modifier
             }
         }
         if (active.isEmpty()) item { Text("🍃 Không còn việc nào ở mục này. Tận hưởng khu vườn một chút nhé.", color = Muted) }
-        items(active, key = { it.id }) { task -> TaskCard(task, { vm.complete(task.id) }, { vm.delete(task.id) }) }
+        items(active, key = { it.id }) { task -> TaskCard(task, { onComplete(task.id) }, { onDelete(task.id) }) }
         if (daily.isNotEmpty()) item {
             Card(colors = CardDefaults.cardColors(containerColor = Gold), shape = RoundedCornerShape(20.dp)) {
                 Row(Modifier.fillMaxWidth().padding(15.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -65,7 +64,7 @@ fun TasksScreen(state: State, vm: GardenViewModel, modifier: Modifier = Modifier
                         Text("Hoàn thành mọi nhiệm vụ hằng ngày để nhận thêm 20 xu.", color = Muted,
                             style = MaterialTheme.typography.bodySmall)
                     }
-                    Button(onClick = vm::bonus, enabled = daily.all { it.doneToday }) { Text("Nhận") }
+                    Button(onClick = onBonus, enabled = daily.all { it.doneToday }) { Text("Nhận") }
                 }
             }
         }

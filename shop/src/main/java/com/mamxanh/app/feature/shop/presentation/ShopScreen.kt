@@ -12,10 +12,9 @@ import androidx.compose.ui.unit.dp
 import com.mamxanh.app.domain.model.State
 import com.mamxanh.app.domain.model.catalog
 import com.mamxanh.app.presentation.ui.*
-import com.mamxanh.app.presentation.viewmodel.GardenViewModel
 
 @Composable
-fun ShopScreen(state: State, vm: GardenViewModel, modifier: Modifier = Modifier) {
+fun ShopScreen(state: State, onBuySeed: (String) -> Unit, onBuyFertilizer: () -> Unit, modifier: Modifier = Modifier) {
     LazyColumn(modifier.fillMaxSize().padding(horizontal = 18.dp),
         contentPadding = PaddingValues(top = 14.dp, bottom = 28.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -34,12 +33,12 @@ fun ShopScreen(state: State, vm: GardenViewModel, modifier: Modifier = Modifier)
         item { ShopSection("Hạt giống", "Mỗi hạt giống sẽ trở thành một cây riêng.") }
         items(catalog, key = { it.id }) { seed ->
             ShopItem(seed.emoji, seed.name, seed.description, seed.price,
-                state.garden.inventory[seed.id] ?: 0, state.stats.coins >= seed.price) { vm.buy(seed.id) }
+                state.garden.inventory[seed.id] ?: 0, state.stats.coins >= seed.price) { onBuySeed(seed.id) }
         }
         item { ShopSection("Chăm sóc cây", "Một chút trợ giúp khi cây cần lớn nhanh hơn.") }
         item {
             ShopItem("🧪", "Phân bón hữu cơ", "Giúp một cây tăng thêm 25 điểm phát triển.", 25,
-                state.garden.inventory["fertilizer"] ?: 0, state.stats.coins >= 25, vm::buyFertilizer)
+                state.garden.inventory["fertilizer"] ?: 0, state.stats.coins >= 25, onBuyFertilizer)
         }
         item { Text("Cảm ơn bạn đã ghé tiệm. Chúc khu vườn có thêm nhiều mầm xanh! 🌱", color = Muted) }
     }

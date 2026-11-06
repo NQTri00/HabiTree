@@ -14,10 +14,9 @@ import com.mamxanh.app.domain.model.*
 import com.mamxanh.app.domain.model.State as GameState
 import com.mamxanh.app.feature.tree.presentation.components.TreeIllustration
 import com.mamxanh.app.presentation.ui.*
-import com.mamxanh.app.presentation.viewmodel.GardenViewModel
 
 @Composable
-fun GardenScreen(state: GameState, vm: GardenViewModel, onOpenTree: (Long) -> Unit, modifier: Modifier = Modifier) {
+fun GardenScreen(state: GameState, onPlant: (String, String) -> Unit, onOpenTree: (Long) -> Unit, modifier: Modifier = Modifier) {
     var selectedSeed by remember { mutableStateOf<Species?>(null) }
     var treeName by remember { mutableStateOf("") }
     val seeds = catalog.filter { (state.garden.inventory[it.id] ?: 0) > 0 }
@@ -77,7 +76,7 @@ fun GardenScreen(state: GameState, vm: GardenViewModel, onOpenTree: (Long) -> Un
     selectedSeed?.let { seed ->
         AlertDialog(onDismissRequest = { selectedSeed = null }, title = { Text("Gieo " + seed.name + " 🌱") },
             text = { OutlinedTextField(treeName, { treeName = it }, label = { Text("Đặt tên cho cây (tùy chọn)") }, singleLine = true) },
-            confirmButton = { Button(onClick = { vm.plant(seed.id, treeName); treeName = ""; selectedSeed = null }) { Text("Gieo cây") } },
+            confirmButton = { Button(onClick = { onPlant(seed.id, treeName); treeName = ""; selectedSeed = null }) { Text("Gieo cây") } },
             dismissButton = { TextButton(onClick = { selectedSeed = null }) { Text("Để sau") } })
     }
 }
