@@ -158,5 +158,22 @@ class GardenDatabase(context: Context) : SQLiteOpenHelper(context, "mam_xanh.db"
             seed(db,"fertilizer",count-1); db.setTransactionSuccessful(); return true
         } finally { db.endTransaction() }
     }
+    fun water(treeId: Long): Boolean {
+        val db=writableDatabase
+        db.beginTransaction()
+        try {
+            val exists=db.rawQuery("SELECT 1 FROM trees WHERE id=?",arrayOf(treeId.toString())).use { it.moveToFirst() }
+            if(!exists || getMeta(db,"watered_$treeId","") == today()) return false
+            db.execSQL("UPDATE trees SET growth=MIN(120,growth+8) WHERE id=?",arrayOf(treeId))
+            meta(db,"watered_$treeId",today())
+            db.setTransactionSuccessful()
+            return true
+        } finally { db.endTransaction() }
+    }
+    fun decorate(treeId: Long, decoration: String) {
+        require(decoration in setOf("NONE","FLOWERS","LANTERNS","RIBBON"))
+        val db=writableDatabase
+        val exists=db.rawQuery("SELECT 1 FROM trees WHERE id=?",arrayOf(treeId.toString())).use { it.moveToFirst() }
+        if(exists) meta(db,"decoration_$treeId",decoration)
+    }
 }
-
