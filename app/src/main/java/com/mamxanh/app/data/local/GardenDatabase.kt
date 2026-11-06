@@ -44,8 +44,8 @@ class GardenDatabase(context: Context) : SQLiteOpenHelper(context, "mam_xanh.db"
         buildList { while (c.moveToNext()) add(Task(c.getLong(0),c.getString(1),c.getString(2),c.getString(3),c.getInt(4),c.getString(5),c.getString(6),c.getString(7),c.getInt(8),c.getString(9))) }
     }
     fun garden(): Garden {
-        val trees = readableDatabase.rawQuery("SELECT id,species_id,name,growth,planted FROM trees ORDER BY id", null).use { c ->
-            buildList { while (c.moveToNext()) add(Tree(c.getLong(0),c.getString(1),c.getString(2),c.getInt(3),c.getString(4))) }
+        val trees = readableDatabase.rawQuery("SELECT id,species_id,name,growth,planted,COALESCE((SELECT v FROM meta WHERE k='decoration_' || trees.id),'NONE'),CASE WHEN COALESCE((SELECT v FROM meta WHERE k='watered_' || trees.id),'')=? THEN 1 ELSE 0 END FROM trees ORDER BY id", arrayOf(today())).use { c ->
+            buildList { while (c.moveToNext()) add(Tree(c.getLong(0),c.getString(1),c.getString(2),c.getInt(3),c.getString(4),c.getString(5),c.getInt(6)==1)) }
         }
         val inventory = readableDatabase.rawQuery("SELECT item,quantity FROM inventory", null).use { c ->
             buildMap { while (c.moveToNext()) put(c.getString(0),c.getInt(1)) }
