@@ -16,7 +16,7 @@ val catalog = listOf(
     Species("maple", "Phong đỏ", "🍁", "Lá chuyển sắc khi cây lớn", 70),
     Species("bamboo", "Tre trúc", "🎋", "Vươn cao qua từng cột mốc", 40)
 )
-data class Tree(val id: Long, val speciesId: String, val name: String, val growth: Int, val planted: String)
+data class Tree(val id: Long, val speciesId: String, val name: String, val growth: Int, val planted: String, val decoration: String = "NONE", val wateredToday: Boolean = false)
 data class Garden(val trees: List<Tree> = emptyList(), val inventory: Map<String, Int> = emptyMap())
 data class Statistics(val coins: Int = 0, val total: Int = 0, val today: Int = 0, val week: Int = 0, val streak: Int = 0, val treeCount: Int = 0)
 data class State(val tasks: List<Task> = emptyList(), val garden: Garden = Garden(), val stats: Statistics = Statistics(), val loading: Boolean = true, val message: String = "")
