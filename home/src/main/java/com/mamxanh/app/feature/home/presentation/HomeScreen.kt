@@ -11,9 +11,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.mamxanh.app.domain.model.State
-import com.mamxanh.app.domain.model.Tree
-import com.mamxanh.app.domain.model.catalog
+import com.mamxanh.app.feature.home.domain.model.HomeDashboard
+import com.mamxanh.app.feature.home.domain.model.HomeTree
+import com.mamxanh.app.feature.home.domain.model.homeSpeciesCatalog
 import com.mamxanh.app.feature.tree.presentation.components.TreeIllustration
 import com.mamxanh.app.presentation.ui.Deep
 import com.mamxanh.app.presentation.ui.Green
@@ -22,15 +22,15 @@ import com.mamxanh.app.presentation.ui.Pale
 
 @Composable
 fun HomeScreen(
-    state: State,
+    dashboard: HomeDashboard,
     onOpenTree: (Long) -> Unit,
     onOpenTasks: () -> Unit,
     onOpenGarden: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val mainTree = state.garden.trees.firstOrNull()
-    val completed = state.tasks.count { it.doneToday }
-    val total = state.tasks.size
+    val mainTree = dashboard.trees.firstOrNull()
+    val completed = dashboard.completedTasks
+    val total = dashboard.totalTasks
     LazyColumn(
         modifier = modifier.fillMaxSize().padding(horizontal = 18.dp),
         contentPadding = PaddingValues(top = 12.dp, bottom = 28.dp),
@@ -86,15 +86,15 @@ fun HomeScreen(
         item {
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 HomeMetric("🌳", "Cây", state.garden.trees.size.toString(), Modifier.weight(1f))
-                HomeMetric("🌰", "Hạt giống", state.garden.inventory.filterKeys { it != "fertilizer" }.values.sum().toString(), Modifier.weight(1f))
-                HomeMetric("🪙", "Xu", state.stats.coins.toString(), Modifier.weight(1f))
+                HomeMetric("🌰", "Hạt giống", dashboard.seedCount.toString(), Modifier.weight(1f))
+                HomeMetric("🪙", "Xu", dashboard.coins.toString(), Modifier.weight(1f))
             }
         }
         item {
             Text("Cây trong khu vườn", color = Deep, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
             Text("Chọn cây để chăm sóc và xem chi tiết.", color = Muted, style = MaterialTheme.typography.bodySmall)
             state.garden.trees.drop(1).forEach { tree ->
-                val species = catalog.firstOrNull { it.id == tree.speciesId } ?: catalog.first()
+                val species = homeSpeciesCatalog.firstOrNull { it.id == tree.speciesId } ?: catalog.first()
                 Card(
                     modifier = Modifier.fillMaxWidth().padding(top = 8.dp).clickable { onOpenTree(tree.id) },
                     colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -115,7 +115,7 @@ fun HomeScreen(
 }
 
 @Composable
-private fun MainTreeCard(tree: Tree, onClick: () -> Unit) {
+private fun MainTreeCard(tree: HomeTree, onClick: () -> Unit) {
     val species = catalog.firstOrNull { it.id == tree.speciesId } ?: catalog.first()
     val progress = (tree.growth / 120f).coerceIn(0f, 1f)
     val stage = when {

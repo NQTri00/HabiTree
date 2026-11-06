@@ -9,12 +9,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.mamxanh.app.domain.model.State
-import com.mamxanh.app.domain.model.catalog
+import com.mamxanh.app.feature.shop.domain.model.ShopWallet
+import com.mamxanh.app.feature.shop.domain.model.shopCatalog
 import com.mamxanh.app.presentation.ui.*
 
 @Composable
-fun ShopScreen(state: State, onBuySeed: (String) -> Unit, onBuyFertilizer: () -> Unit, modifier: Modifier = Modifier) {
+fun ShopScreen(wallet: ShopWallet, onBuySeed: (String) -> Unit, onBuyFertilizer: () -> Unit, modifier: Modifier = Modifier) {
     LazyColumn(modifier.fillMaxSize().padding(horizontal = 18.dp),
         contentPadding = PaddingValues(top = 14.dp, bottom = 28.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -25,15 +25,15 @@ fun ShopScreen(state: State, onBuySeed: (String) -> Unit, onBuyFertilizer: () ->
                     Column(Modifier.padding(start = 14.dp)) {
                         Text("Tiệm hạt giống nhỏ", color = Deep, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
                         Text("Tìm một người bạn xanh mới cho khu vườn.", color = Deep)
-                        Text("🪙 " + state.stats.coins + " xu trong túi", color = Deep, fontWeight = FontWeight.SemiBold)
+                        Text("🪙 " + wallet.coins + " xu trong túi", color = Deep, fontWeight = FontWeight.SemiBold)
                     }
                 }
             }
         }
         item { ShopSection("Hạt giống", "Mỗi hạt giống sẽ trở thành một cây riêng.") }
-        items(catalog, key = { it.id }) { seed ->
+        items(shopCatalog, key = { it.id }) { seed ->
             ShopItem(seed.emoji, seed.name, seed.description, seed.price,
-                state.garden.inventory[seed.id] ?: 0, state.stats.coins >= seed.price) { onBuySeed(seed.id) }
+                wallet.inventory[seed.id] ?: 0, state.stats.coins >= seed.price) { onBuySeed(seed.id) }
         }
         item { ShopSection("Chăm sóc cây", "Một chút trợ giúp khi cây cần lớn nhanh hơn.") }
         item {

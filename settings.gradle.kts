@@ -6,4 +6,4 @@ dependencyResolutionManagement {
     repositories { google(); mavenCentral() }
 }
 rootProject.name = "MamXanh"
-include(":app", ":core-ui", ":domain", ":data", ":home", ":tasks", ":garden", ":shop", ":tree", ":stats")
+include(":app", ":core-ui", ":data", ":home", ":tasks", ":garden", ":shop", ":tree", ":stats")

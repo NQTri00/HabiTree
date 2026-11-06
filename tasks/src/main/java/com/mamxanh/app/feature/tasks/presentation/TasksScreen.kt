@@ -17,14 +17,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
-import com.mamxanh.app.domain.model.State
-import com.mamxanh.app.domain.model.Task
+import com.mamxanh.app.feature.tasks.domain.model.Task
 import com.mamxanh.app.presentation.ui.*
 
 @Composable
-fun TasksScreen(state: State, onComplete: (Long) -> Unit, onDelete: (Long) -> Unit, onBonus: () -> Unit, modifier: Modifier = Modifier) {
+fun TasksScreen(tasks: List<Task>, onComplete: (Long) -> Unit, onDelete: (Long) -> Unit, onBonus: () -> Unit, modifier: Modifier = Modifier) {
     var filter by remember { mutableStateOf("Tất cả") }
-    val active = state.tasks.filter { !it.finished && when (filter) {
+    val active = tasks.filter { !it.finished && when (filter) {
         "Thói quen" -> it.kind == "HABIT"; "Hằng ngày" -> it.kind == "DAILY"
         "Một lần" -> it.kind == "TODO"; else -> true
     } }

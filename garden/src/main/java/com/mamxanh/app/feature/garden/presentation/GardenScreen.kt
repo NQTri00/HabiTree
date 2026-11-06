@@ -10,16 +10,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.mamxanh.app.domain.model.*
-import com.mamxanh.app.domain.model.State as GameState
+import com.mamxanh.app.feature.garden.domain.model.Garden
+import com.mamxanh.app.feature.garden.domain.model.Species
+import com.mamxanh.app.feature.garden.domain.model.seedCatalog
 import com.mamxanh.app.feature.tree.presentation.components.TreeIllustration
 import com.mamxanh.app.presentation.ui.*
 
 @Composable
-fun GardenScreen(state: GameState, onPlant: (String, String) -> Unit, onOpenTree: (Long) -> Unit, modifier: Modifier = Modifier) {
+fun GardenScreen(garden: Garden, onPlant: (String, String) -> Unit, onOpenTree: (Long) -> Unit, modifier: Modifier = Modifier) {
     var selectedSeed by remember { mutableStateOf<Species?>(null) }
     var treeName by remember { mutableStateOf("") }
-    val seeds = catalog.filter { (state.garden.inventory[it.id] ?: 0) > 0 }
+    val seeds = seedCatalog.filter { (garden.inventory[it.id] ?: 0) > 0 }
     LazyColumn(modifier.fillMaxSize().padding(horizontal = 18.dp),
         contentPadding = PaddingValues(top = 14.dp, bottom = 28.dp),
         verticalArrangement = Arrangement.spacedBy(14.dp)) {

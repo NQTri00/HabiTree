@@ -8,8 +8,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.mamxanh.app.domain.model.Tree
-import com.mamxanh.app.domain.model.catalog
+import com.mamxanh.app.feature.tree.domain.model.Tree
+import com.mamxanh.app.feature.tree.domain.model.treeSpeciesCatalog
 import com.mamxanh.app.feature.tree.presentation.components.*
 import com.mamxanh.app.presentation.ui.Deep
 import com.mamxanh.app.presentation.ui.Green
@@ -17,7 +17,7 @@ import com.mamxanh.app.presentation.ui.Green
 @Composable
 fun TreeInteractionScreen(tree: Tree, fertilizerCount: Int, onWater: () -> Unit,
     onFertilize: () -> Unit, onDecorate: (String) -> Unit, modifier: Modifier = Modifier) {
-    val species = catalog.firstOrNull { it.id == tree.speciesId } ?: catalog.first()
+    val species = treeSpeciesCatalog.firstOrNull { it.id == tree.speciesId } ?: treeSpeciesCatalog.first()
     Column(modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(18.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {

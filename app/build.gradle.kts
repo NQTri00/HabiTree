@@ -22,7 +22,6 @@ android {
 }
 dependencies {
     implementation(project(":core-ui"))
-    implementation(project(":domain"))
     implementation(project(":data"))
     implementation(project(":home"))
     implementation(project(":tasks"))

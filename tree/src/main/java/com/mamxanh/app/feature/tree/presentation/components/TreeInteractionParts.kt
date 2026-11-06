@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.mamxanh.app.domain.model.Tree
+import com.mamxanh.app.feature.tree.domain.model.Tree
 import com.mamxanh.app.presentation.ui.*
 
 @Composable

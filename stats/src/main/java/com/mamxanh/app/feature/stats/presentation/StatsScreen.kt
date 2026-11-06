@@ -8,12 +8,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.mamxanh.app.domain.model.State
+import com.mamxanh.app.feature.stats.domain.model.GardenStatistics
 import com.mamxanh.app.presentation.ui.*
 
 @Composable
-fun StatsScreen(state: State, modifier: Modifier = Modifier) {
-    val s = state.stats
+fun StatsScreen(statistics: GardenStatistics, modifier: Modifier = Modifier) {
+    val s = statistics
     LazyColumn(modifier.fillMaxSize().padding(horizontal = 18.dp),
         contentPadding = PaddingValues(top = 14.dp, bottom = 28.dp),
         verticalArrangement = Arrangement.spacedBy(14.dp)) {
