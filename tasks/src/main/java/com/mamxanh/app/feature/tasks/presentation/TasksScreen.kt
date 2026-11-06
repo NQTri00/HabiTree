@@ -27,8 +27,8 @@ fun TasksScreen(tasks: List<Task>, onComplete: (Long) -> Unit, onDelete: (Long) 
         "Thói quen" -> it.kind == "HABIT"; "Hằng ngày" -> it.kind == "DAILY"
         "Một lần" -> it.kind == "TODO"; else -> true
     } }
-    val daily = state.tasks.filter { it.kind == "DAILY" }
-    val done = state.tasks.count { it.doneToday }
+    val daily = tasks.filter { it.kind == "DAILY" }
+    val done = tasks.count { it.doneToday }
     LazyColumn(modifier.fillMaxSize().padding(horizontal = 16.dp),
         contentPadding = PaddingValues(top = 12.dp, bottom = 28.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -38,11 +38,11 @@ fun TasksScreen(tasks: List<Task>, onComplete: (Long) -> Unit, onDelete: (Long) 
                     Text("Chào ngày mới! 🌿", color = Deep, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
                     Text("Mỗi việc nhỏ hôm nay là một vòng cây lớn lên.", color = Deep)
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(done.toString() + " / " + state.tasks.size + " việc đã xong", color = Green,
+                        Text(done.toString() + " / " + tasks.size + " việc đã xong", color = Green,
                             fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
-                        Text((done * 100 / state.tasks.size.coerceAtLeast(1)).toString() + "%", color = Green)
+                        Text((done * 100 / tasks.size.coerceAtLeast(1)).toString() + "%", color = Green)
                     }
-                    LinearProgressIndicator(progress = { done.toFloat() / state.tasks.size.coerceAtLeast(1) },
+                    LinearProgressIndicator(progress = { done.toFloat() / tasks.size.coerceAtLeast(1) },
                         modifier = Modifier.fillMaxWidth().height(8.dp), color = Green, trackColor = Color.White)
                 }
             }
@@ -67,7 +67,7 @@ fun TasksScreen(tasks: List<Task>, onComplete: (Long) -> Unit, onDelete: (Long) 
                 }
             }
         }
-        val finished = state.tasks.filter { it.finished }
+        val finished = tasks.filter { it.finished }
         if (finished.isNotEmpty()) {
             item { Text("Đã hoàn tất", color = Muted, fontWeight = FontWeight.Bold) }
             items(finished, key = { "finished-" + it.id }) { TaskCard(it, {}, { onDelete(it.id) }, true) }

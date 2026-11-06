@@ -63,9 +63,9 @@ fun MamXanhApp(
         statsVm.refresh()
         shopVm.refresh()
     }
-    LaunchedEffect(taskMessage, shopMessage, treeMessage) {
-        message = sequenceOf(taskMessage, shopMessage, treeMessage).firstOrNull { it.isNotBlank() } ?: message
-    }
+    LaunchedEffect(taskMessage) { if (taskMessage.isNotBlank()) message = taskMessage }
+    LaunchedEffect(shopMessage) { if (shopMessage.isNotBlank()) message = shopMessage }
+    LaunchedEffect(treeMessage) { if (treeMessage.isNotBlank()) message = treeMessage }
 
     val selectedTree = garden.trees.firstOrNull { it.id == selectedTreeId }
     MaterialTheme(colorScheme = lightColorScheme(primary = Green, secondary = Color(0xFF9A6A31), background = Cream, surface = Color.White)) {

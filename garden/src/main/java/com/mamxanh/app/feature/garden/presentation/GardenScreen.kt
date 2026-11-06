@@ -31,17 +31,17 @@ fun GardenScreen(garden: Garden, onPlant: (String, String) -> Unit, onOpenTree: 
                     Column(Modifier.padding(start = 14.dp)) {
                         Text("Một góc xanh của riêng bạn", color = Deep, fontWeight = FontWeight.Bold,
                             style = MaterialTheme.typography.titleLarge)
-                        Text(if (state.garden.trees.isEmpty()) "Khu vườn đang chờ mầm xanh đầu tiên!"
-                            else state.garden.trees.size.toString() + " cây đang lớn lên cùng bạn.", color = Green)
+                        Text(if (garden.trees.isEmpty()) "Khu vườn đang chờ mầm xanh đầu tiên!"
+                            else garden.trees.size.toString() + " cây đang lớn lên cùng bạn.", color = Green)
                     }
                 }
             }
         }
         item { Text("Những mầm xanh của bạn", color = Deep, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold) }
-        if (state.garden.trees.isEmpty()) item {
+        if (garden.trees.isEmpty()) item {
             GardenEmptyCard()
-        } else items(state.garden.trees, key = { it.id }) { tree ->
-            val species = catalog.firstOrNull { it.id == tree.speciesId } ?: catalog.first()
+        } else items(garden.trees, key = { it.id }) { tree ->
+            val species = seedCatalog.firstOrNull { it.id == tree.speciesId } ?: seedCatalog.first()
             Card(Modifier.fillMaxWidth().clickable { onOpenTree(tree.id) },
                 colors = CardDefaults.cardColors(containerColor = Pale), shape = RoundedCornerShape(24.dp)) {
                 Column(Modifier.fillMaxWidth().padding(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -66,7 +66,7 @@ fun GardenScreen(garden: Garden, onPlant: (String, String) -> Unit, onOpenTree: 
                     Text(seed.emoji, style = MaterialTheme.typography.headlineMedium)
                     Column(Modifier.weight(1f).padding(start = 12.dp)) {
                         Text(seed.name, color = Deep, fontWeight = FontWeight.Bold)
-                        Text("Còn " + (state.garden.inventory[seed.id] ?: 0) + " hạt · " + seed.description,
+                        Text("Còn " + (garden.inventory[seed.id] ?: 0) + " hạt · " + seed.description,
                             color = Muted, style = MaterialTheme.typography.bodySmall)
                     }
                     Button(onClick = { selectedSeed = seed }) { Text("Gieo") }

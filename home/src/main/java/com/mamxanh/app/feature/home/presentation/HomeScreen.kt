@@ -85,7 +85,7 @@ fun HomeScreen(
         }
         item {
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                HomeMetric("🌳", "Cây", state.garden.trees.size.toString(), Modifier.weight(1f))
+                HomeMetric("🌳", "Cây", dashboard.trees.size.toString(), Modifier.weight(1f))
                 HomeMetric("🌰", "Hạt giống", dashboard.seedCount.toString(), Modifier.weight(1f))
                 HomeMetric("🪙", "Xu", dashboard.coins.toString(), Modifier.weight(1f))
             }
@@ -93,8 +93,8 @@ fun HomeScreen(
         item {
             Text("Cây trong khu vườn", color = Deep, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
             Text("Chọn cây để chăm sóc và xem chi tiết.", color = Muted, style = MaterialTheme.typography.bodySmall)
-            state.garden.trees.drop(1).forEach { tree ->
-                val species = homeSpeciesCatalog.firstOrNull { it.id == tree.speciesId } ?: catalog.first()
+            dashboard.trees.drop(1).forEach { tree ->
+                val species = homeSpeciesCatalog.firstOrNull { it.id == tree.speciesId } ?: homeSpeciesCatalog.first()
                 Card(
                     modifier = Modifier.fillMaxWidth().padding(top = 8.dp).clickable { onOpenTree(tree.id) },
                     colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -116,7 +116,7 @@ fun HomeScreen(
 
 @Composable
 private fun MainTreeCard(tree: HomeTree, onClick: () -> Unit) {
-    val species = catalog.firstOrNull { it.id == tree.speciesId } ?: catalog.first()
+    val species = homeSpeciesCatalog.firstOrNull { it.id == tree.speciesId } ?: homeSpeciesCatalog.first()
     val progress = (tree.growth / 120f).coerceIn(0f, 1f)
     val stage = when {
         tree.growth >= 120 -> "Trưởng thành"

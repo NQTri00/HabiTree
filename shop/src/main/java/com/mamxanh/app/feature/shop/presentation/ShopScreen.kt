@@ -33,12 +33,12 @@ fun ShopScreen(wallet: ShopWallet, onBuySeed: (String) -> Unit, onBuyFertilizer:
         item { ShopSection("Hạt giống", "Mỗi hạt giống sẽ trở thành một cây riêng.") }
         items(shopCatalog, key = { it.id }) { seed ->
             ShopItem(seed.emoji, seed.name, seed.description, seed.price,
-                wallet.inventory[seed.id] ?: 0, state.stats.coins >= seed.price) { onBuySeed(seed.id) }
+                wallet.inventory[seed.id] ?: 0, wallet.coins >= seed.price) { onBuySeed(seed.id) }
         }
         item { ShopSection("Chăm sóc cây", "Một chút trợ giúp khi cây cần lớn nhanh hơn.") }
         item {
             ShopItem("🧪", "Phân bón hữu cơ", "Giúp một cây tăng thêm 25 điểm phát triển.", 25,
-                state.garden.inventory["fertilizer"] ?: 0, state.stats.coins >= 25, onBuyFertilizer)
+                wallet.inventory["fertilizer"] ?: 0, wallet.coins >= 25, onBuyFertilizer)
         }
         item { Text("Cảm ơn bạn đã ghé tiệm. Chúc khu vườn có thêm nhiều mầm xanh! 🌱", color = Muted) }
     }
