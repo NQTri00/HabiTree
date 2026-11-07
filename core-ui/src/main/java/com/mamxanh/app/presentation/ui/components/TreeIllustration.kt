@@ -62,27 +62,28 @@ fun TreeIllustration(
             size = Size(w * 0.84f, h * 0.09f)
         )
 
-        // Pot body and rim.
-        val pot = Path().apply {
-            moveTo(w * 0.29f, groundY)
-            lineTo(w * 0.71f, groundY)
-            lineTo(w * 0.665f, h * 0.94f)
-            quadraticTo(w * 0.5f, h * 0.975f, w * 0.335f, h * 0.94f)
-            close()
-        }
-        drawPath(pot, Color(0xFFB9784D))
-        drawPath(pot, outline, style = Stroke(width = w * 0.012f))
-        drawRoundRect(
-            color = Color(0xFFD89A68),
-            topLeft = Offset(w * 0.275f, groundY - h * 0.018f),
-            size = Size(w * 0.45f, h * 0.045f),
-            cornerRadius = CornerRadius(w * 0.018f)
+        // Floating garden island: the tree grows directly from soil, not a flower pot.
+        drawOval(
+            color = Color(0xFFB7D5C1),
+            topLeft = Offset(w * 0.055f, h * 0.665f),
+            size = Size(w * 0.89f, h * 0.245f)
         )
         drawOval(
-            color = Color(0xFF6C4A35),
-            topLeft = Offset(w * 0.305f, groundY - h * 0.018f),
-            size = Size(w * 0.39f, h * 0.035f)
+            color = Color(0xFFC98C4E),
+            topLeft = Offset(w * 0.095f, h * 0.635f),
+            size = Size(w * 0.81f, h * 0.235f)
         )
+        drawOval(
+            color = Color(0xFFE4B66F),
+            topLeft = Offset(w * 0.17f, h * 0.66f),
+            size = Size(w * 0.58f, h * 0.075f)
+        )
+        // Tiny grass tufts around the island.
+        listOf(0.18f, 0.31f, 0.72f, 0.83f).forEachIndexed { index, x ->
+            val y = h * (0.72f + (index % 2) * 0.06f)
+            drawLine(Color(0xFF78AD59), Offset(w*x, y), Offset(w*(x-0.025f), y-h*.035f), w*.012f, cap = StrokeCap.Round)
+            drawLine(Color(0xFF78AD59), Offset(w*x, y), Offset(w*(x+0.025f), y-h*.04f), w*.012f, cap = StrokeCap.Round)
+        }
 
         // Seed stage: a seed resting just below the soil line.
         if (growth <= 0) {
