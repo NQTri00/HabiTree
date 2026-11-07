@@ -37,7 +37,11 @@ class MainActivity : ComponentActivity() {
                 StatsViewModel(OfflineStatisticsRepository(game))
             })
             val shopVm: ShopViewModel = viewModel(factory = vmFactory {
-                ShopViewModel(OfflineShopRepository(game))
+                ShopViewModel(OfflineShopRepository(game)) {
+                    gardenVm.refresh()
+                    homeVm.refresh()
+                    statsVm.refresh()
+                }
             })
             val tasksVm: TasksViewModel = viewModel(factory = vmFactory {
                 TasksViewModel(OfflineTaskRepository(game))

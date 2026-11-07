@@ -1,7 +1,9 @@
 package com.mamxanh.app.presentation.ui
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Forest
 import androidx.compose.material.icons.rounded.Home
@@ -52,7 +54,17 @@ fun MamXanhApp(
     val treeMessage by treeVm.message.collectAsState()
 
     var destination by remember { mutableStateOf(AppDestination.HOME) }
+    val backStack = remember { mutableStateListOf<AppDestination>() }
     var selectedTreeId by remember { mutableStateOf<Long?>(null) }
+    val canGoBack = selectedTreeId != null || backStack.isNotEmpty()
+    val navigateBack: () -> Unit = {
+        if (selectedTreeId != null) {
+            selectedTreeId = null
+        } else if (backStack.isNotEmpty()) {
+            destination = backStack.removeAt(backStack.lastIndex)
+        }
+    }
+    BackHandler(enabled = canGoBack) { navigateBack() }
     var adding by remember { mutableStateOf(false) }
     var message by remember { mutableStateOf("") }
 
@@ -74,9 +86,9 @@ fun MamXanhApp(
             topBar = {
                 TopAppBar(
                     navigationIcon = {
-                        if (selectedTree != null) {
-                            IconButton(onClick = { selectedTreeId = null }) {
-                                Icon(Icons.Rounded.Home, contentDescription = "Quay lại")
+                        if (canGoBack) {
+                            IconButton(onClick = navigateBack) {
+                                Icon(Icons.Rounded.ArrowBack, contentDescription = "Quay lại")
                             }
                         }
                     },
@@ -115,7 +127,12 @@ fun MamXanhApp(
                             }
                             NavigationBarItem(
                                 selected = destination == item,
-                                onClick = { destination = item },
+                                onClick = {
+                                    if (destination != item) {
+                                        backStack.add(destination)
+                                        destination = item
+                                    }
+                                },
                                 icon = { Icon(icon, contentDescription = item.label) },
                                 label = { Text(item.label) }
                             )
