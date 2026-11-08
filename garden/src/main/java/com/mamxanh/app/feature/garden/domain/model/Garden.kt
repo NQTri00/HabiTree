@@ -13,5 +13,6 @@ val seedCatalog = listOf(
     Species("lavender", "Oải hương tím", "🪻", "Hương thơm dịu dàng giúp thư giãn", 25),
     Species("pilea", "Cỏ đồng tiền", "🪙", "Lá tròn như đồng xu may mắn", 25),
     Species("cherry", "Đào hồng xuân", "🌸", "Cánh hoa đào rực rỡ ngày xuân", 25),
-    Species("pine", "Thông xanh biếc", "🌲", "Bền bỉ, xanh ngát quanh năm", 25)
+    Species("pine", "Thông xanh biếc", "🌲", "Bền bỉ, xanh ngát quanh năm", 25),
+    Species("mandarin", "Quýt nắng", "🍊", "Trái ngọt nhỏ mang nắng ấm đến khu vườn", 60)
 )

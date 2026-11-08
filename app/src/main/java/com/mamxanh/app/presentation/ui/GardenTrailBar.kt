@@ -1,56 +1,61 @@
 package com.mamxanh.app.presentation.ui
 
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.material3.Text
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.mamxanh.app.presentation.ui.components.GardenLandmark
+import com.mamxanh.app.presentation.ui.components.*
+import com.mamxanh.core.ui.R
 
 @Composable
 fun GardenTrailBar(selected: AppDestination, onNavigate: (AppDestination) -> Unit, modifier: Modifier = Modifier) {
-    Row(modifier.fillMaxWidth().navigationBarsPadding().padding(horizontal=8.dp,vertical=4.dp),
-        horizontalArrangement=Arrangement.spacedBy(4.dp)) {
+    Row(modifier.fillMaxWidth().background(Brush.verticalGradient(listOf(Color(0xFF276452), Color(0xFF164C3F))), RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
+        .border(1.dp, Color(0xFF638D6B), RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
+        .navigationBarsPadding().padding(horizontal = 5.dp, vertical = 2.dp).selectableGroup(),
+        horizontalArrangement = Arrangement.spacedBy(1.dp)) {
         AppDestination.entries.forEach { destination ->
-            Column(Modifier.weight(1f).clickable { onNavigate(destination) },
-                horizontalAlignment=Alignment.CenterHorizontally) {
-                GardenLandmark(destination.name,Modifier.fillMaxWidth().height(42.dp))
-                Box(Modifier.fillMaxWidth().height(28.dp),contentAlignment=Alignment.Center) {
-                    Canvas(Modifier.matchParentSize()) {
-                        val active=selected==destination
-                        drawRoundRect(if(active) Color(0xFF648653) else Color(0xFFAC8056),
-                            size=size,cornerRadius=androidx.compose.ui.geometry.CornerRadius(5.dp.toPx()))
-                        for(i in 0..2) {
-                            val y=size.height*(.15f+i*.31f)
-                            drawLine(Color(0xFFF4D6A1).copy(alpha=.22f),Offset(size.width*.07f,y),
-                                Offset(size.width*.93f,y+size.height*.06f),1.dp.toPx(),StrokeCap.Round)
-                        }
-                        drawCircle(Color(0xFF60472F),1.5.dp.toPx(),Offset(4.dp.toPx(),size.height*.5f))
-                        drawCircle(Color(0xFF60472F),1.5.dp.toPx(),Offset(size.width-4.dp.toPx(),size.height*.5f))
-                    }
-                    Text(when(destination) {
-                        AppDestination.HOME -> "Sân vườn"
-                        AppDestination.TASKS -> "Việc nhỏ"
-                        AppDestination.GARDEN -> "Vườn ươm"
-                        AppDestination.SHOP -> "Tiệm hạt"
+            val active = selected == destination
+            Box(Modifier.weight(1f).height(74.dp).selectable(active, role = Role.Tab, onClick = { onNavigate(destination) }),
+                contentAlignment = Alignment.Center) {
+                if (active) Box(Modifier.align(Alignment.BottomCenter).padding(bottom = 5.dp)
+                    .width(48.dp).height(4.dp).background(Color(0xFFFFDE75), RoundedCornerShape(50)))
+                Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(vertical = 6.dp)) {
+                    GardenArtwork(when (destination) {
+                        AppDestination.HOME -> GardenArt.SPROUT
+                        AppDestination.TASKS -> GardenArt.CHECKLIST
+                        AppDestination.GARDEN -> GardenArt.TREE
+                        AppDestination.SHOP -> GardenArt.SHOP
+                        AppDestination.STATS -> GardenArt.JOURNAL
+                    }, Modifier.size(30.dp))
+                    Text(when (destination) {
+                        AppDestination.HOME -> "Vườn"
+                        AppDestination.TASKS -> "Việc"
+                        AppDestination.GARDEN -> "Cây"
+                        AppDestination.SHOP -> "Tiệm"
                         AppDestination.STATS -> "Nhật ký"
-                    },color=Color(0xFFFFF0CD),fontSize=10.sp,fontWeight=FontWeight.Bold,maxLines=1)
+                    }, color = Color(0xFFFFEBC0), fontSize = 14.sp, lineHeight = 17.sp, fontWeight = FontWeight.Normal, maxLines = 1)
                 }
             }
         }
     }
 }
 
-@Preview(name="Garden trail navigation",widthDp=360,showBackground=true)
+@Preview(name = "Reference navigation", widthDp = 360)
 @Composable
-fun GardenTrailBarPreview() { MamXanhPreviewTheme { GardenTrailBar(AppDestination.HOME,{}) } }
+fun GardenTrailBarPreview() { MamXanhPreviewTheme { GardenTrailBar(AppDestination.HOME, {}) } }

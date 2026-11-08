@@ -1,0 +1,127 @@
+# Reference-driven UI implementation progress
+
+## Active scope — simple mics redesign, 2026-11-09
+
+The authoritative references are the three simple PNG sheets in mics. These supersede every ornate-design note below. The user permits extracted OR reference-inspired components, requires live text/controls and at least 90% visual similarity. Full-screen reference images are never used as backgrounds.
+
+Plan: docs/superpowers/plans/2026-11-09-simple-mics-redesign.md.
+Art provenance and exact generation prompts: docs/design-references/simple-mics-assets.md.
+
+Implemented: smooth cream panels, plain green buttons, honey wood signs/trays, simple bound journal, underline navigation, native simplified icons, separate reference-inspired cherry/pine/succulent/mandarin, watering can, seed and scenery resources. Home composition, Tasks rewards/progress, Shop labels/shelves, Nursery basket/labels, Tree Care and Stats chart were revised. MVI state and intents remain live.
+
+Evidence: clean build passed; subsequent :app:assembleDebug passed after shared API changes. Normal Compose Previews rendered for all six feature screens, three dialogs, navigation and potted specimens. Preview class-loader caching caused NoSuchMethodError despite matching compiled bytecode; explicit JVM file names isolate the new panel/specimen components. Feature previews must be refreshed before full-shell comparisons.
+
+Pending: latest seed/drop/nut and layout edits need final build, full-shell all-route refresh, large text and empty previews, then complete visual acceptance. No numeric 90% score is claimed yet.
+
+Previous goal turn: progress — authoritative source files were inspected, a new detailed plan written, simplified code/assets implemented and previews compared. No blocker status applies.
+
+---
+Historical ornate-design record follows; it is not the active target.
+
+## Objective and acceptance
+
+UPDATED USER REQUIREMENT: at least 90 percent visual similarity for each screen/dialog, with every illustrated component extracted from the supplied designs. This supersedes the earlier 80 percent target and any permission to use independently generated approximations as final art. Never use a complete UI screenshot as a background; text, fields and actions remain live Compose.
+
+Tree-growth animation is explicitly deferred. Use static trees from the source designs. Home, Tree care and portrait now share GardenPlantPortrait; progress and care/decorate actions remain live. The development growth inspector has been removed from the active screen.
+
+The user reattached all three sheets. Fifty-five source-guided extraction/inpainting assets are now integrated; provenance is recorded in source-derived-assets.md. These are generative edits of the supplied references, not verified lossless crops. Visual acceptance is still pending.
+
+## Current continuation — 2026-11-08
+
+- Build :app:assembleDebug passed after source artwork integration and Tasks/Stats changes.
+- Tasks now uses source choice chips, progress vine/sprouts, completion controls and reward envelope, preserving completion, bonus, filtering and deletion actions.
+- Stats uses source sprout chart caps and parchment section labels; values, dates and refresh remain live.
+- Added mandarin consistently to shop, garden and storage catalogs at 60 coins; existing catalog entries remain.
+- Corrected parchment nine-patch sizing and transparent margins. App content is constrained within Scaffold padding.
+- Rendered Home, Tasks, Stats and navigation previews. Compiling MamXanhAppContent directly refreshes the shell; ReferenceScreenPreview can show stale dependencies until that compilation.
+- Remaining visual issues: journal foliage overlaps some text; icon scale varies; Home labels/hero placement and remaining screen/dialog compositions need comparison. No 90 percent acceptance claim.
+- Ruling: verify with builds and Compose Previews, without adding automated tests, following the approved design verification scope.
+- Ruling: keep existing nonreference species available using neutral source seed packets; do not substitute a falsely labeled plant illustration.
+
+Historical notes below are superseded by this continuation.
+
+Mandatory visual review: compare every component, screen and dialog directly against the original source. Record each extracted asset's source sheet and region, preserve its material/shape/color, and check full app composition, typography, controls and spacing. No measured similarity score has been claimed. The full task is NOT complete.
+
+The sections below contain historical implementation notes; any growing-rig work or older acceptance wording is superseded by this requirement.
+
+## Current implemented state
+
+- Shared serif GardenTypography is applied to runtime and preview themes.
+- GardenBotanicalFrame draws independent nine-patch parchment/vine material behind live content. It supports compact contentPadding/cornerSize.
+- GardenTrailBar uses separate painted teal tiles, live labels, selection semantics and gold selection outline. Icons are still old vector landmarks; they need painted replacements.
+- GardenForestScene composes an open-center tree arch, separate stream sprite, gradient atmospheric light and distant forest layer. Old barn/windmill scenery was replaced in FarmPastoralBackdrop and all GardenSceneBackdrop variants.
+- Home uses separate interactive painted treehouse and mushroom seed-stall sprites, central layered tree, live name/progress plaque and care controls. Navigation bar is now shown on Home too. Header and action icons still require fidelity work.
+- Tasks now uses ONE journal page with compact rows, filters, completion controls, overflow delete, due-date metadata, daily reward and Add Task. Journal control art and item icons remain simplified.
+- Stats now uses ONE journal page with large totals, sprouting green chart columns, refresh, weekly metrics and italic footer.
+- Tree rig now has independent transparent soil, seed, bare bark, green foliage and pink blossom resources, five independently hinged canopy clusters, smooth overlapping seed/sprout/wood phases, breeze movement and preserved decoration controls. Small painted accessory sprites and species-specific pine/succulent rigs remain to implement. Assets were generated/reconstructed, not literal frame crops from the GIF.
+- Tree screen frames compacted; growth inspector remains available through an expandable control.
+- App shell's generic white top bar was replaced with a compact dark forest bar; a proper wooden title/back plaque remains pending.
+
+## Saved artwork
+
+core-ui/src/main/res/drawable-nodpi:
+- botanical_parchment_panel.png
+- garden_navigation_tile.png
+- forest_arch.png
+- forest_stream.png
+- forest_treehouse.png
+- forest_seed_stall.png
+- forest_island.png (used beneath nursery trees)
+- garden_journal_page.png (original retained)
+- garden_journal_page_clean.png (active journal)
+- nursery_pine.png, nursery_succulent.png, nursery_seed_basket.png
+- nursery_painted_seed.png, nursery_painted_trunk.png, nursery_painted_blossoms.png, nursery_painted_leaves.png (shared copies of rig art)
+- nursery_shelf.png, nursery_shop_frame.png
+- garden_wood_sign.png, garden_leaf_button.png, garden_fertilizer_sack.png
+
+tree/src/main/res/drawable-nodpi:
+- tree_painted_soil.png
+- tree_painted_seed.png
+- tree_painted_trunk.png
+- tree_painted_leaves.png
+- tree_painted_blossoms.png
+
+All generated through built-in imagegen. Project consumers use workspace copies; originals are retained under C:/Users/AP/.codex/generated_images/01a1b68d-8de0-7cb2-a083-432f68eaa9de.
+
+## Active refinement
+
+Clean journal asset integrated; Stats rendered without upper foliage collisions. Increased shared top padding from 32dp to 52dp after observing the title against the curled paper edge. Latest Stats render confirms the heading sits inside the page.
+
+Nursery: replaced potted-card grid with staggered mossy islands, separate painted cherry/pine/succulent artwork, compact live name/growth/water plaques and a seed basket. All trees and seed species remain scroll-reachable. Planting dialog uses parchment, optional name, stock count and painted actions. It still needs a sprouting seed/soil composition and richer wood detail.
+
+Shop: replaced pink tiles and tiny potted cards with separate mushroom shop frame, wooden shelves, plant art, fertilizer sack and live price labels. Four featured seeds and fertilizer come first; all other catalog seeds remain below. Selection opens a parchment detail popup; purchases still dispatch existing intents. Removed inaccurate local success copy claiming purchased seeds were planted. Existing ShopEffect feedback remains the source of purchase feedback.
+
+Add Task: replaced white boxed sections with compact parchment form rows, three kind choices, category/repeat dropdowns, optional TODO due date and numeric reward. Preserved all six save values and blank-title disabling. Added painted action buttons; leaf heading has no fake click action.
+
+Shared GardenPaintedControls now supplies GardenPaintedButton, GardenLeafPlaque and GardenWoodSign. Shared PaintedGardenPlant supplies nursery art without coupling garden/shop to tree feature state. Pine/succulent have dedicated sprites; other non-cherry species currently fall back to generic foliage and MUST receive species-correct artwork.
+
+Ruling: retain existing domain catalog and prices rather than inventing the reference's mandarin species or changing economy values. Preserve all ten existing species. Cost: the fourth featured shop slot is ficus until the user changes the catalog.
+
+Ruling: continue in the current authorized feature branch/workspace, preserving unsaved IDE content. Use preview/build verification and do not add automated tests, per approved global constraints.
+
+## Verification evidence
+
+- Latest :app:assembleDebug passed after the nursery/shop/dialog/control changes. A duplicate plaque function introduced by an overbroad replacement caused one intermediate build failure; removed exact duplicate and rebuilt successfully.
+- New previews rendered: nursery normal/large text/empty; planting parchment; shop normal/large text; seed detail; Add Task DAILY normal/large text and TODO; Stats with cleaned journal and 52dp top padding. Title/label improvements visually confirmed.
+- Compose Previews rendered: Tasks, Stats, Home, Tree screen, independent seed/mature/72-growth rig, navigation and parchment.
+- At 72/120 the deterministic rig preview shows the painted pink flowering tree with its root attached to the soil.
+- Preview renders sometimes return previous/current images together; compare the current result, and render the directly changed component to avoid stale dependent previews.
+- No automated tests were added/run. Visual acceptance uses Compose Previews, as previously specified.
+
+## Remaining high-priority scope
+
+1. Replace old navigation landmark icons and Home/Tree care illustrations with painted icons (water can, pump, book, glass, boots). Fertilizer sack, leaf buttons and wood title artwork exist now; apply them consistently.
+2. Species-specific art for monstera, ficus, snake, cactus, aloe, lavender and pilea. Generic-tree fallback is visibly wrong for these; replace it. Species-specific interactive rigs and decoration accessories remain pending.
+3. Refine Tree scene scale and care shelf/decoration tray to reference. Home still needs wooden header and painted care controls.
+4. Refine nursery proportions against reference 04 in the actual app shell: compact labels, first-viewport basket visibility, richer distant scenery. Current large-font layout scrolls as intended.
+5. Refine shop interior: plain brown backing is too flat; canopy currently extends behind first product row. Tree products need burlap root wraps like reference 03. Preserve all catalog access.
+6. Refine dialogs to reference 07/08/09: richer sprout icons, planted seed/soil, root trim, close affordance on seed popup, reference-like field/button borders.
+7. Render all six screens plus three dialogs IN the app shell at phone size, larger text and empty/populated states. Confirm actions and Back/navigation preserved; compile. Full-shell visual acceptance is not yet established.
+8. Explicitly compare each to its source reference; no screen has been formally accepted at 80 percent yet. Do not mark complete merely because compilation passes.
+
+## Important implementation details
+
+- User source images/GIF are visible as chat attachments, not project files. Do not ask for them again solely because studio_find_files returns none.
+- Files are edited ONLY via Android Studio write/replace tools. Binary generated assets are copied with Studio shell Copy-Item to new resource paths.
+- Shared component resources namespace is com.mamxanh.core.ui.R; tree rig resources namespace com.mamxanh.feature.tree.R.
+- Changes are uncommitted; do not push automatically based on earlier completed commit requests.

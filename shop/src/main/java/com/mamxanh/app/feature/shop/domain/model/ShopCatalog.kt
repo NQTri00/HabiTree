@@ -10,5 +10,6 @@ val shopCatalog = listOf(
     ShopSeed("lavender", "Oải hương tím", "🪻", "Hương thơm dịu dàng giúp thư giãn", 25),
     ShopSeed("pilea", "Cỏ đồng tiền", "🪙", "Lá tròn như đồng xu may mắn", 25),
     ShopSeed("cherry", "Đào hồng xuân", "🌸", "Cánh hoa đào rực rỡ ngày xuân", 25),
-    ShopSeed("pine", "Thông xanh biếc", "🌲", "Bền bỉ, xanh ngát quanh năm", 25)
+    ShopSeed("pine", "Thông xanh biếc", "🌲", "Bền bỉ, xanh ngát quanh năm", 25),
+    ShopSeed("mandarin", "Quýt nắng", "🍊", "Trái ngọt nhỏ mang nắng ấm đến khu vườn", 60)
 )

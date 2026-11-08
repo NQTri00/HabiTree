@@ -1,32 +1,37 @@
 package com.mamxanh.app.feature.home.presentation
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
+import com.mamxanh.app.presentation.ui.components.GardenRichText as Text
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.semantics.Role
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.mamxanh.app.feature.home.domain.model.HomeDashboard
 import com.mamxanh.app.feature.home.domain.model.HomeTree
 import com.mamxanh.app.feature.home.presentation.components.*
-import com.mamxanh.app.feature.tree.presentation.components.KawaiiPlantIllustration
 import com.mamxanh.app.presentation.ui.*
 import com.mamxanh.app.presentation.ui.components.*
-import kotlinx.coroutines.launch
+import com.mamxanh.core.ui.R
 import kotlinx.coroutines.Job
-import androidx.activity.compose.BackHandler
+import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(
@@ -49,10 +54,7 @@ fun HomeScreen(
     var travelJob by remember { mutableStateOf<Job?>(null) }
     BackHandler(enabled = entering && !handingOff) {
         travelJob?.cancel()
-        travelJob = scope.launch {
-            camera.animateTo(0f, tween(280))
-            entering = false
-        }
+        travelJob = scope.launch { camera.animateTo(0f, tween(280)); entering = false }
     }
     fun enter(place: String) {
         if (entering) return
@@ -61,16 +63,15 @@ fun HomeScreen(
         travelJob = scope.launch {
             camera.animateTo(1f, tween(620))
             handingOff = true
-            // Keep the close view until AnimatedContent disposes this route.
             onOpenPlace(place)
         }
     }
     val approach = if (previewApproach > 0f) previewApproach else camera.value
-    val origin = when(selectedPlace) {
-        "SHOP" -> TransformOrigin(.80f,.36f)
-        "TASKS" -> TransformOrigin(.20f,.36f)
-        "GARDEN" -> TransformOrigin(.20f,.74f)
-        else -> TransformOrigin(.80f,.74f)
+    val origin = when (selectedPlace) {
+        "SHOP" -> TransformOrigin(.80f, .42f)
+        "TASKS" -> TransformOrigin(.20f, .42f)
+        "GARDEN" -> TransformOrigin(.20f, .74f)
+        else -> TransformOrigin(.80f, .74f)
     }
     Box(modifier.fillMaxSize()) {
         Box(Modifier.fillMaxSize().graphicsLayer {
@@ -81,105 +82,105 @@ fun HomeScreen(
             translationY = (.5f - origin.pivotFractionY) * size.height * approach
         }) {
             FarmPastoralBackdrop(Modifier.fillMaxSize())
-            Canvas(Modifier.fillMaxSize()) {
-                val path = Path().apply {
-                    moveTo(size.width*.5f,size.height)
-                    cubicTo(size.width*.65f,size.height*.72f,size.width*.27f,size.height*.57f,size.width*.5f,size.height*.49f)
-                }
-                drawPath(path,Color(0xFFE8CDA4).copy(alpha=.8f),style=Stroke(size.width*.13f))
-                val cross = Path().apply {
-                    moveTo(size.width*.19f,size.height*.39f)
-                    quadraticTo(size.width*.5f,size.height*.65f,size.width*.81f,size.height*.39f)
-                }
-                drawPath(cross,Color(0xFFE8CDA4).copy(alpha=.8f),style=Stroke(size.width*.065f))
-            }
             BoxWithConstraints(Modifier.fillMaxSize()) {
-                GardenPlace("TASKS","Bảng việc", { enter("TASKS") },
-                    Modifier.offset(maxWidth*.03f,maxHeight*.23f).width(maxWidth*.32f).height(maxHeight*.23f))
-                GardenPlace("SHOP","Tiệm hạt", { enter("SHOP") },
-                    Modifier.offset(maxWidth*.65f,maxHeight*.23f).width(maxWidth*.32f).height(maxHeight*.23f))
-                GardenPlace("GARDEN","Vườn ươm", { enter("GARDEN") },
-                    Modifier.offset(maxWidth*.03f,maxHeight*.65f).width(maxWidth*.30f).height(maxHeight*.21f))
-                GardenPlace("STATS","Nhật ký", { enter("STATS") },
-                    Modifier.offset(maxWidth*.67f,maxHeight*.65f).width(maxWidth*.30f).height(maxHeight*.21f))
-                Column(
-                    Modifier.offset(maxWidth*.24f,maxHeight*.35f).width(maxWidth*.52f).height(maxHeight*.32f),
-                    horizontalAlignment=Alignment.CenterHorizontally
+                GardenPlace("TASKS", "Việc nhỏ", { enter("TASKS") },
+                    Modifier.offset(maxWidth * .04f, maxHeight * .70f).width(maxWidth * .46f).height(maxHeight * .12f))
+                GardenPlace("SHOP", "Tiệm hạt", { enter("SHOP") },
+                    Modifier.offset(maxWidth * .60f, maxHeight * .66f).width(maxWidth * .36f).height(maxHeight * .16f))
+                Box(
+                    Modifier.offset(maxWidth * .06f, maxHeight * .25f).width(maxWidth * .88f).height(maxHeight * .40f),
+                    contentAlignment = Alignment.BottomCenter
                 ) {
-                    if(tree!=null) {
-                        KawaiiPlantIllustration(tree.growth,tree.speciesId,tree.decoration,
-                            sharedTreeModifier.weight(1f).fillMaxWidth().clickable(enabled=!entering) { onIntent(HomeIntent.OpenTree(tree.id)) })
-                        Text(tree.name,color=Deep,fontWeight=FontWeight.Bold,style=MaterialTheme.typography.labelMedium)
+                    if (tree != null) {
+                        GardenPlantPortrait(tree.speciesId, tree.decoration,
+                            sharedTreeModifier.fillMaxSize().clickable(enabled = !entering) { onIntent(HomeIntent.OpenTree(tree.id)) })
                     } else {
-                        GardenLandmark("GARDEN",Modifier.weight(1f).fillMaxWidth().clickable { enter("GARDEN") })
-                        Text("Gieo mầm đầu tiên",color=Deep,fontWeight=FontWeight.Bold)
+                        GardenPlace("GARDEN", "Gieo mầm đầu tiên", { enter("GARDEN") }, Modifier.fillMaxSize())
                     }
                 }
             }
         }
-        Column(Modifier.align(Alignment.TopCenter).padding(12.dp).graphicsLayer { alpha=1f-approach }) {
-            HomeTopBar(
-                nutrientPoints=dashboard.trees.sumOf { it.growth },
-                completedTasks=dashboard.completedTasks,totalTasks=dashboard.totalTasks,
-                coins=dashboard.coins,onTasksClick={enter("TASKS")}
-            )
-            Text("Khu vườn nhỏ của bạn",color=Deep,fontWeight=FontWeight.ExtraBold,
-                modifier=Modifier.align(Alignment.CenterHorizontally).padding(top=8.dp))
-            Text("Chạm một góc vườn để ghé thăm",color=Green,style=MaterialTheme.typography.labelSmall,
-                modifier=Modifier.align(Alignment.CenterHorizontally))
+        Column(Modifier.align(Alignment.TopCenter).fillMaxWidth().padding(horizontal = 16.dp, vertical = 10.dp).graphicsLayer { alpha = 1f - approach },
+            horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            GardenWoodSign("Mầm Xanh", Modifier.width(220.dp)
+                .clickable(enabled = !entering, role = Role.Button, onClickLabel = "Người bạn khu vườn") { companion = true }, fontSize = 28.sp)
+            GardenBotanicalFrame(contentPadding = PaddingValues(horizontal = 14.dp, vertical = 4.dp), cornerSize = 20.dp) {
+                Text("🪙 ${dashboard.coins} xu", color = Deep, fontSize = 17.sp, lineHeight = 19.sp, fontWeight = FontWeight.Bold)
+            }
+            GardenBotanicalFrame(contentPadding = PaddingValues(horizontal = 18.dp, vertical = 6.dp), cornerSize = 24.dp) {
+                Text("🌿 Khu vườn của bạn 🌿", color = Deep, fontSize = 21.sp, lineHeight = 24.sp, fontWeight = FontWeight.Bold)
+            }
         }
-        GardenBotanicalFrame(Modifier.align(Alignment.BottomCenter).padding(12.dp).graphicsLayer { alpha=1f-approach }) {
-            Column(Modifier.fillMaxWidth()) {
-                Text(
-                    "Nước ${dashboard.wateringCanMl} / 1000 ml · Phân bón $fertilizerCount",
-                    color = Green,
-                    style = MaterialTheme.typography.labelSmall,
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                )
-            Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceEvenly,verticalAlignment=Alignment.CenterVertically) {
-                TextButton(modifier=Modifier.weight(1f),enabled=!entering,onClick={onIntent(HomeIntent.RefillWater)}) { Text("Bơm",maxLines=1) }
-                TextButton(modifier=Modifier.weight(1f),onClick={tree?.let { onIntent(HomeIntent.WaterTree(it.id)) }},
-                    enabled=!entering && tree!=null && !tree.wateredToday && dashboard.wateringCanMl>=50) {
-                    Text("Tưới",maxLines=1)
+        if (tree != null) BoxWithConstraints(Modifier.fillMaxSize().graphicsLayer { alpha = 1f - approach }) {
+            GardenBotanicalFrame(Modifier.align(Alignment.TopCenter).offset(y = maxHeight * .57f).width(190.dp),
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 7.dp), cornerSize = 24.dp) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(3.dp)) {
+                    Text(tree.name, color = Deep, fontWeight = FontWeight.Bold, fontSize = 16.sp, lineHeight = 18.sp,
+                        maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
+                    LinearProgressIndicator(progress = { (tree.growth / 120f).coerceIn(0f,1f) },
+                        Modifier.fillMaxWidth().height(6.dp), color = Green, trackColor = Color(0xFFD6B78D), drawStopIndicator = {})
+                    Text("${tree.growth} / 120", color = Deep, fontWeight = FontWeight.Bold, fontSize = 15.sp, lineHeight = 17.sp)
                 }
-                TextButton(modifier=Modifier.weight(1f),onClick={tree?.let { onIntent(HomeIntent.FertilizeTree(it.id)) }},
-                    enabled=!entering && tree!=null && fertilizerCount>0) { Text("Bón",maxLines=1) }
-                TextButton(modifier=Modifier.weight(1f),enabled=!entering,onClick={companion=true}) { Text("Bạn",maxLines=1) }
-            }
             }
         }
-        if(companion) MascotCompanionDialog(onDismiss={companion=false})
+        Column(
+            Modifier.align(Alignment.BottomCenter).fillMaxWidth().padding(horizontal = 12.dp, vertical = 8.dp).graphicsLayer { alpha = 1f - approach },
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            GardenWoodenTray(Modifier.fillMaxWidth()) {
+                Row(horizontalArrangement = Arrangement.spacedBy(5.dp), verticalAlignment = Alignment.Bottom) {
+                    GardenCareAction(GardenArt.WATERING_CAN, if (tree?.wateredToday == true) "Đã tưới" else "Tưới",
+                        { tree?.let { onIntent(HomeIntent.WaterTree(it.id)) } }, Modifier.weight(1f),
+                        enabled = !entering && tree != null && !tree.wateredToday && dashboard.wateringCanMl >= 50)
+                    GardenCareAction(GardenArt.FERTILIZER, "Bón",
+                        { tree?.let { onIntent(HomeIntent.FertilizeTree(it.id)) } }, Modifier.weight(1f),
+                        enabled = !entering && tree != null && fertilizerCount > 0)
+                    GardenCareAction(GardenArt.PUMP, "Bơm", { onIntent(HomeIntent.RefillWater) }, Modifier.weight(1f), enabled = !entering)
+                    GardenBotanicalFrame(Modifier.weight(1.05f), contentPadding = PaddingValues(horizontal = 4.dp, vertical = 7.dp), cornerSize = 16.dp) {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            GardenArtwork(GardenArt.GLASS, Modifier.size(24.dp))
+                            Text("Nước\n${dashboard.wateringCanMl} ml", Modifier.fillMaxWidth(), color = Deep,
+                                fontSize = 12.sp, lineHeight = 14.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
+                        }
+                    }
+                }
+            }
+        }
+        if (companion) MascotCompanionDialog(onDismiss = { companion = false })
     }
 }
 
 @Composable
 private fun GardenPlace(kind: String, label: String, onClick: () -> Unit, modifier: Modifier = Modifier) {
-    Column(modifier.clickable(onClick=onClick),horizontalAlignment=Alignment.CenterHorizontally) {
-        GardenLandmark(kind,Modifier.weight(1f).fillMaxWidth())
-        Surface(color=Color(0xFFFFEAC5),shape=androidx.compose.foundation.shape.RoundedCornerShape(5.dp),shadowElevation=2.dp) {
-            Text(label,color=Color(0xFF64452E),fontWeight=FontWeight.Bold,
-                style=MaterialTheme.typography.labelMedium,modifier=Modifier.padding(horizontal=12.dp,vertical=4.dp))
+    Column(modifier.clickable(role = Role.Button, onClickLabel = label, onClick = onClick),
+        horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Bottom) {
+        if (kind == "SHOP") GardenArtwork(GardenArt.SHOP, Modifier.size(64.dp))
+        GardenWoodenTray {
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(3.dp)) {
+                if (kind != "SHOP") GardenArtwork(if (kind == "TASKS") GardenArt.CHECKLIST else GardenArt.SPROUT, Modifier.size(34.dp))
+                Text("$label ›", color = Deep, fontWeight = FontWeight.Bold, fontSize = 16.sp, lineHeight = 19.sp)
+            }
         }
     }
 }
 
 private fun previewHomeState() = HomeUiState(HomeDashboard(
-    trees=listOf(HomeTree(1L,"cherry","Đào hồng xuân",90,"FLOWERS",false)),
-    completedTasks=2,totalTasks=4,coins=120,wateringCanMl=500
-),false)
+    trees = listOf(HomeTree(1L, "cherry", "Đào hồng xuân", 90, "FLOWERS", false)),
+    completedTasks = 2, totalTasks = 4, coins = 120, wateringCanMl = 500
+), false)
 
-@Preview(name="Garden hub",widthDp=360,heightDp=800,showBackground=true)
+@Preview(name = "Painted forest garden", widthDp = 360, heightDp = 800, showBackground = true)
 @Composable
-fun HomeScreenPreview() { MamXanhPreviewTheme { HomeScreen(previewHomeState(),{},2) } }
+fun HomeScreenPreview() { MamXanhPreviewTheme { HomeScreen(previewHomeState(), {}, 2) } }
 
-@Preview(name="Garden hub · empty",widthDp=360,heightDp=800,showBackground=true)
+@Preview(name = "Forest garden · empty", widthDp = 360, heightDp = 800, showBackground = true)
 @Composable
-fun HomeScreenEmptyPreview() { MamXanhPreviewTheme { HomeScreen(HomeUiState(isLoading=false),{}) } }
+fun HomeScreenEmptyPreview() { MamXanhPreviewTheme { HomeScreen(HomeUiState(isLoading = false), {}) } }
 
-@Preview(name="Camera approaching seed stall",widthDp=360,heightDp=800,showBackground=true)
+@Preview(name = "Camera approaching seed stall", widthDp = 360, heightDp = 800, showBackground = true)
 @Composable
-fun HomeShopApproachPreview() { MamXanhPreviewTheme { HomeScreen(previewHomeState(),{},2,previewApproach=.65f) } }
+fun HomeShopApproachPreview() { MamXanhPreviewTheme { HomeScreen(previewHomeState(), {}, 2, previewApproach = .65f) } }
 
-@Preview(name="Painted stall destination",widthDp=180,heightDp=200,showBackground=true)
+@Preview(name = "Painted stall destination", widthDp = 180, heightDp = 200, showBackground = true)
 @Composable
-fun GardenPlacePreview() { MamXanhPreviewTheme { GardenPlace("SHOP","Tiệm hạt",{},Modifier.fillMaxSize()) } }
+fun GardenPlacePreview() { MamXanhPreviewTheme { GardenPlace("SHOP", "Tiệm hạt", {}, Modifier.fillMaxSize()) } }

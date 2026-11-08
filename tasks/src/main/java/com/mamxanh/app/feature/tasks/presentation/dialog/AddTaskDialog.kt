@@ -1,75 +1,55 @@
 package com.mamxanh.app.feature.tasks.presentation.dialog
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
+import com.mamxanh.app.presentation.ui.components.GardenRichText as Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.mamxanh.app.presentation.ui.*
+import com.mamxanh.app.presentation.ui.components.*
 
 @Composable
-fun AddTaskDialog(
-    onDismiss: () -> Unit,
-    onSave: (String, String, String, Int, String, String) -> Unit
-) {
+fun AddTaskDialog(onDismiss: () -> Unit, onSave: (String, String, String, Int, String, String) -> Unit) {
     val form = remember { AddTaskFormState() }
-    Dialog(
-        onDismissRequest = onDismiss,
-        properties = DialogProperties(usePlatformDefaultWidth = false)
-    ) {
-        Surface(
-            modifier = Modifier.fillMaxWidth(0.94f).widthIn(max = 480.dp).heightIn(max = 700.dp),
-            shape = RoundedCornerShape(30.dp),
-            color = Cream,
-            shadowElevation = 18.dp,
-            border = androidx.compose.foundation.BorderStroke(1.dp, Color.White)
-        ) {
-            Column {
-                AddTaskDialogHeader()
-                Column(
-                    modifier = Modifier.weight(1f, fill = false).verticalScroll(rememberScrollState())
-                        .padding(horizontal = 20.dp, vertical = 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(14.dp)
-                ) {
-                    AddTaskDialogFields(form)
-                }
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(start = 18.dp, end = 18.dp, bottom = 18.dp),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    TextButton(onClick = onDismiss, modifier = Modifier.weight(1f)) {
-                        Text("Để sau", color = Green, fontWeight = FontWeight.Bold)
-                    }
-                    Button(
-                        onClick = {
-                            onSave(
-                                form.title.trim(),
-                                form.kind,
-                                form.category,
-                                (form.reward.toIntOrNull() ?: 10).coerceIn(1, 100),
-                                form.frequency,
-                                form.due.trim()
-                            )
-                        },
-                        enabled = form.title.isNotBlank(),
-                        modifier = Modifier.weight(1.4f),
-                        shape = RoundedCornerShape(18.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = Green)
-                    ) {
-                        Text("🌱  Gieo nhiệm vụ", fontWeight = FontWeight.Bold)
-                    }
-                }
+    Dialog(onDismissRequest = onDismiss, properties = DialogProperties(usePlatformDefaultWidth = false)) {
+        AddTaskParchment(form, onDismiss, onSave, Modifier.fillMaxWidth(.94f).widthIn(max = 480.dp).heightIn(max = 700.dp))
+    }
+}
+
+@Composable
+private fun AddTaskParchment(
+    form: AddTaskFormState, onDismiss: () -> Unit,
+    onSave: (String, String, String, Int, String, String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    GardenBotanicalFrame(modifier, contentPadding = PaddingValues(horizontal = 24.dp, vertical = 24.dp), cornerSize = 40.dp, skin = GardenPanelSkin.TASK_DIALOG) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            AddTaskDialogHeader()
+            Column(Modifier.weight(1f, fill = false).verticalScroll(rememberScrollState())) { AddTaskDialogFields(form) }
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                GardenPaintedButton("Để sau", onDismiss, Modifier.weight(.8f), primary = false)
+                GardenPaintedButton("Gieo nhiệm vụ", {
+                    onSave(form.title.trim(), form.kind, form.category, (form.reward.toIntOrNull() ?: 10).coerceIn(1, 100), form.frequency, form.due.trim())
+                }, Modifier.weight(1.3f), enabled = form.title.isNotBlank())
             }
         }
     }
@@ -77,165 +57,90 @@ fun AddTaskDialog(
 
 @Composable
 private fun AddTaskDialogHeader() {
-    Surface(color = Green, shape = RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp)) {
-        Box {
-            Surface(
-                color = Color.White.copy(alpha = 0.08f),
-                shape = CircleShape,
-                modifier = Modifier.size(130.dp).align(Alignment.TopEnd).offset(x = 24.dp, y = (-44).dp)
-            ) {}
-            Row(
-                Modifier.fillMaxWidth().padding(horizontal = 22.dp, vertical = 18.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(14.dp)
-            ) {
-                Surface(color = Color.White.copy(alpha = 0.16f), shape = RoundedCornerShape(20.dp), modifier = Modifier.size(58.dp)) {
-                    Box(contentAlignment = Alignment.Center) { Text("🌱", style = MaterialTheme.typography.headlineMedium) }
-                }
-                Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {
-                    Text("Gieo một nhiệm vụ", color = Color.White, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.ExtraBold)
-                    Text("Bắt đầu từ một việc nhỏ hôm nay.", color = Color.White.copy(alpha = 0.86f), style = MaterialTheme.typography.bodySmall)
-                }
-            }
-        }
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        GardenLeafPlaque("Gieo một việc nhỏ", Modifier.fillMaxWidth())
+        GardenArtwork(GardenArt.SPROUT, Modifier.size(70.dp, 36.dp).padding(top = 3.dp))
     }
 }
 
 @Composable
 private fun AddTaskDialogFields(form: AddTaskFormState) {
-    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        OutlinedTextField(
-            value = form.title,
-            onValueChange = { form.title = it },
-            label = { Text("Tên nhiệm vụ") },
-            placeholder = { Text("Ví dụ: Đọc 10 trang sách") },
-            singleLine = true,
-            shape = RoundedCornerShape(18.dp),
-            colors = taskFieldColors(),
-            modifier = Modifier.fillMaxWidth()
-        )
-        TaskFormSection(title = "Chọn nhịp điệu", emoji = "🗓️") {
-            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                listOf("HABIT" to "Thói quen", "DAILY" to "Hằng ngày", "TODO" to "Một lần")
-                    .chunked(2).forEach { row ->
-                        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                            row.forEach { (value, label) ->
-                                TaskChoiceChip(
-                                    label = label,
-                                    selected = form.kind == value,
-                                    modifier = Modifier.weight(1f),
-                                    onClick = {
-                                        form.kind = value
-                                        form.frequency = if (value == "TODO") "ONCE" else "EVERY_DAY"
-                                    }
-                                )
-                            }
-                            if (row.size == 1) Spacer(Modifier.weight(1f))
-                        }
+    var frequencyMenu by remember { mutableStateOf(false) }
+    val frequencies = listOf("EVERY_DAY" to "Mỗi ngày", "WEEKDAYS" to "Ngày thường", "WEEKENDS" to "Cuối tuần")
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        TaskFormSection("Tên việc", "📖") {
+            GardenTextField(form.title, { form.title = it }, "Tên việc", Modifier.fillMaxWidth(), placeholder = "Đọc 10 trang sách")
+        }
+        Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {
+            Text("🌱  Loại việc", color = Deep, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                listOf("HABIT" to "Thói quen", "DAILY" to "Hằng ngày", "TODO" to "Một lần").forEach { (value, label) ->
+                    TaskChoiceChip(label, form.kind == value, Modifier.weight(1f)) {
+                        form.kind = value
+                        form.frequency = if (value == "TODO") "ONCE" else "EVERY_DAY"
                     }
+                }
             }
         }
-        TaskFormSection(title = "Chọn khu vườn", emoji = "🪴") {
+        TaskFormSection("Nhóm", "📚") {
             Box {
-                OutlinedButton(
-                    onClick = { form.categoryMenu = true },
-                    shape = RoundedCornerShape(16.dp),
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = Deep)
-                ) { Text("${form.category}     ▾", fontWeight = FontWeight.SemiBold) }
+                GardenFieldButton(form.category, { form.categoryMenu = true }, Modifier.fillMaxWidth())
                 DropdownMenu(expanded = form.categoryMenu, onDismissRequest = { form.categoryMenu = false }) {
-                    listOf("Học tập", "Sức khỏe", "Nếp sống", "Công việc", "Phát triển bản thân", "Khác").forEach {
-                        DropdownMenuItem(text = { Text(it) }, onClick = { form.category = it; form.categoryMenu = false })
+                    listOf("Học tập", "Sức khỏe", "Nếp sống", "Công việc", "Phát triển bản thân", "Khác").forEach { category ->
+                        DropdownMenuItem(text = { Text(category) }, onClick = { form.category = category; form.categoryMenu = false })
                     }
                 }
             }
         }
         if (form.kind != "TODO") {
-            TaskFormSection(title = "Lặp lại", emoji = "☀️") {
-                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                    listOf("EVERY_DAY" to "Mỗi ngày", "WEEKDAYS" to "Ngày thường", "WEEKENDS" to "Cuối tuần")
-                        .chunked(2).forEach { row ->
-                            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                                row.forEach { (value, label) ->
-                                    TaskChoiceChip(label, form.frequency == value, Modifier.weight(1f)) {
-                                        form.frequency = value
-                                    }
-                                }
-                                if (row.size == 1) Spacer(Modifier.weight(1f))
-                            }
+            TaskFormSection("Lặp lại", "🗓") {
+                Box {
+                    GardenFieldButton(frequencies.firstOrNull { it.first == form.frequency }?.second ?: "Mỗi ngày", { frequencyMenu = true }, Modifier.fillMaxWidth())
+                    DropdownMenu(expanded = frequencyMenu, onDismissRequest = { frequencyMenu = false }) {
+                        frequencies.forEach { (value, label) ->
+                            DropdownMenuItem(text = { Text(label) }, onClick = { form.frequency = value; frequencyMenu = false })
                         }
+                    }
                 }
             }
         } else {
-            OutlinedTextField(
-                value = form.due,
-                onValueChange = { form.due = it },
-                label = { Text("Hạn chót (không bắt buộc)") },
-                placeholder = { Text("YYYY-MM-DD") },
-                singleLine = true,
-                shape = RoundedCornerShape(18.dp),
-                colors = taskFieldColors(),
-                modifier = Modifier.fillMaxWidth()
-            )
+            TaskFormSection("Hạn chót", "🗓") {
+                GardenTextField(form.due, { form.due = it }, "Hạn chót không bắt buộc", Modifier.fillMaxWidth(), placeholder = "YYYY-MM-DD")
+            }
+            Text("Hạn chót không bắt buộc.", color = Deep, fontSize = 12.sp, fontStyle = FontStyle.Italic)
         }
-        TaskFormSection(title = "Phần thưởng", emoji = "🪙") {
-            OutlinedTextField(
-                value = form.reward,
-                onValueChange = { form.reward = it.filter(Char::isDigit).take(3) },
-                label = { Text("Xu (1–100)") },
-                singleLine = true,
-                shape = RoundedCornerShape(18.dp),
-                colors = taskFieldColors(),
-                modifier = Modifier.fillMaxWidth()
-            )
+        TaskFormSection("Thưởng", "🪙") {
+            GardenTextField(form.reward, { form.reward = it.filter(Char::isDigit).take(3) }, "Phần thưởng từ 1 đến 100 xu",
+                Modifier.fillMaxWidth(), trailingText = "xu", keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number))
         }
+        Text("Từ 1 đến 100 xu", color = Deep, fontSize = 13.sp, fontStyle = FontStyle.Italic, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
     }
 }
 
 @Composable
 private fun TaskFormSection(title: String, emoji: String, content: @Composable ColumnScope.() -> Unit) {
-    Surface(
-        color = Color.White.copy(alpha = 0.82f),
-        shape = RoundedCornerShape(20.dp),
-        border = androidx.compose.foundation.BorderStroke(1.dp, Green.copy(alpha = 0.10f))
-    ) {
-        Column(Modifier.fillMaxWidth().padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text("$emoji  $title", color = Deep, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleSmall)
-            content()
+    if (androidx.compose.ui.platform.LocalDensity.current.fontScale > 1.15f) {
+        Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Text("$emoji $title", color = Deep, fontWeight = FontWeight.Bold, fontSize = 15.sp)
+            Column(Modifier.fillMaxWidth(), content = content)
+        }
+    } else {
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text("$emoji $title", color = Deep, fontWeight = FontWeight.Bold, fontSize = 15.sp, modifier = Modifier.width(95.dp))
+            Column(Modifier.weight(1f), content = content)
         }
     }
 }
 
 @Composable
 private fun TaskChoiceChip(label: String, selected: Boolean, modifier: Modifier = Modifier, onClick: () -> Unit) {
-    FilterChip(
-        selected = selected,
-        onClick = onClick,
-        modifier = modifier,
-        label = { Text(label, maxLines = 1) },
-        shape = RoundedCornerShape(14.dp),
-        colors = FilterChipDefaults.filterChipColors(
-            selectedContainerColor = Pale,
-            selectedLabelColor = Deep
-        )
-    )
+    GardenChoiceChip(label, selected, onClick, modifier)
 }
 
-@Composable
-private fun taskFieldColors() = OutlinedTextFieldDefaults.colors(
-    focusedBorderColor = Green,
-    focusedLabelColor = Green,
-    cursorColor = Green,
-    focusedContainerColor = Color.White,
-    unfocusedContainerColor = Color.White
-)
-
 private class AddTaskFormState(
-    initialTitle: String = "",
-    initialKind: String = "DAILY",
-    initialCategory: String = "Học tập",
-    initialReward: String = "10",
-    initialFrequency: String = "EVERY_DAY",
-    initialDue: String = ""
+    initialTitle: String = "", initialKind: String = "DAILY",
+    initialCategory: String = "Học tập", initialReward: String = "10",
+    initialFrequency: String = "EVERY_DAY", initialDue: String = ""
 ) {
     var title by mutableStateOf(initialTitle)
     var kind by mutableStateOf(initialKind)
@@ -246,84 +151,38 @@ private class AddTaskFormState(
     var categoryMenu by mutableStateOf(false)
 }
 
-@Preview(name = "Task popup · daily, large text", showBackground = true, widthDp = 360, heightDp = 800, fontScale = 1.3f)
-@Preview(name = "Task popup · daily", showBackground = true, widthDp = 360, heightDp = 800)
+@Preview(name = "Task popup · daily", widthDp = 360, heightDp = 800)
+@Preview(name = "Task popup · daily, large text", widthDp = 360, heightDp = 800, fontScale = 1.3f)
 @Composable
-fun AddTaskDialogPreview() {
-    MamXanhPreviewTheme { AddTaskDialogPreviewContent() }
-}
+fun AddTaskDialogPreview() { MamXanhPreviewTheme { AddTaskDialogPreviewContent() } }
 
-@Preview(name = "Task dialog surface", showBackground = true, widthDp = 360, heightDp = 800)
+@Preview(name = "Task dialog surface", widthDp = 360, heightDp = 800)
 @Composable
 fun AddTaskDialogPreviewContent(initialKind: String = "DAILY") {
-    Surface(
-        modifier = Modifier.padding(12.dp).widthIn(max = 440.dp),
-        shape = RoundedCornerShape(30.dp),
-        color = Cream,
-        shadowElevation = 12.dp
-    ) {
-        Column {
-            AddTaskDialogHeader()
-            val form = remember(initialKind) {
-                AddTaskFormState(
-                    if (initialKind == "TODO") "Gom góc học tập" else "Đọc 10 trang sách",
-                    initialKind,
-                    if (initialKind == "TODO") "Nếp sống" else "Phát triển bản thân",
-                    if (initialKind == "TODO") "15" else "10",
-                    if (initialKind == "TODO") "ONCE" else "EVERY_DAY"
-                )
-            }
-            Column(
-                Modifier.heightIn(max = 560.dp).verticalScroll(rememberScrollState()).padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) { AddTaskDialogFields(form) }
-            Row(Modifier.fillMaxWidth().padding(16.dp), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                TextButton(onClick = {}) { Text("Để sau", color = Green) }
-                Button(onClick = {}, colors = ButtonDefaults.buttonColors(containerColor = Green)) { Text("🌱  Gieo nhiệm vụ") }
-            }
-        }
+    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        GardenForestScene(Modifier.fillMaxSize(), false)
+        val form = remember(initialKind) { AddTaskFormState("Đọc 10 trang sách", initialKind, initialFrequency = if (initialKind == "TODO") "ONCE" else "EVERY_DAY") }
+        AddTaskParchment(form, {}, { _,_,_,_,_,_ -> }, Modifier.padding(10.dp).heightIn(max = 730.dp))
     }
 }
 
-@Preview(name = "Task popup · header", showBackground = true, widthDp = 360)
+@Preview(name = "Task popup · header", widthDp = 300)
 @Composable
-fun AddTaskDialogHeaderPreview() {
-    MamXanhPreviewTheme { AddTaskDialogHeader() }
-}
+fun AddTaskDialogHeaderPreview() { MamXanhPreviewTheme { AddTaskDialogHeader() } }
 
-@Preview(name = "Task popup · form fields", showBackground = true, widthDp = 360)
+@Preview(name = "Task popup · fields", widthDp = 320)
 @Composable
-fun TaskDialogFieldsCardPreview() {
-    MamXanhPreviewTheme {
-        Surface(color = Cream, shape = RoundedCornerShape(22.dp), modifier = Modifier.padding(12.dp)) {
-            Column(Modifier.padding(12.dp)) {
-                AddTaskDialogFields(remember { AddTaskFormState("Đọc 10 trang sách") })
-            }
-        }
-    }
-}
+fun TaskDialogFieldsCardPreview() { MamXanhPreviewTheme { AddTaskDialogFields(remember { AddTaskFormState("Đọc 10 trang sách") }) } }
 
-@Preview(name = "Task form section", showBackground = true)
+@Preview(name = "Task form section", widthDp = 320)
 @Composable
-fun TaskFormSectionPreview() {
-    MamXanhPreviewTheme {
-        TaskFormSection("Chọn nhịp điệu", "🗓️") {
-            Text("Mỗi việc nhỏ giúp khu vườn lớn lên.", color = Muted)
-        }
-    }
-}
+fun TaskFormSectionPreview() { MamXanhPreviewTheme { TaskFormSection("Nhóm", "📚") { Text("Học tập", color = Deep) } } }
 
-@Preview(name = "Task choice", showBackground = true)
+@Preview(name = "Task choice", widthDp = 100)
 @Composable
-fun TaskChoiceChipPreview() {
-    MamXanhPreviewTheme {
-        TaskChoiceChip("Hằng ngày", selected = true, onClick = {})
-    }
-}
+fun TaskChoiceChipPreview() { MamXanhPreviewTheme { TaskChoiceChip("Hằng ngày", true, onClick = {}) } }
 
-@Preview(name = "Task popup · one time, large text", showBackground = true, widthDp = 360, heightDp = 800, fontScale = 1.3f)
-@Preview(name = "Task popup · one time", showBackground = true, widthDp = 360, heightDp = 800)
+@Preview(name = "Task popup · one time", widthDp = 360, heightDp = 800)
+@Preview(name = "Task popup · one time, large text", widthDp = 360, heightDp = 800, fontScale = 1.3f)
 @Composable
-fun AddTaskDialogOneTimePreview() {
-    MamXanhPreviewTheme { AddTaskDialogPreviewContent(initialKind = "TODO") }
-}
+fun AddTaskDialogOneTimePreview() { MamXanhPreviewTheme { AddTaskDialogPreviewContent("TODO") } }

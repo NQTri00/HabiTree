@@ -18,6 +18,7 @@ fun MamXanhPreviewTheme(content: @Composable () -> Unit) {
             background = Cream,
             surface = Color.White
         ),
+        typography = GardenTypography,
         content = content
     )
 }

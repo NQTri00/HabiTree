@@ -2,7 +2,12 @@ package com.mamxanh.app.presentation.ui
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.clickable
+import androidx.compose.ui.semantics.Role
+import com.mamxanh.app.presentation.ui.components.GardenWoodSign
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.unit.sp
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material3.*
@@ -48,37 +53,28 @@ fun MamXanhAppContent(
     val statistics = stats
     val wallet = shop.wallet
     val selectedTree = garden.garden.trees.firstOrNull { it.id == state.selectedTreeId }
-    val canGoBack = state.selectedTreeId != null || state.backStack.isNotEmpty()
-    MaterialTheme(colorScheme = lightColorScheme(primary = Green, secondary = Color(0xFFFFA01A), background = Cream, surface = Color.White)) {
+    MaterialTheme(colorScheme = lightColorScheme(primary = Green, secondary = Color(0xFFFFA01A), background = Cream, surface = Color.White), typography = GardenTypography) {
         Scaffold(
             modifier = modifier,
-            containerColor = Cream,
+            containerColor = Color(0xFF073D36),
             topBar = {
-                if (selectedTree != null || app.destination != AppDestination.HOME) {
-                    TopAppBar(
-                        colors = TopAppBarDefaults.topAppBarColors(containerColor = if (app.destination == AppDestination.SHOP) PinkTileBg else Cream),
-                        navigationIcon = { if (canGoBack) IconButton(onClick = { onAppIntent(AppIntent.Back) }) { Icon(Icons.Rounded.ArrowBack, contentDescription = "Quay lại") } },
-                        title = {
-                            androidx.compose.foundation.layout.Column {
-                                Text(selectedTree?.name ?: app.destination.label, fontWeight = FontWeight.ExtraBold, color = Deep)
-                                Text(if (selectedTree != null) "Chăm sóc mầm xanh" else when (app.destination) { AppDestination.HOME -> "Nuôi dưỡng thói quen, lớn lên cùng cây"; AppDestination.TASKS -> "Hoàn thành từng việc nhỏ mỗi ngày"; AppDestination.GARDEN -> "Những người bạn xanh của bạn"; AppDestination.SHOP -> "Chọn thêm mầm xanh mới"; AppDestination.STATS -> "Nhìn lại hành trình của khu vườn" }, style = MaterialTheme.typography.labelSmall, color = Green)
-                            }
-                        },
-                        actions = {
-                            Surface(color = Gold, shape = androidx.compose.foundation.shape.RoundedCornerShape(50), modifier = Modifier.padding(end = 14.dp)) {
-                                Text("🪙 " + wallet.coins, modifier = Modifier.padding(horizontal = 13.dp, vertical = 7.dp), color = Deep, fontWeight = FontWeight.ExtraBold)
-                            }
+                if (selectedTree != null) {
+                    Surface(color = Color(0xFF073D36)) {
+                        Box(Modifier.fillMaxWidth().statusBarsPadding().padding(start = 10.dp, top = 4.dp)) {
+                            GardenWoodSign("‹ Vườn ươm",
+                                Modifier.width(170.dp).clickable(role = Role.Button, onClickLabel = "Quay lại khu vườn", onClick = { onAppIntent(AppIntent.Back) }),
+                                fontSize = 20.sp)
                         }
-                    )
+                    }
                 }
             },
             bottomBar = {
-                if (selectedTree == null && app.destination != AppDestination.HOME) {
+                if (selectedTree == null) {
                     GardenTrailBar(app.destination, { onAppIntent(AppIntent.Navigate(it)) })
                 }
             }
         ) { padding ->
-            SharedTransitionLayout {
+            SharedTransitionLayout(Modifier.fillMaxSize().padding(padding)) {
                 val selectedTreeId = app.selectedTreeId
                 val homeTreeId = dashboard.dashboard.trees.firstOrNull()?.id
                 AnimatedContent(
@@ -119,23 +115,22 @@ fun MamXanhAppContent(
                             fertilizerCount = wallet.inventory["fertilizer"] ?: 0,
                             wateringCanMl = dashboard.dashboard.wateringCanMl,
                             onIntent = { onTreeIntent(it) },
-                            modifier = Modifier.padding(padding),
-                            sharedTreeModifier = treeSharedModifier,
-                            developmentControls = true
+                            modifier = Modifier,
+                            sharedTreeModifier = treeSharedModifier
                         )
                         else -> when (destination) {
                             AppDestination.HOME -> HomeScreen(state = dashboard, onIntent = onHomeIntent,
-                                fertilizerCount = wallet.inventory["fertilizer"] ?: 0, modifier = Modifier.padding(padding),
+                                fertilizerCount = wallet.inventory["fertilizer"] ?: 0, modifier = Modifier,
                                 sharedTreeModifier = treeSharedModifier,
                                 onOpenPlace = { place ->
                                     AppDestination.entries.firstOrNull { it.name == place }?.let {
                                         onAppIntent(AppIntent.Navigate(it))
                                     }
                                 })
-                            AppDestination.TASKS -> TasksScreen(tasks, onTasksIntent, Modifier.padding(padding))
-                            AppDestination.GARDEN -> GardenScreen(gardenState, onGardenIntent, Modifier.padding(padding))
-                            AppDestination.SHOP -> ShopScreen(walletState, onShopIntent, Modifier.padding(padding))
-                            AppDestination.STATS -> StatsScreen(statistics, onStatsIntent, Modifier.padding(padding))
+                            AppDestination.TASKS -> TasksScreen(tasks, onTasksIntent, Modifier)
+                            AppDestination.GARDEN -> GardenScreen(gardenState, onGardenIntent, Modifier)
+                            AppDestination.SHOP -> ShopScreen(walletState, onShopIntent, Modifier)
+                            AppDestination.STATS -> StatsScreen(statistics, onStatsIntent, Modifier)
                         }
                     }
                 }
