@@ -3,31 +3,57 @@ package com.mamxanh.app.feature.tasks.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mamxanh.app.feature.tasks.domain.*
-import com.mamxanh.app.feature.tasks.domain.model.Task
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class TasksViewModel(private val repository: TaskRepository) : ViewModel() {
-    private val _tasks = MutableStateFlow<List<Task>>(emptyList())
-    val tasks = _tasks.asStateFlow()
-    private val _message = MutableStateFlow("")
-    val message = _message.asStateFlow()
-    init { refresh() }
-    fun refresh() = viewModelScope.launch { _tasks.value = withContext(Dispatchers.IO) { LoadTasks(repository)() } }
-    fun add(title: String, kind: String, category: String, reward: Int, frequency: String, due: String) = viewModelScope.launch(Dispatchers.IO) {
-        if (title.isNotBlank()) AddTask(repository)(title, kind, category, reward, frequency, due)
-        refresh(); _message.value = "Đã thêm nhiệm vụ"
-    }
-    fun delete(id: Long) = viewModelScope.launch(Dispatchers.IO) { DeleteTask(repository)(id); refresh(); _message.value = "Đã xóa nhiệm vụ" }
-    fun complete(id: Long) = viewModelScope.launch(Dispatchers.IO) {
-        val done = CompleteTask(repository)(id); refresh()
-        _message.value = if (done) "Bạn nhận xu và tất cả cây đã lớn thêm!" else "Nhiệm vụ này đã hoàn thành hôm nay"
-    }
-    fun bonus() = viewModelScope.launch(Dispatchers.IO) {
-        val claimed = ClaimDailyBonus(repository)(); refresh()
-        _message.value = if (claimed) "Tuyệt vời! Bạn nhận thêm 20 xu." else "Hoàn thành mọi nhiệm vụ hằng ngày để nhận thưởng."
+    private val _uiState = MutableStateFlow(TasksUiState())
+    val uiState = _uiState.asStateFlow()
+    private val effectChannel = Channel<TasksEffect>(Channel.BUFFERED)
+    val effects = effectChannel.receiveAsFlow()
+
+    init { dispatch(TasksIntent.Refresh) }
+
+    fun dispatch(intent: TasksIntent) {
+        when (intent) {
+            TasksIntent.ShowAddDialog -> _uiState.value = _uiState.value.copy(isAddingTask = true)
+            TasksIntent.DismissAddDialog -> _uiState.value = _uiState.value.copy(isAddingTask = false)
+            TasksIntent.Refresh -> viewModelScope.launch {
+                _uiState.value = _uiState.value.copy(isLoading = true)
+                val tasks = withContext(Dispatchers.IO) { LoadTasks(repository)() }
+                _uiState.value = _uiState.value.copy(tasks = tasks, isLoading = false)
+            }
+            is TasksIntent.SetFilter -> _uiState.value = _uiState.value.copy(filter = intent.filter)
+            is TasksIntent.Add -> viewModelScope.launch {
+                if (intent.title.isBlank()) return@launch
+                withContext(Dispatchers.IO) { AddTask(repository)(intent.title, intent.kind, intent.category, intent.reward, intent.frequency, intent.due) }
+                dispatch(TasksIntent.Refresh)
+                effectChannel.send(TasksEffect.DataChanged)
+                effectChannel.send(TasksEffect.Feedback("Đã thêm nhiệm vụ"))
+            }
+            is TasksIntent.Delete -> viewModelScope.launch {
+                withContext(Dispatchers.IO) { DeleteTask(repository)(intent.id) }
+                dispatch(TasksIntent.Refresh)
+                effectChannel.send(TasksEffect.DataChanged)
+                effectChannel.send(TasksEffect.Feedback("Đã xóa nhiệm vụ"))
+            }
+            is TasksIntent.Complete -> viewModelScope.launch {
+                val done = withContext(Dispatchers.IO) { CompleteTask(repository)(intent.id) }
+                dispatch(TasksIntent.Refresh)
+                effectChannel.send(TasksEffect.DataChanged)
+                effectChannel.send(TasksEffect.Feedback(if (done) "Bạn nhận xu và tất cả cây đã lớn thêm!" else "Nhiệm vụ này đã hoàn thành hôm nay"))
+            }
+            TasksIntent.ClaimBonus -> viewModelScope.launch {
+                val claimed = withContext(Dispatchers.IO) { ClaimDailyBonus(repository)() }
+                dispatch(TasksIntent.Refresh)
+                effectChannel.send(TasksEffect.DataChanged)
+                effectChannel.send(TasksEffect.Feedback(if (claimed) "Tuyệt vời! Bạn nhận thêm 20 xu." else "Hoàn thành mọi nhiệm vụ hằng ngày để nhận thưởng."))
+            }
+        }
     }
 }

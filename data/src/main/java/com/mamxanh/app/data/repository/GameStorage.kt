@@ -7,5 +7,6 @@ class GameStorage(private val db:GardenDatabase) {
  fun deleteTask(id:Long)=db.deleteTask(id); fun complete(id:Long)=db.complete(id); fun dailyBonus()=db.dailyBonus()
  fun buySeed(id:String)=db.buySeed(id); fun plant(id:String,name:String)=db.plant(id,name)
  fun buyFertilizer()=db.buyFertilizer(); fun fertilize(treeId:Long)=db.fertilize(treeId)
- fun water(treeId:Long)=db.water(treeId); fun decorate(treeId:Long,decoration:String)=db.decorate(treeId,decoration)
+ fun water(treeId:Long)=db.water(treeId); fun waterMl()=db.waterMl(); fun refillWater(amountMl:Int=100)=db.refillWater(amountMl)
+ fun decorate(treeId:Long,decoration:String)=db.decorate(treeId,decoration)
 }

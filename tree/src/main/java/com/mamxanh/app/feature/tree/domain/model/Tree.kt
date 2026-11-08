@@ -6,9 +6,14 @@ data class Tree(
 )
 data class TreeSpecies(val id: String, val name: String)
 val treeSpeciesCatalog = listOf(
-    TreeSpecies("cherry", "Đào hồng"),
-    TreeSpecies("orange", "Quýt ngọt"),
-    TreeSpecies("pine", "Thông xanh"),
-    TreeSpecies("maple", "Phong đỏ"),
-    TreeSpecies("bamboo", "Tre trúc")
+    TreeSpecies("succulent", "Sen đá ngọc"),
+    TreeSpecies("monstera", "Trầu bà lá xẻ"),
+    TreeSpecies("ficus", "Cây bàng búp"),
+    TreeSpecies("snake", "Lưỡi hổ xanh"),
+    TreeSpecies("cactus", "Xương rồng hoa"),
+    TreeSpecies("aloe", "Nha đam mọng"),
+    TreeSpecies("lavender", "Oải hương tím"),
+    TreeSpecies("pilea", "Cỏ đồng tiền"),
+    TreeSpecies("cherry", "Đào hồng xuân"),
+    TreeSpecies("pine", "Thông xanh biếc")
 )

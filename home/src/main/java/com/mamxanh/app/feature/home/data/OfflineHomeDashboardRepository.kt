@@ -11,11 +11,14 @@ class OfflineHomeDashboardRepository(private val game: GameStorage) : HomeDashbo
         val garden = game.garden()
         val statistics = game.statistics()
         return HomeDashboard(
-            trees = garden.trees.map { HomeTree(it.id, it.speciesId, it.name, it.growth, it.decoration) },
+            trees = garden.trees.map { HomeTree(it.id, it.speciesId, it.name, it.growth, it.decoration, it.wateredToday) },
             completedTasks = tasks.count { it.doneToday },
             totalTasks = tasks.size,
             seedCount = garden.inventory.filterKeys { it != "fertilizer" }.values.sum(),
-            coins = statistics.coins
+            coins = statistics.coins,
+            wateringCanMl = game.waterMl()
         )
     }
+
+    override fun refillWater(): Int = game.refillWater(100)
 }

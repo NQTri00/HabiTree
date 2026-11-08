@@ -20,6 +20,7 @@ import com.mamxanh.app.feature.tasks.data.OfflineTaskRepository
 import com.mamxanh.app.feature.tasks.presentation.TasksViewModel
 import com.mamxanh.app.feature.tree.data.OfflineTreeRepository
 import com.mamxanh.app.feature.tree.presentation.TreeViewModel
+import com.mamxanh.app.presentation.ui.AppViewModel
 import com.mamxanh.app.presentation.ui.MamXanhApp
 
 class MainActivity : ComponentActivity() {
@@ -27,34 +28,14 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         val game = GameStorage(GardenDatabase(applicationContext))
         setContent {
-            val gardenVm: GardenViewModel = viewModel(factory = vmFactory {
-                GardenViewModel(OfflineGardenRepository(game))
-            })
-            val homeVm: HomeViewModel = viewModel(factory = vmFactory {
-                HomeViewModel(OfflineHomeDashboardRepository(game))
-            })
-            val statsVm: StatsViewModel = viewModel(factory = vmFactory {
-                StatsViewModel(OfflineStatisticsRepository(game))
-            })
-            val shopVm: ShopViewModel = viewModel(factory = vmFactory {
-                ShopViewModel(OfflineShopRepository(game)) {
-                    gardenVm.refresh()
-                    homeVm.refresh()
-                    statsVm.refresh()
-                }
-            })
-            val tasksVm: TasksViewModel = viewModel(factory = vmFactory {
-                TasksViewModel(OfflineTaskRepository(game))
-            })
-            val treeVm: TreeViewModel = viewModel(factory = vmFactory {
-                TreeViewModel(OfflineTreeRepository(game)) {
-                    gardenVm.refresh()
-                    homeVm.refresh()
-                    statsVm.refresh()
-                    shopVm.refresh()
-                }
-            })
-            MamXanhApp(tasksVm, gardenVm, shopVm, treeVm, statsVm, homeVm)
+            val gardenVm: GardenViewModel = viewModel(factory = vmFactory { GardenViewModel(OfflineGardenRepository(game)) })
+            val homeVm: HomeViewModel = viewModel(factory = vmFactory { HomeViewModel(OfflineHomeDashboardRepository(game)) })
+            val statsVm: StatsViewModel = viewModel(factory = vmFactory { StatsViewModel(OfflineStatisticsRepository(game)) })
+            val shopVm: ShopViewModel = viewModel(factory = vmFactory { ShopViewModel(OfflineShopRepository(game)) })
+            val tasksVm: TasksViewModel = viewModel(factory = vmFactory { TasksViewModel(OfflineTaskRepository(game)) })
+            val treeVm: TreeViewModel = viewModel(factory = vmFactory { TreeViewModel(OfflineTreeRepository(game)) })
+            val appVm: AppViewModel = viewModel(factory = vmFactory { AppViewModel() })
+            MamXanhApp(tasksVm, gardenVm, shopVm, treeVm, statsVm, homeVm, appVm)
         }
     }
 }

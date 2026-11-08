@@ -7,6 +7,14 @@ import com.mamxanh.app.feature.stats.domain.model.GardenStatistics
 class OfflineStatisticsRepository(private val game: GameStorage) : StatisticsRepository {
     override fun load(): GardenStatistics {
         val value = game.statistics()
-        return GardenStatistics(value.coins, value.total, value.today, value.week, value.streak, value.treeCount)
+        return GardenStatistics(
+            coins = value.coins,
+            total = value.total,
+            today = value.today,
+            week = value.week,
+            streak = value.streak,
+            treeCount = value.treeCount,
+            recentDailyCompletions = value.recentDailyCompletions
+        )
     }
 }

@@ -2,32 +2,53 @@ package com.mamxanh.app.feature.tree.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mamxanh.app.data.local.model.TreeWateringResult
 import com.mamxanh.app.feature.tree.domain.*
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-class TreeViewModel(
-    private val repository: TreeRepository,
-    private val onTreeChanged: () -> Unit = {}
-) : ViewModel() {
-    private val _message = MutableStateFlow("")
-    val message = _message.asStateFlow()
+class TreeViewModel(private val repository: TreeRepository) : ViewModel() {
+    private val _uiState = MutableStateFlow(TreeUiState())
+    val uiState = _uiState.asStateFlow()
+    private val effectChannel = Channel<TreeEffect>(Channel.BUFFERED)
+    val effects = effectChannel.receiveAsFlow()
 
-    fun water(id: Long) = viewModelScope.launch(Dispatchers.IO) {
-        val changed = WaterTree(repository)(id)
-        if (changed) onTreeChanged()
-        _message.value = if (changed) "Bạn đã tưới cây. Cây nhận thêm 8 điểm phát triển." else "Cây này đã được tưới hôm nay."
-    }
-    fun fertilize(id: Long) = viewModelScope.launch(Dispatchers.IO) {
-        val changed = FertilizeTree(repository)(id)
-        if (changed) onTreeChanged()
-        _message.value = if (changed) "Cây đã lớn thêm 25 điểm." else "Bạn chưa có phân bón."
-    }
-    fun decorate(id: Long, decoration: String) = viewModelScope.launch(Dispatchers.IO) {
-        DecorateTree(repository)(id, decoration)
-        onTreeChanged()
-        _message.value = "Đã cập nhật trang trí cho cây."
+    fun dispatch(intent: TreeIntent) {
+        if (_uiState.value.isLoading) return
+        viewModelScope.launch {
+            _uiState.value = TreeUiState(isLoading = true)
+            try {
+                when (intent) {
+                    is TreeIntent.Water -> {
+                        val result = withContext(Dispatchers.IO) { WaterTree(repository)(intent.id) }
+                        if (result == TreeWateringResult.WATERED) effectChannel.send(TreeEffect.TreeChanged)
+                        val message = when (result) {
+                            TreeWateringResult.WATERED -> "Đã tưới cây: dùng 50 ml nước và cây lớn thêm 8 điểm."
+                            TreeWateringResult.ALREADY_WATERED -> "Cây này đã được tưới hôm nay."
+                            TreeWateringResult.NOT_ENOUGH_WATER -> "Bình tưới cần ít nhất 50 ml. Hãy bơm thêm nước ở Trang chủ."
+                            TreeWateringResult.TREE_NOT_FOUND -> "Không tìm thấy cây này."
+                        }
+                        effectChannel.send(TreeEffect.Feedback(message))
+                    }
+                    is TreeIntent.Fertilize -> {
+                        val changed = withContext(Dispatchers.IO) { FertilizeTree(repository)(intent.id) }
+                        if (changed) effectChannel.send(TreeEffect.TreeChanged)
+                        effectChannel.send(TreeEffect.Feedback(if (changed) "Cây đã lớn thêm 25 điểm." else "Bạn chưa có phân bón."))
+                    }
+                    is TreeIntent.Decorate -> {
+                        withContext(Dispatchers.IO) { DecorateTree(repository)(intent.id, intent.decoration) }
+                        effectChannel.send(TreeEffect.TreeChanged)
+                        effectChannel.send(TreeEffect.Feedback("Đã cập nhật trang trí cho cây."))
+                    }
+                }
+            } finally {
+                _uiState.value = TreeUiState()
+            }
+        }
     }
 }

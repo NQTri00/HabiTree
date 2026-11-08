@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import java.util.Calendar
 import com.mamxanh.app.data.local.model.*
-class GardenDatabase(context: Context) : SQLiteOpenHelper(context, "mam_xanh.db", null, 1) {
+class GardenDatabase(context: Context) : SQLiteOpenHelper(context, "mam_xanh.db", null, 2) {
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL("CREATE TABLE tasks(id INTEGER PRIMARY KEY AUTOINCREMENT,title TEXT NOT NULL,kind TEXT NOT NULL,category TEXT NOT NULL,reward INTEGER NOT NULL,frequency TEXT NOT NULL,due TEXT NOT NULL DEFAULT '',completed TEXT NOT NULL DEFAULT '',streak INTEGER NOT NULL DEFAULT 0,last_done TEXT NOT NULL DEFAULT '')")
         db.execSQL("CREATE TABLE trees(id INTEGER PRIMARY KEY AUTOINCREMENT,species_id TEXT NOT NULL,name TEXT NOT NULL,growth INTEGER NOT NULL DEFAULT 0,planted TEXT NOT NULL)")
@@ -15,6 +15,7 @@ class GardenDatabase(context: Context) : SQLiteOpenHelper(context, "mam_xanh.db"
         db.execSQL("CREATE TABLE logs(id INTEGER PRIMARY KEY AUTOINCREMENT,date TEXT NOT NULL,task_id INTEGER NOT NULL,title TEXT NOT NULL,coins INTEGER NOT NULL)")
         meta(db, "coins", "60")
         meta(db, "daily_bonus", "")
+        meta(db, "water_ml", "542")
         seed(db, "cherry", 1); seed(db, "pine", 1)
         task(db, "Đọc hoặc học tập trung 25 phút", "DAILY", "Học tập", 10, "EVERY_DAY", "")
         task(db, "Đi bộ hoặc vận động 20 phút", "DAILY", "Sức khỏe", 10, "EVERY_DAY", "")
@@ -24,7 +25,9 @@ class GardenDatabase(context: Context) : SQLiteOpenHelper(context, "mam_xanh.db"
         task(db, "Hoàn thành một việc quan trọng", "TODO", "Công việc", 20, "ONCE", "")
     }
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        // Keep existing user data; add explicit migrations here when the schema changes.
+        if (oldVersion < 2 && getMeta(db, "water_ml", "").isBlank()) {
+            meta(db, "water_ml", "542")
+        }
     }
 
     private fun meta(db: SQLiteDatabase, k: String, v: String) {
@@ -69,8 +72,12 @@ class GardenDatabase(context: Context) : SQLiteOpenHelper(context, "mam_xanh.db"
         var streak = 0
         if (today() !in dates) cal.add(Calendar.DAY_OF_YEAR,-1)
         while (key(cal.time) in dates) { streak++; cal.add(Calendar.DAY_OF_YEAR,-1) }
+        val recentDailyCompletions = (6 downTo 0).map { daysAgo ->
+            val day = Calendar.getInstance().apply { add(Calendar.DAY_OF_YEAR, -daysAgo) }
+            count("SELECT COUNT(*) FROM logs WHERE date=?", arrayOf(key(day.time)))
+        }
         return Statistics(coins,count("SELECT COUNT(*) FROM logs"),count("SELECT COUNT(*) FROM logs WHERE date=?", arrayOf(today())),
-            count("SELECT COUNT(*) FROM logs WHERE date>=?",arrayOf(weekStart)),streak,count("SELECT COUNT(*) FROM trees"))
+            count("SELECT COUNT(*) FROM logs WHERE date>=?",arrayOf(weekStart)),streak,count("SELECT COUNT(*) FROM trees"),recentDailyCompletions)
     }
     fun addTask(title: String, kind: String, category: String, reward: Int, frequency: String, due: String) {
         task(writableDatabase,title.trim(),kind,category,reward.coerceIn(1,100),frequency,due.trim())
@@ -162,16 +169,32 @@ class GardenDatabase(context: Context) : SQLiteOpenHelper(context, "mam_xanh.db"
             seed(db,"fertilizer",count-1); db.setTransactionSuccessful(); return true
         } finally { db.endTransaction() }
     }
-    fun water(treeId: Long): Boolean {
+    fun water(treeId: Long): TreeWateringResult {
         val db=writableDatabase
         db.beginTransaction()
         try {
             val exists=db.rawQuery("SELECT 1 FROM trees WHERE id=?",arrayOf(treeId.toString())).use { it.moveToFirst() }
-            if(!exists || getMeta(db,"watered_$treeId","") == today()) return false
+            if (!exists) return TreeWateringResult.TREE_NOT_FOUND
+            if (getMeta(db,"watered_$treeId","") == today()) return TreeWateringResult.ALREADY_WATERED
+            val waterMl = getMeta(db, "water_ml", "542").toIntOrNull() ?: 542
+            if (waterMl < 50) return TreeWateringResult.NOT_ENOUGH_WATER
             db.execSQL("UPDATE trees SET growth=MIN(120,growth+8) WHERE id=?",arrayOf(treeId))
             meta(db,"watered_$treeId",today())
+            meta(db, "water_ml", (waterMl - 50).toString())
             db.setTransactionSuccessful()
-            return true
+            return TreeWateringResult.WATERED
+        } finally { db.endTransaction() }
+    }
+    fun waterMl(): Int = getMeta(readableDatabase, "water_ml", "542").toIntOrNull() ?: 542
+    fun refillWater(amountMl: Int = 100): Int {
+        val db = writableDatabase
+        db.beginTransaction()
+        try {
+            val current = getMeta(db, "water_ml", "542").toIntOrNull() ?: 542
+            val refilled = (current + amountMl.coerceAtLeast(0)).coerceAtMost(1000)
+            meta(db, "water_ml", refilled.toString())
+            db.setTransactionSuccessful()
+            return refilled
         } finally { db.endTransaction() }
     }
     fun decorate(treeId: Long, decoration: String) {
