@@ -27,7 +27,7 @@ fun GardenBotanicalFrame(
         modifier = modifier,
         color = Color(0xFFFFFCF1),
         shape = shape,
-        border = BorderStroke(1.5.dp, Color(0xFFD6C49D)),
+        border = null,
         shadowElevation = 3.dp
     ) {
         Box {
@@ -37,6 +37,32 @@ fun GardenBotanicalFrame(
                 val h = size.height
                 drawCircle(accent, w * .15f, androidx.compose.ui.geometry.Offset(w * .98f, h * .02f))
                 drawCircle(accent.copy(alpha = .7f), w * .09f, androidx.compose.ui.geometry.Offset(w * .02f, h * .98f))
+                val edge = 5.dp.toPx()
+                val inset = edge / 2
+                drawRoundRect(
+                    Color(0xFF876342),
+                    topLeft = androidx.compose.ui.geometry.Offset(inset, inset),
+                    size = androidx.compose.ui.geometry.Size(w - edge, h - edge),
+                    cornerRadius = androidx.compose.ui.geometry.CornerRadius(22.dp.toPx()),
+                    style = androidx.compose.ui.graphics.drawscope.Stroke(edge)
+                )
+                // Grain follows the frame, leaving the paper and its text clear.
+                for (i in 0..2) {
+                    val y = 1.5.dp.toPx() + i * 1.25.dp.toPx()
+                    drawLine(Color(0xFFD3AE79), androidx.compose.ui.geometry.Offset(24.dp.toPx(), y),
+                        androidx.compose.ui.geometry.Offset(w - 24.dp.toPx(), y), .6.dp.toPx())
+                    drawLine(Color(0xFFB18B59), androidx.compose.ui.geometry.Offset(24.dp.toPx(), h-y),
+                        androidx.compose.ui.geometry.Offset(w - 24.dp.toPx(), h-y), .6.dp.toPx())
+                }
+                for (i in 0..5) {
+                    val y = 26.dp.toPx() + (h - 52.dp.toPx()) * i / 5f
+                    drawLine(Color(0xFFD3AE79).copy(alpha=.8f),
+                        androidx.compose.ui.geometry.Offset(1.dp.toPx(), y),
+                        androidx.compose.ui.geometry.Offset(4.dp.toPx(), y + 9.dp.toPx()), .8.dp.toPx())
+                    drawLine(Color(0xFF553F2B).copy(alpha=.7f),
+                        androidx.compose.ui.geometry.Offset(w - 4.dp.toPx(), y),
+                        androidx.compose.ui.geometry.Offset(w - 1.dp.toPx(), y + 7.dp.toPx()), .8.dp.toPx())
+                }
             }
             Box(Modifier.padding(16.dp), content = content)
         }

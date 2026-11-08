@@ -275,14 +275,9 @@ private fun TaskCard(task: Task, onComplete: () -> Unit, onDelete: () -> Unit, r
     }
     val icon = when (task.kind) { "HABIT" -> "🌱"; "DAILY" -> "☀️"; else -> "📌" }
 
-    Surface(
-        color = Color.White,
-        shape = RoundedCornerShape(22.dp),
-        shadowElevation = 2.dp,
-        border = androidx.compose.foundation.BorderStroke(1.dp, typeColor.copy(alpha = 0.22f))
-    ) {
+    GardenBotanicalFrame(Modifier.fillMaxWidth()) {
         Column(
-            Modifier.fillMaxWidth().padding(14.dp),
+            Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(11.dp)
         ) {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(11.dp)) {

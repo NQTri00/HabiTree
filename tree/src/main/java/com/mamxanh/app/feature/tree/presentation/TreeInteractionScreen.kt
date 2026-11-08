@@ -8,7 +8,9 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
+import androidx.compose.material3.Slider
+import androidx.compose.material3.TextButton
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -31,8 +33,11 @@ fun TreeInteractionScreen(
     wateringCanMl: Int,
     onIntent: (TreeIntent) -> Unit,
     modifier: Modifier = Modifier,
-    sharedTreeModifier: Modifier = Modifier
+    sharedTreeModifier: Modifier = Modifier,
+    developmentControls: Boolean = false
 ) {
+    var inspectedGrowth by remember(tree.id) { mutableStateOf<Float?>(null) }
+    val displayedGrowth = inspectedGrowth ?: tree.growth.toFloat()
     Box(modifier.fillMaxSize()) {
         GardenSceneBackdrop(GardenScene.TREE_CLEARING, Modifier.fillMaxSize())
         Column(
@@ -72,12 +77,30 @@ fun TreeInteractionScreen(
                 }
             }
 
-            GardenBotanicalFrame(Modifier.fillMaxWidth()) {
-                TreePortrait(
-                    tree = tree,
-                    modifier = Modifier.fillMaxWidth(),
-                    sharedTreeModifier = sharedTreeModifier
+            Box(
+                Modifier.fillMaxWidth().height(300.dp),
+                contentAlignment = androidx.compose.ui.Alignment.Center
+            ) {
+                KawaiiPlantIllustration(
+                    growth = tree.growth,
+                    speciesId = tree.speciesId,
+                    decoration = tree.decoration,
+                    modifier = sharedTreeModifier.fillMaxHeight().width(290.dp),
+                    growthOverride = inspectedGrowth
                 )
+            }
+
+            if (developmentControls) GardenBotanicalFrame(Modifier.fillMaxWidth()) {
+                Column {
+                    Text("Xem thử sinh trưởng · ${displayedGrowth.toInt()} / 120", color = Deep)
+                    Slider(
+                        value = displayedGrowth,
+                        onValueChange = { inspectedGrowth = it },
+                        valueRange = 0f..120f
+                    )
+                    Text("Chỉ thay đổi hình xem thử, không lưu vào cây.", style = MaterialTheme.typography.labelSmall)
+                    TextButton(onClick = { inspectedGrowth = null }) { Text("Về tiến độ thật") }
+                }
             }
 
             GardenBotanicalFrame(Modifier.fillMaxWidth()) {
@@ -126,7 +149,8 @@ fun TreeInteractionScreenPreview() {
             state = TreeUiState(),
             fertilizerCount = 2,
             wateringCanMl = 500,
-            onIntent = {}
+            onIntent = {},
+            developmentControls = true
         )
     }
 }
@@ -148,7 +172,8 @@ fun TreeInteractionPinePreview() {
             state = TreeUiState(),
             fertilizerCount = 0,
             wateringCanMl = 240,
-            onIntent = {}
+            onIntent = {},
+            developmentControls = true
         )
     }
 }

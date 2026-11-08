@@ -1,6 +1,8 @@
 package com.mamxanh.app.feature.shop.presentation.components
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.clickable
+import com.mamxanh.app.presentation.ui.components.GardenBotanicalFrame
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -30,16 +32,9 @@ fun TinyPlantCard(
     onInspect: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Surface(
-        onClick = onInspect,
-        color = Color.White.copy(alpha = 0.88f),
-        shape = RoundedCornerShape(18.dp),
-        shadowElevation = 2.dp,
-        border = androidx.compose.foundation.BorderStroke(1.5.dp, Color(0xFFEADBCE)),
-        modifier = modifier.fillMaxWidth()
-    ) {
+    GardenBotanicalFrame(modifier.fillMaxWidth().clickable(onClick = onInspect)) {
         Column(
-            modifier = Modifier.padding(horizontal = 6.dp, vertical = 8.dp),
+            modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {

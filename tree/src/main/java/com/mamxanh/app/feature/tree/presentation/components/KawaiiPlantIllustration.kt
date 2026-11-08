@@ -3,280 +3,166 @@ package com.mamxanh.app.feature.tree.presentation.components
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
-import com.mamxanh.app.presentation.ui.*
+import androidx.compose.ui.tooling.preview.Preview
+import kotlin.math.cos
+import kotlin.math.sin
 
-/**
- * Renders the adorable kawaii plant growing on the circular soil mound (Image 1):
- * - Circular/oval rich soil mound with grass tufts
- * - Golden glowing upward light beams and sparkling light particles
- * - Kawaii seed/potato character with cute bead eyes, blushing cheeks, and smiling face
- * - Vibrant green clover/foliage leaves with golden glowing tips
- * - Mystery mascot companion silhouette with '?' badge
- */
+/** A single continuous rig: every branch retains its attachment as growth changes. */
 @Composable
 fun KawaiiPlantIllustration(
     growth: Int,
     speciesId: String = "sprout",
     decoration: String = "NONE",
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    growthOverride: Float? = null
 ) {
-    Canvas(modifier = modifier.aspectRatio(1.15f)) {
+    val animatedGrowth by animateFloatAsState(
+        targetValue = growth.coerceIn(0, 120).toFloat(),
+        animationSpec = tween(1400),
+        label = "tree-growth"
+    )
+    // Inspection follows the finger exactly; earned growth moves along the same rig.
+    val progress = ((growthOverride ?: animatedGrowth) / 120f).coerceIn(0f, 1f)
+    val inspecting = LocalInspectionMode.current || growthOverride != null
+    val breeze = rememberInfiniteTransition(label = "garden-breeze")
+    val phase by breeze.animateFloat(
+        initialValue = 0f, targetValue = 6.283185f,
+        animationSpec = infiniteRepeatable(tween(6400, easing = LinearEasing)),
+        label = "tree-breeze-phase"
+    )
+    val wind = if (inspecting) 0f else sin(phase)
+    Canvas(modifier.aspectRatio(0.95f)) {
         val w = size.width
         val h = size.height
-        val cx = w * 0.50f
-        val cy = h * 0.52f
-        val progress = (growth.coerceIn(0, 120) / 120f)
-
-        // 1. Soil Mound (Rich brown oval with lighter center)
-        val soilW = w * 0.76f
-        val soilH = h * 0.32f
-        val soilY = cy + h * 0.05f
-
-        drawOval(
-            color = Color(0xFF6F9978).copy(alpha = 0.45f),
-            topLeft = Offset(cx - soilW * 0.52f, soilY + soilH * 0.10f),
-            size = Size(soilW * 1.04f, soilH * 0.95f)
-        )
-        drawOval(
-            color = SoilMound,
-            topLeft = Offset(cx - soilW * 0.5f, soilY),
-            size = Size(soilW, soilH)
-        )
-        drawOval(
-            color = SoilMoundLight,
-            topLeft = Offset(cx - soilW * 0.38f, soilY + soilH * 0.14f),
-            size = Size(soilW * 0.76f, soilH * 0.70f)
-        )
-
-        val grassPositions = listOf(
-            Pair(-0.46f, 0.45f), Pair(-0.35f, 0.15f), Pair(-0.25f, 0.75f),
-            Pair(0.28f, 0.80f), Pair(0.42f, 0.25f), Pair(0.46f, 0.65f)
-        )
-        grassPositions.forEach { (gx, gy) ->
-            val px = cx + soilW * 0.5f * gx
-            val py = soilY + soilH * gy
-            drawGrassTuft(px, py, w * 0.035f)
+        fun ease(start: Float, end: Float): Float {
+            val t = ((progress - start) / (end - start)).coerceIn(0f, 1f)
+            return t * t * (3f - 2f * t)
         }
-
-        // 2. Upward Glowing Light Beams
-        val glowBrush = Brush.verticalGradient(
-            colors = listOf(
-                Color(0xFFFFEA88).copy(alpha = 0.0f),
-                Color(0xFFFFEA88).copy(alpha = 0.35f),
-                Color(0xFFFFD54F).copy(alpha = 0.55f)
-            ),
-            startY = cy - h * 0.45f,
-            endY = cy + h * 0.15f
+        val base = Offset(w * .5f, h * .82f)
+        drawOval(Color(0xFF436C46).copy(alpha = .18f), Offset(w * .12f, h * .78f), Size(w * .76f, h * .15f))
+        drawOval(Color(0xFF90613E), Offset(w * .14f, h * .79f), Size(w * .72f, h * .11f))
+        drawOval(Color(0xFFBF9569), Offset(w * .19f, h * .80f), Size(w * .62f, h * .075f))
+        val shoot = ease(.02f, .74f)
+        val wood = ease(.24f, 1f)
+        val height = h * (.025f + .60f * shoot)
+        // The seed remains rooted while the shoot straightens gradually.
+        val bend = w * .13f * sin(progress * 3.14159f) * (1f - wood * .55f)
+        fun trunk(t: Float): Offset = Offset(
+            base.x + bend * sin(t * 3.14159f) + wind * w * .012f * shoot * t * t,
+            base.y - height * t
         )
-        val beamPath = Path().apply {
-            moveTo(cx - w * 0.22f, cy + h * 0.12f)
-            lineTo(cx - w * 0.30f, cy - h * 0.40f)
-            lineTo(cx + w * 0.30f, cy - h * 0.40f)
-            lineTo(cx + w * 0.22f, cy + h * 0.12f)
-            close()
+        val trunkPath = Path().apply {
+            moveTo(base.x, base.y)
+            for (i in 1..60) {
+                val p = trunk(i / 60f)
+                lineTo(p.x, p.y)
+            }
         }
-        drawPath(beamPath, glowBrush)
-
-        val sparkles = listOf(
-            Triple(-0.28f, -0.15f, 0.022f),
-            Triple(-0.16f, -0.32f, 0.016f),
-            Triple(0.02f, -0.38f, 0.025f),
-            Triple(0.22f, -0.26f, 0.020f),
-            Triple(0.32f, -0.08f, 0.018f),
-            Triple(-0.06f, 0.02f, 0.014f)
-        )
-        sparkles.forEach { (sx, sy, sr) ->
-            val spCenter = Offset(cx + w * sx, cy + h * sy)
-            drawCircle(Color(0xFFFFF7C2).copy(alpha = 0.45f), w * sr * 1.8f, spCenter)
-            drawCircle(Color(0xFFFFD54F), w * sr, spCenter)
-            drawCircle(Color.White, w * sr * 0.45f, spCenter)
-        }
-
-        // 3. Adorable Kawaii Plant Base
-        val bulbW = w * (0.24f + progress * 0.06f)
-        val bulbH = h * (0.19f + progress * 0.04f)
-        val bulbY = cy - bulbH * 0.45f
-
-        val bulbBody = Path().apply {
-            moveTo(cx - bulbW * 0.48f, bulbY + bulbH * 0.5f)
-            cubicTo(
-                cx - bulbW * 0.52f, bulbY,
-                cx - bulbW * 0.30f, bulbY - bulbH * 0.10f,
-                cx, bulbY - bulbH * 0.08f
-            )
-            cubicTo(
-                cx + bulbW * 0.30f, bulbY - bulbH * 0.10f,
-                cx + bulbW * 0.52f, bulbY,
-                cx + bulbW * 0.48f, bulbY + bulbH * 0.5f
-            )
-            cubicTo(
-                cx + bulbW * 0.45f, bulbY + bulbH * 1.05f,
-                cx - bulbW * 0.45f, bulbY + bulbH * 1.05f,
-                cx - bulbW * 0.48f, bulbY + bulbH * 0.5f
-            )
-            close()
-        }
-        val bulbColor = Color(0xFFC78F5C)
-        val bulbOutline = Color(0xFF754522)
-        drawPath(bulbBody, bulbColor)
-        drawPath(bulbBody, bulbOutline, style = Stroke(w * 0.008f))
-
-        val eyeY = bulbY + bulbH * 0.56f
-        val eyeSpacing = bulbW * 0.28f
-        drawCircle(Color(0xFF332014), w * 0.014f, Offset(cx - eyeSpacing * 0.5f, eyeY))
-        drawCircle(Color.White, w * 0.005f, Offset(cx - eyeSpacing * 0.5f - w * 0.003f, eyeY - w * 0.003f))
-        drawCircle(Color(0xFF332014), w * 0.014f, Offset(cx + eyeSpacing * 0.5f, eyeY))
-        drawCircle(Color.White, w * 0.005f, Offset(cx + eyeSpacing * 0.5f - w * 0.003f, eyeY - w * 0.003f))
-
-        drawOval(
-            color = Color(0xFFFF9BA8).copy(alpha = 0.65f),
-            topLeft = Offset(cx - eyeSpacing * 0.85f - w * 0.02f, eyeY + h * 0.012f),
-            size = Size(w * 0.040f, h * 0.022f)
-        )
-        drawOval(
-            color = Color(0xFFFF9BA8).copy(alpha = 0.65f),
-            topLeft = Offset(cx + eyeSpacing * 0.85f - w * 0.02f, eyeY + h * 0.012f),
-            size = Size(w * 0.040f, h * 0.022f)
-        )
-
-        val mouthPath = Path().apply {
-            moveTo(cx - w * 0.020f, eyeY + h * 0.028f)
-            cubicTo(cx - w * 0.010f, eyeY + h * 0.042f, cx + w * 0.010f, eyeY + h * 0.042f, cx + w * 0.020f, eyeY + h * 0.028f)
-        }
-        drawPath(mouthPath, Color(0xFF6B3B1B), style = Stroke(w * 0.006f, cap = StrokeCap.Round))
-
-        // 4. Vibrant Sprouting Leaves
-        val stemStartY = bulbY - bulbH * 0.05f
-        val stemEndY = stemStartY - h * (0.09f + progress * 0.08f)
-        val stemPath = Path().apply {
-            moveTo(cx, stemStartY)
-            cubicTo(cx - w * 0.02f, stemStartY - h * 0.04f, cx + w * 0.02f, stemEndY + h * 0.03f, cx + w * 0.01f, stemEndY)
-        }
-        drawPath(stemPath, CuteSproutGreen, style = Stroke(w * 0.022f, cap = StrokeCap.Round))
-        drawPath(stemPath, Color(0xFF427A23), style = Stroke(w * 0.006f, cap = StrokeCap.Round))
-
-        val leafScale = 1.0f + progress * 0.6f
-        val leafW = w * 0.15f * leafScale
-        val leafH = h * 0.13f * leafScale
-
-        drawCuteLeaf(
-            cx = cx + w * 0.01f,
-            cy = stemEndY - leafH * 0.40f,
-            width = leafW * 1.05f,
-            height = leafH * 1.05f
-        )
-        drawCuteLeaf(
-            cx = cx - leafW * 0.60f,
-            cy = stemEndY - leafH * 0.15f,
-            width = leafW * 0.95f,
-            height = leafH * 0.95f
-        )
-        drawCuteLeaf(
-            cx = cx + leafW * 0.65f,
-            cy = stemEndY - leafH * 0.12f,
-            width = leafW * 0.92f,
-            height = leafH * 0.92f
-        )
-
-        if (progress > 0.4f) {
-            when (speciesId) {
-                "cherry" -> {
-                    drawCherryFlower(cx - leafW * 0.45f, stemEndY - leafH * 0.55f, w * 0.030f)
-                    drawCherryFlower(cx + leafW * 0.50f, stemEndY - leafH * 0.45f, w * 0.028f)
+        val bark = Color(0xFF7C5338)
+        val stem = androidx.compose.ui.graphics.lerp(Color(0xFF74A845), bark, wood)
+        val thickness = w * (.009f + .039f * wood)
+        drawPath(trunkPath, Color(0xFF4F4930), style = Stroke(thickness * 1.2f, cap = StrokeCap.Round))
+        drawPath(trunkPath, stem, style = Stroke(thickness, cap = StrokeCap.Round))
+        drawPath(trunkPath, Color(0xFFD2AD72).copy(alpha = wood * .5f), style = Stroke(thickness * .22f, cap = StrokeCap.Round))
+        val seed = 1f - ease(.12f, .57f)
+        drawOval(Color(0xFF754A2F), Offset(base.x - w * .044f * seed, base.y - h * .037f * seed), Size(w * .088f * seed, h * .067f * seed))
+        // Stable branch topology. Length, angle and foliage unfold with smooth curves.
+        for (index in 0..11) {
+            val side = if (index % 2 == 0) -1f else 1f
+            val level = index / 2
+            val birth = .12f + level * .065f
+            val unfolding = ease(birth, birth + .28f)
+            val attachment = trunk(.34f + level * .105f)
+            val length = w * (.27f - level * .026f) * unfolding
+            val lift = h * (.04f + .10f * unfolding) * unfolding +
+                wind * side * h * .007f * unfolding * (1f + level * .1f)
+            val tip = Offset(attachment.x + side * length, attachment.y - lift)
+            val branch = Path().apply {
+                moveTo(attachment.x, attachment.y)
+                cubicTo(attachment.x + side * length * .42f, attachment.y - lift * .1f,
+                    tip.x - side * length * .18f, tip.y + lift * .26f, tip.x, tip.y)
+            }
+            drawPath(branch, stem, style = Stroke((thickness * (.48f - level * .045f)).coerceAtLeast(.1f), cap = StrokeCap.Round))
+            for (leafIndex in 0..4) {
+                val leafGrowth = ease(birth + leafIndex * .025f, birth + .25f + leafIndex * .025f)
+                val radius = w * (.027f + .012f * wood) * leafGrowth
+                val fraction = .38f + leafIndex * .155f
+                val t = fraction
+                val u = 1f - t
+                val controlOne = Offset(attachment.x + side * length * .42f, attachment.y - lift * .1f)
+                val controlTwo = Offset(tip.x - side * length * .18f, tip.y + lift * .26f)
+                val center = attachment * (u*u*u) + controlOne * (3f*u*u*t) +
+                    controlTwo * (3f*u*t*t) + tip * (t*t*t)
+                val leaf = Path().apply {
+                    moveTo(center.x, center.y)
+                    cubicTo(center.x + side * radius * .5f, center.y - radius * 1.45f,
+                        center.x + side * radius * 1.8f, center.y - radius * 1.3f,
+                        center.x + side * radius * 1.65f, center.y - radius * .15f)
+                    cubicTo(center.x + side * radius, center.y + radius * .3f,
+                        center.x + side * radius * .3f, center.y + radius * .3f, center.x, center.y)
                 }
-                "orange" -> {
-                    drawCircle(Color(0xFFFFA01A), w * 0.035f, Offset(cx + leafW * 0.55f, stemEndY - leafH * 0.15f))
-                    drawCircle(Color(0xFFFFD54F), w * 0.010f, Offset(cx + leafW * 0.52f, stemEndY - leafH * 0.18f))
+                val foliage = if (speciesId == "cherry") Color(0xFF6E9B59) else Color(0xFF4F8958)
+                drawPath(leaf, foliage)
+                drawPath(leaf, Color(0xFF365F3C).copy(alpha = .45f), style = Stroke(w * .002f))
+                drawLine(Color(0xFFB4CF83), center, Offset(center.x + side * radius * 1.3f, center.y - radius * .45f), w * .002f)
+                val bloom = ease(.68f + leafIndex * .025f, .92f + leafIndex * .015f)
+                if (speciesId == "cherry" || decoration == "FLOWERS") {
+                    val flower = Offset(center.x + side * radius, center.y - radius * .5f)
+                    val r = w * .018f * bloom
+                    for (petal in 0..4) {
+                        val a = petal * 1.256637f
+                        drawCircle(Color(0xFFF2B4BB), r * .7f, flower + Offset(cos(a) * r, sin(a) * r))
+                    }
+                    drawCircle(Color(0xFFFFE4A0), r * .42f, flower)
                 }
             }
         }
-
-        // 5. Mystery Mascot Silhouette
-        val mascotX = cx + soilW * 0.33f
-        val mascotY = soilY + soilH * 0.48f
-        val mascotSize = w * 0.10f
-
-        drawMascotSilhouette(mascotX, mascotY, mascotSize)
+        if (decoration == "LANTERNS") {
+            val tip = trunk(.6f)
+            val r = w * .034f * wood
+            drawLine(bark, tip, tip + Offset(w * .14f * wood, h * .08f * wood), w * .003f)
+            drawOval(Color(0xFFECA653), tip + Offset(w * .12f * wood, h * .07f * wood), Size(r, r * 1.3f))
+        }
+        if (decoration == "RIBBON") {
+            val center = trunk(.25f)
+            val r = w * .055f * wood
+            val ribbon = Path().apply {
+                moveTo(center.x, center.y); lineTo(center.x-r, center.y-r*.6f)
+                lineTo(center.x-r, center.y+r*.6f); lineTo(center.x+r, center.y-r*.6f)
+                lineTo(center.x+r, center.y+r*.6f); close()
+            }
+            drawPath(ribbon, Color(0xFFD88895))
+        }
     }
 }
 
-private fun DrawScope.drawGrassTuft(x: Float, y: Float, size: Float) {
-    val grassColor = Color(0xFF67B547)
-    val grassLight = Color(0xFF90D96A)
-    drawLine(grassColor, Offset(x, y), Offset(x - size * 0.7f, y - size), size * 0.35f, cap = StrokeCap.Round)
-    drawLine(grassLight, Offset(x, y), Offset(x, y - size * 1.2f), size * 0.38f, cap = StrokeCap.Round)
-    drawLine(grassColor, Offset(x, y), Offset(x + size * 0.7f, y - size * 0.85f), size * 0.35f, cap = StrokeCap.Round)
-}
+@Preview(name = "Continuous rig · seed", widthDp = 320, heightDp = 360, showBackground = true)
+@Composable
+fun TreeSeedRigPreview() { KawaiiPlantIllustration(0) }
 
-private fun DrawScope.drawCuteLeaf(cx: Float, cy: Float, width: Float, height: Float) {
-    val leafPath = Path().apply {
-        moveTo(cx, cy + height * 0.5f)
-        cubicTo(cx - width * 0.65f, cy + height * 0.2f, cx - width * 0.65f, cy - height * 0.4f, cx, cy - height * 0.5f)
-        cubicTo(cx + width * 0.65f, cy - height * 0.4f, cx + width * 0.65f, cy + height * 0.2f, cx, cy + height * 0.5f)
-        close()
-    }
-    drawPath(leafPath, CuteSproutGreen)
-    val topHighlight = Path().apply {
-        moveTo(cx, cy + height * 0.2f)
-        cubicTo(cx - width * 0.45f, cy, cx - width * 0.45f, cy - height * 0.35f, cx, cy - height * 0.5f)
-        cubicTo(cx + width * 0.45f, cy - height * 0.35f, cx + width * 0.45f, cy, cx, cy + height * 0.2f)
-        close()
-    }
-    drawPath(topHighlight, CuteSproutLight.copy(alpha = 0.55f))
-    drawPath(leafPath, Color(0xFF386C1D), style = Stroke(width * 0.05f))
+@Preview(name = "Continuous rig · unfolding shoot", widthDp = 320, heightDp = 360, showBackground = true)
+@Composable
+fun TreeShootRigPreview() { KawaiiPlantIllustration(32, "cherry") }
 
-    drawCircle(Color(0xFFFFEA88), width * 0.16f, Offset(cx, cy - height * 0.45f))
-    drawCircle(Color.White, width * 0.08f, Offset(cx, cy - height * 0.45f))
-}
+@Preview(name = "Continuous rig · young tree", widthDp = 320, heightDp = 360, showBackground = true)
+@Composable
+fun TreeYoungRigPreview() { KawaiiPlantIllustration(72, "cherry") }
 
-private fun DrawScope.drawCherryFlower(cx: Float, cy: Float, radius: Float) {
-    val petalColor = Color(0xFFFFC0CB)
-    for (i in 0 until 5) {
-        val rad = Math.toRadians((i * 72).toDouble())
-        val px = cx + (Math.cos(rad) * radius * 0.7f).toFloat()
-        val py = cy + (Math.sin(rad) * radius * 0.7f).toFloat()
-        drawCircle(petalColor, radius * 0.55f, Offset(px, py))
-    }
-    drawCircle(Color(0xFFFFD54F), radius * 0.35f, Offset(cx, cy))
-}
-
-private fun DrawScope.drawMascotSilhouette(cx: Float, cy: Float, size: Float) {
-    val bodyColor = Color(0xFF2C1911)
-    drawOval(
-        color = bodyColor,
-        topLeft = Offset(cx - size * 0.48f, cy - size * 0.40f),
-        size = Size(size * 0.96f, size * 0.85f)
-    )
-    drawCircle(bodyColor, size * 0.22f, Offset(cx - size * 0.32f, cy - size * 0.38f))
-    drawCircle(bodyColor, size * 0.22f, Offset(cx + size * 0.32f, cy - size * 0.38f))
-    drawCircle(bodyColor, size * 0.16f, Offset(cx - size * 0.28f, cy + size * 0.38f))
-    drawCircle(bodyColor, size * 0.16f, Offset(cx + size * 0.28f, cy + size * 0.38f))
-
-    val qColor = Color.White
-    drawArc(
-        color = qColor,
-        startAngle = 180f,
-        sweepAngle = 180f,
-        useCenter = false,
-        topLeft = Offset(cx - size * 0.15f, cy - size * 0.22f),
-        size = Size(size * 0.30f, size * 0.24f),
-        style = Stroke(size * 0.08f, cap = StrokeCap.Round)
-    )
-    drawLine(
-        color = qColor,
-        start = Offset(cx + size * 0.06f, cy - size * 0.08f),
-        end = Offset(cx, cy + size * 0.04f),
-        strokeWidth = size * 0.08f,
-        cap = StrokeCap.Round
-    )
-    drawCircle(qColor, size * 0.045f, Offset(cx, cy + size * 0.16f))
-}
+@Preview(name = "Continuous rig · flowering tree", widthDp = 320, heightDp = 360, showBackground = true)
+@Composable
+fun TreeMatureRigPreview() { KawaiiPlantIllustration(120, "cherry") }

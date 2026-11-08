@@ -169,38 +169,36 @@ fun WaterSplashFeedback(
  * Dialog interacting with the companion mascot.
  */
 @Composable
-fun MascotCompanionDialog(
-    onDismiss: () -> Unit
-) {
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = {
-            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text("🐹", fontSize = 28.sp)
-                Text("Bé Mầm Nhỏ Nhắn", fontWeight = FontWeight.Bold, color = Deep)
-            }
-        },
-        text = {
-            Text(
-                "Chào bạn! Hãy hoàn thành các thói quen tốt hôm nay để nhận thêm nước và phân bón chăm sóc mầm cây nhé! Cây rất vui khi được bạn chăm sóc mỗi ngày. 🌱",
-                color = Deep,
-                lineHeight = 20.sp
+fun MascotCompanionDialog(onDismiss: () -> Unit) {
+    if (androidx.compose.ui.platform.LocalInspectionMode.current) {
+        MascotCompanionContent(onDismiss)
+    } else {
+        androidx.compose.ui.window.Dialog(onDismissRequest = onDismiss) {
+            MascotCompanionContent(onDismiss)
+        }
+    }
+}
+
+@Composable
+fun MascotCompanionContent(onDismiss: () -> Unit) {
+    com.mamxanh.app.presentation.ui.components.GardenBotanicalFrame {
+        Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
+            Text("Bé Mầm Nhỏ Nhắn", color = Deep, fontWeight = FontWeight.ExtraBold,
+                style = MaterialTheme.typography.titleLarge)
+            com.mamxanh.app.presentation.ui.components.GardenLandmark(
+                "HOME", Modifier.align(Alignment.CenterHorizontally).size(100.dp)
             )
-        },
-        confirmButton = {
-            Button(
-                onClick = onDismiss,
-                colors = ButtonDefaults.buttonColors(containerColor = Green)
-            ) {
+            Text(
+                "Chào bạn! Hãy hoàn thành các thói quen tốt hôm nay để nhận thêm nước và phân bón chăm sóc mầm cây nhé! Cây rất vui khi được bạn chăm sóc mỗi ngày.",
+                color = Deep, style = MaterialTheme.typography.bodyMedium
+            )
+            Button(onClick = onDismiss, modifier = Modifier.align(Alignment.End)) {
                 Text("Cảm ơn bạn nhỏ!")
             }
         }
-    )
+    }
 }
 
-/**
- * Bottom task drawer modal for quick daily check-ins.
- */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeTasksBottomSheet(
@@ -211,57 +209,40 @@ fun HomeTasksBottomSheet(
     onOpenTasks: () -> Unit,
     onOpenGarden: () -> Unit
 ) {
-    ModalBottomSheet(
-        onDismissRequest = onDismiss,
-        containerColor = Color(0xFFF7F9F5)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp, vertical = 10.dp),
-            verticalArrangement = Arrangement.spacedBy(14.dp)
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Column {
-                    Text("Thói Quen Tích Cực", fontWeight = FontWeight.ExtraBold, style = MaterialTheme.typography.titleLarge, color = Deep)
-                    Text("$completedTasks/$totalTasks nhiệm vụ hoàn thành hôm nay", color = Muted, fontSize = 13.sp)
-                }
-                Button(
-                    onClick = {
-                        onDismiss()
-                        onOpenTasks()
-                    },
-                    colors = ButtonDefaults.buttonColors(containerColor = Green)
-                ) {
-                    Text("Xem tất cả  →")
-                }
-            }
+    if (androidx.compose.ui.platform.LocalInspectionMode.current) {
+        HomeTasksSheetContent(completedTasks,totalTasks,treeCount,onDismiss,onOpenTasks,onOpenGarden)
+    } else {
+        ModalBottomSheet(onDismissRequest = onDismiss, containerColor = Color(0xFFFFFCF1)) {
+            HomeTasksSheetContent(completedTasks,totalTasks,treeCount,onDismiss,onOpenTasks,onOpenGarden)
+        }
+    }
+}
 
+@Composable
+fun HomeTasksSheetContent(
+    completedTasks: Int,
+    totalTasks: Int,
+    treeCount: Int,
+    onDismiss: () -> Unit,
+    onOpenTasks: () -> Unit,
+    onOpenGarden: () -> Unit
+) {
+    com.mamxanh.app.presentation.ui.components.GardenBotanicalFrame(Modifier.padding(12.dp)) {
+        Column(Modifier.fillMaxWidth(),verticalArrangement = Arrangement.spacedBy(14.dp)) {
+            Text("Thói quen tích cực", fontWeight = FontWeight.ExtraBold,
+                style = MaterialTheme.typography.titleLarge, color = Deep)
+            Text("$completedTasks/$totalTasks nhiệm vụ hoàn thành hôm nay",color = Muted)
             LinearProgressIndicator(
-                progress = { if (totalTasks == 0) 0f else completedTasks.toFloat() / totalTasks },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(10.dp)
-                    .clip(RoundedCornerShape(50)),
-                color = Color(0xFF55C75A),
-                trackColor = Color(0xFFE2E8DE)
+                progress = { if(totalTasks <= 0) 0f else (completedTasks.toFloat()/totalTasks).coerceIn(0f,1f) },
+                modifier = Modifier.fillMaxWidth().height(8.dp).clip(RoundedCornerShape(50)),
+                color = Green, trackColor = Color(0xFFE2E8DE)
             )
-
-            OutlinedButton(
-                onClick = {
-                    onDismiss()
-                    onOpenGarden()
-                },
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp)
-            ) {
-                Text("🌿 Ghé thăm khu vườn ($treeCount cây)")
+            Button(onClick = { onDismiss(); onOpenTasks() },modifier=Modifier.fillMaxWidth()) {
+                Text("Xem tất cả việc nhỏ")
             }
-            Spacer(modifier = Modifier.height(16.dp))
+            OutlinedButton(onClick = { onDismiss(); onOpenGarden() },modifier=Modifier.fillMaxWidth()) {
+                Text("Ghé thăm khu vườn ($treeCount cây)")
+            }
         }
     }
 }

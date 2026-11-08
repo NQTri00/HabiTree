@@ -1,6 +1,8 @@
 package com.mamxanh.app.feature.garden.presentation
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.clickable
+import com.mamxanh.app.presentation.ui.components.GardenBotanicalFrame
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -293,16 +295,9 @@ private fun GardenTreeCard(
 ) {
     val progress = (tree.growth / 120f).coerceIn(0f, 1f)
     val accent = if (tree.wateredToday) Pale else Color(0xFFFFF2D9)
-    Surface(
-        onClick = onClick,
-        modifier = modifier,
-        color = Color.White,
-        shape = RoundedCornerShape(22.dp),
-        shadowElevation = 2.dp,
-        border = androidx.compose.foundation.BorderStroke(1.dp, Green.copy(alpha = 0.12f))
-    ) {
+    GardenBotanicalFrame(modifier.clickable(onClick = onClick)) {
         Column(
-            Modifier.fillMaxWidth().padding(12.dp),
+            Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {

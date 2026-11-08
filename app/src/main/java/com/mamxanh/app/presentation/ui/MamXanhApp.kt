@@ -57,8 +57,6 @@ fun MamXanhApp(
     val dashboard by homeVm.uiState.collectAsStateWithLifecycle()
     val treeState by treeVm.uiState.collectAsStateWithLifecycle()
     val app by appVm.uiState.collectAsStateWithLifecycle()
-    val garden = gardenState.garden
-    val wallet = walletState.wallet
     val lifecycleOwner = LocalLifecycleOwner.current
 
     LaunchedEffect(tasksVm, lifecycleOwner) {
@@ -135,112 +133,22 @@ fun MamXanhApp(
         }
     }
 
-    val selectedTree = garden.trees.firstOrNull { it.id == app.selectedTreeId }
     val canGoBack = app.selectedTreeId != null || app.backStack.isNotEmpty()
     BackHandler(enabled = canGoBack) { appVm.dispatch(AppIntent.Back) }
-
-    MaterialTheme(colorScheme = lightColorScheme(primary = Green, secondary = Color(0xFFFFA01A), background = Cream, surface = Color.White)) {
-        Scaffold(
-            containerColor = Cream,
-            topBar = {
-                if (selectedTree != null || app.destination != AppDestination.HOME) {
-                    TopAppBar(
-                        colors = TopAppBarDefaults.topAppBarColors(containerColor = if (app.destination == AppDestination.SHOP) PinkTileBg else Cream),
-                        navigationIcon = { if (canGoBack) IconButton(onClick = { appVm.dispatch(AppIntent.Back) }) { Icon(Icons.Rounded.ArrowBack, contentDescription = "Quay lại") } },
-                        title = {
-                            androidx.compose.foundation.layout.Column {
-                                Text(selectedTree?.name ?: app.destination.label, fontWeight = FontWeight.ExtraBold, color = Deep)
-                                Text(if (selectedTree != null) "Chăm sóc mầm xanh" else when (app.destination) { AppDestination.HOME -> "Nuôi dưỡng thói quen, lớn lên cùng cây"; AppDestination.TASKS -> "Hoàn thành từng việc nhỏ mỗi ngày"; AppDestination.GARDEN -> "Những người bạn xanh của bạn"; AppDestination.SHOP -> "Chọn thêm mầm xanh mới"; AppDestination.STATS -> "Nhìn lại hành trình của khu vườn" }, style = MaterialTheme.typography.labelSmall, color = Green)
-                            }
-                        },
-                        actions = {
-                            Surface(color = Gold, shape = androidx.compose.foundation.shape.RoundedCornerShape(50), modifier = Modifier.padding(end = 14.dp)) {
-                                Text("🪙 " + wallet.coins, modifier = Modifier.padding(horizontal = 13.dp, vertical = 7.dp), color = Deep, fontWeight = FontWeight.ExtraBold)
-                            }
-                        }
-                    )
-                }
-            },
-            bottomBar = {
-                if (selectedTree == null) Surface(color = Color.White.copy(alpha = .96f), shadowElevation = 8.dp, shape = androidx.compose.foundation.shape.RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)) {
-                    NavigationBar(containerColor = Color.Transparent, tonalElevation = 0.dp) {
-                        AppDestination.entries.forEach { item ->
-                            val icon = when (item) {
-                                AppDestination.HOME -> Icons.Rounded.Home
-                                AppDestination.TASKS -> Icons.Rounded.Check
-                                AppDestination.GARDEN -> Icons.Rounded.Forest
-                                AppDestination.SHOP -> Icons.Rounded.Store
-                                AppDestination.STATS -> Icons.Rounded.Insights
-                            }
-                            NavigationBarItem(selected = app.destination == item, onClick = { appVm.dispatch(AppIntent.Navigate(item)) },
-                                icon = { Icon(icon, contentDescription = item.label) }, label = { Text(item.label, fontWeight = if (app.destination == item) FontWeight.Bold else FontWeight.Normal) },
-                                colors = NavigationBarItemDefaults.colors(selectedIconColor = Green, selectedTextColor = Green, indicatorColor = Color(0xFFD6EADC)))
-                        }
-                    }
-                }
-            }
-        ) { padding ->
-            SharedTransitionLayout {
-                val selectedTreeId = app.selectedTreeId
-                val homeTreeId = dashboard.dashboard.trees.firstOrNull()?.id
-                AnimatedContent(
-                    targetState = app.destination to selectedTreeId,
-                    transitionSpec = {
-                        val (fromDestination, fromTreeId) = initialState
-                        val (toDestination, toTreeId) = targetState
-                        if (fromTreeId == null && toTreeId != null) {
-                            (fadeIn(tween(450)) + scaleIn(initialScale = 0.82f, animationSpec = tween(450))) togetherWith
-                                (fadeOut(tween(300)) + scaleOut(targetScale = 1.04f, animationSpec = tween(450)))
-                        } else if (fromTreeId != null && toTreeId == null) {
-                            (fadeIn(tween(450)) + scaleIn(initialScale = 1.04f, animationSpec = tween(450))) togetherWith
-                                (fadeOut(tween(300)) + scaleOut(targetScale = 0.82f, animationSpec = tween(450)))
-                        } else {
-                            val direction = if (AppDestination.entries.indexOf(toDestination) >= AppDestination.entries.indexOf(fromDestination)) 1 else -1
-                            (slideInHorizontally(tween(260)) { direction * it / 12 } + fadeIn(tween(220))) togetherWith
-                                (slideOutHorizontally(tween(260)) { -direction * it / 12 } + fadeOut(tween(180)))
-                        }
-                    },
-                    label = "garden-route"
-                ) { (destination, _) ->
-                    val treeSharedModifier = when {
-                        selectedTree != null -> Modifier.sharedElement(
-                            rememberSharedContentState(key = "tree-${selectedTree.id}"),
-                            animatedVisibilityScope = this
-                        )
-                        homeTreeId != null -> Modifier.sharedElement(
-                            rememberSharedContentState(key = "tree-$homeTreeId"),
-                            animatedVisibilityScope = this
-                        )
-                        else -> Modifier
-                    }
-                    when {
-                        selectedTree != null -> TreeInteractionScreen(
-                            tree = FeatureTree(selectedTree.id, selectedTree.speciesId, selectedTree.name, selectedTree.growth, selectedTree.planted, selectedTree.decoration, selectedTree.wateredToday),
-                            state = treeState,
-                            fertilizerCount = wallet.inventory["fertilizer"] ?: 0,
-                            wateringCanMl = dashboard.dashboard.wateringCanMl,
-                            onIntent = { treeVm.dispatch(it) },
-                            modifier = Modifier.padding(padding),
-                            sharedTreeModifier = treeSharedModifier
-                        )
-                        else -> when (destination) {
-                            AppDestination.HOME -> HomeScreen(state = dashboard, onIntent = homeVm::dispatch,
-                                fertilizerCount = wallet.inventory["fertilizer"] ?: 0, modifier = Modifier.padding(padding),
-                                sharedTreeModifier = treeSharedModifier)
-                            AppDestination.TASKS -> TasksScreen(tasks, tasksVm::dispatch, Modifier.padding(padding))
-                            AppDestination.GARDEN -> GardenScreen(gardenState, gardenVm::dispatch, Modifier.padding(padding))
-                            AppDestination.SHOP -> ShopScreen(walletState, shopVm::dispatch, Modifier.padding(padding))
-                            AppDestination.STATS -> StatsScreen(statistics, statsVm::dispatch, Modifier.padding(padding))
-                        }
-                    }
-                }
-            }
-        }
-        if (app.message.isNotBlank()) {
-            GardenMessageDialog(
-                message = app.message,
-                onDismiss = { appVm.dispatch(AppIntent.DismissMessage) }
-            )
-        }
-    }
+    MamXanhAppContent(
+        state = app,
+        dashboard = dashboard,
+        tasks = tasks,
+        garden = gardenState,
+        shop = walletState,
+        stats = statistics,
+        treeState = treeState,
+        onAppIntent = appVm::dispatch,
+        onHomeIntent = homeVm::dispatch,
+        onTasksIntent = tasksVm::dispatch,
+        onGardenIntent = gardenVm::dispatch,
+        onShopIntent = shopVm::dispatch,
+        onStatsIntent = statsVm::dispatch,
+        onTreeIntent = treeVm::dispatch
+    )
 }

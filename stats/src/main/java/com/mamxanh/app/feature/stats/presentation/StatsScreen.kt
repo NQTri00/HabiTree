@@ -59,13 +59,9 @@ fun StatsScreen(state: StatsUiState, onIntent: (StatsIntent) -> Unit, modifier: 
             }
         }
         item {
-            Card(
-                colors = CardDefaults.cardColors(containerColor = Color.White),
-                shape = RoundedCornerShape(22.dp),
-                border = BorderStroke(1.dp, Green.copy(alpha = 0.12f))
-            ) {
+            GardenBotanicalFrame(Modifier.fillMaxWidth()) {
                 Column(
-                    Modifier.fillMaxWidth().padding(16.dp),
+                    Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {

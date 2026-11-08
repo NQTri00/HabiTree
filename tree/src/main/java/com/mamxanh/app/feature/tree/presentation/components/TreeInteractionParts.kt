@@ -18,7 +18,8 @@ import com.mamxanh.app.presentation.ui.components.GardenBotanicalFrame
 fun TreePortrait(
     tree: Tree,
     modifier: Modifier = Modifier,
-    sharedTreeModifier: Modifier = Modifier
+    sharedTreeModifier: Modifier = Modifier,
+    growthOverride: Float? = null
 ) {
     Box(
         modifier = modifier.fillMaxWidth().height(260.dp),
@@ -28,7 +29,8 @@ fun TreePortrait(
             growth = tree.growth,
             speciesId = tree.speciesId,
             decoration = tree.decoration,
-            modifier = sharedTreeModifier.width(290.dp).height(310.dp)
+            modifier = sharedTreeModifier.width(290.dp).height(310.dp),
+            growthOverride = growthOverride
         )
     }
 }
