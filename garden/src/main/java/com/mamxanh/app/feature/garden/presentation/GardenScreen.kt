@@ -221,3 +221,12 @@ fun GardenOverviewCardPreview() { MamXanhPreviewTheme { GardenOverviewCard(3,2,2
 @Preview(name = "Planted island", widthDp = 180)
 @Composable
 fun GardenTreeCardPreview() { MamXanhPreviewTheme { GardenTreeIsland(sampleGarden().trees.first(), {}) } }
+
+@Preview(name = "Seed basket · long labels, large text", widthDp = 360, heightDp = 220, fontScale = 1.3f)
+@Composable
+fun SeedBasketLargeTextPreview() {
+    MamXanhPreviewTheme {
+        SeedBasket(seedCatalog.filter { it.id in setOf("monstera", "succulent") },
+            mapOf("monstera" to 12, "succulent" to 24), {})
+    }
+}

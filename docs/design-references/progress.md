@@ -11,7 +11,13 @@ Implemented: smooth cream panels, plain green buttons, honey wood signs/trays, s
 
 Evidence: clean build passed; subsequent :app:assembleDebug passed after shared API changes. Normal Compose Previews rendered for all six feature screens, three dialogs, navigation and potted specimens. Preview class-loader caching caused NoSuchMethodError despite matching compiled bytecode; explicit JVM file names isolate the new panel/specimen components. Feature previews must be refreshed before full-shell comparisons.
 
-Pending: latest seed/drop/nut and layout edits need final build, full-shell all-route refresh, large text and empty previews, then complete visual acceptance. No numeric 90% score is claimed yet.
+Checkpoint acb3068 was built and pushed to origin/y-tuong/quangtri after verifying that the connected GitHub account owns the repository. Automatic push review initially lacked destination trust; authenticated owner/admin/push metadata established the destination and the explicit-branch push succeeded.
+
+Review fixes are applied: bounded Home names, measured packet art/labels with independent counts, species-specific legacy artwork, visible cherry flower decoration and stacked form fields at large text sizes. Targeted previews confirmed the long-name plaque and heading, packet labels/counts at 1.3 font scale, and the scrollable TODO form. Home camera origins now match the moved destination signs. :app:assembleDebug passed after the latest source changes.
+
+Memory discipline: previews were sequential and limited to affected cases; no image atlas was rendered. Heap checks interrupted rendering when allocation approached the 4GiB limit. Collection reduced usage from4,044,847KB to2,277,154KB; one subsequent Home preview raised allocation again to3,829,349KB, so no additional previews are scheduled in this batch. This is monitored recovery, not proof of a permanent leak fix.
+
+Pending: final full-shell comparisons, remaining large-text/empty-state checks and complete visual acceptance. No numeric 90% score or full completion claim yet.
 
 Previous goal turn: progress — authoritative source files were inspected, a new detailed plan written, simplified code/assets implemented and previews compared. No blocker status applies.
 

@@ -68,10 +68,9 @@ fun HomeScreen(
     }
     val approach = if (previewApproach > 0f) previewApproach else camera.value
     val origin = when (selectedPlace) {
-        "SHOP" -> TransformOrigin(.80f, .42f)
-        "TASKS" -> TransformOrigin(.20f, .42f)
-        "GARDEN" -> TransformOrigin(.20f, .74f)
-        else -> TransformOrigin(.80f, .74f)
+        "SHOP" -> TransformOrigin(.78f, .74f)
+        "TASKS" -> TransformOrigin(.27f, .76f)
+        else -> TransformOrigin(.50f, .45f)
     }
     Box(modifier.fillMaxSize()) {
         Box(Modifier.fillMaxSize().graphicsLayer {
@@ -107,8 +106,13 @@ fun HomeScreen(
             GardenBotanicalFrame(contentPadding = PaddingValues(horizontal = 14.dp, vertical = 4.dp), cornerSize = 20.dp) {
                 Text("🪙 ${dashboard.coins} xu", color = Deep, fontSize = 17.sp, lineHeight = 19.sp, fontWeight = FontWeight.Bold)
             }
-            GardenBotanicalFrame(contentPadding = PaddingValues(horizontal = 18.dp, vertical = 6.dp), cornerSize = 24.dp) {
-                Text("🌿 Khu vườn của bạn 🌿", color = Deep, fontSize = 21.sp, lineHeight = 24.sp, fontWeight = FontWeight.Bold)
+            GardenBotanicalFrame(contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp), cornerSize = 24.dp) {
+                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                    GardenArtwork(GardenArt.SPROUT, Modifier.size(22.dp))
+                    Text("Khu vườn của bạn", Modifier.weight(1f), color = Deep, fontSize = 21.sp,
+                        lineHeight = 24.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
+                    GardenArtwork(GardenArt.SPROUT, Modifier.size(22.dp))
+                }
             }
         }
         if (tree != null) BoxWithConstraints(Modifier.fillMaxSize().graphicsLayer { alpha = 1f - approach }) {
@@ -164,8 +168,8 @@ private fun GardenPlace(kind: String, label: String, onClick: () -> Unit, modifi
     }
 }
 
-private fun previewHomeState() = HomeUiState(HomeDashboard(
-    trees = listOf(HomeTree(1L, "cherry", "Đào hồng xuân", 90, "FLOWERS", false)),
+private fun previewHomeState(treeName: String = "Đào hồng xuân") = HomeUiState(HomeDashboard(
+    trees = listOf(HomeTree(1L, "cherry", treeName, 90, "FLOWERS", false)),
     completedTasks = 2, totalTasks = 4, coins = 120, wateringCanMl = 500
 ), false)
 
@@ -184,3 +188,11 @@ fun HomeShopApproachPreview() { MamXanhPreviewTheme { HomeScreen(previewHomeStat
 @Preview(name = "Painted stall destination", widthDp = 180, heightDp = 200, showBackground = true)
 @Composable
 fun GardenPlacePreview() { MamXanhPreviewTheme { GardenPlace("SHOP", "Tiệm hạt", {}, Modifier.fillMaxSize()) } }
+
+@Preview(name = "Home · long name, large text", widthDp = 360, heightDp = 800, fontScale = 1.3f)
+@Composable
+fun HomeLongNamePreview() {
+    MamXanhPreviewTheme {
+        HomeScreen(previewHomeState("Cây đào bình yên bên cửa sổ của gia đình"), {}, 2)
+    }
+}
