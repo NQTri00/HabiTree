@@ -1,6 +1,9 @@
 package com.mamxanh.app.feature.tree.presentation
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.clickable
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.semantics.Role
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
@@ -24,7 +27,8 @@ import com.mamxanh.app.presentation.ui.components.*
 fun TreeInteractionScreen(
     tree: Tree, state: TreeUiState, fertilizerCount: Int, wateringCanMl: Int,
     onIntent: (TreeIntent) -> Unit, modifier: Modifier = Modifier,
-    sharedTreeModifier: Modifier = Modifier
+    sharedTreeModifier: Modifier = Modifier,
+    onBack: (() -> Unit)? = null
 ) {
     val displayedGrowth = tree.growth.coerceIn(0, 120)
     Box(modifier.fillMaxSize()) {
@@ -34,6 +38,12 @@ fun TreeInteractionScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
+            if (onBack != null) {
+                GardenWoodSign("‹ Vườn ươm",
+                    Modifier.align(Alignment.Start).width((170.dp * LocalDensity.current.fontScale).coerceAtMost(280.dp))
+                        .clickable(role = Role.Button, onClickLabel = "Quay lại khu vườn", onClick = onBack),
+                    fontSize = 16.sp)
+            }
             if (state.isLoading) LinearProgressIndicator(Modifier.fillMaxWidth(), color = Green)
             GardenBotanicalFrame(contentPadding = PaddingValues(horizontal = 28.dp, vertical = 14.dp), cornerSize = 30.dp, skin = GardenPanelSkin.NAME) {
                 Text(tree.name, color = Deep, fontWeight = FontWeight.Bold, fontSize = 27.sp, lineHeight = 30.sp, textAlign = TextAlign.Center)

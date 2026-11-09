@@ -40,6 +40,7 @@ Files: home HomeScreen; garden GardenScreen; tree TreeInteractionScreen/TreeInte
 - [x] Nursery: compact title/counts; staggered trees on islands; readable rounded name plaques; basket with live seed stock.
 - [x] Tree care: back plaque over scenery, cream title, hero tree, progress, care and decoration trays, footer.
 - [ ] Build; render each full screen at 360x800 and 1.3 font scale; correct placement/overflow.
+  - Verified Tree Care full app shell at normal and 1.3 font scale after moving Back into the forest scene; lower content remains scrollable. Home normal shell refreshed. Nursery final full-screen variants remain pending.
 
 ## Task 3 — Tasks, shop and statistics
 Files: tasks TasksScreen; shop ShopScreen; stats StatsScreen.

@@ -3,20 +3,11 @@ package com.mamxanh.app.presentation.ui
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.clickable
-import androidx.compose.ui.semantics.Role
-import com.mamxanh.app.presentation.ui.components.GardenWoodSign
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.unit.sp
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.mamxanh.app.feature.garden.presentation.*
 import com.mamxanh.app.feature.home.presentation.*
 import com.mamxanh.app.feature.home.domain.model.HomeDashboard
@@ -57,17 +48,6 @@ fun MamXanhAppContent(
         Scaffold(
             modifier = modifier,
             containerColor = Color(0xFF073D36),
-            topBar = {
-                if (selectedTree != null) {
-                    Surface(color = Color(0xFF073D36)) {
-                        Box(Modifier.fillMaxWidth().statusBarsPadding().padding(start = 10.dp, top = 4.dp)) {
-                            GardenWoodSign("‹ Vườn ươm",
-                                Modifier.width(170.dp).clickable(role = Role.Button, onClickLabel = "Quay lại khu vườn", onClick = { onAppIntent(AppIntent.Back) }),
-                                fontSize = 20.sp)
-                        }
-                    }
-                }
-            },
             bottomBar = {
                 if (selectedTree == null) {
                     GardenTrailBar(app.destination, { onAppIntent(AppIntent.Navigate(it)) })
@@ -116,7 +96,8 @@ fun MamXanhAppContent(
                             wateringCanMl = dashboard.dashboard.wateringCanMl,
                             onIntent = { onTreeIntent(it) },
                             modifier = Modifier,
-                            sharedTreeModifier = treeSharedModifier
+                            sharedTreeModifier = treeSharedModifier,
+                            onBack = { onAppIntent(AppIntent.Back) }
                         )
                         else -> when (destination) {
                             AppDestination.HOME -> HomeScreen(state = dashboard, onIntent = onHomeIntent,
