@@ -59,8 +59,46 @@ fun ReferenceCareUnavailablePreview() {
     ReferenceWorld(AppUiState(destination = AppDestination.GARDEN, selectedTreeId = 1L), careUnavailable = true)
 }
 
+@Preview(name = "App shell · actual add-task dialog", widthDp = 360, heightDp = 800,
+    device = "spec:width=360dp,height=800dp,dpi=160")
 @Composable
-private fun ReferenceWorld(route: AppUiState, empty: Boolean = false, careUnavailable: Boolean = false) {
+fun ReferenceTaskDialogPreview() {
+    ReferenceWorld(AppUiState(destination = AppDestination.TASKS), addingTask = true)
+}
+
+// Explicit compositions: layoutlib does not capture Android Dialog windows in the app-root image.
+@Preview(name = "Composition · add task", widthDp = 360, heightDp = 800,
+    device = "spec:width=360dp,height=800dp,dpi=160")
+@Composable
+fun ReferenceAddTaskCompositionPreview() {
+    MamXanhPreviewTheme {
+        com.mamxanh.app.feature.tasks.presentation.dialog.AddTaskDialogPreviewContent(background = {
+            ReferenceWorld(AppUiState(destination = AppDestination.TASKS))
+        })
+    }
+}
+
+@Preview(name = "Composition · seed detail", widthDp = 360, heightDp = 800,
+    device = "spec:width=360dp,height=800dp,dpi=160")
+@Composable
+fun ReferenceSeedCompositionPreview() {
+    com.mamxanh.app.feature.shop.presentation.ShopSeedDetailDialogPreview(background = {
+        ReferenceWorld(AppUiState(destination = AppDestination.SHOP))
+    })
+}
+
+@Preview(name = "Composition · planting", widthDp = 360, heightDp = 800,
+    device = "spec:width=360dp,height=800dp,dpi=160")
+@Composable
+fun ReferencePlantingCompositionPreview() {
+    com.mamxanh.app.feature.garden.presentation.PlantingDialogPreview(background = {
+        ReferenceWorld(AppUiState(destination = AppDestination.GARDEN))
+    })
+}
+
+@Composable
+private fun ReferenceWorld(route: AppUiState, empty: Boolean = false, careUnavailable: Boolean = false,
+    addingTask: Boolean = false) {
     val trees = if (empty) emptyList() else listOf(
         Tree(1L, "cherry", if (careUnavailable) "Cây đào bình yên bên cửa sổ của gia đình" else "Đào hồng xuân",
             68, "2026-11-01", "FLOWERS"),
@@ -79,7 +117,7 @@ private fun ReferenceWorld(route: AppUiState, empty: Boolean = false, careUnavai
                 Task(1, "Đọc 10 trang sách", "HABIT", "Học tập", 10, "EVERY_DAY", "", "", 4, ""),
                 Task(2, "Uống đủ nước", "DAILY", "Sức khỏe", 10, "EVERY_DAY", "", today(), 2, today()),
                 Task(3, "Đi bộ 20 phút", "TODO", "Sức khỏe", 10, "ONCE", "", "", 0, "")
-            ), isLoading = false),
+            ), isLoading = false, isAddingTask = addingTask),
             garden = GardenUiState(Garden(trees, inventory), false),
             shop = ShopUiState(ShopWallet(if (empty) 0 else 120, inventory), false),
             stats = StatsUiState(if (empty) GardenStatistics() else GardenStatistics(

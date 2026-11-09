@@ -41,7 +41,9 @@ Dialog surface-layout verification is now complete across daily/TODO task forms,
 
 Reference detail batch: new native cottage/hanging lantern scenery on Home, canopy lantern and edged shelf fronts in Shop, title/reward sprigs in Tasks, lateral plant sprigs in Seed Detail and side handles on Planting. No raster UI or baked text was introduced. Build passed; SimpleSceneDetails inspection has formatting warnings only. Normal Home/Shop full shells, large Tasks and normal Planting previews show the checked details clear of content. Seed Detail's new sprigs and normal Tasks reward accents remain for the final refreshed comparison. Sequential rendering and measured collection maintained the 4GiB heap constraint.
 
-Pending: final full-shell comparisons, remaining large-text/empty-state checks and complete visual acceptance. No numeric 90% score or full completion claim yet.
+Latest composition audit: refreshed normal Nursery, Care and populated Journal full shells fit their basket/footer/metrics. Normal Tasks accents and Seed Detail sprigs are also checked. The actual-dialog diagnostic preview returned only the underlying Tasks image/hierarchy, with no dialog title. Three explicit preview compositions now reuse real content and bounds over the corresponding app shells with a 32% preview scrim; all three render with clear fields/actions and dimmed navigation. An initially missing garden theme around the task composition was corrected. These do not claim platform-window/keyboard/gesture verification. Build passed; runtime Dialog implementations remain unchanged. Formal reference acceptance and the remaining large/empty/source checks stay open in the ledger.
+
+Pending: remaining large-text/empty-state and source checks, and complete visual acceptance. No numeric 90% score or full completion claim yet.
 
 Previous goal turn: progress — authoritative source files were inspected, a new detailed plan written, simplified code/assets implemented and previews compared. No blocker status applies.
 

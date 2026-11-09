@@ -40,14 +40,15 @@ Files: home HomeScreen; garden GardenScreen; tree TreeInteractionScreen/TreeInte
 - [x] Nursery: compact title/counts; staggered trees on islands; readable rounded name plaques; basket with live seed stock.
 - [x] Tree care: back plaque over scenery, cream title, hero tree, progress, care and decoration trays, footer.
 - [ ] Build; render each full screen at 360x800 and 1.3 font scale; correct placement/overflow.
-  - Verified Tree Care full app shell at normal and 1.3 font scale after moving Back into the forest scene; lower content remains scrollable. Home normal shell refreshed. Nursery final full-screen variants remain pending.
+  - Latest normal Nursery/Care, populated 1.3 Nursery and long-name/no-supplies Care are checked. Home's final large-text scenery check and large-text empty Nursery remain in the audit ledger.
 
 ## Task 3 — Tasks, shop and statistics
 Files: tasks TasksScreen; shop ShopScreen; stats StatsScreen.
 - [x] Tasks: one plain bound journal, compact filters, source-style book/water/boots, right reward badges, completion controls, gold daily reward, green add action.
 - [x] Shop: simple mushroom alcove and three wooden shelves; four featured plants, live labels/prices, fertilizer, footer; other seeds below.
 - [x] Stats: plain cream journal, counts, compact seven-day chart with axis, weekly grid and footer.
-- [ ] Build and compare all screen previews against corresponding mics panel.
+- [x] Build and compare all screen previews against corresponding mics panel.
+  - Tasks/Shop/Journal normal and large/empty cases compared; this does not by itself establish the final 90% acceptance gate.
 
 ## Task 4 — Three dialogs
 Files: tasks AddTaskDialog; shop ShopSeedDetailCard; garden PlantingParchment.
@@ -60,7 +61,8 @@ Files: tasks AddTaskDialog; shop ShopSeedDetailCard; garden PlantingParchment.
 Verification ledger: docs/design-references/simple-mics-audit.md records observed cases and missing checks without replacing or narrowing the requirements below.
 - [x] Build :app:assembleDebug; inspect output.
   - Passed after shared dialog bounds and fixed action rows; rerun when further source changes require it.
-- [ ] Render all six full app screens plus three dialogs after refreshing changed module previews.
+- [x] Render all six full app screens plus three dialogs after refreshing changed module previews.
+  - Dialog compositions reuse real content/bounds over the app shell. The preview renderer omits separate Android Dialog windows; the ledger distinguishes this limitation from rendered composition evidence.
 - [ ] Compare against mics for composition, art style, palette, typography, control size and density.
 - [ ] Verify empty and large text previews; check reachable controls and live state semantics.
 - [x] Record concrete remaining discrepancies. Do not claim the 90% target until the complete visual audit supports it.

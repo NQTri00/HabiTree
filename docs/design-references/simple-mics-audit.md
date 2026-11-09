@@ -9,12 +9,12 @@ Scope remains all six screens and three dialogs in the 2026-11-09 plan, includin
 | Home | Full shell normal, empty and 1.3; corrected shop-label clipping confirmed in constrained component and full shell | Final scenery/sign fidelity against simple-home-tasks-shop; remaining action source checks |
 | Tasks | Full shell normal/1.3 after row compaction and empty full shell; add action visible with no tasks | Final reference accents; inspect filter, completion, delete and bonus wiring |
 | Shop | Normal, 1.3 and zero-funds full shell; readable labels/prices, zero stock, nursery shortcut | Scroll access to all species and fertilizer; final reference detail comparison |
-| Nursery | Full shell normal before basket sizing fix; full shell 1.3 after fix; full shell empty checked | Final normal full shell after fix; large-text empty and sow/buy navigation checks |
-| Tree Care | Full shell 1.3 with long custom name and zero supplies after ribbon correction; disabled actions and accurate counts | Final populated normal full shell with latest accents and reference acceptance |
-| Journal | Normal feature plus 1.3 and empty full shell after top sprout, olive sprigs and weekly flower accent; chart/totals remain separate | Final populated normal full-shell composition and reference acceptance |
-| Add Task | Daily/TODO normal and 1.3 at shared runtime bounds; fixed actions, scrolling fields; six save values and validation inspected | Final app-shell overlay/reference composition |
-| Seed Detail | Normal and 1.3/no-funds at shared bounds; normal purchase label corrected to one line, large actions fully visible | Final app-shell overlay/reference composition |
-| Planting | Normal and 1.3/zero-stock at shared bounds; name/stock/action source wiring inspected | Final app-shell overlay/reference composition |
+| Nursery | Full shell normal after basket fix, 1.3 populated and empty; normal basket and sow action fit above navigation | Large-text empty and final reference acceptance |
+| Tree Care | Latest normal full shell fits progress/actions/decorations/footer; 1.3 long name/zero-supplies case checked | Final reference acceptance |
+| Journal | Latest normal, 1.3 and empty full shells; totals/chart/weekly grid/footer separate | Final reference acceptance |
+| Add Task | Daily/TODO normal/1.3 surfaces and themed composition over Tasks shell; form source checked | Final reference acceptance; platform-window limitation below |
+| Seed Detail | Normal/1.3 surfaces and composition over Shop shell; sprigs, labels and actions separate | Final reference acceptance; platform-window limitation below |
+| Planting | Normal/1.3 surfaces and composition over Nursery shell; handles, name/stock/actions separate | Final reference acceptance; platform-window limitation below |
 
 ## Current continuation findings
 
@@ -26,6 +26,10 @@ Scope remains all six screens and three dialogs in the 2026-11-09 plan, includin
 Latest Journal accents use native Canvas sprigs and existing plant icons, with no baked text. Normal feature and 1.3 full-shell previews show no title/metric collisions. Large weekly details remain in the scrolling list. Empty full-shell Journal has zero totals, seven zero values and a valid 0–3 axis; footer and navigation are visible. Empty Tasks retains Add Task. Zero-funds Shop retains product detail browsing and the nursery shortcut; source affordability disables fertilizer purchase.
 
 Form source inspection confirms trimmed title, all six save values, blank-title disabling, numeric reward filtering/clamping to1–100, category/frequency choices and optional TODO due date. Seed purchase emits BuySeed with the selected id and affordability disables purchase. Planting emits the selected species/name, requires positive stock and persistence retains the blank-name species default. This is source verification, not executed input interaction.
+
+## Composition previews and platform-window limit
+
+ReferenceTaskDialogPreview sets the real adding-task state, but the renderer returns only the underlying Tasks image/hierarchy: one image, with the task screen title and no dialog title. It does not capture the separate Android Dialog window. This case remains as a diagnostic fixture. Three explicit composition previews now reuse the existing dialog surface/bounds over ReferenceWorld and a preview-only 32% scrim. They render the intended app-shell placement and dimmed navigation. The Add Task composition explicitly applies MamXanhPreviewTheme; an initially missing wrapper was corrected and re-rendered. These are composition checks, not runtime dialog-window, keyboard or gesture evidence. Actual Dialog implementation and production navigation are unchanged.
 
 ## Dialog constraint correction
 
@@ -39,9 +43,9 @@ The full app fixture combines a three-line Vietnamese custom name, 1.3 text scal
 
 - Home's hanging lantern/cottage are now native illustrations, checked in the normal full shell. Destination signs still use simplified tray silhouettes and need the final comparison.
 - Shop's hanging lantern and softly edged shelf fronts are added and checked in the normal full shell without label/product collisions.
-- Tasks' title leaf and daily-reward sprigs are implemented. Large-text title comparison shows no collision; normal reward-accent comparison remains pending.
-- Seed Detail's lateral plant sprigs are implemented and compiled; final refreshed detail comparison remains pending. Planting's side handles are added and checked in its normal surface preview.
-- Final normal full-shell comparisons for Nursery, Care and populated Journal, plus dialog overlay composition, remain required. These differences are not waived by the completed surface-layout checks.
+- Tasks' title/reward sprigs are now checked in the normal app-root image and themed composition; the large title is also clear of text.
+- Seed Detail's lateral sprigs and Planting's handles are checked in their full compositions without label/field collisions.
+- Normal full shells for Nursery, Care and populated Journal and all three dialog compositions are now checked. Formal reference acceptance, remaining source checks and the explicitly listed large/empty cases are still required.
 
 ## Action/concurrency inspection
 

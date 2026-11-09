@@ -1,5 +1,6 @@
 package com.mamxanh.app.feature.tasks.presentation.dialog
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -162,9 +163,13 @@ fun AddTaskDialogPreview() { MamXanhPreviewTheme { AddTaskDialogPreviewContent()
 
 @Preview(name = "Task dialog surface", widthDp = 360, heightDp = 800)
 @Composable
-fun AddTaskDialogPreviewContent(initialKind: String = "DAILY") {
+fun AddTaskDialogPreviewContent(initialKind: String = "DAILY", background: (@Composable () -> Unit)? = null) {
     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        GardenForestScene(Modifier.fillMaxSize(), false)
+        if (background == null) GardenForestScene(Modifier.fillMaxSize(), false)
+        else {
+            background()
+            Box(Modifier.matchParentSize().background(Color.Black.copy(alpha = .32f)))
+        }
         val form = remember(initialKind) { AddTaskFormState("Đọc 10 trang sách", initialKind, initialFrequency = if (initialKind == "TODO") "ONCE" else "EVERY_DAY") }
         AddTaskParchment(form, {}, { _,_,_,_,_,_ -> }, TaskDialogBounds)
     }

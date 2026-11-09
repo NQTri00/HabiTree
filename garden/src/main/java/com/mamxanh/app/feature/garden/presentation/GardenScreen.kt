@@ -1,6 +1,7 @@
 package com.mamxanh.app.feature.garden.presentation
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -224,7 +225,18 @@ fun GardenScreenEmptyPreview() { MamXanhPreviewTheme { GardenScreen(GardenUiStat
 @Preview(name = "Planting parchment", widthDp = 360, heightDp = 800,
     device = "spec:width=360dp,height=800dp,dpi=160")
 @Composable
-fun PlantingDialogPreview() { MamXanhPreviewTheme { Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { GardenForestScene(Modifier.fillMaxSize(), setting = ForestSetting.GARDEN); Box(PlantingDialogBounds) { PlantingParchment(seedCatalog.first { it.id == "cherry" }, 1, {}, {}) } } } }
+fun PlantingDialogPreview(background: (@Composable () -> Unit)? = null) {
+    MamXanhPreviewTheme {
+        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            if (background == null) GardenForestScene(Modifier.fillMaxSize(), setting = ForestSetting.GARDEN)
+            else {
+                background()
+                Box(Modifier.matchParentSize().background(Color.Black.copy(alpha = .32f)))
+            }
+            Box(PlantingDialogBounds) { PlantingParchment(seedCatalog.first { it.id == "cherry" }, 1, {}, {}) }
+        }
+    }
+}
 
 @Preview(name = "Planting · large text, no stock", widthDp = 360, heightDp = 800, fontScale = 1.3f,
     device = "spec:width=360dp,height=800dp,dpi=160")

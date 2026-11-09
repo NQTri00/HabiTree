@@ -195,7 +195,18 @@ fun ShopScreenPreview() { MamXanhPreviewTheme { ShopScreen(ShopUiState(ShopWalle
 @Preview(name = "Seed detail popup", widthDp = 360, heightDp = 800,
     device = "spec:width=360dp,height=800dp,dpi=160")
 @Composable
-fun ShopSeedDetailDialogPreview() { MamXanhPreviewTheme { Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { GardenForestScene(Modifier.fillMaxSize(), false); Box(SeedDetailDialogBounds) { ShopSeedDetailCard(shopCatalog.first(), 2, true, {}, {}) } } } }
+fun ShopSeedDetailDialogPreview(background: (@Composable () -> Unit)? = null) {
+    MamXanhPreviewTheme {
+        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            if (background == null) GardenForestScene(Modifier.fillMaxSize(), false)
+            else {
+                background()
+                Box(Modifier.matchParentSize().background(Color.Black.copy(alpha = .32f)))
+            }
+            Box(SeedDetailDialogBounds) { ShopSeedDetailCard(shopCatalog.first(), 2, true, {}, {}) }
+        }
+    }
+}
 
 @Preview(name = "Seed detail · large text, insufficient funds", widthDp = 360, heightDp = 800, fontScale = 1.3f,
     device = "spec:width=360dp,height=800dp,dpi=160")
