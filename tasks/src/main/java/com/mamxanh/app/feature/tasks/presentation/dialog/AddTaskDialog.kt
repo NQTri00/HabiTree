@@ -10,6 +10,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import com.mamxanh.app.presentation.ui.components.GardenRichText as Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.listSaver
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,9 +34,12 @@ private val TaskDialogBounds = Modifier.widthIn(max = 480.dp).fillMaxWidth(.94f)
 
 @Composable
 fun AddTaskDialog(onDismiss: () -> Unit, onSave: (String, String, String, Int, String, String) -> Unit) {
-    val form = remember { AddTaskFormState() }
-    Dialog(onDismissRequest = onDismiss, properties = DialogProperties(usePlatformDefaultWidth = false)) {
-        AddTaskParchment(form, onDismiss, onSave, TaskDialogBounds)
+    val form = rememberSaveable(saver = AddTaskFormSaver) { AddTaskFormState() }
+    Dialog(onDismissRequest = onDismiss,
+        properties = DialogProperties(usePlatformDefaultWidth = false, decorFitsSystemWindows = false)) {
+        Box(Modifier.fillMaxSize().safeDrawingPadding(), contentAlignment = Alignment.Center) {
+            AddTaskParchment(form, onDismiss, onSave, TaskDialogBounds)
+        }
     }
 }
 
@@ -153,6 +158,11 @@ private class AddTaskFormState(
     var due by mutableStateOf(initialDue)
     var categoryMenu by mutableStateOf(false)
 }
+
+private val AddTaskFormSaver = listSaver<AddTaskFormState, String>(
+    save = { listOf(it.title, it.kind, it.category, it.reward, it.frequency, it.due) },
+    restore = { AddTaskFormState(it[0], it[1], it[2], it[3], it[4], it[5]) }
+)
 
 @Preview(name = "Task popup · daily", widthDp = 360, heightDp = 800,
     device = "spec:width=360dp,height=800dp,dpi=160")

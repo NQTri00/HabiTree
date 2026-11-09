@@ -41,8 +41,8 @@ class SqlGameDatabase(private val connection: GameSqlConnection) : GameDatabase 
         val today = currentDateKey()
         val weekStart = offset(today, -((weekday(today) - firstDayOfWeekIndex() + 7) % 7))
         val dates = rows("SELECT DISTINCT date FROM logs ORDER BY date DESC", 1).map { it.string(0) }.toSet()
-        // Preserve the legacy week-anchored streak during the persistence migration.
-        var streakDate = if (today in dates) weekStart else offset(weekStart, -1)
+        // A consecutive-day streak is independent of the locale's weekly reporting boundary.
+        var streakDate = if (today in dates) today else offset(today, -1)
         var streak = 0
         while (streakDate in dates) {
             streak++

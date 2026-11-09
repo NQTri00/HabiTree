@@ -11,6 +11,7 @@ import androidx.compose.material3.*
 import androidx.compose.foundation.horizontalScroll
 import com.mamxanh.app.presentation.ui.components.GardenRichText as Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,7 +35,8 @@ import com.mamxanh.core.ui.R
 @Composable
 fun GardenScreen(state: GardenUiState, onIntent: (GardenIntent) -> Unit, modifier: Modifier = Modifier) {
     val garden = state.garden
-    var selectedSeed by remember { mutableStateOf<Species?>(null) }
+    var selectedSeedId by rememberSaveable { mutableStateOf<String?>(null) }
+    val selectedSeed = seedCatalog.firstOrNull { it.id == selectedSeedId }
     val seeds = seedCatalog.filter { (garden.inventory[it.id] ?: 0) > 0 }
     Box(modifier.fillMaxSize()) {
         GardenForestScene(Modifier.fillMaxSize(), setting = ForestSetting.GARDEN)
@@ -73,15 +75,15 @@ fun GardenScreen(state: GardenUiState, onIntent: (GardenIntent) -> Unit, modifie
                     }
                 }
             }
-            SeedBasket(seeds, garden.inventory, onSelect = { selectedSeed = it },
+            SeedBasket(seeds, garden.inventory, onSelect = { selectedSeedId = it.id },
                 onOpenShop = { onIntent(GardenIntent.OpenShop) })
             Spacer(Modifier.height(8.dp))
         }
     }
     selectedSeed?.let { seed ->
         PlantingDialog(seed, garden.inventory[seed.id] ?: 0,
-            onDismiss = { selectedSeed = null },
-            onPlant = { name -> onIntent(GardenIntent.Plant(seed.id, name)); selectedSeed = null })
+            onDismiss = { selectedSeedId = null },
+            onPlant = { name -> onIntent(GardenIntent.Plant(seed.id, name)); selectedSeedId = null })
     }
 }
 
@@ -170,14 +172,17 @@ private val PlantingDialogBounds = Modifier.widthIn(max = 440.dp).fillMaxWidth(.
 
 @Composable
 private fun PlantingDialog(seed: Species, count: Int, onDismiss: () -> Unit, onPlant: (String) -> Unit) {
-    Dialog(onDismissRequest = onDismiss, properties = DialogProperties(usePlatformDefaultWidth = false)) {
-        Box(PlantingDialogBounds) { PlantingParchment(seed, count, onDismiss, onPlant) }
+    Dialog(onDismissRequest = onDismiss,
+        properties = DialogProperties(usePlatformDefaultWidth = false, decorFitsSystemWindows = false)) {
+        Box(Modifier.fillMaxSize().safeDrawingPadding(), contentAlignment = Alignment.Center) {
+            Box(PlantingDialogBounds) { PlantingParchment(seed, count, onDismiss, onPlant) }
+        }
     }
 }
 
 @Composable
 private fun PlantingParchment(seed: Species, count: Int, onDismiss: () -> Unit, onPlant: (String) -> Unit) {
-    var name by remember(seed.id) { mutableStateOf("") }
+    var name by rememberSaveable(seed.id) { mutableStateOf("") }
     Box {
         GardenBotanicalFrame(Modifier.fillMaxWidth(), contentPadding = PaddingValues(horizontal = 26.dp, vertical = 30.dp), cornerSize = 42.dp, skin = GardenPanelSkin.PLANTING_DIALOG) {
             Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(12.dp)) {

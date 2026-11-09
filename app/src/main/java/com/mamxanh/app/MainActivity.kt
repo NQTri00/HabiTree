@@ -3,6 +3,8 @@ package com.mamxanh.app
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
+import androidx.activity.SystemBarStyle
 import com.mamxanh.app.feature.garden.presentation.GardenViewModel
 import com.mamxanh.app.feature.home.presentation.HomeViewModel
 import com.mamxanh.app.feature.shop.presentation.ShopViewModel
@@ -16,6 +18,11 @@ import org.koin.androidx.compose.koinViewModel
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge(
+            statusBarStyle = SystemBarStyle.dark(android.graphics.Color.TRANSPARENT),
+            navigationBarStyle = SystemBarStyle.dark(android.graphics.Color.TRANSPARENT)
+        )
+        if (android.os.Build.VERSION.SDK_INT >= 29) window.isNavigationBarContrastEnforced = false
         setContent {
             val gardenVm: GardenViewModel = koinViewModel()
             val homeVm: HomeViewModel = koinViewModel()

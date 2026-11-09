@@ -8,7 +8,7 @@
 
 On iOS, construct `IosGarden()` once for the owning session. It exposes home/tasks/garden/shop/statistics/tree repositories and configurable remote transport through an isolated Koin graph. Native storage and HTTP resources are lazy and close with `IosGarden.close()`; finish repository work before closing. Blocking repository operations must run off the UI thread. Local yyyy-MM-dd date keys and the locale's first weekday have platform implementations.
 
-Android/common builds and Studio inspections of the iOS sources pass (style/unused-public-API warnings only). Native framework compilation, linkage and iOS runtime remain unverified on this Windows host. This is an implemented native adapter, not a claim of a verified iOS app. The legacy week-anchored statistics streak was preserved during the persistence move and remains a follow-up correctness issue.
+Android/common builds and Studio inspections of the iOS sources pass (style/unused-public-API warnings only). Native framework compilation, linkage and iOS runtime remain unverified on this Windows host. This is an implemented native adapter, not a claim of a verified iOS app. Statistics now count consecutive completion dates backward from today (or yesterday when today has no entry), independently of the locale's weekly reporting boundary.
 
 ## Dependency injection and networking
 
