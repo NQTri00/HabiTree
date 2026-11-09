@@ -128,6 +128,11 @@ fun StatsScreenPreview() {
     }
 }
 
+@Preview(name = "Journal · extended document audit", widthDp = 360, heightDp = 740,
+    device = "spec:width=360dp,height=740dp,dpi=160")
+@Composable
+fun StatsExtendedDocumentPreview() { StatsScreenPreview() }
+
 @Preview(name = "Journal summary", showBackground = true)
 @Composable
 fun JourneyCardPreview() { MamXanhPreviewTheme { JourneyCard("", "Cây trong vườn", "3", "") } }

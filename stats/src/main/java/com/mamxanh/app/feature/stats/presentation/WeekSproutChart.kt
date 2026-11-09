@@ -64,8 +64,8 @@ internal fun WeekSproutChart(counts: List<Int>, days: List<String>, modifier: Mo
                         }, horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Bottom) {
                             Text(count.toString(), color = Deep, fontWeight = FontWeight.Bold,
                                 fontSize = if (count > 99) 11.sp else 13.sp, lineHeight = 16.sp, maxLines = 1)
-                            GardenArtwork(GardenArt.SPROUT, Modifier.width(26.dp).height(18.dp))
-                            Box(Modifier.width(27.dp).height(if (count == 0) 2.dp else plotHeight * (count.toFloat() / axisMax))
+                            if (count > 0) GardenArtwork(GardenArt.SPROUT, Modifier.width(26.dp).height(18.dp))
+                            Box(Modifier.width(27.dp).height(if (count == 0) 0.dp else plotHeight * (count.toFloat() / axisMax))
                                 .clip(RoundedCornerShape(topStart = 5.dp, topEnd = 5.dp))
                                 .background(Brush.horizontalGradient(listOf(Color(0xFF789C22), Color(0xFFA6BD45), Color(0xFF6B9022)))))
                         }

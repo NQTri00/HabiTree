@@ -101,6 +101,9 @@ Files: StatsScreen.kt and chart.
 - [ ] Refresh retains screen and chart, updates data without navigation reset.
 - [ ] True zero history, large numbers/wrapped labels without changing chart scale.
 Verification: zero/populated, long values, refresh and same scroll, 1.3 scale.
+2026-11-10 preview follow-up: re-inspected06-journal.png. A360×1000 initial document preview exposed a sprout and2dp bar for zero completions. WeekSproutChart now draws neither for zero; positive bars and axisMax/112dp plot height remain unchanged. Both APKs pass (23s). Focused empty-chart render shows seven zero labels on a flat baseline with0..3 ticks. Reduced the document audit to360×740/160dpi after observing the footer at y635..659; its rerender shows the populated summary, mixed chart including a flat zero day, weekly grid and footer. These were sequential targeted renders with no retained result storage. Full zero-history screen, large/wrapped values and real refresh remain pending.
+
+CI follow-up: Android CI42665096530 passed for e88a1ec. Native run42663244185 for41a1bd2 failed before any step: job129320030813 had no assigned runner, and annotations report hosted acquisition failure plus macOS arm64 capacity constraints. Switched workflow host to macos-26-intel, retaining Xcode26.4.1 and both iosArm64/iosSimulatorArm64 link tasks. [GitHub runner inventory](https://github.com/actions/runner-images/blob/main/README.md), [Intel image Xcode inventory](https://github.com/actions/runner-images/blob/main/images/macos/macos-26-Readme.md) and [Kotlin supported hosts](https://kotlinlang.org/docs/native-target-support.html) support this host choice. A successful run on the changed host remains required; the capacity failure provides no compile evidence.
 
 ## 7. Home stable hub
 Files: HomeScreen.kt and shared scene/sign components.
