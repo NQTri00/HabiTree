@@ -159,7 +159,7 @@ private fun ShopSeedDetailCard(plant: ShopSeed, ownedCount: Int, canAfford: Bool
             }
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
                 GardenPaintedButton("Để sau", onDismiss, Modifier.weight(.8f), primary = false)
-                GardenPaintedButton("Mang về · ${plant.price} xu", onBuy, Modifier.weight(1.3f), enabled = canAfford)
+                GardenPaintedButton("Mang về · ${plant.price} xu", onBuy, Modifier.weight(1.5f), enabled = canAfford)
             }
         }
         IconButton(onClick = onDismiss, modifier = Modifier.align(Alignment.TopEnd).size(40.dp)

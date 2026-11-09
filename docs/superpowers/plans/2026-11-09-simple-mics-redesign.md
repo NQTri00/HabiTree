@@ -53,7 +53,8 @@ Files: tasks TasksScreen; shop ShopScreen; stats StatsScreen.
 Files: tasks AddTaskDialog; shop ShopSeedDetailCard; garden PlantingParchment.
 - [x] Smooth cream modal with warm wood rim and curved visual header; simplified fields and buttons.
 - [x] Keep optional name, reward validation, kind/category/frequency/due, stock and affordability behavior.
-- [ ] Render add task daily/TODO, seed detail, planting, and large-text variants; correct overlap.
+- [x] Render add task daily/TODO, seed detail, planting, and large-text variants; correct overlap.
+  - Surface previews share runtime bounds. Fixed actions, scrollable bodies and normal/large variants checked; final app-shell overlay/reference acceptance remains in Task5.
 
 ## Task 5 — Final visual and behavioral audit
 Verification ledger: docs/design-references/simple-mics-audit.md records observed cases and missing checks without replacing or narrowing the requirements below.
