@@ -47,7 +47,7 @@ fun GardenLeafPlaque(text: String, modifier: Modifier = Modifier) {
                 moveTo(0f,h*.20f)
                 quadraticTo(w*.50f,-h*.10f,w,h*.20f)
                 lineTo(w,h*.90f)
-                quadraticTo(w*.50f,h*.65f,0f,h*.90f)
+                quadraticTo(w*.50f,h*1.04f,0f,h*.90f)
                 close()
             }
             drawPath(ribbon,Brush.verticalGradient(listOf(Color(0xFFFFF4DC),Color(0xFFFFE6BC))))
@@ -93,3 +93,12 @@ fun GardenWoodSignPreview() { GardenWoodSign("Vườn ươm", Modifier.fillMaxWi
 @Preview(widthDp = 300)
 @Composable
 fun GardenLeafPlaquePreview() { GardenLeafPlaque("Gieo một việc nhỏ") }
+
+@Preview(name = "Ribbon · long name, large text", widthDp = 288, fontScale = 1.3f,
+    device = "spec:width=288dp,height=180dp,dpi=160")
+@Composable
+fun GardenLeafPlaqueLongNamePreview() {
+    com.mamxanh.app.presentation.ui.MamXanhPreviewTheme {
+        GardenLeafPlaque("Cây đào bình yên bên cửa sổ của gia đình", Modifier.fillMaxWidth())
+    }
+}

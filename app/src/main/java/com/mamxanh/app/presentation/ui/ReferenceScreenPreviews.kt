@@ -52,20 +52,28 @@ fun ReferenceEmptyPreview(@PreviewParameter(ReferenceRoutes::class) route: AppUi
     ReferenceWorld(route, empty = true)
 }
 
+@Preview(name = "Care · long name, no supplies", widthDp = 360, heightDp = 800, fontScale = 1.3f,
+    device = "spec:width=360dp,height=800dp,dpi=160")
 @Composable
-private fun ReferenceWorld(route: AppUiState, empty: Boolean = false) {
+fun ReferenceCareUnavailablePreview() {
+    ReferenceWorld(AppUiState(destination = AppDestination.GARDEN, selectedTreeId = 1L), careUnavailable = true)
+}
+
+@Composable
+private fun ReferenceWorld(route: AppUiState, empty: Boolean = false, careUnavailable: Boolean = false) {
     val trees = if (empty) emptyList() else listOf(
-        Tree(1L, "cherry", "Đào hồng xuân", 68, "2026-11-01", "FLOWERS"),
+        Tree(1L, "cherry", if (careUnavailable) "Cây đào bình yên bên cửa sổ của gia đình" else "Đào hồng xuân",
+            68, "2026-11-01", "FLOWERS"),
         Tree(2L, "pine", "Thông nhỏ", 24, "2026-11-01", wateredToday = true),
         Tree(3L, "succulent", "Sen đá", 12, "2026-11-01")
     )
-    val inventory = if (empty) emptyMap() else mapOf("cherry" to 1, "pine" to 1, "fertilizer" to 2)
+    val inventory = if (empty) emptyMap() else mapOf("cherry" to 1, "pine" to 1, "fertilizer" to if (careUnavailable) 0 else 2)
     MamXanhPreviewTheme {
         MamXanhAppContent(
             state = route,
             dashboard = HomeUiState(HomeDashboard(
                 trees.map { HomeTree(it.id, it.speciesId, it.name, it.growth, it.decoration, it.wateredToday) },
-                completedTasks = if (empty) 0 else 2, totalTasks = if (empty) 0 else 4, coins = if (empty) 0 else 120, wateringCanMl = 500
+                completedTasks = if (empty) 0 else 2, totalTasks = if (empty) 0 else 4, coins = if (empty) 0 else 120, wateringCanMl = if (careUnavailable) 0 else 500
             ), false),
             tasks = TasksUiState(tasks = if (empty) emptyList() else listOf(
                 Task(1, "Đọc 10 trang sách", "HABIT", "Học tập", 10, "EVERY_DAY", "", "", 4, ""),
