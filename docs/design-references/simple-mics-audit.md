@@ -7,11 +7,11 @@ Scope remains all six screens and three dialogs in the 2026-11-09 plan, includin
 | Surface | Current evidence | Remaining work |
 |---|---|---|
 | Home | Full shell normal, empty and 1.3; corrected shop-label clipping confirmed in constrained component and full shell | Final scenery/sign fidelity against simple-home-tasks-shop; remaining action source checks |
-| Tasks | Full shell normal and 1.3 after row compaction; titles/rewards/controls separate | Empty full shell and final reference accents; inspect filter, completion, delete and bonus wiring |
-| Shop | Normal and 1.3 full shell after shelf/label changes; names/prices separate, footer scrolls below initial viewport | Zero-funds full shell; scroll access to all species and fertilizer |
+| Tasks | Full shell normal/1.3 after row compaction and empty full shell; add action visible with no tasks | Final reference accents; inspect filter, completion, delete and bonus wiring |
+| Shop | Normal, 1.3 and zero-funds full shell; readable labels/prices, zero stock, nursery shortcut | Scroll access to all species and fertilizer; final reference detail comparison |
 | Nursery | Full shell normal before basket sizing fix; full shell 1.3 after fix; full shell empty checked | Final normal full shell after fix; large-text empty and sow/buy navigation checks |
 | Tree Care | Full shell normal/1.3 after Back relocation; feature render after ribbon/lantern/label changes | Final full shell with latest accents; unavailable water/fertilizer and long custom name |
-| Journal | Full shell normal after chart correction; earlier large full shell; mixed-value and zero chart components | Final large/empty full shell; title/foliage/flower accents |
+| Journal | Normal feature plus 1.3 and empty full shell after top sprout, olive sprigs and weekly flower accent; chart/totals remain separate | Final populated normal full-shell composition and reference acceptance |
 | Add Task | Daily normal before shared arch; daily 1.3 after arch, fields scroll above fixed actions | Final daily normal and TODO normal/large with latest shape; blank-title and reward/due/category/frequency source checks |
 | Seed Detail | Normal and 1.3 insufficient-funds render after arch/divider/hint/close changes | Confirm actual Dialog width/height constraints and final shell overlay composition |
 | Planting | 1.3 zero-stock render after arch/ribbon; disabled sow and visible cancel/field | Normal in actual Dialog bounds and final shell overlay; optional-name and stock source checks |
@@ -22,6 +22,8 @@ Scope remains all six screens and three dialogs in the 2026-11-09 plan, includin
 - Large Add Task keeps its action row visible. Lower helper text is in a separate scrollable body, not hidden beneath the action row. Chip labels wrap at 1.3 scale.
 - Large Nursery separates names/progress/watering status. The basket extends below the initial viewport and is in a vertical ScrollView; navigation remains separate. No claim that a screenshot proves an executed scroll interaction.
 - Empty Nursery has accurate zero counts, a seed illustration and a fully drawn basket. A new explicit shop shortcut dispatches GardenIntent.OpenShop, produces GardenEffect.OpenShop and is mapped by the app shell to AppDestination.SHOP. This follows the existing effect-collection architecture.
+
+Latest Journal accents use native Canvas sprigs and existing plant icons, with no baked text. Normal feature and 1.3 full-shell previews show no title/metric collisions. Large weekly details remain in the scrolling list. Empty full-shell Journal has zero totals, seven zero values and a valid 0–3 axis; footer and navigation are visible. Empty Tasks retains Add Task. Zero-funds Shop retains product detail browsing and the nursery shortcut; source affordability disables fertilizer purchase.
 
 ## Action/concurrency inspection
 

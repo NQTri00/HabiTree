@@ -36,7 +36,12 @@ fun StatsScreen(state: StatsUiState, onIntent: (StatsIntent) -> Unit, modifier: 
             LazyColumn(Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(18.dp), contentPadding = PaddingValues(bottom = 16.dp)) {
                 item {
                     Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(5.dp)) {
-                        Text("Nhật ký khu vườn", color = Deep, fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                        Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                            Text("Nhật ký khu vườn", color = Deep, fontSize = 24.sp, fontWeight = FontWeight.Bold,
+                                textAlign = androidx.compose.ui.text.style.TextAlign.Center)
+                            GardenSprig(Modifier.align(Alignment.CenterStart).offset(x = (-14).dp).size(22.dp, 34.dp))
+                            GardenSprig(Modifier.align(Alignment.CenterEnd).offset(x = 14.dp).size(22.dp, 34.dp), mirrored = true)
+                        }
                         Text("Mỗi ngày một chút, bạn đang lớn lên", color = Color(0xFF78552D), fontSize = 13.sp, fontStyle = FontStyle.Italic, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
                     }
                 }
@@ -44,7 +49,7 @@ fun StatsScreen(state: StatsUiState, onIntent: (StatsIntent) -> Unit, modifier: 
                     Box(Modifier.fillMaxWidth()) {
                         Row(Modifier.fillMaxWidth().padding(end = 12.dp), horizontalArrangement = Arrangement.SpaceEvenly) {
                             JourneyCard("", "Việc đã xong", s.total.toString(), "", Modifier.weight(1f))
-                            GardenArtwork(GardenArt.SPROUT, Modifier.size(24.dp, 68.dp))
+                            GardenSprig(Modifier.size(24.dp, 68.dp))
                             JourneyCard("", "Cây trong vườn", s.treeCount.toString(), "", Modifier.weight(1f))
                         }
                         PressedGinkgo(Modifier.align(Alignment.TopEnd).offset(x = 16.dp, y = (-8).dp).size(44.dp, 72.dp))
@@ -53,7 +58,7 @@ fun StatsScreen(state: StatsUiState, onIntent: (StatsIntent) -> Unit, modifier: 
                 }
                 item {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        GardenArtwork(GardenArt.SPROUT, Modifier.size(22.dp))
+                        GardenSprig(Modifier.size(22.dp, 34.dp))
                         GardenBotanicalFrame(Modifier.weight(1f),
                             contentPadding = PaddingValues(horizontal = 8.dp, vertical = 6.dp)) {
                             Text("Nhịp xanh 7 ngày", Modifier.fillMaxWidth(), color = Deep, fontWeight = FontWeight.Bold, fontSize = 18.sp, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
@@ -71,13 +76,13 @@ fun StatsScreen(state: StatsUiState, onIntent: (StatsIntent) -> Unit, modifier: 
                 }
                 item {
                     Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically) {
-                        GardenArtwork(GardenArt.SPROUT, Modifier.size(24.dp))
+                        GardenSprig(Modifier.size(24.dp, 34.dp))
                         GardenBotanicalFrame(Modifier.weight(1f),
                             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 6.dp)) {
                             Text("Tuần này", Modifier.fillMaxWidth(), textAlign = androidx.compose.ui.text.style.TextAlign.Center,
                                 color = Deep, fontSize = 22.sp, fontWeight = FontWeight.Bold)
                         }
-                        GardenArtwork(GardenArt.SPROUT, Modifier.size(24.dp))
+                        GardenArtwork(GardenArt.FLOWERS, Modifier.size(32.dp, 38.dp))
                     }
                     Spacer(Modifier.height(14.dp))
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -97,6 +102,7 @@ fun StatsScreen(state: StatsUiState, onIntent: (StatsIntent) -> Unit, modifier: 
                 }
             }
         }
+        GardenArtwork(GardenArt.SPROUT, Modifier.align(Alignment.TopCenter).padding(top = 16.dp).size(26.dp))
     }
 }
 
@@ -109,7 +115,8 @@ private fun JourneyCard(emoji: String, title: String, value: String, caption: St
     }
 }
 
-@Preview(name = "Painted garden journal", showBackground = true, widthDp = 360, heightDp = 800)
+@Preview(name = "Painted garden journal", showBackground = true, widthDp = 360, heightDp = 800,
+    device = "spec:width=360dp,height=800dp,dpi=160")
 @Composable
 fun StatsScreenPreview() {
     MamXanhPreviewTheme {
