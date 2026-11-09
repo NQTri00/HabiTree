@@ -33,6 +33,8 @@ Home empty and 1.3 full shells are checked. Empty shows no planted specimen and 
 
 Journal now restores the top sprout, olive sprigs and weekly flower accent using live native components. Its normal feature, 1.3 full shell and empty full shell render without title/metric collisions; large weekly details scroll below the initial viewport. Empty Tasks shows Add Task with no false bonus, and zero-funds Shop retains detail browsing/shortcut with accurate zero wallet/stock. Compilation passed after the native art addition; Studio inspection of GardenSprig found formatting warnings only. Heap checks/collections bounded the sequential preview batch; lower image density is still not treated as a leak fix.
 
+Dialog verification now shares actual runtime width/height bounds with previews, including correctly ordered width caps and a 700dp maximum height. The narrower large Seed Detail preview exposed partly hidden actions; its buttons and Planting's now stay fixed beneath scrolling content. Re-rendered 1.3/no-funds Seed Detail and 1.3/no-stock Planting show complete cancel/primary buttons. TODO Add Task at the shared width/height cap preserves the due field and fixed actions; lower reward fields remain scrollable. Build passed after all changes. Normal dialog variants, shell overlays and the remaining Care availability checks stay pending, explicitly recorded in the audit ledger.
+
 Pending: final full-shell comparisons, remaining large-text/empty-state checks and complete visual acceptance. No numeric 90% score or full completion claim yet.
 
 Previous goal turn: progress — authoritative source files were inspected, a new detailed plan written, simplified code/assets implemented and previews compared. No blocker status applies.

@@ -57,7 +57,8 @@ Files: tasks AddTaskDialog; shop ShopSeedDetailCard; garden PlantingParchment.
 
 ## Task 5 — Final visual and behavioral audit
 Verification ledger: docs/design-references/simple-mics-audit.md records observed cases and missing checks without replacing or narrowing the requirements below.
-- [ ] Build :app:assembleDebug; inspect output.
+- [x] Build :app:assembleDebug; inspect output.
+  - Passed after shared dialog bounds and fixed action rows; rerun when further source changes require it.
 - [ ] Render all six full app screens plus three dialogs after refreshing changed module previews.
 - [ ] Compare against mics for composition, art style, palette, typography, control size and density.
 - [ ] Verify empty and large text previews; check reachable controls and live state semantics.

@@ -165,10 +165,12 @@ private fun SeedBasket(seeds: List<Species>, inventory: Map<String, Int>, onSele
     }
 }
 
+private val PlantingDialogBounds = Modifier.widthIn(max = 440.dp).fillMaxWidth(.92f).heightIn(max = 700.dp)
+
 @Composable
 private fun PlantingDialog(seed: Species, count: Int, onDismiss: () -> Unit, onPlant: (String) -> Unit) {
     Dialog(onDismissRequest = onDismiss, properties = DialogProperties(usePlatformDefaultWidth = false)) {
-        Box(Modifier.fillMaxWidth(.92f).widthIn(max = 440.dp)) { PlantingParchment(seed, count, onDismiss, onPlant) }
+        Box(PlantingDialogBounds) { PlantingParchment(seed, count, onDismiss, onPlant) }
     }
 }
 
@@ -177,20 +179,23 @@ private fun PlantingParchment(seed: Species, count: Int, onDismiss: () -> Unit, 
     var name by remember(seed.id) { mutableStateOf("") }
     Box {
         GardenBotanicalFrame(Modifier.fillMaxWidth(), contentPadding = PaddingValues(horizontal = 26.dp, vertical = 30.dp), cornerSize = 42.dp, skin = GardenPanelSkin.PLANTING_DIALOG) {
-            Column(Modifier.verticalScroll(rememberScrollState()), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                GardenLeafPlaque("Gieo mầm bình yên", Modifier.fillMaxWidth())
-                GardenArtwork(GardenArt.SEED, Modifier.size(150.dp, 100.dp))
-                GardenBotanicalFrame(contentPadding = PaddingValues(horizontal = 18.dp, vertical = 8.dp), cornerSize = 18.dp) {
-                    Text("${seed.name} · Còn $count", color = Deep, fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
-                }
-                Text("✏️ Tên cây · tùy chọn", color = Deep, fontSize = 17.sp, fontWeight = FontWeight.Bold, modifier = Modifier.fillMaxWidth())
-                GardenTextField(name, { name = it }, "Tên cây tùy chọn", Modifier.fillMaxWidth(), placeholder = "Mầm bình yên")
-                Text("Bỏ trống để dùng tên loài cây.", color = Deep, fontStyle = FontStyle.Italic, textAlign = TextAlign.Center)
-                GardenBotanicalFrame(contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-                    cornerSize = 18.dp, skin = GardenPanelSkin.HINT) {
-                    Text("Gieo cây sẽ dùng 1 hạt trong túi.", color = Deep, fontSize = 15.sp,
-                        fontStyle = FontStyle.Italic, textAlign = TextAlign.Center)
+            Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                Column(Modifier.weight(1f, fill = false).verticalScroll(rememberScrollState()),
+                    horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    GardenLeafPlaque("Gieo mầm bình yên", Modifier.fillMaxWidth())
+                    GardenArtwork(GardenArt.SEED, Modifier.size(150.dp, 100.dp))
+                    GardenBotanicalFrame(contentPadding = PaddingValues(horizontal = 18.dp, vertical = 8.dp), cornerSize = 18.dp) {
+                        Text("${seed.name} · Còn $count", color = Deep, fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
+                    }
+                    Text("✏️ Tên cây · tùy chọn", color = Deep, fontSize = 17.sp, fontWeight = FontWeight.Bold, modifier = Modifier.fillMaxWidth())
+                    GardenTextField(name, { name = it }, "Tên cây tùy chọn", Modifier.fillMaxWidth(), placeholder = "Mầm bình yên")
+                    Text("Bỏ trống để dùng tên loài cây.", color = Deep, fontStyle = FontStyle.Italic, textAlign = TextAlign.Center)
+                    GardenBotanicalFrame(contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                        cornerSize = 18.dp, skin = GardenPanelSkin.HINT) {
+                        Text("Gieo cây sẽ dùng 1 hạt trong túi.", color = Deep, fontSize = 15.sp,
+                            fontStyle = FontStyle.Italic, textAlign = TextAlign.Center)
+                    }
                 }
                 Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                     GardenPaintedButton("Để sau", onDismiss, Modifier.weight(1f), primary = false)
@@ -215,13 +220,15 @@ fun GardenScreenPopulatedPreview() { MamXanhPreviewTheme { GardenScreen(GardenUi
 @Composable
 fun GardenScreenEmptyPreview() { MamXanhPreviewTheme { GardenScreen(GardenUiState(Garden(), false), {}) } }
 
-@Preview(name = "Planting parchment", widthDp = 360, heightDp = 720)
+@Preview(name = "Planting parchment", widthDp = 360, heightDp = 800,
+    device = "spec:width=360dp,height=800dp,dpi=160")
 @Composable
-fun PlantingDialogPreview() { MamXanhPreviewTheme { Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { GardenForestScene(Modifier.fillMaxSize(), setting = ForestSetting.GARDEN); PlantingParchment(seedCatalog.first { it.id == "cherry" }, 1, {}, {}) } } }
+fun PlantingDialogPreview() { MamXanhPreviewTheme { Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { GardenForestScene(Modifier.fillMaxSize(), setting = ForestSetting.GARDEN); Box(PlantingDialogBounds) { PlantingParchment(seedCatalog.first { it.id == "cherry" }, 1, {}, {}) } } } }
 
-@Preview(name = "Planting · large text, no stock", widthDp = 360, heightDp = 800, fontScale = 1.3f)
+@Preview(name = "Planting · large text, no stock", widthDp = 360, heightDp = 800, fontScale = 1.3f,
+    device = "spec:width=360dp,height=800dp,dpi=160")
 @Composable
-fun PlantingDialogLargeTextPreview() { MamXanhPreviewTheme { Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { GardenForestScene(Modifier.fillMaxSize(), setting = ForestSetting.GARDEN); PlantingParchment(seedCatalog.first { it.id == "cherry" }, 0, {}, {}) } } }
+fun PlantingDialogLargeTextPreview() { MamXanhPreviewTheme { Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { GardenForestScene(Modifier.fillMaxSize(), setting = ForestSetting.GARDEN); Box(PlantingDialogBounds) { PlantingParchment(seedCatalog.first { it.id == "cherry" }, 0, {}, {}) } } } }
 
 @Preview(name = "Nursery overview", widthDp = 360)
 @Composable

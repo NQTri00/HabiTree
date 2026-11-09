@@ -12,9 +12,9 @@ Scope remains all six screens and three dialogs in the 2026-11-09 plan, includin
 | Nursery | Full shell normal before basket sizing fix; full shell 1.3 after fix; full shell empty checked | Final normal full shell after fix; large-text empty and sow/buy navigation checks |
 | Tree Care | Full shell normal/1.3 after Back relocation; feature render after ribbon/lantern/label changes | Final full shell with latest accents; unavailable water/fertilizer and long custom name |
 | Journal | Normal feature plus 1.3 and empty full shell after top sprout, olive sprigs and weekly flower accent; chart/totals remain separate | Final populated normal full-shell composition and reference acceptance |
-| Add Task | Daily normal before shared arch; daily 1.3 after arch, fields scroll above fixed actions | Final daily normal and TODO normal/large with latest shape; blank-title and reward/due/category/frequency source checks |
-| Seed Detail | Normal and 1.3 insufficient-funds render after arch/divider/hint/close changes | Confirm actual Dialog width/height constraints and final shell overlay composition |
-| Planting | 1.3 zero-stock render after arch/ribbon; disabled sow and visible cancel/field | Normal in actual Dialog bounds and final shell overlay; optional-name and stock source checks |
+| Add Task | Daily normal/large before shared runtime bounds; TODO 1.3 at runtime width/700dp cap, fixed actions and scrolling fields | Final daily normal/large and TODO normal at shared bounds; blank-title and reward/due/category/frequency source checks |
+| Seed Detail | Runtime bounds shared with preview; 1.3/no-funds case confirms fixed cancel/purchase below scroll body after correcting clipped actions | Normal shared-bounds preview and final shell overlay composition |
+| Planting | Runtime bounds shared with preview; 1.3/zero-stock case confirms wrapped title, name field and fixed cancel/disabled sow | Normal shared-bounds preview and final shell overlay; optional-name and stock source checks |
 
 ## Current continuation findings
 
@@ -24,6 +24,10 @@ Scope remains all six screens and three dialogs in the 2026-11-09 plan, includin
 - Empty Nursery has accurate zero counts, a seed illustration and a fully drawn basket. A new explicit shop shortcut dispatches GardenIntent.OpenShop, produces GardenEffect.OpenShop and is mapped by the app shell to AppDestination.SHOP. This follows the existing effect-collection architecture.
 
 Latest Journal accents use native Canvas sprigs and existing plant icons, with no baked text. Normal feature and 1.3 full-shell previews show no title/metric collisions. Large weekly details remain in the scrolling list. Empty full-shell Journal has zero totals, seven zero values and a valid 0–3 axis; footer and navigation are visible. Empty Tasks retains Add Task. Zero-funds Shop retains product detail browsing and the nursery shortcut; source affordability disables fertilizer purchase.
+
+## Dialog constraint correction
+
+Runtime and previews now share each dialog's width/max-height Modifier. Maximum width is applied before fillMaxWidth, so it can constrain wide windows; phone proportions remain 94% (Add Task) and 92% (Seed Detail/Planting), with a 700dp height cap. This uncovered a genuine Seed Detail issue hidden by the previously wider preview: actions could start partly below the viewport at 1.3 scale. Seed Detail and Planting now keep their actions outside a weighted scrolling body, matching Add Task. Re-rendered large/no-funds and large/no-stock cases show complete action buttons. No actual system Dialog dimming, keyboard or interactive scrolling is claimed from these surface previews.
 
 ## Action/concurrency inspection
 

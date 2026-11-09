@@ -27,11 +27,13 @@ import androidx.compose.ui.window.DialogProperties
 import com.mamxanh.app.presentation.ui.*
 import com.mamxanh.app.presentation.ui.components.*
 
+private val TaskDialogBounds = Modifier.widthIn(max = 480.dp).fillMaxWidth(.94f).heightIn(max = 700.dp)
+
 @Composable
 fun AddTaskDialog(onDismiss: () -> Unit, onSave: (String, String, String, Int, String, String) -> Unit) {
     val form = remember { AddTaskFormState() }
     Dialog(onDismissRequest = onDismiss, properties = DialogProperties(usePlatformDefaultWidth = false)) {
-        AddTaskParchment(form, onDismiss, onSave, Modifier.fillMaxWidth(.94f).widthIn(max = 480.dp).heightIn(max = 700.dp))
+        AddTaskParchment(form, onDismiss, onSave, TaskDialogBounds)
     }
 }
 
@@ -151,8 +153,10 @@ private class AddTaskFormState(
     var categoryMenu by mutableStateOf(false)
 }
 
-@Preview(name = "Task popup · daily", widthDp = 360, heightDp = 800)
-@Preview(name = "Task popup · daily, large text", widthDp = 360, heightDp = 800, fontScale = 1.3f)
+@Preview(name = "Task popup · daily", widthDp = 360, heightDp = 800,
+    device = "spec:width=360dp,height=800dp,dpi=160")
+@Preview(name = "Task popup · daily, large text", widthDp = 360, heightDp = 800, fontScale = 1.3f,
+    device = "spec:width=360dp,height=800dp,dpi=160")
 @Composable
 fun AddTaskDialogPreview() { MamXanhPreviewTheme { AddTaskDialogPreviewContent() } }
 
@@ -162,7 +166,7 @@ fun AddTaskDialogPreviewContent(initialKind: String = "DAILY") {
     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         GardenForestScene(Modifier.fillMaxSize(), false)
         val form = remember(initialKind) { AddTaskFormState("Đọc 10 trang sách", initialKind, initialFrequency = if (initialKind == "TODO") "ONCE" else "EVERY_DAY") }
-        AddTaskParchment(form, {}, { _,_,_,_,_,_ -> }, Modifier.padding(10.dp).heightIn(max = 730.dp))
+        AddTaskParchment(form, {}, { _,_,_,_,_,_ -> }, TaskDialogBounds)
     }
 }
 
@@ -182,7 +186,9 @@ fun TaskFormSectionPreview() { MamXanhPreviewTheme { TaskFormSection("Nhóm", "�
 @Composable
 fun TaskChoiceChipPreview() { MamXanhPreviewTheme { TaskChoiceChip("Hằng ngày", true, onClick = {}) } }
 
-@Preview(name = "Task popup · one time", widthDp = 360, heightDp = 800)
-@Preview(name = "Task popup · one time, large text", widthDp = 360, heightDp = 800, fontScale = 1.3f)
+@Preview(name = "Task popup · one time", widthDp = 360, heightDp = 800,
+    device = "spec:width=360dp,height=800dp,dpi=160")
+@Preview(name = "Task popup · one time, large text", widthDp = 360, heightDp = 800, fontScale = 1.3f,
+    device = "spec:width=360dp,height=800dp,dpi=160")
 @Composable
 fun AddTaskDialogOneTimePreview() { MamXanhPreviewTheme { AddTaskDialogPreviewContent("TODO") } }

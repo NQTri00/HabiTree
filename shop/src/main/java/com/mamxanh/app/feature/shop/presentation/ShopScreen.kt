@@ -30,6 +30,8 @@ import com.mamxanh.app.presentation.ui.*
 import com.mamxanh.app.presentation.ui.components.*
 import com.mamxanh.core.ui.R
 
+private val SeedDetailDialogBounds = Modifier.widthIn(max = 440.dp).fillMaxWidth(.92f).heightIn(max = 700.dp)
+
 @Composable
 fun ShopScreen(state: ShopUiState, onIntent: (ShopIntent) -> Unit, modifier: Modifier = Modifier) {
     var selected by remember { mutableStateOf<ShopSeed?>(null) }
@@ -71,7 +73,7 @@ fun ShopScreen(state: ShopUiState, onIntent: (ShopIntent) -> Unit, modifier: Mod
     }
     selected?.let { seed ->
         Dialog(onDismissRequest = { selected = null }, properties = DialogProperties(usePlatformDefaultWidth = false)) {
-            Box(Modifier.fillMaxWidth(.92f).widthIn(max = 440.dp)) {
+            Box(SeedDetailDialogBounds) {
                 ShopSeedDetailCard(seed, state.wallet.inventory[seed.id] ?: 0, state.wallet.coins >= seed.price,
                     onDismiss = { selected = null },
                     onBuy = { onIntent(ShopIntent.BuySeed(seed.id)); selected = null })
@@ -132,26 +134,29 @@ private fun ShopGardenFooter(onClick: () -> Unit) {
 @Composable
 private fun ShopSeedDetailCard(plant: ShopSeed, ownedCount: Int, canAfford: Boolean, onDismiss: () -> Unit, onBuy: () -> Unit) {
     GardenBotanicalFrame(Modifier.fillMaxWidth(), contentPadding = PaddingValues(horizontal = 26.dp, vertical = 32.dp), cornerSize = 42.dp, skin = GardenPanelSkin.DIALOG) {
-        Column(Modifier.verticalScroll(rememberScrollState()), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            PaintedGardenPlant(plant.id, Modifier.fillMaxWidth().height(165.dp))
-            Text(plant.name, color = Deep, fontSize = 28.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
-            Text(plant.description, color = Deep, fontStyle = FontStyle.Italic, textAlign = TextAlign.Center)
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                DetailBadge("🪙 ${plant.price} xu", Modifier.weight(1f))
-                DetailBadge("🌱 Đang có $ownedCount", Modifier.weight(1f))
+        Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Column(Modifier.weight(1f, fill = false).verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                PaintedGardenPlant(plant.id, Modifier.fillMaxWidth().height(165.dp))
+                Text(plant.name, color = Deep, fontSize = 28.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
+                Text(plant.description, color = Deep, fontStyle = FontStyle.Italic, textAlign = TextAlign.Center)
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    DetailBadge("🪙 ${plant.price} xu", Modifier.weight(1f))
+                    DetailBadge("🌱 Đang có $ownedCount", Modifier.weight(1f))
+                }
+                Row(Modifier.fillMaxWidth(.65f), verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    HorizontalDivider(Modifier.weight(1f), color = Color(0xFFC5AD7B))
+                    GardenArtwork(GardenArt.SPROUT, Modifier.size(26.dp))
+                    HorizontalDivider(Modifier.weight(1f), color = Color(0xFFC5AD7B))
+                }
+                GardenBotanicalFrame(Modifier.fillMaxWidth(), contentPadding = PaddingValues(horizontal = 12.dp, vertical = 9.dp),
+                    cornerSize = 24.dp, skin = GardenPanelSkin.HINT) {
+                    Text("Mua hạt để cất vào túi.\nGieo cây tại Vườn ươm.", color = Deep, fontSize = 17.sp,
+                        fontStyle = FontStyle.Italic, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
+                }
+                if (!canAfford) Text("Bạn cần thêm xu để mang hạt về.", color = Color(0xFF88511B), textAlign = TextAlign.Center)
             }
-            Row(Modifier.fillMaxWidth(.65f), verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                HorizontalDivider(Modifier.weight(1f), color = Color(0xFFC5AD7B))
-                GardenArtwork(GardenArt.SPROUT, Modifier.size(26.dp))
-                HorizontalDivider(Modifier.weight(1f), color = Color(0xFFC5AD7B))
-            }
-            GardenBotanicalFrame(Modifier.fillMaxWidth(), contentPadding = PaddingValues(horizontal = 12.dp, vertical = 9.dp),
-                cornerSize = 24.dp, skin = GardenPanelSkin.HINT) {
-                Text("Mua hạt để cất vào túi.\nGieo cây tại Vườn ươm.", color = Deep, fontSize = 17.sp,
-                    fontStyle = FontStyle.Italic, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
-            }
-            if (!canAfford) Text("Bạn cần thêm xu để mang hạt về.", color = Color(0xFF88511B), textAlign = TextAlign.Center)
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
                 GardenPaintedButton("Để sau", onDismiss, Modifier.weight(.8f), primary = false)
                 GardenPaintedButton("Mang về · ${plant.price} xu", onBuy, Modifier.weight(1.3f), enabled = canAfford)
@@ -178,13 +183,15 @@ private fun DetailBadge(text: String, modifier: Modifier = Modifier) {
 @Composable
 fun ShopScreenPreview() { MamXanhPreviewTheme { ShopScreen(ShopUiState(ShopWallet(120, mapOf("succulent" to 2, "fertilizer" to 1)), false), {}) } }
 
-@Preview(name = "Seed detail popup", widthDp = 360, heightDp = 720)
+@Preview(name = "Seed detail popup", widthDp = 360, heightDp = 800,
+    device = "spec:width=360dp,height=800dp,dpi=160")
 @Composable
-fun ShopSeedDetailDialogPreview() { MamXanhPreviewTheme { Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { GardenForestScene(Modifier.fillMaxSize(), false); ShopSeedDetailCard(shopCatalog.first(), 2, true, {}, {}) } } }
+fun ShopSeedDetailDialogPreview() { MamXanhPreviewTheme { Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { GardenForestScene(Modifier.fillMaxSize(), false); Box(SeedDetailDialogBounds) { ShopSeedDetailCard(shopCatalog.first(), 2, true, {}, {}) } } } }
 
-@Preview(name = "Seed detail · large text, insufficient funds", widthDp = 360, heightDp = 800, fontScale = 1.3f)
+@Preview(name = "Seed detail · large text, insufficient funds", widthDp = 360, heightDp = 800, fontScale = 1.3f,
+    device = "spec:width=360dp,height=800dp,dpi=160")
 @Composable
-fun ShopSeedDetailLargeTextPreview() { MamXanhPreviewTheme { Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { GardenForestScene(Modifier.fillMaxSize(), false); ShopSeedDetailCard(shopCatalog.first(), 0, false, {}, {}) } } }
+fun ShopSeedDetailLargeTextPreview() { MamXanhPreviewTheme { Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { GardenForestScene(Modifier.fillMaxSize(), false); Box(SeedDetailDialogBounds) { ShopSeedDetailCard(shopCatalog.first(), 0, false, {}, {}) } } } }
 
 @Preview(name = "Nursery shelf", widthDp = 340)
 @Composable
