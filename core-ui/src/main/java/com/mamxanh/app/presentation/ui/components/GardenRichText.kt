@@ -28,7 +28,7 @@ private val sourceIcons = linkedMapOf(
     "🌱" to GardenArt.SPROUT, "🌿" to GardenArt.SPROUT, "🌰" to GardenArt.NUT,
     "💧" to GardenArt.DROP, "🌸" to GardenArt.FLOWERS, "🪴" to GardenArt.SPROUT,
     "🌲" to GardenArt.TREE, "🌳" to GardenArt.TREE, "🧺" to GardenArt.SEED,
-    "🥾" to GardenArt.BOOTS, "🥛" to GardenArt.GLASS
+    "🥾" to GardenArt.BOOTS, "🥛" to GardenArt.GLASS, "☑" to GardenArt.CHECKED_TASK
 )
 
 /** Live text with reference-art inline icons instead of platform emoji artwork. */

@@ -39,17 +39,17 @@ fun ShopScreen(state: ShopUiState, onIntent: (ShopIntent) -> Unit, modifier: Mod
         Image(painterResource(R.drawable.simple_shop_v2), null,
             Modifier.fillMaxSize(), contentScale = ContentScale.FillBounds)
         Column(
-            Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 18.dp, vertical = 20.dp),
+            Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 18.dp, vertical = 36.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             GardenWoodSign("Tiệm hạt", Modifier.fillMaxWidth(.85f))
             GardenBotanicalFrame(contentPadding = PaddingValues(horizontal = 22.dp, vertical = 8.dp), cornerSize = 20.dp) {
                 Text("🪙 ${state.wallet.coins} xu", color = Deep, fontSize = 18.sp, fontWeight = FontWeight.Bold)
             }
-            Spacer(Modifier.height(32.dp))
+            Spacer(Modifier.height(48.dp))
             featured.chunked(2).forEach { row ->
                 NurseryShelf {
-                    row.forEach { seed -> ShelfSeed(seed, state.wallet.inventory[seed.id] ?: 0, { selected = seed }, Modifier.weight(1f)) }
+                    row.forEach { seed -> ShelfSeed(seed, { selected = seed }, Modifier.weight(1f)) }
                 }
             }
             NurseryShelf {
@@ -62,7 +62,7 @@ fun ShopScreen(state: ShopUiState, onIntent: (ShopIntent) -> Unit, modifier: Mod
                 }
                 other.chunked(2).forEach { row ->
                     NurseryShelf {
-                        row.forEach { seed -> ShelfSeed(seed, state.wallet.inventory[seed.id] ?: 0, { selected = seed }, Modifier.weight(1f)) }
+                        row.forEach { seed -> ShelfSeed(seed, { selected = seed }, Modifier.weight(1f)) }
                     }
                 }
             }
@@ -89,10 +89,10 @@ private fun NurseryShelf(content: @Composable RowScope.() -> Unit) {
 }
 
 @Composable
-private fun ShelfSeed(seed: ShopSeed, owned: Int, onInspect: () -> Unit, modifier: Modifier = Modifier) {
+private fun ShelfSeed(seed: ShopSeed, onInspect: () -> Unit, modifier: Modifier = Modifier) {
     Column(modifier.clickable(onClickLabel = "Xem hạt ${seed.name}", onClick = onInspect), horizontalAlignment = Alignment.CenterHorizontally) {
         PaintedGardenPlant(seed.id, Modifier.fillMaxWidth().height(94.dp), potted = true)
-        GardenBotanicalFrame(Modifier.fillMaxWidth(), contentPadding = PaddingValues(horizontal = 8.dp, vertical = 5.dp), cornerSize = 20.dp) {
+        GardenBotanicalFrame(Modifier.fillMaxWidth(.90f), contentPadding = PaddingValues(horizontal = 8.dp, vertical = 5.dp), cornerSize = 14.dp) {
             Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
                 Text(when(seed.id) { "pine" -> "Thông nhỏ"; "cherry" -> "Đào hồng"; else -> seed.name },
                     color = Deep, fontSize = 16.sp, lineHeight = 18.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
@@ -171,7 +171,7 @@ fun ShopSeedDetailDialogPreview() { MamXanhPreviewTheme { Box(Modifier.fillMaxSi
 
 @Preview(name = "Nursery shelf", widthDp = 340)
 @Composable
-fun ShopNurseryDisplayPreview() { MamXanhPreviewTheme { NurseryShelf { ShelfSeed(shopCatalog.first(), 2, {}, Modifier.weight(1f)); ShelfSeed(shopCatalog.last(), 1, {}, Modifier.weight(1f)) } } }
+fun ShopNurseryDisplayPreview() { MamXanhPreviewTheme { NurseryShelf { ShelfSeed(shopCatalog.first(), {}, Modifier.weight(1f)); ShelfSeed(shopCatalog.last(), {}, Modifier.weight(1f)) } } }
 
 @Preview(name = "Fertilizer shelf", widthDp = 340)
 @Composable

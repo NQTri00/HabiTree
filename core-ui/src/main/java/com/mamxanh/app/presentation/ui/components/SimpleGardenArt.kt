@@ -40,6 +40,12 @@ fun SimpleGardenArt(art: GardenArt, modifier: Modifier = Modifier) {
         translate((size.width-100*factor)/2,(size.height-100*factor)/2) {
             scale(factor, factor, Offset.Zero) {
                 when (art) {
+                    GardenArt.CHECKED_TASK -> {
+                        drawRoundRect(Paper, Offset(14f,25f), Size(66f,62f), CornerRadius(6f))
+                        drawRoundRect(DarkLeaf, Offset(14f,25f), Size(66f,62f), CornerRadius(6f), style=Stroke(4f))
+                        drawLine(DarkLeaf, Offset(24f,51f), Offset(43f,69f), 7f, StrokeCap.Round)
+                        drawLine(DarkLeaf, Offset(43f,69f), Offset(88f,15f), 7f, StrokeCap.Round)
+                    }
                     GardenArt.SPROUT -> {
                         drawLine(DarkLeaf,Offset(50f,88f),Offset(49f,47f),5f,StrokeCap.Round)
                         leaf(48f,57f,39f,45f,angle=-42f)

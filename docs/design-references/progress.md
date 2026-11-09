@@ -17,6 +17,8 @@ Review fixes are applied: bounded Home names, measured packet art/labels with in
 
 Memory discipline: previews were sequential and limited to affected cases; no image atlas was rendered. Heap checks interrupted rendering when allocation approached the 4GiB limit. Collection reduced usage from4,044,847KB to2,277,154KB; one subsequent Home preview raised allocation again to3,829,349KB, so no additional previews are scheduled in this batch. This is monitored recovery, not proof of a permanent leak fix.
 
+Latest refinement: Shop shelves and labels now have reference-like vertical spacing and narrower separated name panels. Journal chart ticks and bars share a baseline and scale; native checked-task and pressed ginkgo details are restored. Large-text navigation reserves two lines for Nhật ký. Targeted previews confirmed the complete navigation label, aligned mixed-value chart (0–12) at 1.3 font scale, and a seven-day all-zero chart. These component checks do not establish whole-screen visual acceptance. Heap was measured at 2,979,414KB before this small sequential batch and 3,317,766KB after the first two renders; no atlas or full image payload was dumped.
+
 Pending: final full-shell comparisons, remaining large-text/empty-state checks and complete visual acceptance. No numeric 90% score or full completion claim yet.
 
 Previous goal turn: progress — authoritative source files were inspected, a new detailed plan written, simplified code/assets implemented and previews compared. No blocker status applies.
