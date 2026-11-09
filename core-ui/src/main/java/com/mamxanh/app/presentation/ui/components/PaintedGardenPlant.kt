@@ -40,9 +40,10 @@ fun PaintedGardenPlant(speciesId: String, modifier: Modifier = Modifier, potted:
     } else if (!potted || speciesId == "mandarin") {
         GardenSourceImage(resource, modifier)
     } else {
-        val bitmap = ImageBitmap.imageResource(resource)
-        val bounds = remember(resource, bitmap) { sourceArtworkBounds(resource,bitmap) }
+        val artwork = rememberSourceArtwork(resource)
         Canvas(modifier) {
+            val bitmap = artwork?.bitmap ?: return@Canvas
+            val bounds = artwork.bounds
             val sourceWidth=bounds[2]-bounds[0]
             val sourceHeight=((bounds[3]-bounds[1]) * when(speciesId) { "succulent" -> .62f; "pine" -> .68f; else -> .70f }).roundToInt()
             val ratio=minOf(size.width/sourceWidth,size.height*.80f/sourceHeight)

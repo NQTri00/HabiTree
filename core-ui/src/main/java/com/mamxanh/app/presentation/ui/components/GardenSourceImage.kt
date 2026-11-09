@@ -2,7 +2,13 @@ package com.mamxanh.app.presentation.ui.components
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalInspectionMode
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.res.imageResource
@@ -33,12 +39,35 @@ internal fun sourceArtworkBounds(resource: Int, bitmap: ImageBitmap): IntArray =
         intArrayOf(left, top, right, bottom)
     }
 
+internal data class SourceArtwork(val bitmap: ImageBitmap, val bounds: IntArray)
+
+/** Decode and inspect sprites on a worker; composition must never read their pixels. */
+@Composable
+internal fun rememberSourceArtwork(resource: Int): SourceArtwork? {
+    val resources = LocalContext.current.resources
+    val configuration = LocalConfiguration.current
+    if (LocalInspectionMode.current) {
+        return remember(resource, resources, configuration) {
+            val bitmap = ImageBitmap.imageResource(resources, resource)
+            SourceArtwork(bitmap, sourceArtworkBounds(resource, bitmap))
+        }
+    }
+    return produceState<SourceArtwork?>(null, resource, resources, configuration) {
+        value = null
+        value = withContext(Dispatchers.IO) {
+            val bitmap = ImageBitmap.imageResource(resources, resource)
+            SourceArtwork(bitmap, sourceArtworkBounds(resource, bitmap))
+        }
+    }.value
+}
+
 /** A decorative source sprite fitted by its visible artwork rather than export canvas. */
 @Composable
 fun GardenSourceImage(resource: Int, modifier: Modifier = Modifier) {
-    val bitmap = ImageBitmap.imageResource(resource)
-    val bounds = remember(resource, bitmap) { sourceArtworkBounds(resource, bitmap) }
+    val artwork = rememberSourceArtwork(resource)
     Canvas(modifier) {
+        val bitmap = artwork?.bitmap ?: return@Canvas
+        val bounds = artwork.bounds
         val width = bounds[2] - bounds[0]
         val height = bounds[3] - bounds[1]
         val scale = minOf(size.width / width, size.height / height)
