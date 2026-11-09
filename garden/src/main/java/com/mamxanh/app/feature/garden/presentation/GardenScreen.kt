@@ -48,7 +48,7 @@ fun GardenScreen(state: GardenUiState, onIntent: (GardenIntent) -> Unit, modifie
             } else if (garden.trees.isEmpty()) {
                 GardenBotanicalFrame(Modifier.padding(vertical = 32.dp).fillMaxWidth(), contentPadding = PaddingValues(30.dp), cornerSize = 36.dp, skin = GardenPanelSkin.DIALOG) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        PaintedGardenPlant("succulent", Modifier.size(160.dp))
+                        GardenArtwork(GardenArt.SEED, Modifier.size(140.dp, 100.dp))
                         Text("Mầm xanh đầu tiên đang chờ", color = Deep, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
                         Text("Chọn một hạt trong túi để bắt đầu khu vườn.", color = Deep, textAlign = TextAlign.Center)
                     }
@@ -132,7 +132,7 @@ private fun SeedBasket(seeds: List<Species>, inventory: Map<String, Int>, onSele
             Text("🌱 Hạt trong túi", color = Deep, fontSize = 17.sp, lineHeight = 20.sp, fontWeight = FontWeight.Bold)
         }
         Box(Modifier.fillMaxWidth().heightIn(min = 150.dp), contentAlignment = Alignment.BottomCenter) {
-            GardenSeedBasketSurface(Modifier.fillMaxSize())
+            GardenSeedBasketSurface(Modifier.matchParentSize())
             if (seeds.isEmpty()) {
                 GardenBotanicalFrame(Modifier.padding(22.dp), contentPadding = PaddingValues(14.dp), cornerSize = 22.dp) {
                     Text("Túi hạt đang trống\nGhé Tiệm để tìm mầm mới nhé.", color = Deep, fontSize = 13.sp, textAlign = TextAlign.Center)

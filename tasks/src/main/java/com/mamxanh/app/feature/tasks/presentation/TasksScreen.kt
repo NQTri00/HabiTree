@@ -162,9 +162,9 @@ private fun TaskCard(task: Task, onComplete: () -> Unit, onDelete: () -> Unit, r
                 task.title.contains("nước", ignoreCase = true) -> GardenArt.GLASS
                 task.category.contains("Học", ignoreCase = true) -> GardenArt.BOOK
                 else -> GardenArt.SPROUT
-            }, Modifier.size(44.dp, 55.dp))
-            Column(Modifier.weight(1f).padding(horizontal = 5.dp)) {
-                Text(task.title, color = Deep, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+            }, Modifier.size(36.dp, 48.dp))
+            Column(Modifier.weight(1f).padding(horizontal = 3.dp)) {
+                Text(task.title, color = Deep, fontSize = 15.sp, fontWeight = FontWeight.Bold)
                 if (!done) Text(task.category, color = Color(0xFF80562C), fontSize = 12.sp)
                 if (task.kind == "TODO" && task.due.isNotBlank()) Text("Hạn: " + task.due, color = Muted, fontSize = 11.sp)
                 if (done) Text("Đã xong", color = Green, fontSize = 12.sp)
@@ -173,7 +173,7 @@ private fun TaskCard(task: Task, onComplete: () -> Unit, onDelete: () -> Unit, r
                 cornerSize = 9.dp, skin = com.mamxanh.app.presentation.ui.components.GardenPanelSkin.PRICE) {
                 Text("🪙+${task.reward} xu", color = Deep, fontSize = 11.sp, lineHeight = 14.sp, fontWeight = FontWeight.Bold)
             }
-            IconButton(onClick = onComplete, enabled = !done, modifier = Modifier.size(44.dp).semantics { contentDescription = if (done) "Đã hoàn thành" else "Hoàn thành nhiệm vụ" }) {
+            IconButton(onClick = onComplete, enabled = !done, modifier = Modifier.size(36.dp, 48.dp).semantics { contentDescription = if (done) "Đã hoàn thành" else "Hoàn thành nhiệm vụ" }) {
                 Surface(shape = CircleShape, color = if (done) Color(0xFF7B9D3D) else Color.Transparent,
                     border = if (done) null else BorderStroke(1.5.dp,Color(0xFF9B7854)), modifier = Modifier.size(24.dp)) {
                     if (done) Icon(Icons.Rounded.Check, null, tint = Color(0xFFFFF5DC), modifier = Modifier.padding(3.dp))
