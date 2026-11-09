@@ -101,7 +101,7 @@ fun HomeScreen(
                 GardenPlace("SHOP", "Tiệm hạt", { enter(HomePlace.SHOP) },
                     Modifier.offset(maxWidth * .60f, maxHeight * .66f).width(maxWidth * .36f).height(maxHeight * .16f))
                 Box(
-                    Modifier.offset(maxWidth * .06f, maxHeight * .25f).width(maxWidth * .88f).height(maxHeight * .40f),
+                    Modifier.offset(maxWidth * .10f, maxHeight * .27f).width(maxWidth * .80f).height(maxHeight * .28f),
                     contentAlignment = Alignment.BottomCenter
                 ) {
                     if (tree != null) {
@@ -130,7 +130,7 @@ fun HomeScreen(
             }
         }
         if (tree != null) BoxWithConstraints(Modifier.fillMaxSize().graphicsLayer { alpha = 1f - approach }) {
-            GardenBotanicalFrame(Modifier.align(Alignment.TopCenter).offset(y = maxHeight * .57f).width(190.dp),
+            GardenBotanicalFrame(Modifier.align(Alignment.TopCenter).offset(y = maxHeight * .54f).width(190.dp),
                 contentPadding = PaddingValues(horizontal = 16.dp, vertical = 7.dp), cornerSize = 24.dp) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(3.dp)) {
                     Text(tree.name, color = Deep, fontWeight = FontWeight.Bold, fontSize = 16.sp, lineHeight = 18.sp,

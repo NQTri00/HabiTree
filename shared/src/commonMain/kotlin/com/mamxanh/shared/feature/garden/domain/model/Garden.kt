@@ -2,7 +2,10 @@ package com.mamxanh.shared.feature.garden.domain.model
 
 data class Species(val id: String, val name: String, val emoji: String, val description: String, val price: Int)
 data class Tree(val id: Long, val speciesId: String, val name: String, val growth: Int, val planted: String, val decoration: String = "NONE", val wateredToday: Boolean = false)
-data class Garden(val trees: List<Tree> = emptyList(), val inventory: Map<String, Int> = emptyMap())
+data class Garden(
+    val trees: List<Tree> = emptyList(), val inventory: Map<String, Int> = emptyMap(),
+    val plots: List<com.mamxanh.shared.model.GardenPlot> = emptyList(), val coins: Int = 0
+)
 val seedCatalog = listOf(
     Species("succulent", "Sen đá ngọc", "🪴", "Mọng nước, cánh lá xếp tầng xinh xắn", 25),
     Species("monstera", "Trầu bà lá xẻ", "🌿", "Lá xanh mướt mang không khí trong lành", 25),

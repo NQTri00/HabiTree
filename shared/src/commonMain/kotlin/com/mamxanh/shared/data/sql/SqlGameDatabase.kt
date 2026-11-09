@@ -34,7 +34,10 @@ class SqlGameDatabase(private val connection: GameSqlConnection) : GameDatabase 
             Tree(it.long(0), it.string(1), it.string(2), it.int(3), it.string(4), it.string(5), it.int(6) == 1)
         }
         val inventory = rows("SELECT item,quantity FROM inventory", 2).associate { it.string(0) to it.int(1) }
-        return Garden(trees, inventory)
+        val plots = rows("SELECT id,unlocked,COALESCE(tree_id,0) FROM garden_plots ORDER BY id", 3).map {
+            GardenPlot(it.int(0), it.int(1) == 1, it.long(2).takeIf { id -> id != 0L })
+        }
+        return Garden(trees, inventory, plots, meta("coins").toIntOrNull() ?: 0)
     }
 
     override fun statistics(): Statistics {
@@ -113,13 +116,31 @@ class SqlGameDatabase(private val connection: GameSqlConnection) : GameDatabase 
         }
     }
 
-    override fun plant(id: String, name: String): Boolean = connection.transaction {
+    override fun plant(id: String, name: String, plotId: Int?): Boolean = connection.transaction {
         val count = quantity(id)
+        val item = catalog.firstOrNull { it.id == id } ?: return@transaction false
         if (count <= 0) return@transaction false
-        val item = catalog.first { it.id == id }
+        val plot = if (plotId == null) {
+            rows("SELECT id FROM garden_plots WHERE unlocked=1 AND tree_id IS NULL ORDER BY id LIMIT 1", 1)
+        } else {
+            rows("SELECT id FROM garden_plots WHERE id=? AND unlocked=1 AND tree_id IS NULL", 1, plotId)
+        }.firstOrNull()?.int(0) ?: return@transaction false
         execute("INSERT INTO trees(species_id,name,growth,planted) VALUES(?,?,0,?)",
-            id, name.ifBlank { item.name }, currentDateKey())
+            id, name.trim().ifBlank { item.name }, currentDateKey())
+        val treeId = rows("SELECT last_insert_rowid()", 1).first().long(0)
+        execute("UPDATE garden_plots SET tree_id=? WHERE id=?", treeId, plot)
         seed(id, count - 1)
+        true
+    }
+
+    override fun unlockPlot(plotId: Int): Boolean = connection.transaction {
+        if (count("SELECT COUNT(*) FROM garden_plots WHERE id=? AND unlocked=0", plotId) != 1) return@transaction false
+        val coins = meta("coins").toIntOrNull() ?: 0
+        if (coins < GardenPlotPolicy.UNLOCK_PRICE) return@transaction false
+        putMeta("coins", coins - GardenPlotPolicy.UNLOCK_PRICE)
+        execute("UPDATE garden_plots SET unlocked=1 WHERE id=?", plotId)
+        val next = count("SELECT COALESCE(MAX(id),0)+1 FROM garden_plots")
+        execute("INSERT INTO garden_plots(id,unlocked) VALUES(?,0)", next)
         true
     }
 

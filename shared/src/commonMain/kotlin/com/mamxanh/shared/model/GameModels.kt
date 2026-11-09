@@ -14,7 +14,15 @@ data class Tree(
     val id: Long, val speciesId: String, val name: String, val growth: Int,
     val planted: String, val decoration: String = "NONE", val wateredToday: Boolean = false
 )
-data class Garden(val trees: List<Tree> = emptyList(), val inventory: Map<String, Int> = emptyMap())
+data class GardenPlot(val id: Int, val isUnlocked: Boolean, val treeId: Long? = null)
+object GardenPlotPolicy {
+    const val INITIAL_PLOTS = 5
+    const val UNLOCK_PRICE = 50
+}
+data class Garden(
+    val trees: List<Tree> = emptyList(), val inventory: Map<String, Int> = emptyMap(),
+    val plots: List<GardenPlot> = emptyList(), val coins: Int = 0
+)
 data class Statistics(
     val coins: Int = 0, val total: Int = 0, val today: Int = 0,
     val week: Int = 0, val streak: Int = 0, val treeCount: Int = 0,

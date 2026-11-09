@@ -23,6 +23,7 @@ import com.mamxanh.app.feature.tree.presentation.components.*
 import com.mamxanh.app.presentation.ui.*
 import com.mamxanh.app.presentation.ui.components.*
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TreeInteractionScreen(
     tree: Tree, state: TreeUiState, fertilizerCount: Int, wateringCanMl: Int,
@@ -30,10 +31,16 @@ fun TreeInteractionScreen(
     sharedTreeModifier: Modifier = Modifier
 ) {
     val displayedGrowth = tree.growth.coerceIn(0, 120)
-    Box(modifier.fillMaxSize()) {
+    val sceneScroll = rememberScrollState()
+    LaunchedEffect(state.isPanelExpanded) {
+        if (state.isPanelExpanded) sceneScroll.scrollTo(0)
+    }
+    BoxWithConstraints(modifier.fillMaxSize()) {
+        val sceneHeight = maxOf(maxHeight, 560.dp * LocalDensity.current.fontScale.coerceAtLeast(1f))
         GardenForestScene(Modifier.fillMaxSize(), setting = ForestSetting.TREE)
+        Box(Modifier.fillMaxSize().verticalScroll(sceneScroll)) {
         Column(
-            Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 12.dp, vertical = 8.dp),
+            Modifier.fillMaxWidth().height(sceneHeight).padding(horizontal = 12.dp, vertical = 8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
@@ -48,7 +55,7 @@ fun TreeInteractionScreen(
                 GardenArtwork(GardenArt.FLOWERS, Modifier.align(Alignment.CenterStart).size(40.dp, 48.dp))
                 GardenArtwork(GardenArt.SPROUT, Modifier.align(Alignment.CenterEnd).size(30.dp))
             }
-            Box(Modifier.fillMaxWidth().height(280.dp), contentAlignment = Alignment.Center) {
+            Box(Modifier.fillMaxWidth().weight(1f), contentAlignment = Alignment.Center) {
                 GardenPlantPortrait(tree.speciesId, tree.decoration, sharedTreeModifier.fillMaxSize())
                 GardenArtwork(GardenArt.LANTERN, Modifier.align(Alignment.TopEnd).padding(end = 3.dp).size(38.dp, 62.dp))
             }
@@ -61,9 +68,46 @@ fun TreeInteractionScreen(
             }
             TreeCareActions(tree.wateredToday, fertilizerCount, wateringCanMl,
                 { onIntent(TreeIntent.Water(tree.id)) }, { onIntent(TreeIntent.Fertilize(tree.id)) })
-            DecorationPicker(tree.decoration, { onIntent(TreeIntent.Decorate(tree.id, it)) })
-            GardenBotanicalFrame(contentPadding = PaddingValues(horizontal = 18.dp, vertical = 10.dp), cornerSize = 22.dp) {
-                Text("Một chút chăm sóc, thêm một mầm vui", color = Deep, fontSize = 13.sp, lineHeight = 16.sp, fontStyle = FontStyle.Italic, textAlign = TextAlign.Center)
+            GardenPaintedButton("Trang trí & thông tin ↑",
+                { onIntent(TreeIntent.SetPanelExpanded(true)) }, Modifier.fillMaxWidth(), primary = false)
+        }
+        }
+        if (state.isPanelExpanded) {
+            ModalBottomSheet(
+                modifier = Modifier.fillMaxHeight(.75f),
+                onDismissRequest = { onIntent(TreeIntent.SetPanelExpanded(false)) },
+                sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+                containerColor = Color(0xFFFFEBC9),
+                contentColor = Deep
+            ) {
+                Column(
+                    Modifier.fillMaxWidth().navigationBarsPadding().padding(horizontal = 16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    Text("🌱 Chăm sóc cây", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                    TreeCareActions(tree.wateredToday, fertilizerCount, wateringCanMl,
+                        { onIntent(TreeIntent.Water(tree.id)) }, { onIntent(TreeIntent.Fertilize(tree.id)) })
+                    Column(
+                        Modifier.weight(1f, fill = false).verticalScroll(rememberScrollState()),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        Text("Trang trí", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                        DecorationPicker(tree.decoration, { onIntent(TreeIntent.Decorate(tree.id, it)) })
+                        GardenBotanicalFrame(Modifier.fillMaxWidth(),
+                            contentPadding = PaddingValues(12.dp), cornerSize = 20.dp) {
+                            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                                Text("Thông tin cây", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                                Text("Loài cây: " + (com.mamxanh.app.feature.tree.domain.model.treeSpeciesCatalog
+                                    .firstOrNull { it.id == tree.speciesId }?.name ?: tree.speciesId), color = Deep)
+                                Text("Ngày trồng: ${tree.planted}", color = Deep)
+                                Text("Độ lớn: $displayedGrowth / 120", color = Deep)
+                            }
+                        }
+                    }
+                    Spacer(Modifier.height(12.dp))
+                }
             }
         }
     }

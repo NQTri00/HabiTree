@@ -19,16 +19,24 @@ class TreeViewModel(private val repository: TreeRepository) : ViewModel() {
     val effects = effectChannel.receiveAsFlow()
 
     fun dispatch(intent: TreeIntent) {
+        if (intent is TreeIntent.SetPanelExpanded) {
+            _uiState.value = _uiState.value.copy(isPanelExpanded = intent.expanded)
+            return
+        }
         if (intent == TreeIntent.Back) {
-            viewModelScope.launch { effectChannel.send(TreeEffect.Back) }
+            if (_uiState.value.isPanelExpanded) {
+                _uiState.value = _uiState.value.copy(isPanelExpanded = false)
+            } else {
+                viewModelScope.launch { effectChannel.send(TreeEffect.Back) }
+            }
             return
         }
         if (_uiState.value.isLoading) return
         viewModelScope.launch {
-            _uiState.value = TreeUiState(isLoading = true)
+            _uiState.value = _uiState.value.copy(isLoading = true)
             try {
                 when (intent) {
-                    TreeIntent.Back -> Unit // Navigation is handled before the mutation guard.
+                    TreeIntent.Back, is TreeIntent.SetPanelExpanded -> Unit // UI/navigation handled before mutations.
                     is TreeIntent.Water -> {
                         val result = withContext(Dispatchers.IO) { WaterTree(repository)(intent.id) }
                         if (result == TreeWateringResult.WATERED) effectChannel.send(TreeEffect.TreeChanged)
@@ -52,7 +60,7 @@ class TreeViewModel(private val repository: TreeRepository) : ViewModel() {
                     }
                 }
             } finally {
-                _uiState.value = TreeUiState()
+                _uiState.value = _uiState.value.copy(isLoading = false)
             }
         }
     }

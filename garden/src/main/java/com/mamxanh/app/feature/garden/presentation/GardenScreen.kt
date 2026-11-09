@@ -36,54 +36,125 @@ import com.mamxanh.core.ui.R
 fun GardenScreen(state: GardenUiState, onIntent: (GardenIntent) -> Unit, modifier: Modifier = Modifier) {
     val garden = state.garden
     var selectedSeedId by rememberSaveable { mutableStateOf<String?>(null) }
+    var selectedPlotId by rememberSaveable { mutableStateOf<Int?>(null) }
+    var choosingSeed by rememberSaveable { mutableStateOf(false) }
+    var unlockingPlotId by rememberSaveable { mutableStateOf<Int?>(null) }
     val selectedSeed = seedCatalog.firstOrNull { it.id == selectedSeedId }
     val seeds = seedCatalog.filter { (garden.inventory[it.id] ?: 0) > 0 }
+    val plots = garden.plots.ifEmpty {
+        // Preview/legacy callers still get explicit empty slots without fake saved trees.
+        val count = maxOf(5, garden.trees.size)
+        (1..count).map { com.mamxanh.shared.model.GardenPlot(it, true, garden.trees.getOrNull(it - 1)?.id) }
+    }
     Box(modifier.fillMaxSize()) {
         GardenForestScene(Modifier.fillMaxSize(), setting = ForestSetting.GARDEN)
-        Column(
-            Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 10.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            GardenOverviewCard(garden.trees.size, garden.trees.count { !it.wateredToday }, seeds.sumOf { garden.inventory[it.id] ?: 0 })
-            Spacer(Modifier.height(20.dp))
-            if (state.isLoading && garden.trees.isEmpty()) {
-                CircularProgressIndicator(Modifier.padding(48.dp), color = Color(0xFFFFDF89))
-            } else if (garden.trees.isEmpty()) {
-                GardenBotanicalFrame(Modifier.padding(vertical = 32.dp).fillMaxWidth(), contentPadding = PaddingValues(30.dp), cornerSize = 36.dp, skin = GardenPanelSkin.DIALOG) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        GardenArtwork(GardenArt.SEED, Modifier.size(140.dp, 100.dp))
-                        Text("Mầm xanh đầu tiên đang chờ", color = Deep, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
-                        Text("Chọn một hạt trong túi để bắt đầu khu vườn.", color = Deep, textAlign = TextAlign.Center)
-                    }
-                }
-            } else {
-                garden.trees.chunked(2).forEachIndexed { index, trees ->
-                    Row(Modifier.fillMaxWidth().padding(top = if (index == 0) 0.dp else 6.dp), verticalAlignment = Alignment.Top) {
-                        trees.forEachIndexed { column, tree ->
-                            GardenTreeIsland(
-                                tree, onClick = { onIntent(GardenIntent.OpenTree(tree.id)) },
-                                modifier = Modifier.weight(1f).padding(top = if (column == 1) 22.dp else 0.dp)
-                            )
+        Column(Modifier.fillMaxSize().padding(horizontal = 10.dp),
+            horizontalAlignment = Alignment.CenterHorizontally) {
+            GardenWoodSign("Vườn ươm", Modifier.widthIn(max = 285.dp).fillMaxWidth(.85f))
+            GardenBotanicalFrame(contentPadding = PaddingValues(horizontal = 20.dp, vertical = 6.dp)) {
+                Text("${garden.trees.size} cây · ${plots.count { it.isUnlocked }} ô mở", color = Deep,
+                    fontSize = 17.sp, fontWeight = FontWeight.Bold)
+            }
+            if (state.isLoading) LinearProgressIndicator(Modifier.fillMaxWidth(), color = Green)
+            Column(Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(vertical = 12.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                plots.forEach { plot ->
+                    val tree = garden.trees.firstOrNull { it.id == plot.treeId }
+                    Row(Modifier.fillMaxWidth().heightIn(min = 150.dp),
+                        verticalAlignment = Alignment.CenterVertically) {
+                        if (tree != null) {
+                            PaintedGardenPlant(tree.speciesId, Modifier.weight(1f).height(150.dp)
+                                .clickable(onClickLabel = "Chăm sóc ${tree.name}") { onIntent(GardenIntent.OpenTree(tree.id)) })
+                        } else {
+                            GardenArtwork(GardenArt.SEED, Modifier.weight(1f).height(120.dp))
                         }
-                        if (trees.size == 1) {
-                            Box(Modifier.weight(1f).height(145.dp), contentAlignment = Alignment.Center) {
-                                GardenBotanicalFrame(contentPadding = PaddingValues(16.dp), cornerSize = 22.dp, skin = GardenPanelSkin.HINT) {
-                                    Text("Chạm cây\nđể chăm sóc", color = Deep, fontStyle = FontStyle.Italic, textAlign = TextAlign.Center)
+                        GardenBotanicalFrame(Modifier.weight(1f),
+                            contentPadding = PaddingValues(horizontal = 10.dp, vertical = 12.dp)) {
+                            Column(horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                                Text(plot.id.toString().padStart(2, '0'), color = Deep,
+                                    fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                                if (tree != null) {
+                                    Text(tree.name, color = Deep, textAlign = TextAlign.Center,
+                                        modifier = Modifier.clickable { onIntent(GardenIntent.OpenTree(tree.id)) })
+                                    LinearProgressIndicator(progress = { (tree.growth / 120f).coerceIn(0f, 1f) },
+                                        modifier = Modifier.fillMaxWidth().height(6.dp), color = Green,
+                                        trackColor = Color(0xFFD6B78D), drawStopIndicator = {})
+                                    Text("${tree.growth} / 120", color = Deep, fontWeight = FontWeight.Bold)
+                                } else if (plot.isUnlocked) {
+                                    GardenPaintedButton("Gieo cây", {
+                                        selectedPlotId = plot.id
+                                        choosingSeed = true
+                                    }, enabled = !state.isLoading)
+                                } else {
+                                    Text("Đang khóa", color = Deep)
+                                    GardenPaintedButton("Mở ô · ${com.mamxanh.shared.model.GardenPlotPolicy.UNLOCK_PRICE} xu",
+                                        { unlockingPlotId = plot.id }, enabled = !state.isLoading)
                                 }
                             }
                         }
                     }
                 }
+                SeedBasket(seeds, garden.inventory, onSelect = {
+                    selectedPlotId = null
+                    selectedSeedId = it.id
+                }, onOpenShop = { onIntent(GardenIntent.OpenShop) })
             }
-            SeedBasket(seeds, garden.inventory, onSelect = { selectedSeedId = it.id },
-                onOpenShop = { onIntent(GardenIntent.OpenShop) })
-            Spacer(Modifier.height(8.dp))
         }
     }
+    if (choosingSeed) {
+        AlertDialog(onDismissRequest = { choosingSeed = false },
+            title = { Text(if (seeds.isEmpty()) "Bạn chưa có hạt" else "Chọn hạt để gieo") },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                    seeds.forEach { seed ->
+                        GardenPaintedButton("${seed.name} · ${garden.inventory[seed.id] ?: 0}", {
+                            selectedSeedId = seed.id
+                            choosingSeed = false
+                        })
+                    }
+                }
+            },
+            confirmButton = {
+                if (seeds.isEmpty()) TextButton(onClick = {
+                    choosingSeed = false; onIntent(GardenIntent.OpenShop)
+                }) { Text("Tiệm hạt") }
+            },
+            dismissButton = { TextButton(onClick = { choosingSeed = false }) { Text("Để sau") } })
+    }
+    unlockingPlotId?.let { id ->
+        val price = com.mamxanh.shared.model.GardenPlotPolicy.UNLOCK_PRICE
+        AlertDialog(onDismissRequest = { unlockingPlotId = null },
+            title = { Text("Mở thêm ô trồng") },
+            text = { Text("Số xu hiện có: ${garden.coins}\nGiá: $price xu") },
+            confirmButton = {
+                TextButton(enabled = garden.coins >= price && !state.isLoading, onClick = {
+                    onIntent(GardenIntent.UnlockPlot(id)); unlockingPlotId = null
+                }) { Text("Mở ô") }
+            },
+            dismissButton = { TextButton(onClick = { unlockingPlotId = null }) { Text("Để sau") } })
+    }
     selectedSeed?.let { seed ->
-        PlantingDialog(seed, garden.inventory[seed.id] ?: 0,
+        val available = plots.any { it.isUnlocked && it.treeId == null &&
+            (selectedPlotId == null || it.id == selectedPlotId) }
+        if (available) PlantingDialog(seed, garden.inventory[seed.id] ?: 0,
             onDismiss = { selectedSeedId = null },
-            onPlant = { name -> onIntent(GardenIntent.Plant(seed.id, name)); selectedSeedId = null })
+            onPlant = { name ->
+                onIntent(GardenIntent.Plant(seed.id, name, selectedPlotId)); selectedSeedId = null
+            })
+        else AlertDialog(onDismissRequest = { selectedSeedId = null },
+            title = { Text("Chưa có ô trống") },
+            text = { Text("Hạt vẫn ở trong túi. Mở thêm ô trồng để gieo cây.") },
+            confirmButton = { TextButton(onClick = {
+                selectedSeedId = null
+                unlockingPlotId = plots.firstOrNull { !it.isUnlocked }?.id
+            }) { Text("Xem ô bị khóa") } },
+            dismissButton = { TextButton(onClick = { selectedSeedId = null }) { Text("Để sau") } })
+    }
+    state.message?.let { message ->
+        AlertDialog(onDismissRequest = { onIntent(GardenIntent.DismissMessage) },
+            text = { Text(message) },
+            confirmButton = { TextButton(onClick = { onIntent(GardenIntent.DismissMessage) }) { Text("Đã hiểu") } })
     }
 }
 

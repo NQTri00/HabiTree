@@ -29,10 +29,30 @@ class GardenViewModel(private val repository: GardenRepository) : ViewModel() {
             }
             GardenIntent.OpenShop -> viewModelScope.launch { effectChannel.send(GardenEffect.OpenShop) }
             is GardenIntent.OpenTree -> viewModelScope.launch { effectChannel.send(GardenEffect.OpenTree(intent.id)) }
-            is GardenIntent.Plant -> viewModelScope.launch(Dispatchers.IO) {
-                PlantSeed(repository)(intent.speciesId, intent.name)
-                dispatch(GardenIntent.Refresh)
-                effectChannel.send(GardenEffect.DataChanged)
+            GardenIntent.DismissMessage -> _uiState.value = _uiState.value.copy(message = null)
+            is GardenIntent.Plant, is GardenIntent.UnlockPlot -> {
+                if (_uiState.value.isLoading) return
+                _uiState.value = _uiState.value.copy(isLoading = true)
+                viewModelScope.launch {
+                    try {
+                        val changed = withContext(Dispatchers.IO) {
+                            when (intent) {
+                                is GardenIntent.Plant -> PlantSeed(repository)(intent.speciesId, intent.name, intent.plotId)
+                                is GardenIntent.UnlockPlot -> repository.unlockPlot(intent.plotId)
+                                else -> false
+                            }
+                        }
+                        val garden = withContext(Dispatchers.IO) { LoadGarden(repository)() }
+                        _uiState.value = GardenUiState(garden, false, when {
+                            changed -> null
+                            intent is GardenIntent.UnlockPlot -> "Không thể mở ô trồng. Hãy kiểm tra số xu hiện có."
+                            else -> "Chưa thể gieo cây. Hãy kiểm tra hạt trong túi và ô trồng còn trống."
+                        })
+                        if (changed) effectChannel.send(GardenEffect.DataChanged)
+                    } finally {
+                        _uiState.value = _uiState.value.copy(isLoading = false)
+                    }
+                }
             }
         }
     }

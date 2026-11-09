@@ -33,8 +33,7 @@ fun StatsScreen(state: StatsUiState, onIntent: (StatsIntent) -> Unit, modifier: 
     Box(modifier.fillMaxSize()) {
         GardenSceneBackdrop(GardenScene.GROWTH_JOURNAL, Modifier.fillMaxSize())
         GardenJournalPage(Modifier.fillMaxSize().padding(horizontal = 8.dp, vertical = 6.dp)) {
-            LazyColumn(Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(18.dp), contentPadding = PaddingValues(bottom = 16.dp)) {
-                item {
+            Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(14.dp)) {
                     Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(5.dp)) {
                         Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                             Text("Nhật ký khu vườn", color = Deep, fontSize = 24.sp, fontWeight = FontWeight.Bold,
@@ -44,7 +43,7 @@ fun StatsScreen(state: StatsUiState, onIntent: (StatsIntent) -> Unit, modifier: 
                         }
                         Text("Mỗi ngày một chút, bạn đang lớn lên", color = Color(0xFF78552D), fontSize = 13.sp, fontStyle = FontStyle.Italic, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
                     }
-                }
+            LazyColumn(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(18.dp), contentPadding = PaddingValues(bottom = 16.dp)) {
                 item {
                     Box(Modifier.fillMaxWidth()) {
                         Row(Modifier.fillMaxWidth().padding(end = 12.dp), horizontalArrangement = Arrangement.SpaceEvenly) {
@@ -97,9 +96,11 @@ fun StatsScreen(state: StatsUiState, onIntent: (StatsIntent) -> Unit, modifier: 
                 }
                 item {
                     HorizontalDivider(color = Color(0xFFBC9659).copy(alpha = .4f))
-                    Text("Những bước nhỏ đều được ghi nhớ", Modifier.fillMaxWidth().padding(top = 14.dp),
+                    Text(if (s.total == 0 && s.treeCount == 0) "Hãy bắt đầu chăm cây để ghi lại hành trình của bạn nhé!"
+                        else "Số liệu được lưu trên thiết bị", Modifier.fillMaxWidth().padding(top = 14.dp),
                         textAlign = androidx.compose.ui.text.style.TextAlign.Center, color = Color(0xFF78552D), fontSize = 13.sp, fontStyle = FontStyle.Italic)
                 }
+            }
             }
         }
         GardenArtwork(GardenArt.SPROUT, Modifier.align(Alignment.TopCenter).padding(top = 16.dp).size(26.dp))

@@ -2,7 +2,7 @@
 
 > **For agentic workers:** Use superpowers:executing-plans inline. Execute immediately; the user explicitly declined questions and approval gates.
 
-**Goal:** Replace the ornate design with the three simple references in mics, targeting at least 90% visual similarity across six screens and three dialogs.
+**Goal:** Replace the ornate design with the simple references in mics across six screens and three dialogs. The user's later 100% similarity requirement supersedes the original 90% threshold. The annotated 01-home.png through 09-planting.png add binding interaction states; execute the detailed continuation in [2026-11-09-annotated-mics.md](2026-11-09-annotated-mics.md). Earlier checkmarks establish implementation checkpoints, not acceptance against the expanded requirements.
 
 **Architecture:** Preserve feature MVI state, intents, effects, navigation and repository behavior. Replace shared decorative components and artwork first, then adjust each screen composition. Background images contain scenery only; all product text and interactive elements are Compose.
 

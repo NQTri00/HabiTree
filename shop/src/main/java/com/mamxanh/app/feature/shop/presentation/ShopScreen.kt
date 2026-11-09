@@ -10,6 +10,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import com.mamxanh.app.presentation.ui.components.GardenRichText as Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -34,7 +35,8 @@ private val SeedDetailDialogBounds = Modifier.widthIn(max = 440.dp).fillMaxWidth
 
 @Composable
 fun ShopScreen(state: ShopUiState, onIntent: (ShopIntent) -> Unit, modifier: Modifier = Modifier) {
-    var selected by remember { mutableStateOf<ShopSeed?>(null) }
+    var selectedId by rememberSaveable { mutableStateOf<String?>(null) }
+    val selected = shopCatalog.firstOrNull { it.id == selectedId }
     val featuredIds = listOf("succulent", "pine", "cherry", "mandarin")
     val featured = featuredIds.mapNotNull { id -> shopCatalog.firstOrNull { it.id == id } }
     val other = shopCatalog.filterNot { it.id in featuredIds }
@@ -45,17 +47,19 @@ fun ShopScreen(state: ShopUiState, onIntent: (ShopIntent) -> Unit, modifier: Mod
             GardenHangingLantern(Modifier.offset(maxWidth * .88f, maxHeight * .17f).size(30.dp, 76.dp))
         }
         Column(
-            Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 18.dp, vertical = 36.dp),
+            Modifier.fillMaxSize().padding(horizontal = 18.dp, vertical = 20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             GardenWoodSign("Tiệm hạt", Modifier.fillMaxWidth(.85f))
             GardenBotanicalFrame(contentPadding = PaddingValues(horizontal = 22.dp, vertical = 8.dp), cornerSize = 20.dp) {
                 Text("🪙 ${state.wallet.coins} xu", color = Deep, fontSize = 18.sp, fontWeight = FontWeight.Bold)
             }
-            Spacer(Modifier.height(48.dp))
+            Column(Modifier.weight(1f).verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally) {
+            Spacer(Modifier.height(32.dp))
             featured.chunked(2).forEach { row ->
                 NurseryShelf {
-                    row.forEach { seed -> ShelfSeed(seed, { selected = seed }, Modifier.weight(1f)) }
+                    row.forEach { seed -> ShelfSeed(seed, { selectedId = seed.id }, Modifier.weight(1f)) }
                 }
             }
             NurseryShelf {
@@ -68,18 +72,20 @@ fun ShopScreen(state: ShopUiState, onIntent: (ShopIntent) -> Unit, modifier: Mod
                 }
                 other.chunked(2).forEach { row ->
                     NurseryShelf {
-                        row.forEach { seed -> ShelfSeed(seed, { selected = seed }, Modifier.weight(1f)) }
+                        row.forEach { seed -> ShelfSeed(seed, { selectedId = seed.id }, Modifier.weight(1f)) }
                     }
                 }
+            }
             }
         }
     }
     selected?.let { seed ->
-        Dialog(onDismissRequest = { selected = null }, properties = DialogProperties(usePlatformDefaultWidth = false)) {
+        Dialog(onDismissRequest = { selectedId = null }, properties = DialogProperties(usePlatformDefaultWidth = false)) {
             Box(SeedDetailDialogBounds) {
                 ShopSeedDetailCard(seed, state.wallet.inventory[seed.id] ?: 0, state.wallet.coins >= seed.price,
-                    onDismiss = { selected = null },
-                    onBuy = { onIntent(ShopIntent.BuySeed(seed.id)); selected = null })
+                    onDismiss = { selectedId = null },
+                    onBuy = { onIntent(ShopIntent.BuySeed(seed.id)); selectedId = null },
+                    missingCoins = (seed.price - state.wallet.coins).coerceAtLeast(0))
             }
         }
     }
@@ -137,7 +143,7 @@ private fun ShopGardenFooter(onClick: () -> Unit) {
 }
 
 @Composable
-private fun ShopSeedDetailCard(plant: ShopSeed, ownedCount: Int, canAfford: Boolean, onDismiss: () -> Unit, onBuy: () -> Unit) {
+private fun ShopSeedDetailCard(plant: ShopSeed, ownedCount: Int, canAfford: Boolean, onDismiss: () -> Unit, onBuy: () -> Unit, missingCoins: Int = 0) {
     GardenBotanicalFrame(Modifier.fillMaxWidth(), contentPadding = PaddingValues(horizontal = 26.dp, vertical = 32.dp), cornerSize = 42.dp, skin = GardenPanelSkin.DIALOG) {
         Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(12.dp)) {
             Column(Modifier.weight(1f, fill = false).verticalScroll(rememberScrollState()),
@@ -164,7 +170,8 @@ private fun ShopSeedDetailCard(plant: ShopSeed, ownedCount: Int, canAfford: Bool
                     Text("Mua hạt để cất vào túi.\nGieo cây tại Vườn ươm.", color = Deep, fontSize = 17.sp,
                         fontStyle = FontStyle.Italic, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
                 }
-                if (!canAfford) Text("Bạn cần thêm xu để mang hạt về.", color = Color(0xFF88511B), textAlign = TextAlign.Center)
+                if (!canAfford) Text(if (missingCoins > 0) "Không đủ xu. Cần thêm $missingCoins xu để mua."
+                    else "Bạn cần thêm xu để mang hạt về.", color = Color(0xFF88511B), textAlign = TextAlign.Center)
             }
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
                 GardenPaintedButton("Để sau", onDismiss, Modifier.weight(.8f), primary = false)

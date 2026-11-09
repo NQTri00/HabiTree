@@ -10,7 +10,8 @@ class OfflineGardenRepository(private val game: GameStorage) : GardenRepository 
         val source = game.garden()
         return Garden(source.trees.map {
             Tree(it.id, it.speciesId, it.name, it.growth, it.planted, it.decoration, it.wateredToday)
-        }, source.inventory)
+        }, source.inventory, source.plots, source.coins)
     }
-    override fun plant(speciesId: String, name: String) = game.plant(speciesId, name)
+    override fun plant(speciesId: String, name: String, plotId: Int?) = game.plant(speciesId, name, plotId)
+    override fun unlockPlot(plotId: Int) = game.unlockPlot(plotId)
 }

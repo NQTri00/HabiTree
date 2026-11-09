@@ -12,7 +12,8 @@ interface GameDatabase {
     fun complete(id: Long): Boolean
     fun dailyBonus(): Boolean
     fun buySeed(id: String): Boolean
-    fun plant(id: String, name: String): Boolean
+    fun plant(id: String, name: String, plotId: Int? = null): Boolean
+    fun unlockPlot(plotId: Int): Boolean
     fun buyFertilizer(): Boolean
     fun fertilize(treeId: Long): Boolean
     fun water(treeId: Long): TreeWateringResult

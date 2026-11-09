@@ -35,11 +35,28 @@ private val TaskDialogBounds = Modifier.widthIn(max = 480.dp).fillMaxWidth(.94f)
 @Composable
 fun AddTaskDialog(onDismiss: () -> Unit, onSave: (String, String, String, Int, String, String) -> Unit) {
     val form = rememberSaveable(saver = AddTaskFormSaver) { AddTaskFormState() }
-    Dialog(onDismissRequest = onDismiss,
+    var confirmingDiscard by rememberSaveable { mutableStateOf(false) }
+    val requestDismiss = {
+        if (form.isDirty) confirmingDiscard = true else onDismiss()
+    }
+    Dialog(onDismissRequest = requestDismiss,
         properties = DialogProperties(usePlatformDefaultWidth = false, decorFitsSystemWindows = false)) {
         Box(Modifier.fillMaxSize().safeDrawingPadding(), contentAlignment = Alignment.Center) {
-            AddTaskParchment(form, onDismiss, onSave, TaskDialogBounds)
+            AddTaskParchment(form, requestDismiss, onSave, TaskDialogBounds)
         }
+    }
+    if (confirmingDiscard) {
+        AlertDialog(
+            onDismissRequest = { confirmingDiscard = false },
+            title = { Text("Bỏ thay đổi?") },
+            text = { Text("Bạn có muốn bỏ các thông tin đang nhập?") },
+            dismissButton = {
+                TextButton(onClick = { confirmingDiscard = false }) { Text("Tiếp tục sửa") }
+            },
+            confirmButton = {
+                TextButton(onClick = { confirmingDiscard = false; onDismiss() }) { Text("Bỏ thay đổi") }
+            }
+        )
     }
 }
 
@@ -51,13 +68,22 @@ private fun AddTaskParchment(
 ) {
     GardenBotanicalFrame(modifier, contentPadding = PaddingValues(horizontal = 24.dp, vertical = 24.dp), cornerSize = 40.dp, skin = GardenPanelSkin.TASK_DIALOG) {
         Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            AddTaskDialogHeader()
+            Box(Modifier.fillMaxWidth()) {
+                AddTaskDialogHeader()
+                TextButton(onClick = onDismiss, modifier = Modifier.align(Alignment.TopEnd)) {
+                    Text("×", fontSize = 24.sp)
+                }
+            }
             Column(Modifier.weight(1f, fill = false).verticalScroll(rememberScrollState())) { AddTaskDialogFields(form) }
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
                 GardenPaintedButton("Để sau", onDismiss, Modifier.weight(.8f), primary = false)
                 GardenPaintedButton("Gieo nhiệm vụ", {
-                    onSave(form.title.trim(), form.kind, form.category, (form.reward.toIntOrNull() ?: 10).coerceIn(1, 100), form.frequency, form.due.trim())
-                }, Modifier.weight(1.3f), enabled = form.title.isNotBlank())
+                    form.validationRequested = true
+                    val reward = form.reward.toIntOrNull()
+                    if (form.title.isNotBlank() && reward != null && reward in 1..100) {
+                        onSave(form.title.trim(), form.kind, form.category, reward, form.frequency, form.due.trim())
+                    }
+                }, Modifier.weight(1.3f))
             }
         }
     }
@@ -78,6 +104,9 @@ private fun AddTaskDialogFields(form: AddTaskFormState) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         TaskFormSection("Tên việc", "📖") {
             GardenTextField(form.title, { form.title = it }, "Tên việc", Modifier.fillMaxWidth(), placeholder = "Đọc 10 trang sách")
+            if (form.validationRequested && form.title.isBlank()) {
+                Text("Thêm tên việc", color = MaterialTheme.colorScheme.error, fontSize = 12.sp)
+            }
         }
         Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {
             Text("🌱  Loại việc", color = Deep, fontSize = 16.sp, fontWeight = FontWeight.Bold)
@@ -121,6 +150,9 @@ private fun AddTaskDialogFields(form: AddTaskFormState) {
             GardenTextField(form.reward, { form.reward = it.filter(Char::isDigit).take(3) }, "Phần thưởng từ 1 đến 100 xu",
                 Modifier.fillMaxWidth(), trailingText = "xu", keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number))
         }
+        if (form.validationRequested && form.reward.toIntOrNull()?.let { it in 1..100 } != true) {
+            Text("Nhập từ 1 đến 100 xu", color = MaterialTheme.colorScheme.error, fontSize = 12.sp)
+        }
         Text("Từ 1 đến 100 xu", color = Deep, fontSize = 13.sp, fontStyle = FontStyle.Italic, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
     }
 }
@@ -157,6 +189,10 @@ private class AddTaskFormState(
     var frequency by mutableStateOf(initialFrequency)
     var due by mutableStateOf(initialDue)
     var categoryMenu by mutableStateOf(false)
+    var validationRequested by mutableStateOf(false)
+    val isDirty: Boolean
+        get() = title.isNotEmpty() || kind != "DAILY" || category != "Học tập" ||
+            reward != "10" || frequency != "EVERY_DAY" || due.isNotEmpty()
 }
 
 private val AddTaskFormSaver = listSaver<AddTaskFormState, String>(

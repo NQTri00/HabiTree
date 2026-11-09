@@ -64,7 +64,8 @@ fun TasksScreen(state: TasksUiState, onIntent: (TasksIntent) -> Unit, modifier: 
     Box(modifier.fillMaxSize()) {
         GardenSceneBackdrop(GardenScene.JOURNAL, Modifier.fillMaxSize())
         GardenJournalPage(Modifier.fillMaxSize().padding(horizontal = 8.dp, vertical = 6.dp)) {
-            LazyColumn(Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(12.dp), contentPadding = PaddingValues(bottom = 12.dp)) {
+            Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            LazyColumn(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(12.dp), contentPadding = PaddingValues(bottom = 12.dp)) {
                 item {
                     TaskQuestHeader(done, state.tasks.size, done.toFloat() / state.tasks.size.coerceAtLeast(1),
                         state.tasks.isNotEmpty() && done == state.tasks.size, {})
@@ -81,8 +82,14 @@ fun TasksScreen(state: TasksUiState, onIntent: (TasksIntent) -> Unit, modifier: 
                 if (!state.isLoading && filtered.isEmpty()) item {
                     Column(Modifier.fillMaxWidth().padding(vertical = 24.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                         Text("🌱", fontSize = 30.sp)
-                        Text("Gieo một việc nhỏ hôm nay", color = Deep, fontWeight = FontWeight.Bold)
-                        Text("Mỗi bước nhỏ đều giúp bạn lớn lên.", color = Muted, fontSize = 13.sp)
+                        Text(if (state.tasks.isEmpty()) "Gieo một việc nhỏ hôm nay" else "Không có việc nào phù hợp",
+                            color = Deep, fontWeight = FontWeight.Bold)
+                        if (state.tasks.isEmpty()) {
+                            Text("Mỗi bước nhỏ đều giúp bạn lớn lên.", color = Muted, fontSize = 13.sp)
+                        } else {
+                            GardenPaintedButton("Xem tất cả", { onIntent(TasksIntent.SetFilter(TaskFilter.ALL)) },
+                                primary = false)
+                        }
                     }
                 }
                 items(filtered, key = { it.id }) { task ->
@@ -91,9 +98,8 @@ fun TasksScreen(state: TasksUiState, onIntent: (TasksIntent) -> Unit, modifier: 
                 if (daily.isNotEmpty() && state.filter in setOf(TaskFilter.ALL, TaskFilter.DAILY)) item {
                     DailyRewardCard(daily.all { it.doneToday }, { onIntent(TasksIntent.ClaimBonus) })
                 }
-                item {
-                    GardenPaintedButton("+ Thêm việc", { onIntent(TasksIntent.ShowAddDialog) }, Modifier.fillMaxWidth())
-                }
+            }
+            GardenPaintedButton("+ Thêm việc", { onIntent(TasksIntent.ShowAddDialog) }, Modifier.fillMaxWidth())
             }
         }
     }
