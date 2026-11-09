@@ -14,10 +14,11 @@ import com.mamxanh.shared.network.NetworkConfig
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
+import org.koin.dsl.onClose
 
 fun appModule(networkConfig: NetworkConfig = NetworkConfig()) = module {
     includes(sharedModule(networkConfig))
-    single { GardenDatabase(androidContext()) }
+    single { GardenDatabase(androidContext()) } onClose { it?.close() }
     single<GameDatabase> { get<GardenDatabase>() }
 
     viewModelOf(::GardenViewModel)

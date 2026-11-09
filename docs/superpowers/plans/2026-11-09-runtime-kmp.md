@@ -22,7 +22,7 @@ Preserve SQLite data, economy/catalog behavior, six screens and three dialogs, a
 - [x] Move GardenSourceImage and PaintedGardenPlant decode/bounds work to IO; assembleDebug and repeat Shop navigation.
 - [x] Give Home a scrollable minimum scene height; build and inspect 360×640 dp top/bottom controls.
 - [ ] Exercise all destinations, dialogs, back navigation, recreation and large text; capture logcat/lastanr and record limitations.
-- [ ] Commit/push layout and pending typed-navigation/preview cleanup after validation.
+- [x] Commit/push layout and pending typed-navigation/preview cleanup after validation (dc2ffe9).
 
 ### 2. Koin graph
 Files: gradle/libs.versions.toml, app/build.gradle.kts, app/src/main/AndroidManifest.xml, app/src/main/java/com/mamxanh/app/{MamXanhApplication.kt,di/AppModule.kt,MainActivity.kt}.
@@ -34,10 +34,12 @@ Files: gradle/libs.versions.toml, app/build.gradle.kts, app/src/main/AndroidMani
 Files: new shared/build.gradle.kts and shared/src/{commonMain,androidMain,iosMain}/kotlin/com/mamxanh/shared; root Gradle/catalog/settings; existing data and feature domain/repository files.
 - [x] Configure Android and iOS arm64/simulator targets and framework using compatible plugins.
   Evidence: shared/build.gradle.kts uses the Android KMP plugin, iosArm64/iosSimulatorArm64 and MamXanhShared static frameworks. Kotlin upgraded to 2.4.21 to match the existing Gradle 9.5.1/AGP 8.13.2 compatibility range; all Android modules now use compilerOptions. Android assembleDebug and common metadata compilation passed.
-  Progress: portable persisted models/catalog, all six feature domain contracts/use cases/models and offline repository implementations now run from commonMain. Android source paths are aliases. SQL transaction/business rules and iOS persistence/bootstrap remain unfinished.
-- [ ] Move portable models/catalog/game rules and repository/storage contracts into commonMain; replace Android duplicates with shared types/adapters, retaining transactions and date behavior.
+  Progress: portable models/catalog, all six feature domain contracts/use cases/models, offline repositories, GameSchema and SqlGameDatabase now run from commonMain. Android source paths are aliases and a small SQLite adapter. iOS adapter/bootstrap source is implemented; native build/runtime remains unverified.
+- [x] Move portable models/catalog/game rules and repository/storage contracts into commonMain; replace Android duplicates with shared types/adapters, retaining transactions and date behavior.
 - [ ] Connect Android SQLite storage through the common interface; add iOS persistence adapter/bootstrap usable by an iOS consumer.
-- [ ] Verify Android build and common metadata, inspect platform import boundaries; document native build commands and unavailable macOS-only verification honestly.
+  Implementation ruling: common GameSchema/SqlGameDatabase own SQL and transaction rules behind GameSqlConnection. Android retains SQLiteOpenHelper and the v2 mam_xanh.db schema; iOS adapts SQLDelight's native SQLite driver (2.4.0) and exposes an isolated IosGarden Koin graph. No SQLDelight code generator or Android driver migration is needed. Native compilation/runtime remain a separate macOS verification requirement.
+  Manual verification: verification build type (com.mamxanh.app.verification, Mầm Xanh · QA) isolates economy mutations. Fresh schema, planting, water, seed/fertilizer purchase, fertilizer use, task completion/addition and persisted restart were executed successfully; original app retained 125 coins/cherry. All three real dialogs opened. Add Task IME overlap and legacy week-anchored statistics streak are recorded follow-ups. See runtime-navigation-2026-11-09.md.
+- [x] Verify Android build and common metadata, inspect platform import boundaries; document native build commands and unavailable macOS-only verification honestly. Both APK builds, metadata and IDE sync pass; native source inspections report warnings only. Native compilation/link/runtime is not claimed.
 
 ### 4. Ktor integration
 Files: shared common network configuration/client factory, Android/Darwin engine providers, shared DI module; Android manifest and application DI.

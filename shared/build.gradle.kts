@@ -22,6 +22,9 @@ kotlin {
             api(libs.ktor.client.core)
         }
         androidMain.dependencies { implementation(libs.ktor.client.android) }
-        iosMain.dependencies { implementation(libs.ktor.client.darwin) }
+        iosMain.dependencies {
+            implementation(libs.ktor.client.darwin)
+            implementation(libs.sqldelight.native)
+        }
     }
 }

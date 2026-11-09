@@ -4,9 +4,11 @@
 
 ## Persistence boundary
 
-`GameDatabase` is the blocking platform persistence contract. `GameStorage` and feature repositories are common code. Android's existing `GardenDatabase` implements the contract using the same `mam_xanh.db` file, schema version 2 and transaction bodies. Call repositories from worker dispatchers, as the existing Android ViewModels do.
+`GameDatabase` is the blocking persistence contract. `GameSchema` and `SqlGameDatabase` contain the shared schema, queries, game rules and transaction boundaries behind `GameSqlConnection`. Android retains its SQLiteOpenHelper, the same `mam_xanh.db` file and schema version 2. The iOS adapter uses SQLDelight 2.4.0's native SQLite driver without a code-generation plugin. Both platforms run the same game SQL and rules. Call repositories from worker dispatchers, as the existing Android ViewModels do.
 
-Migration is not finished: transaction/business rules still live in the Android SQLite implementation, and an iOS persistence adapter/bootstrap remains to be implemented. Declaring native targets does not mean an iOS app has been built or verified. Local yyyy-MM-dd date keys have platform implementations; iOS date behavior still requires native verification.
+On iOS, construct `IosGarden()` once for the owning session. It exposes home/tasks/garden/shop/statistics/tree repositories and configurable remote transport through an isolated Koin graph. Native storage and HTTP resources are lazy and close with `IosGarden.close()`; finish repository work before closing. Blocking repository operations must run off the UI thread. Local yyyy-MM-dd date keys and the locale's first weekday have platform implementations.
+
+Android/common builds and Studio inspections of the iOS sources pass (style/unused-public-API warnings only). Native framework compilation, linkage and iOS runtime remain unverified on this Windows host. This is an implemented native adapter, not a claim of a verified iOS app. The legacy week-anchored statistics streak was preserved during the persistence move and remains a follow-up correctness issue.
 
 ## Dependency injection and networking
 
@@ -21,8 +23,10 @@ No backend contract has been supplied. `RemoteService.get(pathSegments, query)` 
 On Windows:
 
 ```
-./gradlew :app:assembleDebug :shared:compileCommonMainKotlinMetadata
+./gradlew :app:assembleDebug :app:assembleVerification :shared:compileCommonMainKotlinMetadata
 ```
+
+The verification APK uses `com.mamxanh.app.verification` and the label `Mầm Xanh · QA`. It has its own database, so manual economy/input checks do not alter the normal app's saved garden. Its dependency fallback uses debug libraries; Preview annotations are an explicit app compile dependency.
 
 On macOS with Xcode compatible with Kotlin 2.4.21 (documented version 26.4), additionally run:
 
