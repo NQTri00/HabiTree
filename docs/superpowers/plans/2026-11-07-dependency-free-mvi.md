@@ -114,3 +114,7 @@
 - [x] Run the app module Gradle compile task through Android Studio's shell tooling.
 - [x] Search the six feature ViewModels and app shell for legacy split state flows, public action methods, and composable-owned navigation/global feedback; resolve remaining cases.
 - [x] Confirm no dependency was added and the final diff matches the design acceptance criteria.
+
+### Follow-up audit — 2026-11-09
+
+The rapid-intent requirement exposed a persistence gap during source review: daily bonus eligibility, balance increment and claim marker were separate writes. They now run inside one database transaction, matching purchase/completion atomicity, with cleanup in finally. No schema, reward or repository contract changed. :app:assembleDebug passed; Studio inspections reported warnings only. No automated tests were added or run. The broader ongoing UI verification remains recorded in the simple mics plan and audit ledger.

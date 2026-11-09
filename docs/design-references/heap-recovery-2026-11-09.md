@@ -18,6 +18,9 @@ Heap after these renders:2,963,619KB of4,194,304KB, approximately1.17GiB headroo
 
 The current heap-pressure episode is recovered. This verifies current responsiveness under inspection and full-screen rendering; it does not prove there can be no long-session retention issue.
 
+## Follow-up: preview density
+Reference screen fixtures now explicitly specify 160 dpi while retaining 360×800 dp and normal/1.3 text scales. Verified output is 360×800 pixels, previously945×2100 (about85% fewer output pixels). This reduces image-output size. It did not establish lower Studio heap pressure: a render increased used heap from2,838,514KB to4,068,787KB. A small component also caused substantial allocation. Do not treat lower density as a leak fix or remove sequential rendering/heap checks. Later collection reduced usage to2,858,411KB.
+
 ## Operating constraints
 Keep4GiB on this16GiB machine. Do not increase to8GiB while only~3GiB physical RAM is free.
 Render previews sequentially. Avoid large atlas renders and avoid dumping base64 image contents into conversation output.

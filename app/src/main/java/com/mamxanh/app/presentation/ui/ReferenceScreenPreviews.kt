@@ -31,19 +31,22 @@ class ReferenceRoutes : PreviewParameterProvider<AppUiState> {
     )
 }
 
-@Preview(name = "Reference comparison · full app", widthDp = 360, heightDp = 800)
+@Preview(name = "Reference comparison · full app", widthDp = 360, heightDp = 800,
+    device = "spec:width=360dp,height=800dp,dpi=160")
 @Composable
 fun ReferenceScreenPreview(@PreviewParameter(ReferenceRoutes::class) route: AppUiState) {
     ReferenceWorld(route)
 }
 
-@Preview(name = "Reference comparison · large text", widthDp = 360, heightDp = 800, fontScale = 1.3f)
+@Preview(name = "Reference comparison · large text", widthDp = 360, heightDp = 800, fontScale = 1.3f,
+    device = "spec:width=360dp,height=800dp,dpi=160")
 @Composable
 fun ReferenceLargeTextPreview(@PreviewParameter(ReferenceRoutes::class) route: AppUiState) {
     ReferenceWorld(route)
 }
 
-@Preview(name = "Reference comparison · empty", widthDp = 360, heightDp = 800)
+@Preview(name = "Reference comparison · empty", widthDp = 360, heightDp = 800,
+    device = "spec:width=360dp,height=800dp,dpi=160")
 @Composable
 fun ReferenceEmptyPreview(@PreviewParameter(ReferenceRoutes::class) route: AppUiState) {
     ReferenceWorld(route, empty = true)

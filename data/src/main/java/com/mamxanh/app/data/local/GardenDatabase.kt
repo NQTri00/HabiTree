@@ -113,13 +113,20 @@ class GardenDatabase(context: Context) : SQLiteOpenHelper(context, "mam_xanh.db"
         return result
     }
     fun dailyBonus(): Boolean {
-        val db=writableDatabase
-        if(getMeta(db,"daily_bonus","")==today()) return false
-        val daily=tasks().filter { it.kind=="DAILY" && scheduled(it) }
-        if(daily.isEmpty() || daily.any { !it.doneToday }) return false
-        meta(db,"coins",((getMeta(db,"coins").toIntOrNull()?:0)+20).toString())
-        meta(db,"daily_bonus",today())
-        return true
+        val db = writableDatabase
+        db.beginTransaction()
+        try {
+            val claimDate = today()
+            if (getMeta(db, "daily_bonus", "") == claimDate) return false
+            val daily = tasks().filter { it.kind == "DAILY" && scheduled(it) }
+            if (daily.isEmpty() || daily.any { !it.doneToday }) return false
+            meta(db, "coins", ((getMeta(db, "coins").toIntOrNull() ?: 0) + 20).toString())
+            meta(db, "daily_bonus", claimDate)
+            db.setTransactionSuccessful()
+            return true
+        } finally {
+            db.endTransaction()
+        }
     }
     private fun scheduled(t: Task): Boolean {
         val day=Calendar.getInstance().get(Calendar.DAY_OF_WEEK)

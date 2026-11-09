@@ -158,11 +158,14 @@ fun HomeScreen(
 private fun GardenPlace(kind: String, label: String, onClick: () -> Unit, modifier: Modifier = Modifier) {
     Column(modifier.clickable(role = Role.Button, onClickLabel = label, onClick = onClick),
         horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Bottom) {
-        if (kind == "SHOP") GardenArtwork(GardenArt.SHOP, Modifier.size(64.dp))
+        if (kind == "SHOP") GardenArtwork(GardenArt.SHOP,
+            Modifier.size(if (androidx.compose.ui.platform.LocalDensity.current.fontScale > 1.15f) 48.dp else 64.dp))
         GardenWoodenTray {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(3.dp)) {
                 if (kind != "SHOP") GardenArtwork(if (kind == "TASKS") GardenArt.CHECKLIST else GardenArt.SPROUT, Modifier.size(34.dp))
-                Text("$label ›", color = Deep, fontWeight = FontWeight.Bold, fontSize = 16.sp, lineHeight = 19.sp)
+                Text("$label ›", Modifier.weight(1f), color = Deep, fontWeight = FontWeight.Bold,
+                    fontSize = if (kind == "SHOP") 15.sp else 16.sp, lineHeight = 19.sp,
+                    maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
             }
         }
     }
@@ -185,7 +188,8 @@ fun HomeScreenEmptyPreview() { MamXanhPreviewTheme { HomeScreen(HomeUiState(isLo
 @Composable
 fun HomeShopApproachPreview() { MamXanhPreviewTheme { HomeScreen(previewHomeState(), {}, 2, previewApproach = .65f) } }
 
-@Preview(name = "Painted stall destination", widthDp = 180, heightDp = 200, showBackground = true)
+@Preview(name = "Stall destination · constrained, large text", widthDp = 130, heightDp = 120,
+    fontScale = 1.3f, device = "spec:width=130dp,height=120dp,dpi=160", showBackground = true)
 @Composable
 fun GardenPlacePreview() { MamXanhPreviewTheme { GardenPlace("SHOP", "Tiệm hạt", {}, Modifier.fillMaxSize()) } }
 
