@@ -10,6 +10,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.unit.dp
 
 /** Woven basket illustration behind individually selectable live seed packets. */
@@ -26,13 +27,15 @@ fun GardenSeedBasketSurface(modifier: Modifier = Modifier) {
             close()
         }
         drawPath(body,Brush.verticalGradient(listOf(Color(0xFFE8B573),Color(0xFFC78B47),Color(0xFFAC7039))))
-        repeat(7){i->
-            val y=h*(.31f+i*.10f)
-            drawLine(Color(0xFFE7B778),Offset(w*.10f,y),Offset(w*.90f,y),3.dp.toPx())
-        }
-        repeat(10){i->
-            val x=w*(.10f+i*.09f)
-            drawLine(Color(0xFFB67D40).copy(alpha=.6f),Offset(x,h*.22f),Offset(w*.5f+(x-w*.5f)*.75f,h*.95f),2.dp.toPx())
+        clipPath(body) {
+            repeat(7){i->
+                val y=h*(.31f+i*.10f)
+                drawLine(Color(0xFFE7B778),Offset(w*.10f,y),Offset(w*.90f,y),3.dp.toPx())
+            }
+            repeat(10){i->
+                val x=w*(.10f+i*.09f)
+                drawLine(Color(0xFFB67D40).copy(alpha=.6f),Offset(x,h*.22f),Offset(w*.5f+(x-w*.5f)*.75f,h*.95f),2.dp.toPx())
+            }
         }
         drawOval(Color(0xFFBF8445),Offset(w*.015f,h*.09f),Size(w*.97f,h*.67f),style=Stroke(11.dp.toPx()))
         drawOval(Color(0xFFF0C78C),Offset(w*.015f,h*.07f),Size(w*.97f,h*.67f),style=Stroke(5.dp.toPx()))

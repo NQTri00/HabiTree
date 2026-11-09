@@ -82,6 +82,7 @@ fun MamXanhApp(
                     is HomeEffect.Feedback -> appVm.dispatch(AppIntent.ShowMessage(effect.message))
                     HomeEffect.OpenTasks -> appVm.dispatch(AppIntent.Navigate(AppDestination.TASKS))
                     HomeEffect.OpenGarden -> appVm.dispatch(AppIntent.Navigate(AppDestination.GARDEN))
+                    HomeEffect.OpenShop -> appVm.dispatch(AppIntent.Navigate(AppDestination.SHOP))
                     is HomeEffect.WaterTree -> treeVm.dispatch(TreeIntent.Water(effect.id))
                     is HomeEffect.FertilizeTree -> treeVm.dispatch(TreeIntent.Fertilize(effect.id))
                 }
@@ -123,6 +124,7 @@ fun MamXanhApp(
             treeVm.effects.collect { effect ->
                 when (effect) {
                     is TreeEffect.Feedback -> appVm.dispatch(AppIntent.ShowMessage(effect.message))
+                    TreeEffect.Back -> appVm.dispatch(AppIntent.Back)
                     TreeEffect.TreeChanged -> {
                         gardenVm.dispatch(GardenIntent.Refresh)
                         homeVm.dispatch(HomeIntent.Refresh)

@@ -21,6 +21,8 @@ android {
     kotlinOptions { jvmTarget = "17" }
 }
 dependencies {
+    implementation(libs.koin.android)
+    implementation(libs.koin.androidx.compose)
     implementation(project(":core-ui"))
     implementation(project(":data"))
     implementation(project(":home"))

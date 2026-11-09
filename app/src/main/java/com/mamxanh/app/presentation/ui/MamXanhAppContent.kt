@@ -96,18 +96,12 @@ fun MamXanhAppContent(
                             wateringCanMl = dashboard.dashboard.wateringCanMl,
                             onIntent = { onTreeIntent(it) },
                             modifier = Modifier,
-                            sharedTreeModifier = treeSharedModifier,
-                            onBack = { onAppIntent(AppIntent.Back) }
+                            sharedTreeModifier = treeSharedModifier
                         )
                         else -> when (destination) {
                             AppDestination.HOME -> HomeScreen(state = dashboard, onIntent = onHomeIntent,
                                 fertilizerCount = wallet.inventory["fertilizer"] ?: 0, modifier = Modifier,
-                                sharedTreeModifier = treeSharedModifier,
-                                onOpenPlace = { place ->
-                                    AppDestination.entries.firstOrNull { it.name == place }?.let {
-                                        onAppIntent(AppIntent.Navigate(it))
-                                    }
-                                })
+                                sharedTreeModifier = treeSharedModifier)
                             AppDestination.TASKS -> TasksScreen(tasks, onTasksIntent, Modifier)
                             AppDestination.GARDEN -> GardenScreen(gardenState, onGardenIntent, Modifier)
                             AppDestination.SHOP -> ShopScreen(walletState, onShopIntent, Modifier)
@@ -164,6 +158,7 @@ fun MamXanhAppContentHomePreview() {
                     is HomeIntent.OpenTree -> navigate(AppIntent.OpenTree(it.id))
                     HomeIntent.OpenTasks -> navigate(AppIntent.Navigate(AppDestination.TASKS))
                     HomeIntent.OpenGarden -> navigate(AppIntent.Navigate(AppDestination.GARDEN))
+                    HomeIntent.OpenShop -> navigate(AppIntent.Navigate(AppDestination.SHOP))
                     else -> Unit
                 }
             },
@@ -173,7 +168,8 @@ fun MamXanhAppContentHomePreview() {
                     GardenIntent.OpenShop -> navigate(AppIntent.Navigate(AppDestination.SHOP))
                     else -> Unit
                 }
-            }
+            },
+            onTreeIntent = { if (it == TreeIntent.Back) navigate(AppIntent.Back) }
         )
     }
 }

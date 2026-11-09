@@ -27,8 +27,7 @@ import com.mamxanh.app.presentation.ui.components.*
 fun TreeInteractionScreen(
     tree: Tree, state: TreeUiState, fertilizerCount: Int, wateringCanMl: Int,
     onIntent: (TreeIntent) -> Unit, modifier: Modifier = Modifier,
-    sharedTreeModifier: Modifier = Modifier,
-    onBack: (() -> Unit)? = null
+    sharedTreeModifier: Modifier = Modifier
 ) {
     val displayedGrowth = tree.growth.coerceIn(0, 120)
     Box(modifier.fillMaxSize()) {
@@ -38,12 +37,11 @@ fun TreeInteractionScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            if (onBack != null) {
-                GardenWoodSign("‹ Vườn ươm",
-                    Modifier.align(Alignment.Start).width((170.dp * LocalDensity.current.fontScale).coerceAtMost(280.dp))
-                        .clickable(role = Role.Button, onClickLabel = "Quay lại khu vườn", onClick = onBack),
-                    fontSize = 16.sp)
-            }
+            GardenWoodSign("‹ Vườn ươm",
+                Modifier.align(Alignment.Start).width((170.dp * LocalDensity.current.fontScale).coerceAtMost(280.dp))
+                    .clickable(role = Role.Button, onClickLabel = "Quay lại khu vườn",
+                        onClick = { onIntent(TreeIntent.Back) }),
+                fontSize = 16.sp)
             if (state.isLoading) LinearProgressIndicator(Modifier.fillMaxWidth(), color = Green)
             Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                 GardenLeafPlaque(tree.name, Modifier.fillMaxWidth().padding(horizontal = 24.dp))

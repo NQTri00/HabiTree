@@ -8,6 +8,7 @@ sealed interface HomeIntent {
     data class OpenTree(val id: Long) : HomeIntent
     data object OpenTasks : HomeIntent
     data object OpenGarden : HomeIntent
+    data object OpenShop : HomeIntent
     data object RefillWater : HomeIntent
     data class WaterTree(val id: Long) : HomeIntent
     data class FertilizeTree(val id: Long) : HomeIntent
@@ -16,6 +17,7 @@ sealed interface HomeEffect {
     data class OpenTree(val id: Long) : HomeEffect
     data object OpenTasks : HomeEffect
     data object OpenGarden : HomeEffect
+    data object OpenShop : HomeEffect
     data class Feedback(val message: String) : HomeEffect
     data class WaterTree(val id: Long) : HomeEffect
     data class FertilizeTree(val id: Long) : HomeEffect

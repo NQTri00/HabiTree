@@ -22,5 +22,12 @@ GardenSourceImage and the potted PaintedGardenPlant path now obtain artwork usin
 
 :app:assembleDebug passed. Updated APK installed with data retained. Home → Shop completed and the Shop hierarchy was visible. Post-change sample: 39 frames, 2 janky (5.13%), p50 18 ms, p90 44 ms, p95 150 ms, p99 200 ms. No ANR since boot. Compared with baseline, the worst frame bucket improved, but p90 regressed and frame counts differ because artwork now arrives asynchronously. A single emulator sample does not establish a general performance guarantee. Further navigation and short-viewport verification remain open.
 
+## Short-window and dependency-injection checkpoint
+Home now reserves a minimum 680 dp scene height, scaled upward for font scale, inside a saveable scroll container. On the 360×640 dp emulator, the header/tree are separated at the top; scrolling reveals both destination signs above the complete care tray. Bottom app navigation remains fixed. This verifies that viewport only; large-text/recreation checks remain open.
+
+Koin 4.1.1 now starts in MamXanhApplication. AppModule binds one GardenDatabase and GameStorage, six repository interfaces, and seven lifecycle ViewModels. MainActivity resolves ViewModels with koinViewModel; manual factories and Activity-owned storage construction are removed. Version 4.1.1 was chosen to fit the existing Kotlin 2.2.20 stack (its release uses Kotlin 2.1.21), rather than forcing a compiler upgrade. References: https://github.com/InsertKoinIO/koin/releases/tag/4.1.1 and https://lts.insert-koin.io/docs/4.1/reference/koin-android/start/.
+
+assembleDebug passed after dependency resolution. Install retained existing data; Home showed 125 coins and the existing cherry; Shop opened and showed the same balance. No ANR since boot. Recreation and all-destination checks remain open, so Koin runtime acceptance is not yet complete.
+
 ## Next verification
 Collect additional navigation/runtime evidence, fix the constrained-height Home layout, and compare equivalent navigation before/after any image pipeline change. Preserve application data. Finish old plan acceptance and implement the requested KMP/Koin/Ktor stack without marking partial work complete.

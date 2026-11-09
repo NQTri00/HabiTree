@@ -1,0 +1,49 @@
+# Runtime recovery and KMP implementation plan
+
+> **For agentic workers:** Use superpowers:executing-plans to implement task-by-task in this session.
+
+**Goal:** Resolve startup/navigation hangs, finish previous plans, and migrate to KMP with Koin and Ktor.
+**Architecture:** Shared portable business/data code with platform persistence and HTTP engines; Android Compose remains the UI. Koin owns dependencies; existing MVI contracts remain the interaction boundary.
+**Tech stack:** Kotlin Multiplatform, Android Compose, Koin, Ktor, coroutines.
+**Spec:** ../specs/2026-11-09-runtime-kmp-design.md
+
+## Constraints
+Preserve SQLite data, economy/catalog behavior, six screens and three dialogs, and the prior 90% visual acceptance target. New dependencies are authorized. No invented backend or silent remote writes. Use build/manual runtime verification without new test infrastructure. Commit/push successful checkpoints.
+
+## Review focus
+- Cold first navigation must not scan bitmap pixels on the main thread.
+- Short windows and large text must retain reachable controls with fixed app navigation.
+- Recreation must retain ViewModels and share one storage instance.
+- Network errors/cancellation must not block the main thread or mutate offline data.
+- Platform separation must preserve date/reset/transaction semantics and saved data.
+
+### 1. Runtime recovery
+- [x] Capture historical startup/navigation ANRs and an emulator baseline.
+- [x] Move GardenSourceImage and PaintedGardenPlant decode/bounds work to IO; assembleDebug and repeat Shop navigation.
+- [x] Give Home a scrollable minimum scene height; build and inspect 360×640 dp top/bottom controls.
+- [ ] Exercise all destinations, dialogs, back navigation, recreation and large text; capture logcat/lastanr and record limitations.
+- [ ] Commit/push layout and pending typed-navigation/preview cleanup after validation.
+
+### 2. Koin graph
+Files: gradle/libs.versions.toml, app/build.gradle.kts, app/src/main/AndroidManifest.xml, app/src/main/java/com/mamxanh/app/{MamXanhApplication.kt,di/AppModule.kt,MainActivity.kt}.
+- [x] Add compatible Koin dependencies; bind singleton GardenDatabase/GameStorage and repository interfaces.
+- [x] Bind seven lifecycle ViewModels; start Koin in Application and use koinViewModel in MainActivity; remove manual factories.
+- [ ] Assemble/install/launch; navigate and recreate to verify dependency resolution and saved data, then commit/push.
+
+### 3. Shared KMP business/data
+Files: new shared/build.gradle.kts and shared/src/{commonMain,androidMain,iosMain}/kotlin/com/mamxanh/shared; root Gradle/catalog/settings; existing data and feature domain/repository files.
+- [ ] Configure Android and iOS arm64/simulator targets and framework using compatible plugins.
+- [ ] Move portable models/catalog/game rules and repository/storage contracts into commonMain; replace Android duplicates with shared types/adapters, retaining transactions and date behavior.
+- [ ] Connect Android SQLite storage through the common interface; add iOS persistence adapter/bootstrap usable by an iOS consumer.
+- [ ] Verify Android build and common metadata, inspect platform import boundaries; document native build commands and unavailable macOS-only verification honestly.
+
+### 4. Ktor integration
+Files: shared common network configuration/client factory, Android/Darwin engine providers, shared DI module; Android manifest and application DI.
+- [ ] Add compatible Ktor core/engines and common configuration with timeouts and cancellation; inject it through Koin with explicit ownership/close behavior.
+- [ ] Expose configurable request execution without fabricated endpoints; preserve offline operation when no service is configured.
+- [ ] Compile platform source sets available on this host, build/run Android and verify offline startup; document backend configuration and iOS verification steps.
+
+### 5. Previous-plan closure
+- [ ] Re-audit every unchecked requirement in 2026-11-07-dependency-free-mvi.md and 2026-11-09-simple-mics-redesign.md against current files/runtime.
+- [ ] Finish missing behavior/layout/artwork; compare all six screens and three dialogs with the simple-mics PNGs at normal/large text and short height. Record concrete discrepancies rather than inventing a similarity score.
+- [ ] Complete broad runtime verification, final build, evidence ledger and commit/push. Mark complete only when all requirements are proven; keep host/backend limitations explicit.

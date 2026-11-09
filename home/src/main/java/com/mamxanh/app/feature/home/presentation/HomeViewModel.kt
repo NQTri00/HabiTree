@@ -42,6 +42,7 @@ class HomeViewModel(private val repository: HomeDashboardRepository) : ViewModel
             is HomeIntent.OpenTree -> viewModelScope.launch { effectChannel.send(HomeEffect.OpenTree(intent.id)) }
             HomeIntent.OpenTasks -> viewModelScope.launch { effectChannel.send(HomeEffect.OpenTasks) }
             HomeIntent.OpenGarden -> viewModelScope.launch { effectChannel.send(HomeEffect.OpenGarden) }
+            HomeIntent.OpenShop -> viewModelScope.launch { effectChannel.send(HomeEffect.OpenShop) }
             is HomeIntent.WaterTree -> viewModelScope.launch { effectChannel.send(HomeEffect.WaterTree(intent.id)) }
             is HomeIntent.FertilizeTree -> viewModelScope.launch { effectChannel.send(HomeEffect.FertilizeTree(intent.id)) }
         }

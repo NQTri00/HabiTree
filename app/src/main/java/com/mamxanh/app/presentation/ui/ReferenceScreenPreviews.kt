@@ -52,6 +52,13 @@ fun ReferenceEmptyPreview(@PreviewParameter(ReferenceRoutes::class) route: AppUi
     ReferenceWorld(route, empty = true)
 }
 
+@Preview(name = "Nursery · empty, large text", widthDp = 360, heightDp = 800, fontScale = 1.3f,
+    device = "spec:width=360dp,height=800dp,dpi=160")
+@Composable
+fun ReferenceEmptyNurseryLargePreview() {
+    ReferenceWorld(AppUiState(destination = AppDestination.GARDEN), empty = true)
+}
+
 @Preview(name = "Care · long name, no supplies", widthDp = 360, heightDp = 800, fontScale = 1.3f,
     device = "spec:width=360dp,height=800dp,dpi=160")
 @Composable

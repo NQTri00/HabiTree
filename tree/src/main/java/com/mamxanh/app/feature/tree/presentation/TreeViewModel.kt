@@ -19,11 +19,16 @@ class TreeViewModel(private val repository: TreeRepository) : ViewModel() {
     val effects = effectChannel.receiveAsFlow()
 
     fun dispatch(intent: TreeIntent) {
+        if (intent == TreeIntent.Back) {
+            viewModelScope.launch { effectChannel.send(TreeEffect.Back) }
+            return
+        }
         if (_uiState.value.isLoading) return
         viewModelScope.launch {
             _uiState.value = TreeUiState(isLoading = true)
             try {
                 when (intent) {
+                    TreeIntent.Back -> Unit // Navigation is handled before the mutation guard.
                     is TreeIntent.Water -> {
                         val result = withContext(Dispatchers.IO) { WaterTree(repository)(intent.id) }
                         if (result == TreeWateringResult.WATERED) effectChannel.send(TreeEffect.TreeChanged)

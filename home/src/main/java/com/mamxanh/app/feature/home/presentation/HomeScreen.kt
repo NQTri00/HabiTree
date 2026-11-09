@@ -5,6 +5,9 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import com.mamxanh.app.presentation.ui.components.GardenRichText as Text
@@ -33,6 +36,8 @@ import com.mamxanh.core.ui.R
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
+private enum class HomePlace { SHOP, TASKS, GARDEN }
+
 @Composable
 fun HomeScreen(
     state: HomeUiState,
@@ -40,14 +45,13 @@ fun HomeScreen(
     fertilizerCount: Int = 0,
     modifier: Modifier = Modifier,
     sharedTreeModifier: Modifier = Modifier,
-    onOpenPlace: (String) -> Unit = {},
     previewApproach: Float = 0f
 ) {
     val dashboard = state.dashboard
     val tree = dashboard.trees.firstOrNull()
     val camera = remember { Animatable(0f) }
     val scope = rememberCoroutineScope()
-    var selectedPlace by remember { mutableStateOf("SHOP") }
+    var selectedPlace by remember { mutableStateOf(HomePlace.SHOP) }
     var companion by remember { mutableStateOf(false) }
     var entering by remember { mutableStateOf(false) }
     var handingOff by remember { mutableStateOf(false) }
@@ -56,23 +60,31 @@ fun HomeScreen(
         travelJob?.cancel()
         travelJob = scope.launch { camera.animateTo(0f, tween(280)); entering = false }
     }
-    fun enter(place: String) {
+    fun enter(place: HomePlace) {
         if (entering) return
         selectedPlace = place
         entering = true
         travelJob = scope.launch {
             camera.animateTo(1f, tween(620))
             handingOff = true
-            onOpenPlace(place)
+            onIntent(when (place) {
+                HomePlace.SHOP -> HomeIntent.OpenShop
+                HomePlace.TASKS -> HomeIntent.OpenTasks
+                HomePlace.GARDEN -> HomeIntent.OpenGarden
+            })
         }
     }
     val approach = if (previewApproach > 0f) previewApproach else camera.value
     val origin = when (selectedPlace) {
-        "SHOP" -> TransformOrigin(.78f, .74f)
-        "TASKS" -> TransformOrigin(.27f, .76f)
-        else -> TransformOrigin(.50f, .45f)
+        HomePlace.SHOP -> TransformOrigin(.78f, .74f)
+        HomePlace.TASKS -> TransformOrigin(.27f, .76f)
+        HomePlace.GARDEN -> TransformOrigin(.50f, .45f)
     }
-    Box(modifier.fillMaxSize()) {
+    val fontScale = LocalDensity.current.fontScale.coerceAtLeast(1f)
+    BoxWithConstraints(modifier.fillMaxSize()) {
+        val sceneHeight = maxOf(maxHeight, 680.dp * fontScale)
+        Box(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
+        Box(Modifier.fillMaxWidth().height(sceneHeight)) {
         Box(Modifier.fillMaxSize().graphicsLayer {
             scaleX = 1f + approach * 2.3f
             scaleY = 1f + approach * 2.3f
@@ -84,9 +96,9 @@ fun HomeScreen(
             BoxWithConstraints(Modifier.fillMaxSize()) {
                 GardenHangingLantern(Modifier.offset(14.dp, 6.dp).size(44.dp, 86.dp))
                 GardenCottage(Modifier.offset(maxWidth * .07f, maxHeight * .245f).size(54.dp, 52.dp))
-                GardenPlace("TASKS", "Việc nhỏ", { enter("TASKS") },
+                GardenPlace("TASKS", "Việc nhỏ", { enter(HomePlace.TASKS) },
                     Modifier.offset(maxWidth * .04f, maxHeight * .70f).width(maxWidth * .46f).height(maxHeight * .12f))
-                GardenPlace("SHOP", "Tiệm hạt", { enter("SHOP") },
+                GardenPlace("SHOP", "Tiệm hạt", { enter(HomePlace.SHOP) },
                     Modifier.offset(maxWidth * .60f, maxHeight * .66f).width(maxWidth * .36f).height(maxHeight * .16f))
                 Box(
                     Modifier.offset(maxWidth * .06f, maxHeight * .25f).width(maxWidth * .88f).height(maxHeight * .40f),
@@ -96,7 +108,7 @@ fun HomeScreen(
                         GardenPlantPortrait(tree.speciesId, tree.decoration,
                             sharedTreeModifier.fillMaxSize().clickable(enabled = !entering) { onIntent(HomeIntent.OpenTree(tree.id)) })
                     } else {
-                        GardenPlace("GARDEN", "Gieo mầm đầu tiên", { enter("GARDEN") }, Modifier.fillMaxSize())
+                        GardenPlace("GARDEN", "Gieo mầm đầu tiên", { enter(HomePlace.GARDEN) }, Modifier.fillMaxSize())
                     }
                 }
             }
@@ -151,6 +163,8 @@ fun HomeScreen(
                     }
                 }
             }
+        }
+        }
         }
         if (companion) MascotCompanionDialog(onDismiss = { companion = false })
     }
