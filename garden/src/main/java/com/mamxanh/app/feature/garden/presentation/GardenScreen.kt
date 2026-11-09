@@ -173,7 +173,7 @@ private fun PlantingParchment(seed: Species, count: Int, onDismiss: () -> Unit, 
     Box {
         GardenBotanicalFrame(Modifier.fillMaxWidth(), contentPadding = PaddingValues(horizontal = 26.dp, vertical = 30.dp), cornerSize = 42.dp, skin = GardenPanelSkin.PLANTING_DIALOG) {
             Column(Modifier.verticalScroll(rememberScrollState()), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                Text("Gieo mầm bình yên", color = Deep, fontSize = 27.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
+                GardenLeafPlaque("Gieo mầm bình yên", Modifier.fillMaxWidth())
                 GardenArtwork(GardenArt.SEED, Modifier.size(150.dp, 100.dp))
                 GardenBotanicalFrame(contentPadding = PaddingValues(horizontal = 18.dp, vertical = 8.dp), cornerSize = 18.dp) {
                     Text("${seed.name} · Còn $count", color = Deep, fontSize = 16.sp,
@@ -213,6 +213,10 @@ fun GardenScreenEmptyPreview() { MamXanhPreviewTheme { GardenScreen(GardenUiStat
 @Preview(name = "Planting parchment", widthDp = 360, heightDp = 720)
 @Composable
 fun PlantingDialogPreview() { MamXanhPreviewTheme { Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { GardenForestScene(Modifier.fillMaxSize(), setting = ForestSetting.GARDEN); PlantingParchment(seedCatalog.first { it.id == "cherry" }, 1, {}, {}) } } }
+
+@Preview(name = "Planting · large text, no stock", widthDp = 360, heightDp = 800, fontScale = 1.3f)
+@Composable
+fun PlantingDialogLargeTextPreview() { MamXanhPreviewTheme { Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { GardenForestScene(Modifier.fillMaxSize(), setting = ForestSetting.GARDEN); PlantingParchment(seedCatalog.first { it.id == "cherry" }, 0, {}, {}) } } }
 
 @Preview(name = "Nursery overview", widthDp = 360)
 @Composable

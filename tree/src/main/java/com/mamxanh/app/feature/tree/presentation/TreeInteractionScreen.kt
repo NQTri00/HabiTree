@@ -45,11 +45,14 @@ fun TreeInteractionScreen(
                     fontSize = 16.sp)
             }
             if (state.isLoading) LinearProgressIndicator(Modifier.fillMaxWidth(), color = Green)
-            GardenBotanicalFrame(contentPadding = PaddingValues(horizontal = 28.dp, vertical = 14.dp), cornerSize = 30.dp, skin = GardenPanelSkin.NAME) {
-                Text(tree.name, color = Deep, fontWeight = FontWeight.Bold, fontSize = 27.sp, lineHeight = 30.sp, textAlign = TextAlign.Center)
+            Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                GardenLeafPlaque(tree.name, Modifier.fillMaxWidth().padding(horizontal = 24.dp))
+                GardenArtwork(GardenArt.FLOWERS, Modifier.align(Alignment.CenterStart).size(40.dp, 48.dp))
+                GardenArtwork(GardenArt.SPROUT, Modifier.align(Alignment.CenterEnd).size(30.dp))
             }
             Box(Modifier.fillMaxWidth().height(280.dp), contentAlignment = Alignment.Center) {
                 GardenPlantPortrait(tree.speciesId, tree.decoration, sharedTreeModifier.fillMaxSize())
+                GardenArtwork(GardenArt.LANTERN, Modifier.align(Alignment.TopEnd).padding(end = 3.dp).size(38.dp, 62.dp))
             }
             GardenBotanicalFrame(Modifier.fillMaxWidth(.9f), contentPadding = PaddingValues(horizontal = 24.dp, vertical = 12.dp), cornerSize = 24.dp, skin = GardenPanelSkin.PROGRESS) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(4.dp)) {

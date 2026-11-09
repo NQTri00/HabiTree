@@ -2,6 +2,7 @@ package com.mamxanh.app.feature.shop.presentation
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -139,7 +140,17 @@ private fun ShopSeedDetailCard(plant: ShopSeed, ownedCount: Int, canAfford: Bool
                 DetailBadge("🪙 ${plant.price} xu", Modifier.weight(1f))
                 DetailBadge("🌱 Đang có $ownedCount", Modifier.weight(1f))
             }
-            Text("Mua hạt để cất vào túi.\nGieo cây tại Vườn ươm.", color = Deep, fontSize = 17.sp, fontStyle = FontStyle.Italic, textAlign = TextAlign.Center, modifier = Modifier.padding(vertical = 10.dp))
+            Row(Modifier.fillMaxWidth(.65f), verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                HorizontalDivider(Modifier.weight(1f), color = Color(0xFFC5AD7B))
+                GardenArtwork(GardenArt.SPROUT, Modifier.size(26.dp))
+                HorizontalDivider(Modifier.weight(1f), color = Color(0xFFC5AD7B))
+            }
+            GardenBotanicalFrame(Modifier.fillMaxWidth(), contentPadding = PaddingValues(horizontal = 12.dp, vertical = 9.dp),
+                cornerSize = 24.dp, skin = GardenPanelSkin.HINT) {
+                Text("Mua hạt để cất vào túi.\nGieo cây tại Vườn ươm.", color = Deep, fontSize = 17.sp,
+                    fontStyle = FontStyle.Italic, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
+            }
             if (!canAfford) Text("Bạn cần thêm xu để mang hạt về.", color = Color(0xFF88511B), textAlign = TextAlign.Center)
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
                 GardenPaintedButton("Để sau", onDismiss, Modifier.weight(.8f), primary = false)
@@ -147,6 +158,8 @@ private fun ShopSeedDetailCard(plant: ShopSeed, ownedCount: Int, canAfford: Bool
             }
         }
         IconButton(onClick = onDismiss, modifier = Modifier.align(Alignment.TopEnd).size(40.dp)
+            .background(Color(0xFFFFE2AC), androidx.compose.foundation.shape.CircleShape)
+            .border(1.5.dp, Color(0xFFCB9656), androidx.compose.foundation.shape.CircleShape)
             .semantics { contentDescription = "Đóng chi tiết hạt" }) {
             Text("×", color = Deep, fontSize = 28.sp, fontWeight = FontWeight.Bold)
         }
@@ -168,6 +181,10 @@ fun ShopScreenPreview() { MamXanhPreviewTheme { ShopScreen(ShopUiState(ShopWalle
 @Preview(name = "Seed detail popup", widthDp = 360, heightDp = 720)
 @Composable
 fun ShopSeedDetailDialogPreview() { MamXanhPreviewTheme { Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { GardenForestScene(Modifier.fillMaxSize(), false); ShopSeedDetailCard(shopCatalog.first(), 2, true, {}, {}) } } }
+
+@Preview(name = "Seed detail · large text, insufficient funds", widthDp = 360, heightDp = 800, fontScale = 1.3f)
+@Composable
+fun ShopSeedDetailLargeTextPreview() { MamXanhPreviewTheme { Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { GardenForestScene(Modifier.fillMaxSize(), false); ShopSeedDetailCard(shopCatalog.first(), 0, false, {}, {}) } } }
 
 @Preview(name = "Nursery shelf", widthDp = 340)
 @Composable

@@ -64,7 +64,11 @@ fun DecorationPicker(selected: String, onSelect: (String) -> Unit) {
                 ) {
                     Column(Modifier.padding(vertical = 5.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                         GardenArtwork(art, Modifier.fillMaxWidth().height(38.dp))
-                        Text(label, color = Color(0xFFFFF0CB), fontSize = 12.sp, lineHeight = 15.sp, textAlign = TextAlign.Center, fontWeight = FontWeight.Bold)
+                        GardenBotanicalFrame(Modifier.fillMaxWidth(),
+                            contentPadding = PaddingValues(horizontal = 3.dp, vertical = 4.dp), cornerSize = 12.dp) {
+                            Text(label, Modifier.fillMaxWidth(), color = Deep, fontSize = 12.sp,
+                                lineHeight = 15.sp, textAlign = TextAlign.Center, fontWeight = FontWeight.Bold)
+                        }
                     }
                 }
             }

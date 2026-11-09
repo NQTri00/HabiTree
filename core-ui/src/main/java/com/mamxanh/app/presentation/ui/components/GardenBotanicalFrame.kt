@@ -7,6 +7,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.GenericShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,7 +29,22 @@ fun GardenBotanicalFrame(
     content: @Composable BoxScope.() -> Unit
 ) {
     val modal = skin in setOf(GardenPanelSkin.DIALOG, GardenPanelSkin.TASK_DIALOG, GardenPanelSkin.PLANTING_DIALOG)
-    val shape = RoundedCornerShape(if (modal) 34.dp else cornerSize.coerceAtMost(28.dp))
+    val arch = GenericShape { size, _ ->
+        val w = size.width
+        val h = size.height
+        val rise = minOf(w * .09f, h * .08f)
+        val radius = minOf(w * .10f, h * .10f)
+        moveTo(0f, rise + radius)
+        quadraticTo(0f, rise * .5f, radius, rise * .25f)
+        cubicTo(w * .30f, -rise * .10f, w * .70f, -rise * .10f, w - radius, rise * .25f)
+        quadraticTo(w, rise * .5f, w, rise + radius)
+        lineTo(w, h - radius)
+        quadraticTo(w, h, w - radius, h)
+        lineTo(radius, h)
+        quadraticTo(0f, h, 0f, h - radius)
+        close()
+    }
+    val shape = if (modal) arch else RoundedCornerShape(cornerSize.coerceAtMost(28.dp))
     val border = if (modal) 7.dp else 1.5.dp
     val colors = when (skin) {
         GardenPanelSkin.PRICE -> listOf(Color(0xFFFFE3A0), Color(0xFFF4C96F))
@@ -39,7 +55,7 @@ fun GardenBotanicalFrame(
         .background(Brush.verticalGradient(colors))
         .border(BorderStroke(border, if (modal) Color(0xFFC88A49) else Color(0xFFD7AD76)), shape)) {
         if (modal) Box(Modifier.matchParentSize().padding(9.dp)
-            .border(1.dp, Color(0xFFEACB97), RoundedCornerShape(25.dp)))
+            .border(1.dp, Color(0xFFEACB97), arch))
         Box(Modifier.padding(contentPadding), content = content)
     }
 }

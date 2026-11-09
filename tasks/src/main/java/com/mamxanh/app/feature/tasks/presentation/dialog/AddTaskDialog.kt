@@ -59,7 +59,7 @@ private fun AddTaskParchment(
 private fun AddTaskDialogHeader() {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         GardenLeafPlaque("Gieo một việc nhỏ", Modifier.fillMaxWidth())
-        GardenArtwork(GardenArt.SPROUT, Modifier.size(70.dp, 36.dp).padding(top = 3.dp))
+        GardenArtwork(GardenArt.SEED, Modifier.size(70.dp, 42.dp).padding(top = 3.dp))
     }
 }
 
