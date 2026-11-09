@@ -15,6 +15,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -33,7 +36,8 @@ import com.mamxanh.app.presentation.ui.components.*
 import com.mamxanh.core.ui.R
 
 @Composable
-fun GardenScreen(state: GardenUiState, onIntent: (GardenIntent) -> Unit, modifier: Modifier = Modifier) {
+fun GardenScreen(state: GardenUiState, onIntent: (GardenIntent) -> Unit, modifier: Modifier = Modifier,
+    treeTransitionModifier: @Composable (Long) -> Modifier = { Modifier }) {
     val garden = state.garden
     var selectedSeedId by rememberSaveable { mutableStateOf<String?>(null) }
     var selectedPlotId by rememberSaveable { mutableStateOf<Int?>(null) }
@@ -45,6 +49,27 @@ fun GardenScreen(state: GardenUiState, onIntent: (GardenIntent) -> Unit, modifie
         // Preview/legacy callers still get explicit empty slots without fake saved trees.
         val count = maxOf(5, garden.trees.size)
         (1..count).map { com.mamxanh.shared.model.GardenPlot(it, true, garden.trees.getOrNull(it - 1)?.id) }
+    }
+    var previousAssignments by remember { mutableStateOf<Map<Int, Long?>?>(null) }
+    var revealedTreeId by remember { mutableStateOf<Long?>(null) }
+    val plantingGlow = remember { androidx.compose.animation.core.Animatable(0f) }
+    LaunchedEffect(plots, state.isLoading) {
+        if (!state.isLoading) {
+            val assignments = plots.associate { it.id to it.treeId }
+            previousAssignments?.let { previous ->
+                assignments.entries.firstOrNull { (id, treeId) ->
+                    treeId != null && previous.containsKey(id) && previous[id] == null
+                }?.value?.let { revealedTreeId = it }
+            }
+            previousAssignments = assignments
+        }
+    }
+    LaunchedEffect(revealedTreeId) {
+        if (revealedTreeId != null) {
+            plantingGlow.snapTo(1f)
+            plantingGlow.animateTo(0f, androidx.compose.animation.core.tween(1400))
+            revealedTreeId = null
+        }
     }
     Box(modifier.fillMaxSize()) {
         GardenForestScene(Modifier.fillMaxSize(), setting = ForestSetting.GARDEN)
@@ -60,13 +85,38 @@ fun GardenScreen(state: GardenUiState, onIntent: (GardenIntent) -> Unit, modifie
                 verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 plots.forEach { plot ->
                     val tree = garden.trees.firstOrNull { it.id == plot.treeId }
-                    Row(Modifier.fillMaxWidth().heightIn(min = 150.dp),
+                    Row(Modifier.fillMaxWidth().heightIn(min = 150.dp).drawBehind {
+                        // The clearing and its path belong to the scrolling plot, not the fixed forest.
+                        val path = androidx.compose.ui.graphics.Path().apply {
+                            moveTo(size.width * .34f, 0f)
+                            cubicTo(size.width * .75f, size.height * .28f, size.width * .12f,
+                                size.height * .72f, size.width * .62f, size.height)
+                        }
+                        drawPath(path, Color(0xFFCFAB70),
+                            style = androidx.compose.ui.graphics.drawscope.Stroke(width = size.width * .16f))
+                        drawOval(Color(0xFF95A64A), Offset(size.width * .01f, size.height * .40f),
+                            Size(size.width * .96f, size.height * .60f))
+                        drawOval(Color(0xFFC3A16C), Offset(size.width * .04f, size.height * .43f),
+                            Size(size.width * .90f, size.height * .51f))
+                        drawOval(Color(0xFFD8BB88), Offset(size.width * .09f, size.height * .46f),
+                            Size(size.width * .80f, size.height * .42f))
+                        if (tree != null && tree.id == revealedTreeId) {
+                            drawOval(Color(0xFFFFD85A).copy(alpha = plantingGlow.value),
+                                Offset(size.width * .04f, size.height * .43f),
+                                Size(size.width * .90f, size.height * .51f),
+                                style = androidx.compose.ui.graphics.drawscope.Stroke(5.dp.toPx()))
+                        }
+                    },
                         verticalAlignment = Alignment.CenterVertically) {
                         if (tree != null) {
-                            PaintedGardenPlant(tree.speciesId, Modifier.weight(1f).height(150.dp)
-                                .clickable(onClickLabel = "Chăm sóc ${tree.name}") { onIntent(GardenIntent.OpenTree(tree.id)) })
+                            GardenPlantPortrait(tree.speciesId, tree.decoration,
+                                Modifier.weight(1f).height(150.dp).then(treeTransitionModifier(tree.id))
+                                    .clickable(onClickLabel = "Chăm sóc ${tree.name}") { onIntent(GardenIntent.OpenTree(tree.id)) }, growth = tree.growth)
                         } else {
-                            GardenArtwork(GardenArt.SEED, Modifier.weight(1f).height(120.dp))
+                            Box(Modifier.weight(1f).height(120.dp), contentAlignment = Alignment.Center) {
+                                Text(if (plot.isUnlocked) "+" else "🔒", color = Green,
+                                    fontSize = 42.sp, fontWeight = FontWeight.Bold)
+                            }
                         }
                         GardenBotanicalFrame(Modifier.weight(1f),
                             contentPadding = PaddingValues(horizontal = 10.dp, vertical = 12.dp)) {
@@ -124,15 +174,41 @@ fun GardenScreen(state: GardenUiState, onIntent: (GardenIntent) -> Unit, modifie
     }
     unlockingPlotId?.let { id ->
         val price = com.mamxanh.shared.model.GardenPlotPolicy.UNLOCK_PRICE
-        AlertDialog(onDismissRequest = { unlockingPlotId = null },
-            title = { Text("Mở thêm ô trồng") },
-            text = { Text("Số xu hiện có: ${garden.coins}\nGiá: $price xu") },
-            confirmButton = {
-                TextButton(enabled = garden.coins >= price && !state.isLoading, onClick = {
-                    onIntent(GardenIntent.UnlockPlot(id)); unlockingPlotId = null
-                }) { Text("Mở ô") }
-            },
-            dismissButton = { TextButton(onClick = { unlockingPlotId = null }) { Text("Để sau") } })
+        Dialog(onDismissRequest = { unlockingPlotId = null },
+            properties = DialogProperties(usePlatformDefaultWidth = false, decorFitsSystemWindows = false)) {
+            Box(Modifier.fillMaxSize().safeDrawingPadding(), contentAlignment = Alignment.Center) {
+                GardenBotanicalFrame(Modifier.widthIn(max = 440.dp).fillMaxWidth(.92f).heightIn(max = 520.dp),
+                    contentPadding = PaddingValues(22.dp), cornerSize = 32.dp, skin = GardenPanelSkin.DIALOG) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                            GardenArtwork(GardenArt.FLOWERS, Modifier.size(32.dp))
+                            Text("Mở thêm ô trồng", Modifier.weight(1f), color = Deep,
+                                fontSize = 22.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
+                            TextButton(onClick = { unlockingPlotId = null }) { Text("×", fontSize = 24.sp) }
+                        }
+                        Column(Modifier.weight(1f, fill = false).verticalScroll(rememberScrollState()),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                        Text("Ô " + id.toString().padStart(2, '0'), color = Deep, fontWeight = FontWeight.Bold)
+                        GardenBotanicalFrame(contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)) {
+                            Text("🪙 Số xu hiện có: ${garden.coins}", color = Deep)
+                        }
+                        GardenBotanicalFrame(contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)) {
+                            Text("Giá: $price xu", color = Deep, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                        }
+                        if (garden.coins < price) Text("Chưa đủ xu để mở ô trồng.", color = Deep)
+                        }
+                        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            GardenPaintedButton("Để sau", { unlockingPlotId = null }, Modifier.weight(1f), primary = false)
+                            GardenPaintedButton("Mở ô", {
+                                onIntent(GardenIntent.UnlockPlot(id)); unlockingPlotId = null
+                            }, Modifier.weight(1f), enabled = garden.coins >= price && !state.isLoading)
+                        }
+                    }
+                }
+            }
+        }
     }
     selectedSeed?.let { seed ->
         val available = plots.any { it.isUnlocked && it.treeId == null &&
@@ -257,9 +333,14 @@ private fun PlantingParchment(seed: Species, count: Int, onDismiss: () -> Unit, 
     Box {
         GardenBotanicalFrame(Modifier.fillMaxWidth(), contentPadding = PaddingValues(horizontal = 26.dp, vertical = 30.dp), cornerSize = 42.dp, skin = GardenPanelSkin.PLANTING_DIALOG) {
             Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.Top) {
+                    GardenLeafPlaque("Gieo mầm bình yên", Modifier.weight(1f))
+                    TextButton(onClick = onDismiss, modifier = Modifier.sizeIn(minWidth = 48.dp, minHeight = 48.dp)) {
+                        Text("×", fontSize = 24.sp)
+                    }
+                }
                 Column(Modifier.weight(1f, fill = false).verticalScroll(rememberScrollState()),
                     horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    GardenLeafPlaque("Gieo mầm bình yên", Modifier.fillMaxWidth())
                     GardenArtwork(GardenArt.SEED, Modifier.size(150.dp, 100.dp))
                     GardenBotanicalFrame(contentPadding = PaddingValues(horizontal = 18.dp, vertical = 8.dp), cornerSize = 18.dp) {
                         Text("${seed.name} · Còn $count", color = Deep, fontSize = 16.sp,

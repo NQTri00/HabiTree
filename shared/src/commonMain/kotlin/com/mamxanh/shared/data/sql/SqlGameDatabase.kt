@@ -89,11 +89,19 @@ class SqlGameDatabase(private val connection: GameSqlConnection) : GameDatabase 
         true
     }
 
+    override fun isDailyBonusClaimed(): Boolean = meta("daily_bonus", "") == currentDateKey()
+
+    override fun canClaimDailyBonus(): Boolean = canClaimDailyBonus(currentDateKey())
+
+    private fun canClaimDailyBonus(today: String): Boolean {
+        if (meta("daily_bonus", "") == today) return false
+        val daily = tasks().filter { it.kind == "DAILY" && scheduled(it, today) }
+        return daily.isNotEmpty() && daily.all { it.completed == today }
+    }
+
     override fun dailyBonus(): Boolean = connection.transaction {
         val today = currentDateKey()
-        if (meta("daily_bonus", "") == today) return@transaction false
-        val daily = tasks().filter { it.kind == "DAILY" && scheduled(it, today) }
-        if (daily.isEmpty() || daily.any { it.completed != today }) return@transaction false
+        if (!canClaimDailyBonus(today)) return@transaction false
         putMeta("coins", (meta("coins").toIntOrNull() ?: 0) + 20)
         putMeta("daily_bonus", today)
         true

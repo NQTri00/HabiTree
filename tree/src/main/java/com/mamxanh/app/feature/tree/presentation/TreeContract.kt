@@ -4,6 +4,8 @@ data class TreeUiState(val isLoading: Boolean = false, val isPanelExpanded: Bool
 
 sealed interface TreeIntent {
     data object Back : TreeIntent
+    data object OpenWaterSupply : TreeIntent
+    data object OpenFertilizerShop : TreeIntent
     data class SetPanelExpanded(val expanded: Boolean) : TreeIntent
     data class Water(val id: Long) : TreeIntent
     data class Fertilize(val id: Long) : TreeIntent
@@ -11,6 +13,8 @@ sealed interface TreeIntent {
 }
 sealed interface TreeEffect {
     data object Back : TreeEffect
+    data object OpenWaterSupply : TreeEffect
+    data object OpenFertilizerShop : TreeEffect
     data class Feedback(val message: String) : TreeEffect
     data object TreeChanged : TreeEffect
 }

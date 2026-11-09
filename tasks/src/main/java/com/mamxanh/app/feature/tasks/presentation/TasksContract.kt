@@ -8,7 +8,9 @@ data class TasksUiState(
     val tasks: List<Task> = emptyList(),
     val isLoading: Boolean = true,
     val filter: TaskFilter = TaskFilter.ALL,
-    val isAddingTask: Boolean = false
+    val isAddingTask: Boolean = false,
+    val isDailyBonusClaimed: Boolean = false,
+    val canClaimDailyBonus: Boolean = false
 )
 
 sealed interface TasksIntent {

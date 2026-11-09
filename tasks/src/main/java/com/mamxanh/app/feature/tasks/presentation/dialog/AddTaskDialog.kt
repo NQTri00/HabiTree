@@ -46,18 +46,40 @@ fun AddTaskDialog(onDismiss: () -> Unit, onSave: (String, String, String, Int, S
         }
     }
     if (confirmingDiscard) {
-        AlertDialog(
-            onDismissRequest = { confirmingDiscard = false },
-            title = { Text("Bỏ thay đổi?") },
-            text = { Text("Bạn có muốn bỏ các thông tin đang nhập?") },
-            dismissButton = {
-                TextButton(onClick = { confirmingDiscard = false }) { Text("Tiếp tục sửa") }
-            },
-            confirmButton = {
-                TextButton(onClick = { confirmingDiscard = false; onDismiss() }) { Text("Bỏ thay đổi") }
+        Dialog(onDismissRequest = { confirmingDiscard = false },
+            properties = DialogProperties(usePlatformDefaultWidth = false, decorFitsSystemWindows = false)) {
+            Box(Modifier.fillMaxSize().safeDrawingPadding().padding(16.dp), contentAlignment = Alignment.Center) {
+                TaskDiscardConfirmation(
+                    onContinue = { confirmingDiscard = false },
+                    onDiscard = { confirmingDiscard = false; onDismiss() })
             }
-        )
+        }
     }
+}
+
+@Composable
+private fun TaskDiscardConfirmation(onContinue: () -> Unit, onDiscard: () -> Unit) {
+    GardenBotanicalFrame(Modifier.widthIn(max = 400.dp).fillMaxWidth().heightIn(max = 400.dp),
+        contentPadding = PaddingValues(18.dp), cornerSize = 28.dp, skin = GardenPanelSkin.DIALOG) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Text("Bỏ thay đổi?", color = Deep, fontSize = 22.sp, fontWeight = FontWeight.Bold)
+            Text("Bạn có muốn bỏ các thông tin đang nhập?", color = Deep,
+                fontStyle = FontStyle.Italic, textAlign = TextAlign.Center,
+                modifier = Modifier.weight(1f, fill = false).verticalScroll(rememberScrollState()))
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                GardenPaintedButton("Tiếp tục sửa", onContinue, Modifier.weight(1f), primary = false)
+                GardenPaintedButton("Bỏ thay đổi", onDiscard, Modifier.weight(1f))
+            }
+        }
+    }
+}
+
+@Preview(name = "Discard task draft", widthDp = 340,
+    device = "spec:width=340dp,height=220dp,dpi=160")
+@Composable
+fun TaskDiscardConfirmationPreview() {
+    MamXanhPreviewTheme { TaskDiscardConfirmation({}, {}) }
 }
 
 @Composable
@@ -68,11 +90,14 @@ private fun AddTaskParchment(
 ) {
     GardenBotanicalFrame(modifier, contentPadding = PaddingValues(horizontal = 24.dp, vertical = 24.dp), cornerSize = 40.dp, skin = GardenPanelSkin.TASK_DIALOG) {
         Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Box(Modifier.fillMaxWidth()) {
-                AddTaskDialogHeader()
-                TextButton(onClick = onDismiss, modifier = Modifier.align(Alignment.TopEnd)) {
-                    Text("×", fontSize = 24.sp)
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.Top) {
+                    GardenLeafPlaque("Gieo một việc nhỏ", Modifier.weight(1f))
+                    TextButton(onClick = onDismiss, modifier = Modifier.sizeIn(minWidth = 48.dp, minHeight = 48.dp)) {
+                        Text("×", fontSize = 24.sp)
+                    }
                 }
+                GardenArtwork(GardenArt.SEED, Modifier.size(70.dp, 42.dp).padding(top = 3.dp))
             }
             Column(Modifier.weight(1f, fill = false).verticalScroll(rememberScrollState())) { AddTaskDialogFields(form) }
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -103,7 +128,9 @@ private fun AddTaskDialogFields(form: AddTaskFormState) {
     val frequencies = listOf("EVERY_DAY" to "Mỗi ngày", "WEEKDAYS" to "Ngày thường", "WEEKENDS" to "Cuối tuần")
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         TaskFormSection("Tên việc", "📖") {
-            GardenTextField(form.title, { form.title = it }, "Tên việc", Modifier.fillMaxWidth(), placeholder = "Đọc 10 trang sách")
+            GardenTextField(form.title, { form.title = it }, "Tên việc", Modifier.fillMaxWidth(),
+                placeholder = "Đọc 10 trang sách",
+                errorMessage = if (form.validationRequested && form.title.isBlank()) "Thêm tên việc" else null)
             if (form.validationRequested && form.title.isBlank()) {
                 Text("Thêm tên việc", color = MaterialTheme.colorScheme.error, fontSize = 12.sp)
             }
@@ -148,7 +175,9 @@ private fun AddTaskDialogFields(form: AddTaskFormState) {
         }
         TaskFormSection("Thưởng", "🪙") {
             GardenTextField(form.reward, { form.reward = it.filter(Char::isDigit).take(3) }, "Phần thưởng từ 1 đến 100 xu",
-                Modifier.fillMaxWidth(), trailingText = "xu", keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number))
+                Modifier.fillMaxWidth(), trailingText = "xu", keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                errorMessage = if (form.validationRequested && form.reward.toIntOrNull()?.let { it in 1..100 } != true)
+                    "Nhập từ 1 đến 100 xu" else null)
         }
         if (form.validationRequested && form.reward.toIntOrNull()?.let { it in 1..100 } != true) {
             Text("Nhập từ 1 đến 100 xu", color = MaterialTheme.colorScheme.error, fontSize = 12.sp)
@@ -196,8 +225,10 @@ private class AddTaskFormState(
 }
 
 private val AddTaskFormSaver = listSaver<AddTaskFormState, String>(
-    save = { listOf(it.title, it.kind, it.category, it.reward, it.frequency, it.due) },
-    restore = { AddTaskFormState(it[0], it[1], it[2], it[3], it[4], it[5]) }
+    save = { listOf(it.title, it.kind, it.category, it.reward, it.frequency, it.due, it.validationRequested.toString()) },
+    restore = { values -> AddTaskFormState(values[0], values[1], values[2], values[3], values[4], values[5]).apply {
+        validationRequested = values.getOrNull(6)?.toBooleanStrictOrNull() ?: false
+    } }
 )
 
 @Preview(name = "Task popup · daily", widthDp = 360, heightDp = 800,

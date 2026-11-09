@@ -5,6 +5,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,6 +39,7 @@ fun MamXanhAppContent(
     onStatsIntent: (StatsIntent) -> Unit = {},
     onTreeIntent: (TreeIntent) -> Unit = {}
 ) {
+    val routeStates = rememberSaveableStateHolder()
     val app = state
     val gardenState = garden
     val walletState = shop
@@ -76,6 +78,9 @@ fun MamXanhAppContent(
                     },
                     label = "garden-route"
                 ) { (destination, routeTreeId) ->
+                    val routeAnimationScope = this
+                    val routeKey = routeTreeId?.let { "tree-$it" } ?: "destination-${destination.name}"
+                    routeStates.SaveableStateProvider(routeKey) {
                     val routeTree = garden.garden.trees.firstOrNull { it.id == routeTreeId }
                     val treeSharedModifier = when {
                         routeTree != null -> Modifier.sharedElement(
@@ -103,10 +108,17 @@ fun MamXanhAppContent(
                                 fertilizerCount = wallet.inventory["fertilizer"] ?: 0, modifier = Modifier,
                                 sharedTreeModifier = treeSharedModifier)
                             AppDestination.TASKS -> TasksScreen(tasks, onTasksIntent, Modifier)
-                            AppDestination.GARDEN -> GardenScreen(gardenState, onGardenIntent, Modifier)
+                            AppDestination.GARDEN -> GardenScreen(gardenState, onGardenIntent, Modifier,
+                                treeTransitionModifier = { id ->
+                                    Modifier.sharedElement(
+                                        rememberSharedContentState(key = "tree-$id"),
+                                        animatedVisibilityScope = routeAnimationScope
+                                    )
+                                })
                             AppDestination.SHOP -> ShopScreen(walletState, onShopIntent, Modifier)
                             AppDestination.STATS -> StatsScreen(statistics, onStatsIntent, Modifier)
                         }
+                    }
                     }
                 }
             }

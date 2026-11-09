@@ -10,6 +10,8 @@ class GameStorage(private val database: GameDatabase) {
     fun deleteTask(id: Long) = database.deleteTask(id)
     fun complete(id: Long) = database.complete(id)
     fun dailyBonus() = database.dailyBonus()
+    fun isDailyBonusClaimed() = database.isDailyBonusClaimed()
+    fun canClaimDailyBonus() = database.canClaimDailyBonus()
     fun buySeed(id: String) = database.buySeed(id)
     fun plant(id: String, name: String, plotId: Int? = null) = database.plant(id, name, plotId)
     fun unlockPlot(plotId: Int) = database.unlockPlot(plotId)

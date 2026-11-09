@@ -95,8 +95,22 @@ fun TasksScreen(state: TasksUiState, onIntent: (TasksIntent) -> Unit, modifier: 
                 items(filtered, key = { it.id }) { task ->
                     TaskCard(task, { onIntent(TasksIntent.Complete(task.id)) }, { onIntent(TasksIntent.Delete(task.id)) }, task.finished)
                 }
+                val completed = filtered.filter { it.doneToday || it.finished }
+                if (completed.isNotEmpty()) {
+                    item(key = "completed-heading") {
+                        GardenBotanicalFrame(Modifier.fillMaxWidth(),
+                            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp),
+                            skin = com.mamxanh.app.presentation.ui.components.GardenPanelSkin.HINT) {
+                            Text("✓ Đã xong · ${completed.size}", color = Deep, fontWeight = FontWeight.Bold)
+                        }
+                    }
+                    items(completed, key = { "completed-${it.id}" }) { task ->
+                        TaskCard(task, {}, { onIntent(TasksIntent.Delete(task.id)) }, readOnly = true)
+                    }
+                }
                 if (daily.isNotEmpty() && state.filter in setOf(TaskFilter.ALL, TaskFilter.DAILY)) item {
-                    DailyRewardCard(daily.all { it.doneToday }, { onIntent(TasksIntent.ClaimBonus) })
+                    DailyRewardCard(state.canClaimDailyBonus && !state.isLoading,
+                        { onIntent(TasksIntent.ClaimBonus) }, state.isDailyBonusClaimed)
                 }
             }
             GardenPaintedButton("+ Thêm việc", { onIntent(TasksIntent.ShowAddDialog) }, Modifier.fillMaxWidth())
@@ -120,21 +134,25 @@ private fun TaskQuestHeader(done: Int, total: Int, progress: Float, allComplete:
             GardenSprig(Modifier.align(Alignment.CenterEnd).offset(x = 14.dp).size(24.dp, 36.dp), mirrored = true)
         }
         Text("$done / $total việc hôm nay", color = Deep, fontSize = 16.sp, lineHeight = 20.sp)
-        Canvas(Modifier.fillMaxWidth().height(44.dp)) {
+        Canvas(Modifier.fillMaxWidth().height(44.dp).semantics {
+            contentDescription = "$done trên $total việc đã hoàn thành"
+        }) {
             val y = size.height * .84f
             val stem = Path().apply {
                 moveTo(size.width * .04f,y)
                 cubicTo(size.width*.28f,y-9.dp.toPx(),size.width*.60f,y+9.dp.toPx(),size.width*.96f,y)
             }
             drawPath(stem,Color(0xFFB38351),style=androidx.compose.ui.graphics.drawscope.Stroke(4.dp.toPx(),cap=StrokeCap.Round))
-            repeat(4) { index ->
-                val x = size.width*(.14f+index*.23f)
+            val leafCount = total.coerceIn(0, 12)
+            repeat(leafCount) { index ->
+                val x = size.width * (.08f + (index + .15f) * .84f / leafCount)
+                val leafWidth = minOf(23.dp.toPx(), size.width * .65f / leafCount)
                 val leaf = Path().apply {
                     moveTo(x,y)
-                    cubicTo(x-7.dp.toPx(),y-22.dp.toPx(),x+9.dp.toPx(),y-27.dp.toPx(),x+23.dp.toPx(),y-27.dp.toPx())
-                    cubicTo(x+20.dp.toPx(),y-10.dp.toPx(),x+11.dp.toPx(),y-3.dp.toPx(),x,y)
+                    cubicTo(x-leafWidth*.3f,y-22.dp.toPx(),x+leafWidth*.4f,y-27.dp.toPx(),x+leafWidth,y-27.dp.toPx())
+                    cubicTo(x+leafWidth*.87f,y-10.dp.toPx(),x+leafWidth*.48f,y-3.dp.toPx(),x,y)
                 }
-                val filled=progress >= (index+1)/4f
+                val filled = progress >= (index + 1).toFloat() / leafCount
                 drawPath(leaf,if(filled) Color(0xFF93B43B) else Color(0xFFF7E3BE))
                 drawPath(leaf,if(filled) Color(0xFF7E9E37) else Color(0xFFDFC29C),
                     style=androidx.compose.ui.graphics.drawscope.Stroke(1.dp.toPx()))
@@ -145,16 +163,17 @@ private fun TaskQuestHeader(done: Int, total: Int, progress: Float, allComplete:
 }
 
 @Composable
-private fun DailyRewardCard(canClaim: Boolean, onClaim: () -> Unit) {
+private fun DailyRewardCard(canClaim: Boolean, onClaim: () -> Unit, claimed: Boolean = false) {
     Box(Modifier.fillMaxWidth()) {
-        GardenBotanicalFrame(Modifier.fillMaxWidth().clickable(enabled = canClaim,
+        GardenBotanicalFrame(Modifier.fillMaxWidth().clickable(enabled = canClaim && !claimed,
             onClickLabel = "Nhận thưởng hôm nay", onClick = onClaim),
             contentPadding = PaddingValues(horizontal = 10.dp, vertical = 8.dp),
             skin = com.mamxanh.app.presentation.ui.components.GardenPanelSkin.PRICE) {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 GardenArtwork(GardenArt.COIN, Modifier.size(32.dp))
-                Text("Thưởng hôm nay", Modifier.weight(1f), color = Deep, fontSize = 15.sp, lineHeight = 18.sp, fontWeight = FontWeight.Bold)
-                Text("+20 xu", color = Deep, fontSize = 17.sp, lineHeight = 20.sp, fontWeight = FontWeight.Bold)
+                Text(if (claimed) "✓ Đã nhận thưởng" else "Thưởng hôm nay", Modifier.weight(1f),
+                    color = if (claimed) Muted else Deep, fontSize = 15.sp, lineHeight = 18.sp, fontWeight = FontWeight.Bold)
+                if (!claimed) Text("+20 xu", color = Deep, fontSize = 17.sp, lineHeight = 20.sp, fontWeight = FontWeight.Bold)
             }
         }
         GardenSprig(Modifier.align(Alignment.BottomStart).offset(x = (-10).dp, y = 4.dp).size(18.dp, 28.dp))
@@ -225,7 +244,7 @@ fun TasksScreenEmptyPreview() { MamXanhPreviewTheme { TasksScreen(TasksUiState(i
 
 @Preview(name = "Quest progress header", showBackground = true, widthDp = 360)
 @Composable
-fun TaskQuestHeaderPreview() { MamXanhPreviewTheme { TaskQuestHeader(2, 4, .5f, false, {}) } }
+fun TaskQuestHeaderPreview() { MamXanhPreviewTheme { TaskQuestHeader(2, 6, 2f / 6f, false, {}) } }
 
 @Preview(name = "Daily reward card", showBackground = true, widthDp = 360)
 @Composable

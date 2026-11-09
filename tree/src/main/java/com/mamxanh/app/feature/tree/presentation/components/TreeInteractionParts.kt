@@ -23,12 +23,14 @@ import com.mamxanh.app.presentation.ui.components.*
 @Composable
 fun TreePortrait(tree: Tree, modifier: Modifier = Modifier, sharedTreeModifier: Modifier = Modifier) {
     Box(modifier.fillMaxWidth().height(260.dp), contentAlignment = Alignment.Center) {
-        GardenPlantPortrait(tree.speciesId, tree.decoration, sharedTreeModifier.width(290.dp).height(260.dp))
+        GardenPlantPortrait(tree.speciesId, tree.decoration, sharedTreeModifier.width(290.dp).height(260.dp), growth = tree.growth)
     }
 }
 
 @Composable
-fun TreeCareActions(wateredToday: Boolean, fertilizerCount: Int, wateringCanMl: Int, onWater: () -> Unit, onFertilize: () -> Unit) {
+fun TreeCareActions(wateredToday: Boolean, fertilizerCount: Int, wateringCanMl: Int,
+    onWater: () -> Unit, onFertilize: () -> Unit,
+    onGetWater: (() -> Unit)? = null, onBuyFertilizer: (() -> Unit)? = null) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         GardenWoodenTray {
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -42,6 +44,14 @@ fun TreeCareActions(wateredToday: Boolean, fertilizerCount: Int, wateringCanMl: 
         }
         GardenBotanicalFrame(contentPadding = PaddingValues(horizontal = 14.dp, vertical = 7.dp), cornerSize = 18.dp) {
             Text("💧 Bình nước $wateringCanMl ml  ·  Phân bón $fertilizerCount", color = Deep, fontSize = 12.sp, lineHeight = 15.sp, fontWeight = FontWeight.Bold)
+        }
+        if (wateringCanMl < 50 && onGetWater != null) {
+            GardenPaintedButton("Thiếu nước · Về sân vườn bơm ›", onGetWater,
+                Modifier.fillMaxWidth(), primary = false)
+        }
+        if (fertilizerCount <= 0 && onBuyFertilizer != null) {
+            GardenPaintedButton("Hết phân · Ghé Tiệm hạt ›", onBuyFertilizer,
+                Modifier.fillMaxWidth(), primary = false)
         }
     }
 }

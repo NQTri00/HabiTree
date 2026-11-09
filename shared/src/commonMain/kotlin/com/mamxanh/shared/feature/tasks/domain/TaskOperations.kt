@@ -8,6 +8,8 @@ interface TaskRepository {
     fun delete(id: Long)
     fun complete(id: Long): Boolean
     fun claimDailyBonus(): Boolean
+    fun isDailyBonusClaimed(): Boolean
+    fun canClaimDailyBonus(): Boolean
 }
 class LoadTasks(private val repository: TaskRepository) { operator fun invoke() = repository.observeSnapshot() }
 class AddTask(private val repository: TaskRepository) {

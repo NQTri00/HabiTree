@@ -13,8 +13,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -56,7 +54,7 @@ fun TreeInteractionScreen(
                 GardenArtwork(GardenArt.SPROUT, Modifier.align(Alignment.CenterEnd).size(30.dp))
             }
             Box(Modifier.fillMaxWidth().weight(1f), contentAlignment = Alignment.Center) {
-                GardenPlantPortrait(tree.speciesId, tree.decoration, sharedTreeModifier.fillMaxSize())
+                GardenPlantPortrait(tree.speciesId, tree.decoration, sharedTreeModifier.fillMaxSize(), growth = tree.growth)
                 GardenArtwork(GardenArt.LANTERN, Modifier.align(Alignment.TopEnd).padding(end = 3.dp).size(38.dp, 62.dp))
             }
             GardenBotanicalFrame(Modifier.fillMaxWidth(.9f), contentPadding = PaddingValues(horizontal = 24.dp, vertical = 12.dp), cornerSize = 24.dp, skin = GardenPanelSkin.PROGRESS) {
@@ -67,7 +65,9 @@ fun TreeInteractionScreen(
                 }
             }
             TreeCareActions(tree.wateredToday, fertilizerCount, wateringCanMl,
-                { onIntent(TreeIntent.Water(tree.id)) }, { onIntent(TreeIntent.Fertilize(tree.id)) })
+                { onIntent(TreeIntent.Water(tree.id)) }, { onIntent(TreeIntent.Fertilize(tree.id)) },
+                        onGetWater = { onIntent(TreeIntent.OpenWaterSupply) },
+                        onBuyFertilizer = { onIntent(TreeIntent.OpenFertilizerShop) })
             GardenPaintedButton("Trang trí & thông tin ↑",
                 { onIntent(TreeIntent.SetPanelExpanded(true)) }, Modifier.fillMaxWidth(), primary = false)
         }
@@ -87,7 +87,9 @@ fun TreeInteractionScreen(
                 ) {
                     Text("🌱 Chăm sóc cây", fontSize = 20.sp, fontWeight = FontWeight.Bold)
                     TreeCareActions(tree.wateredToday, fertilizerCount, wateringCanMl,
-                        { onIntent(TreeIntent.Water(tree.id)) }, { onIntent(TreeIntent.Fertilize(tree.id)) })
+                        { onIntent(TreeIntent.Water(tree.id)) }, { onIntent(TreeIntent.Fertilize(tree.id)) },
+                        onGetWater = { onIntent(TreeIntent.OpenWaterSupply) },
+                        onBuyFertilizer = { onIntent(TreeIntent.OpenFertilizerShop) })
                     Column(
                         Modifier.weight(1f, fill = false).verticalScroll(rememberScrollState()),
                         horizontalAlignment = Alignment.CenterHorizontally,

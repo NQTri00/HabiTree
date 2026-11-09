@@ -10,5 +10,7 @@ data class HomeDashboard(
     val totalTasks: Int = 0,
     val seedCount: Int = 0,
     val coins: Int = 0,
-    val wateringCanMl: Int = 542
+    val wateringCanMl: Int = 542,
+    val dailyRewardDate: String = "",
+    val dailyRewardCoins: Int = 20
 )

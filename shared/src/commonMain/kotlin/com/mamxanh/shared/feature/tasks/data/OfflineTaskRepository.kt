@@ -13,4 +13,6 @@ class OfflineTaskRepository(private val game: GameStorage) : TaskRepository {
     override fun delete(id: Long) = game.deleteTask(id)
     override fun complete(id: Long) = game.complete(id)
     override fun claimDailyBonus() = game.dailyBonus()
+    override fun isDailyBonusClaimed() = game.isDailyBonusClaimed()
+    override fun canClaimDailyBonus() = game.canClaimDailyBonus()
 }

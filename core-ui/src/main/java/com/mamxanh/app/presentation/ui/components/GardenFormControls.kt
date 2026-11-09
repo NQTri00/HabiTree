@@ -20,6 +20,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.error
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -34,13 +35,18 @@ import com.mamxanh.core.ui.R
 fun GardenTextField(
     value: String, onValueChange: (String) -> Unit, description: String,
     modifier: Modifier = Modifier, placeholder: String = "", trailingText: String? = null,
-    keyboardOptions: KeyboardOptions = KeyboardOptions.Default
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    errorMessage: String? = null
 ) {
     Box(modifier.heightIn(min = 44.dp), contentAlignment = Alignment.Center) {
-        Box(Modifier.matchParentSize().background(Color(0xFFFFF1D8), RoundedCornerShape(14.dp))
-            .border(1.5.dp, Color(0xFFD1B083), RoundedCornerShape(14.dp)))
+        Box(Modifier.matchParentSize().background(
+            if (errorMessage == null) Color(0xFFFFF1D8) else Color(0xFFFFE9E2), RoundedCornerShape(14.dp))
+            .border(1.5.dp, if (errorMessage == null) Color(0xFFD1B083) else Color(0xFFB73D32), RoundedCornerShape(14.dp)))
         BasicTextField(value, onValueChange,
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 11.dp).semantics { contentDescription = description },
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 11.dp).semantics {
+                contentDescription = description
+                errorMessage?.let { error(it) }
+            },
             singleLine = true, keyboardOptions = keyboardOptions,
             textStyle = MaterialTheme.typography.bodyLarge.copy(color = Deep, fontSize = 16.sp, lineHeight = 20.sp, fontWeight = FontWeight.Bold),
             cursorBrush = SolidColor(Green),

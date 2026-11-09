@@ -19,6 +19,14 @@ class TreeViewModel(private val repository: TreeRepository) : ViewModel() {
     val effects = effectChannel.receiveAsFlow()
 
     fun dispatch(intent: TreeIntent) {
+        if (intent == TreeIntent.OpenWaterSupply || intent == TreeIntent.OpenFertilizerShop) {
+            _uiState.value = _uiState.value.copy(isPanelExpanded = false)
+            viewModelScope.launch {
+                effectChannel.send(if (intent == TreeIntent.OpenWaterSupply) TreeEffect.OpenWaterSupply
+                    else TreeEffect.OpenFertilizerShop)
+            }
+            return
+        }
         if (intent is TreeIntent.SetPanelExpanded) {
             _uiState.value = _uiState.value.copy(isPanelExpanded = intent.expanded)
             return
@@ -36,7 +44,8 @@ class TreeViewModel(private val repository: TreeRepository) : ViewModel() {
             _uiState.value = _uiState.value.copy(isLoading = true)
             try {
                 when (intent) {
-                    TreeIntent.Back, is TreeIntent.SetPanelExpanded -> Unit // UI/navigation handled before mutations.
+                    TreeIntent.Back, TreeIntent.OpenWaterSupply, TreeIntent.OpenFertilizerShop,
+                    is TreeIntent.SetPanelExpanded -> Unit // UI/navigation handled before mutations.
                     is TreeIntent.Water -> {
                         val result = withContext(Dispatchers.IO) { WaterTree(repository)(intent.id) }
                         if (result == TreeWateringResult.WATERED) effectChannel.send(TreeEffect.TreeChanged)

@@ -11,6 +11,8 @@ interface GameDatabase {
     fun deleteTask(id: Long)
     fun complete(id: Long): Boolean
     fun dailyBonus(): Boolean
+    fun isDailyBonusClaimed(): Boolean
+    fun canClaimDailyBonus(): Boolean
     fun buySeed(id: String): Boolean
     fun plant(id: String, name: String, plotId: Int? = null): Boolean
     fun unlockPlot(plotId: Int): Boolean

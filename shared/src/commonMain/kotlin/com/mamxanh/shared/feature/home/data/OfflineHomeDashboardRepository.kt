@@ -16,7 +16,8 @@ class OfflineHomeDashboardRepository(private val game: GameStorage) : HomeDashbo
             totalTasks = tasks.size,
             seedCount = garden.inventory.filterKeys { it != "fertilizer" }.values.sum(),
             coins = statistics.coins,
-            wateringCanMl = game.waterMl()
+            wateringCanMl = game.waterMl(),
+            dailyRewardDate = if (game.isDailyBonusClaimed()) com.mamxanh.shared.time.currentDateKey() else ""
         )
     }
 

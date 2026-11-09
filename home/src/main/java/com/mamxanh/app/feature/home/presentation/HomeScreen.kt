@@ -17,6 +17,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
@@ -51,7 +55,6 @@ fun HomeScreen(
     val tree = dashboard.trees.firstOrNull()
     val camera = remember { Animatable(0f) }
     val scope = rememberCoroutineScope()
-    var selectedPlace by remember { mutableStateOf(HomePlace.SHOP) }
     var companion by remember { mutableStateOf(false) }
     var entering by remember { mutableStateOf(false) }
     var handingOff by remember { mutableStateOf(false) }
@@ -62,10 +65,9 @@ fun HomeScreen(
     }
     fun enter(place: HomePlace) {
         if (entering) return
-        selectedPlace = place
         entering = true
         travelJob = scope.launch {
-            camera.animateTo(1f, tween(620))
+            camera.animateTo(1f, tween(180))
             handingOff = true
             onIntent(when (place) {
                 HomePlace.SHOP -> HomeIntent.OpenShop
@@ -75,22 +77,13 @@ fun HomeScreen(
         }
     }
     val approach = if (previewApproach > 0f) previewApproach else camera.value
-    val origin = when (selectedPlace) {
-        HomePlace.SHOP -> TransformOrigin(.78f, .74f)
-        HomePlace.TASKS -> TransformOrigin(.27f, .76f)
-        HomePlace.GARDEN -> TransformOrigin(.50f, .45f)
-    }
     val fontScale = LocalDensity.current.fontScale.coerceAtLeast(1f)
     BoxWithConstraints(modifier.fillMaxSize()) {
         val sceneHeight = maxOf(maxHeight, 680.dp * fontScale)
         Box(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
         Box(Modifier.fillMaxWidth().height(sceneHeight)) {
         Box(Modifier.fillMaxSize().graphicsLayer {
-            scaleX = 1f + approach * 2.3f
-            scaleY = 1f + approach * 2.3f
-            transformOrigin = origin
-            translationX = (.5f - origin.pivotFractionX) * size.width * approach
-            translationY = (.5f - origin.pivotFractionY) * size.height * approach
+            alpha = 1f - approach
         }) {
             FarmPastoralBackdrop(Modifier.fillMaxSize())
             BoxWithConstraints(Modifier.fillMaxSize()) {
@@ -106,7 +99,7 @@ fun HomeScreen(
                 ) {
                     if (tree != null) {
                         GardenPlantPortrait(tree.speciesId, tree.decoration,
-                            sharedTreeModifier.fillMaxSize().clickable(enabled = !entering) { onIntent(HomeIntent.OpenTree(tree.id)) })
+                            sharedTreeModifier.fillMaxSize().clickable(enabled = !entering) { onIntent(HomeIntent.OpenTree(tree.id)) }, growth = tree.growth)
                     } else {
                         GardenPlace("GARDEN", "Gieo mầm đầu tiên", { enter(HomePlace.GARDEN) }, Modifier.fillMaxSize())
                     }
@@ -137,7 +130,8 @@ fun HomeScreen(
                         maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
                     LinearProgressIndicator(progress = { (tree.growth / 120f).coerceIn(0f,1f) },
                         Modifier.fillMaxWidth().height(6.dp), color = Green, trackColor = Color(0xFFD6B78D), drawStopIndicator = {})
-                    Text("${tree.growth} / 120", color = Deep, fontWeight = FontWeight.Bold, fontSize = 15.sp, lineHeight = 17.sp)
+                    Text("${dashboard.completedTasks} / ${dashboard.totalTasks} việc hôm nay",
+                        color = Deep, fontWeight = FontWeight.Bold, fontSize = 14.sp, lineHeight = 17.sp)
                 }
             }
         }
@@ -166,6 +160,36 @@ fun HomeScreen(
         }
         }
         }
+        if (state.isDailyClearVisible) {
+            androidx.compose.ui.window.Dialog(
+                onDismissRequest = { onIntent(HomeIntent.DismissDailyClear) },
+                properties = androidx.compose.ui.window.DialogProperties(
+                    usePlatformDefaultWidth = false, decorFitsSystemWindows = false)
+            ) {
+                Box(Modifier.fillMaxSize().safeDrawingPadding().padding(20.dp), contentAlignment = Alignment.Center) {
+                    GardenBotanicalFrame(Modifier.widthIn(max = 360.dp).fillMaxWidth(),
+                        contentPadding = PaddingValues(20.dp), cornerSize = 28.dp, skin = GardenPanelSkin.DIALOG) {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                                Text("✓", Modifier.weight(1f), color = Green, fontSize = 38.sp, textAlign = TextAlign.Center)
+                                IconButton(onClick = { onIntent(HomeIntent.DismissDailyClear) }) {
+                                    Text("×", color = Deep, fontSize = 24.sp)
+                                }
+                            }
+                            Text("Đã xong hôm nay", color = Deep, fontSize = 22.sp, fontWeight = FontWeight.Bold)
+                            GardenBotanicalFrame(contentPadding = PaddingValues(12.dp), skin = GardenPanelSkin.PRICE) {
+                                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                    Text("Thưởng hôm nay", color = Deep)
+                                    Text("+${dashboard.dailyRewardCoins} xu", color = Deep, fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                                }
+                            }
+                            GardenPaintedButton("Đã nhận thưởng", { onIntent(HomeIntent.DismissDailyClear) })
+                        }
+                    }
+                }
+            }
+        }
         if (companion) MascotCompanionDialog(onDismiss = { companion = false })
     }
 }
@@ -176,8 +200,33 @@ private fun GardenPlace(kind: String, label: String, onClick: () -> Unit, modifi
         horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Bottom) {
         if (kind == "SHOP") GardenArtwork(GardenArt.SHOP,
             Modifier.size(if (androidx.compose.ui.platform.LocalDensity.current.fontScale > 1.15f) 48.dp else 64.dp))
-        GardenWoodenTray {
-            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(3.dp)) {
+        Box(Modifier.fillMaxWidth().padding(bottom = 10.dp).drawBehind {
+            val w = size.width
+            val h = size.height
+            listOf(.18f, .76f).forEach { x ->
+                drawRect(Color(0xFF946537), Offset(w * x, h * .8f), Size(w * .075f, h * .4f))
+                drawLine(Color(0xFFD4A366), Offset(w * (x + .02f), h), Offset(w * (x + .02f), h * 1.18f), 2.dp.toPx())
+            }
+            val board = androidx.compose.ui.graphics.Path().apply {
+                moveTo(w * .04f, 0f)
+                lineTo(w * .94f, 0f)
+                lineTo(w, h * .18f)
+                lineTo(w * .98f, h * .88f)
+                lineTo(w * .92f, h)
+                lineTo(w * .03f, h * .96f)
+                lineTo(0f, h * .78f)
+                lineTo(0f, h * .14f)
+                close()
+            }
+            drawPath(board, Color(0xFFAA7540))
+            drawPath(board, Color(0xFFD9A466),
+                style = androidx.compose.ui.graphics.drawscope.Stroke(3.dp.toPx()))
+            drawRoundRect(Color(0xFFFFE8BC), Offset(5.dp.toPx(), 5.dp.toPx()),
+                Size((w - 10.dp.toPx()).coerceAtLeast(0f), (h - 10.dp.toPx()).coerceAtLeast(0f)),
+                CornerRadius(5.dp.toPx()))
+        }) {
+            Row(Modifier.fillMaxWidth().heightIn(min = 48.dp).padding(horizontal = 8.dp, vertical = 6.dp),
+                verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(3.dp)) {
                 if (kind != "SHOP") GardenArtwork(if (kind == "TASKS") GardenArt.CHECKLIST else GardenArt.SPROUT, Modifier.size(34.dp))
                 Text("$label ›", Modifier.weight(1f), color = Deep, fontWeight = FontWeight.Bold,
                     fontSize = if (kind == "SHOP") 15.sp else 16.sp, lineHeight = 19.sp,

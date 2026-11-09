@@ -2,9 +2,11 @@ package com.mamxanh.app.feature.home.presentation
 
 import com.mamxanh.app.feature.home.domain.model.HomeDashboard
 
-data class HomeUiState(val dashboard: HomeDashboard = HomeDashboard(), val isLoading: Boolean = true)
+data class HomeUiState(val dashboard: HomeDashboard = HomeDashboard(), val isLoading: Boolean = true,
+    val isDailyClearVisible: Boolean = false)
 sealed interface HomeIntent {
     data object Refresh : HomeIntent
+    data object DismissDailyClear : HomeIntent
     data class OpenTree(val id: Long) : HomeIntent
     data object OpenTasks : HomeIntent
     data object OpenGarden : HomeIntent

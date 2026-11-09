@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class HomeViewModel(private val repository: HomeDashboardRepository) : ViewModel() {
+    private var dismissedRewardDate = ""
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState = _uiState.asStateFlow()
     private val effectChannel = Channel<HomeEffect>(Channel.BUFFERED)
@@ -22,16 +23,22 @@ class HomeViewModel(private val repository: HomeDashboardRepository) : ViewModel
 
     fun dispatch(intent: HomeIntent) {
         when (intent) {
+            HomeIntent.DismissDailyClear -> {
+                dismissedRewardDate = _uiState.value.dashboard.dailyRewardDate
+                _uiState.value = _uiState.value.copy(isDailyClearVisible = false)
+            }
             HomeIntent.Refresh -> viewModelScope.launch {
                 _uiState.value = _uiState.value.copy(isLoading = true)
                 val dashboard = withContext(Dispatchers.IO) { LoadHomeDashboard(repository)() }
-                _uiState.value = HomeUiState(dashboard, false)
+                _uiState.value = _uiState.value.copy(dashboard = dashboard, isLoading = false,
+                    isDailyClearVisible = dashboard.dailyRewardDate.isNotBlank() && dashboard.dailyRewardDate != dismissedRewardDate)
             }
             HomeIntent.RefillWater -> viewModelScope.launch {
                 val before = _uiState.value.dashboard.wateringCanMl
                 val amount = withContext(Dispatchers.IO) { RefillWater(repository)() }
                 val dashboard = withContext(Dispatchers.IO) { LoadHomeDashboard(repository)() }
-                _uiState.value = HomeUiState(dashboard, false)
+                _uiState.value = _uiState.value.copy(dashboard = dashboard, isLoading = false,
+                    isDailyClearVisible = dashboard.dailyRewardDate.isNotBlank() && dashboard.dailyRewardDate != dismissedRewardDate)
                 effectChannel.send(
                     HomeEffect.Feedback(
                         if (amount > before) "Đã bơm thêm nước vào bình."

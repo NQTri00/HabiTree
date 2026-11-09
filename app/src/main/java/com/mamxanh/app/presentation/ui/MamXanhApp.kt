@@ -125,6 +125,14 @@ fun MamXanhApp(
                 when (effect) {
                     is TreeEffect.Feedback -> appVm.dispatch(AppIntent.ShowMessage(effect.message))
                     TreeEffect.Back -> appVm.dispatch(AppIntent.Back)
+                    TreeEffect.OpenWaterSupply -> {
+                        appVm.dispatch(AppIntent.Back)
+                        appVm.dispatch(AppIntent.Navigate(AppDestination.HOME))
+                    }
+                    TreeEffect.OpenFertilizerShop -> {
+                        appVm.dispatch(AppIntent.Back)
+                        appVm.dispatch(AppIntent.Navigate(AppDestination.SHOP))
+                    }
                     TreeEffect.TreeChanged -> {
                         gardenVm.dispatch(GardenIntent.Refresh)
                         homeVm.dispatch(HomeIntent.Refresh)
@@ -137,7 +145,9 @@ fun MamXanhApp(
     }
 
     val canGoBack = app.selectedTreeId != null || app.backStack.isNotEmpty()
-    BackHandler(enabled = canGoBack) { appVm.dispatch(AppIntent.Back) }
+    BackHandler(enabled = canGoBack) {
+        if (app.selectedTreeId != null) treeVm.dispatch(TreeIntent.Back) else appVm.dispatch(AppIntent.Back)
+    }
     MamXanhAppContent(
         state = app,
         dashboard = dashboard,
