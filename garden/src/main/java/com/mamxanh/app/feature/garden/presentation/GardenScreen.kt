@@ -72,7 +72,8 @@ fun GardenScreen(state: GardenUiState, onIntent: (GardenIntent) -> Unit, modifie
                     }
                 }
             }
-            SeedBasket(seeds, garden.inventory, onSelect = { selectedSeed = it })
+            SeedBasket(seeds, garden.inventory, onSelect = { selectedSeed = it },
+                onOpenShop = { onIntent(GardenIntent.OpenShop) })
             Spacer(Modifier.height(8.dp))
         }
     }
@@ -126,7 +127,8 @@ private fun GardenTreeIsland(tree: Tree, onClick: () -> Unit, modifier: Modifier
 }
 
 @Composable
-private fun SeedBasket(seeds: List<Species>, inventory: Map<String, Int>, onSelect: (Species) -> Unit) {
+private fun SeedBasket(seeds: List<Species>, inventory: Map<String, Int>, onSelect: (Species) -> Unit,
+    onOpenShop: () -> Unit = {}) {
     Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
         GardenBotanicalFrame(contentPadding = PaddingValues(horizontal = 22.dp, vertical = 6.dp), cornerSize = 20.dp) {
             Text("🌱 Hạt trong túi", color = Deep, fontSize = 17.sp, lineHeight = 20.sp, fontWeight = FontWeight.Bold)
@@ -135,7 +137,10 @@ private fun SeedBasket(seeds: List<Species>, inventory: Map<String, Int>, onSele
             GardenSeedBasketSurface(Modifier.matchParentSize())
             if (seeds.isEmpty()) {
                 GardenBotanicalFrame(Modifier.padding(22.dp), contentPadding = PaddingValues(14.dp), cornerSize = 22.dp) {
-                    Text("Túi hạt đang trống\nGhé Tiệm để tìm mầm mới nhé.", color = Deep, fontSize = 13.sp, textAlign = TextAlign.Center)
+                    Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Text("Túi hạt đang trống", color = Deep, fontSize = 13.sp, textAlign = TextAlign.Center)
+                        GardenPaintedButton("Ghé Tiệm →", onOpenShop, primary = false)
+                    }
                 }
             } else Row(Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 18.dp), verticalAlignment = Alignment.CenterVertically) {
                 Row(Modifier.weight(1f).horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(4.dp)) {

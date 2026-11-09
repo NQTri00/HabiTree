@@ -27,6 +27,7 @@ class GardenViewModel(private val repository: GardenRepository) : ViewModel() {
                 val garden = withContext(Dispatchers.IO) { LoadGarden(repository)() }
                 _uiState.value = GardenUiState(garden, false)
             }
+            GardenIntent.OpenShop -> viewModelScope.launch { effectChannel.send(GardenEffect.OpenShop) }
             is GardenIntent.OpenTree -> viewModelScope.launch { effectChannel.send(GardenEffect.OpenTree(intent.id)) }
             is GardenIntent.Plant -> viewModelScope.launch(Dispatchers.IO) {
                 PlantSeed(repository)(intent.speciesId, intent.name)

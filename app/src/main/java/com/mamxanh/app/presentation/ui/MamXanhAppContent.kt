@@ -168,7 +168,11 @@ fun MamXanhAppContentHomePreview() {
                 }
             },
             onGardenIntent = {
-                if (it is GardenIntent.OpenTree) navigate(AppIntent.OpenTree(it.id))
+                when (it) {
+                    is GardenIntent.OpenTree -> navigate(AppIntent.OpenTree(it.id))
+                    GardenIntent.OpenShop -> navigate(AppIntent.Navigate(AppDestination.SHOP))
+                    else -> Unit
+                }
             }
         )
     }

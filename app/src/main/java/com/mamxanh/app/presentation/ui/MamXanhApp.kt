@@ -98,6 +98,7 @@ fun MamXanhApp(
                         homeVm.dispatch(HomeIntent.Refresh)
                     }
                     is GardenEffect.OpenTree -> appVm.dispatch(AppIntent.OpenTree(effect.id))
+                    GardenEffect.OpenShop -> appVm.dispatch(AppIntent.Navigate(AppDestination.SHOP))
                 }
             }
         }
