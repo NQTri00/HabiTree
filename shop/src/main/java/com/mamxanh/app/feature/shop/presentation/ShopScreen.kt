@@ -41,6 +41,9 @@ fun ShopScreen(state: ShopUiState, onIntent: (ShopIntent) -> Unit, modifier: Mod
     Box(modifier.fillMaxSize()) {
         Image(painterResource(R.drawable.simple_shop_v2), null,
             Modifier.fillMaxSize(), contentScale = ContentScale.FillBounds)
+        BoxWithConstraints(Modifier.fillMaxSize()) {
+            GardenHangingLantern(Modifier.offset(maxWidth * .88f, maxHeight * .17f).size(30.dp, 76.dp))
+        }
         Column(
             Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 18.dp, vertical = 36.dp),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -86,7 +89,9 @@ fun ShopScreen(state: ShopUiState, onIntent: (ShopIntent) -> Unit, modifier: Mod
 private fun NurseryShelf(content: @Composable RowScope.() -> Unit) {
     Box(Modifier.fillMaxWidth().padding(top = 2.dp, bottom = 4.dp)) {
         Box(Modifier.align(Alignment.BottomCenter).fillMaxWidth().height(16.dp)
-            .background(Color(0xFFC78D51), androidx.compose.foundation.shape.RoundedCornerShape(10.dp)))
+            .background(androidx.compose.ui.graphics.Brush.verticalGradient(listOf(Color(0xFFE4AF71), Color(0xFFC38B51), Color(0xFFA9703C))),
+                androidx.compose.foundation.shape.RoundedCornerShape(10.dp))
+            .border(1.dp, Color(0xFFEAC08A), androidx.compose.foundation.shape.RoundedCornerShape(10.dp)))
         Row(Modifier.fillMaxWidth().padding(start = 7.dp, end = 7.dp, bottom = 16.dp), verticalAlignment = Alignment.Bottom, content = content)
     }
 }
@@ -137,7 +142,11 @@ private fun ShopSeedDetailCard(plant: ShopSeed, ownedCount: Int, canAfford: Bool
         Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(12.dp)) {
             Column(Modifier.weight(1f, fill = false).verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                PaintedGardenPlant(plant.id, Modifier.fillMaxWidth().height(165.dp))
+                Box(Modifier.fillMaxWidth().height(165.dp)) {
+                    PaintedGardenPlant(plant.id, Modifier.fillMaxSize())
+                    GardenSprig(Modifier.align(Alignment.BottomStart).size(26.dp, 52.dp))
+                    GardenSprig(Modifier.align(Alignment.BottomEnd).size(26.dp, 52.dp), mirrored = true)
+                }
                 Text(plant.name, color = Deep, fontSize = 28.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
                 Text(plant.description, color = Deep, fontStyle = FontStyle.Italic, textAlign = TextAlign.Center)
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {

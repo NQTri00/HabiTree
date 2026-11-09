@@ -37,10 +37,10 @@ The full app fixture combines a three-line Vietnamese custom name, 1.3 text scal
 
 ## Remaining concrete reference differences
 
-- Home lacks the reference's upper-left hanging lantern/cottage detail; destination signs still use simplified tray silhouettes.
-- Shop lacks the hanging lantern under the canopy; shelf fronts remain flat rather than softly edged wood.
-- Tasks lacks the title's leaf accent and small botanical ends around the daily reward.
-- Seed Detail lacks the lateral leaf sprigs around the plant. Planting lacks the side book handles.
+- Home's hanging lantern/cottage are now native illustrations, checked in the normal full shell. Destination signs still use simplified tray silhouettes and need the final comparison.
+- Shop's hanging lantern and softly edged shelf fronts are added and checked in the normal full shell without label/product collisions.
+- Tasks' title leaf and daily-reward sprigs are implemented. Large-text title comparison shows no collision; normal reward-accent comparison remains pending.
+- Seed Detail's lateral plant sprigs are implemented and compiled; final refreshed detail comparison remains pending. Planting's side handles are added and checked in its normal surface preview.
 - Final normal full-shell comparisons for Nursery, Care and populated Journal, plus dialog overlay composition, remain required. These differences are not waived by the completed surface-layout checks.
 
 ## Action/concurrency inspection

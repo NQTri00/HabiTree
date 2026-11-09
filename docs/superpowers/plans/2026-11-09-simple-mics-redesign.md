@@ -63,4 +63,5 @@ Verification ledger: docs/design-references/simple-mics-audit.md records observe
 - [ ] Render all six full app screens plus three dialogs after refreshing changed module previews.
 - [ ] Compare against mics for composition, art style, palette, typography, control size and density.
 - [ ] Verify empty and large text previews; check reachable controls and live state semantics.
-- [ ] Record concrete remaining discrepancies. Do not claim the 90% target until the complete visual audit supports it.
+- [x] Record concrete remaining discrepancies. Do not claim the 90% target until the complete visual audit supports it.
+  - Recorded in simple-mics-audit.md with implemented details distinguished from pending comparisons. The 90% acceptance gate remains unproven.

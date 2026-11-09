@@ -82,6 +82,8 @@ fun HomeScreen(
         }) {
             FarmPastoralBackdrop(Modifier.fillMaxSize())
             BoxWithConstraints(Modifier.fillMaxSize()) {
+                GardenHangingLantern(Modifier.offset(14.dp, 6.dp).size(44.dp, 86.dp))
+                GardenCottage(Modifier.offset(maxWidth * .07f, maxHeight * .245f).size(54.dp, 52.dp))
                 GardenPlace("TASKS", "Việc nhỏ", { enter("TASKS") },
                     Modifier.offset(maxWidth * .04f, maxHeight * .70f).width(maxWidth * .46f).height(maxHeight * .12f))
                 GardenPlace("SHOP", "Tiệm hạt", { enter("SHOP") },

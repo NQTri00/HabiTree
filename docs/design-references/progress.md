@@ -39,6 +39,8 @@ Daily Add Task normal at shared runtime bounds fits all fields/actions. A full a
 
 Dialog surface-layout verification is now complete across daily/TODO task forms, Seed Detail and Planting at normal/1.3 scales with shared runtime bounds. The normal Seed Detail purchase label wrapped unnecessarily; increasing its row weight to1.5 keeps the normal label on one line while the large variant remains fully visible. Form validation/six save values and purchase/plant intent wiring were inspected. Build passed after the weight change. App-shell overlays and remaining scene/details still require verification; the audit ledger now lists concrete missing lantern/cottage, sprig, shelf-edge and handle details instead of treating builds as visual acceptance.
 
+Reference detail batch: new native cottage/hanging lantern scenery on Home, canopy lantern and edged shelf fronts in Shop, title/reward sprigs in Tasks, lateral plant sprigs in Seed Detail and side handles on Planting. No raster UI or baked text was introduced. Build passed; SimpleSceneDetails inspection has formatting warnings only. Normal Home/Shop full shells, large Tasks and normal Planting previews show the checked details clear of content. Seed Detail's new sprigs and normal Tasks reward accents remain for the final refreshed comparison. Sequential rendering and measured collection maintained the 4GiB heap constraint.
+
 Pending: final full-shell comparisons, remaining large-text/empty-state checks and complete visual acceptance. No numeric 90% score or full completion claim yet.
 
 Previous goal turn: progress — authoritative source files were inspected, a new detailed plan written, simplified code/assets implemented and previews compared. No blocker status applies.

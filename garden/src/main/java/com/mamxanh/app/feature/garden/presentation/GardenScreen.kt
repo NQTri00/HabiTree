@@ -203,6 +203,7 @@ private fun PlantingParchment(seed: Species, count: Int, onDismiss: () -> Unit, 
                 }
             }
         }
+        GardenBookHandles(Modifier.matchParentSize())
     }
 }
 

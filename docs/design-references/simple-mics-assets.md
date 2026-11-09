@@ -4,6 +4,10 @@ Authoritative references: mics/simple-home-tasks-shop.png, mics/simple-garden-ca
 
 Built-in imagegen was used with these three local paths as visual inputs. These are reference-inspired isolated sprites/scenery, not lossless crops. Every asset is saved in core-ui/src/main/res/drawable-nodpi; no complete screen is used as UI background. Native Compose surfaces and SimpleGardenArt draw the simple material, buttons, journal and icons.
 
+## Native scene and botanical details
+
+SimpleSceneDetails.kt draws the small cottage and hanging lantern inspired by screens01/03, and the book handles inspired by screen09, using native Compose Canvas paths/shapes. GardenSprig.kt draws the olive sprigs inspired by the journal, task and seed-detail accents. Shelf fronts use native gradient/border shapes. These are authored code illustrations, with no generator prompt, external image or baked text. They are separate from the background assets and live controls.
+
 ## simple_home.png
 
 Use case: reference-inspired scenery asset. Use first input sheet screen01 Khu vườn as authoritative simple flat painted style. Extract/reconstruct ONLY the forest landscape, no UI. Portrait 2:3. Flat teal layered woodland silhouettes with broad green leaves/branches framing top corners, one small waterfall on far left flowing into stream in lower third. One wide central mossy grey rock island around 55%height to stand a tree on; grassy ground across bottom quarter for interactive signs and care shelf. Remove cherry tree, all titles, plaques, labels, signs, baskets, tools, navigation and lantern. Smooth muted soft 2D shapes exactly like reference, no detailed bark or realistic leaves. No text, no plants being grown, no photoreal textures. Deliver just an empty landscape background, never complete UI screen.

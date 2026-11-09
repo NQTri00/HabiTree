@@ -14,6 +14,7 @@ import com.mamxanh.app.presentation.ui.components.GardenBotanicalFrame
 import com.mamxanh.app.presentation.ui.components.GardenRichText as Text
 import com.mamxanh.app.presentation.ui.components.GardenArt
 import com.mamxanh.app.presentation.ui.components.GardenArtwork
+import com.mamxanh.app.presentation.ui.components.GardenSprig
 import com.mamxanh.app.presentation.ui.components.GardenPaintedButton
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.horizontalScroll
@@ -108,7 +109,10 @@ fun TasksScreen(state: TasksUiState, onIntent: (TasksIntent) -> Unit, modifier: 
 @Composable
 private fun TaskQuestHeader(done: Int, total: Int, progress: Float, allComplete: Boolean, onAddTask: () -> Unit) {
     Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Text("Việc nhỏ, lớn lên", color = Deep, fontSize = 25.sp, fontWeight = FontWeight.Bold)
+        Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+            Text("Việc nhỏ, lớn lên", color = Deep, fontSize = 25.sp, fontWeight = FontWeight.Bold)
+            GardenSprig(Modifier.align(Alignment.CenterEnd).offset(x = 14.dp).size(24.dp, 36.dp), mirrored = true)
+        }
         Text("$done / $total việc hôm nay", color = Deep, fontSize = 16.sp, lineHeight = 20.sp)
         Canvas(Modifier.fillMaxWidth().height(44.dp)) {
             val y = size.height * .84f
@@ -136,15 +140,19 @@ private fun TaskQuestHeader(done: Int, total: Int, progress: Float, allComplete:
 
 @Composable
 private fun DailyRewardCard(canClaim: Boolean, onClaim: () -> Unit) {
-    GardenBotanicalFrame(Modifier.fillMaxWidth().clickable(enabled = canClaim,
-        onClickLabel = "Nhận thưởng hôm nay", onClick = onClaim),
-        contentPadding = PaddingValues(horizontal = 10.dp, vertical = 8.dp),
-        skin = com.mamxanh.app.presentation.ui.components.GardenPanelSkin.PRICE) {
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            GardenArtwork(GardenArt.COIN, Modifier.size(32.dp))
-            Text("Thưởng hôm nay", Modifier.weight(1f), color = Deep, fontSize = 15.sp, lineHeight = 18.sp, fontWeight = FontWeight.Bold)
-            Text("+20 xu", color = Deep, fontSize = 17.sp, lineHeight = 20.sp, fontWeight = FontWeight.Bold)
+    Box(Modifier.fillMaxWidth()) {
+        GardenBotanicalFrame(Modifier.fillMaxWidth().clickable(enabled = canClaim,
+            onClickLabel = "Nhận thưởng hôm nay", onClick = onClaim),
+            contentPadding = PaddingValues(horizontal = 10.dp, vertical = 8.dp),
+            skin = com.mamxanh.app.presentation.ui.components.GardenPanelSkin.PRICE) {
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                GardenArtwork(GardenArt.COIN, Modifier.size(32.dp))
+                Text("Thưởng hôm nay", Modifier.weight(1f), color = Deep, fontSize = 15.sp, lineHeight = 18.sp, fontWeight = FontWeight.Bold)
+                Text("+20 xu", color = Deep, fontSize = 17.sp, lineHeight = 20.sp, fontWeight = FontWeight.Bold)
+            }
         }
+        GardenSprig(Modifier.align(Alignment.BottomStart).offset(x = (-10).dp, y = 4.dp).size(18.dp, 28.dp))
+        GardenSprig(Modifier.align(Alignment.BottomEnd).offset(x = 10.dp, y = 4.dp).size(18.dp, 28.dp), mirrored = true)
     }
 }
 
