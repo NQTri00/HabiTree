@@ -195,6 +195,23 @@ fun SimpleGardenArt(art: GardenArt, modifier: Modifier = Modifier) {
                             repeat(3){r->drawLine(Paper,Offset(31f,37f+r*9),Offset(47f,37f+r*9),3f,StrokeCap.Round)}
                         }}
                     }
+                    GardenArt.BROOM -> {
+                        rotate(28f, Offset(50f, 50f)) {
+                            drawLine(InkBrown, Offset(50f, 10f), Offset(50f, 62f), 9f, StrokeCap.Round)
+                            drawLine(Honey, Offset(48f, 12f), Offset(48f, 58f), 3f, StrokeCap.Round)
+                            val bristles = Path().apply {
+                                moveTo(37f, 57f); lineTo(63f, 57f)
+                                lineTo(79f, 91f); quadraticTo(50f, 99f, 21f, 91f); close()
+                            }
+                            drawPath(bristles, Brush.verticalGradient(listOf(Color(0xFFE6BC72), Honey), 57f, 96f))
+                            drawPath(bristles, InkBrown, style = Stroke(2f))
+                            repeat(7) { index ->
+                                drawLine(Color(0xFFB17B3F), Offset(39f + index * 3.7f, 63f),
+                                    Offset(28f + index * 7.3f, 90f), 1.3f)
+                            }
+                            drawLine(DarkLeaf, Offset(35f, 61f), Offset(65f, 61f), 5f, StrokeCap.Round)
+                        }
+                    }
                     GardenArt.WATERING_CAN -> Unit
                 }
             }

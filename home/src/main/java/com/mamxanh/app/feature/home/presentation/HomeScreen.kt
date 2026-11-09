@@ -167,7 +167,7 @@ fun HomeScreen(
                     usePlatformDefaultWidth = false, decorFitsSystemWindows = false)
             ) {
                 Box(Modifier.fillMaxSize().safeDrawingPadding().padding(20.dp), contentAlignment = Alignment.Center) {
-                    GardenBotanicalFrame(Modifier.widthIn(max = 360.dp).fillMaxWidth(),
+                    GardenBotanicalFrame(Modifier.widthIn(max = 360.dp).fillMaxWidth().heightIn(max = 520.dp),
                         contentPadding = PaddingValues(20.dp), cornerSize = 28.dp, skin = GardenPanelSkin.DIALOG) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -177,11 +177,16 @@ fun HomeScreen(
                                     Text("×", color = Deep, fontSize = 24.sp)
                                 }
                             }
-                            Text("Đã xong hôm nay", color = Deep, fontSize = 22.sp, fontWeight = FontWeight.Bold)
-                            GardenBotanicalFrame(contentPadding = PaddingValues(12.dp), skin = GardenPanelSkin.PRICE) {
-                                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                    Text("Thưởng hôm nay", color = Deep)
-                                    Text("+${dashboard.dailyRewardCoins} xu", color = Deep, fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                            Column(Modifier.weight(1f, fill = false).verticalScroll(rememberScrollState()),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                                Text("Đã xong hôm nay", color = Deep, fontSize = 22.sp,
+                                    fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
+                                GardenBotanicalFrame(contentPadding = PaddingValues(12.dp), skin = GardenPanelSkin.PRICE) {
+                                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                        Text("Thưởng hôm nay", color = Deep)
+                                        Text("+${dashboard.dailyRewardCoins} xu", color = Deep, fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                                    }
                                 }
                             }
                             GardenPaintedButton("Đã nhận thưởng", { onIntent(HomeIntent.DismissDailyClear) })

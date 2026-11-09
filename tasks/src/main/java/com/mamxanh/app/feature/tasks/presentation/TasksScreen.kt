@@ -1,6 +1,7 @@
 package com.mamxanh.app.feature.tasks.presentation
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.ui.semantics.CustomAccessibilityAction
 import androidx.compose.ui.semantics.customActions
@@ -186,13 +187,17 @@ private fun TaskCard(task: Task, onComplete: () -> Unit, onDelete: () -> Unit, r
     var askDelete by remember { mutableStateOf(false) }
     val done = task.doneToday || readOnly
     Column {
-        Row(Modifier.fillMaxWidth().heightIn(min = 86.dp)
+        Row(Modifier.fillMaxWidth().heightIn(min = if (readOnly) 56.dp else 64.dp)
+            .background(if (readOnly) Color(0xFFE5EAC6) else Color.Transparent, RoundedCornerShape(14.dp))
             .combinedClickable(onClick = { if (!done) onComplete() }, onLongClickLabel = "Xóa nhiệm vụ", onLongClick = { askDelete = true })
             .semantics { customActions = listOf(CustomAccessibilityAction("Xóa nhiệm vụ") { askDelete = true; true }) }
             .padding(vertical = 4.dp), verticalAlignment = Alignment.CenterVertically) {
             GardenArtwork(when {
                 task.title.contains("bộ", ignoreCase = true) -> GardenArt.BOOTS
                 task.title.contains("nước", ignoreCase = true) -> GardenArt.GLASS
+                task.title.contains("Dọn", ignoreCase = true) -> GardenArt.BROOM
+                task.title.contains("từ vựng", ignoreCase = true) -> GardenArt.PENCIL
+                task.title.contains("Chuẩn bị", ignoreCase = true) -> GardenArt.CALENDAR
                 task.category.contains("Học", ignoreCase = true) -> GardenArt.BOOK
                 else -> GardenArt.SPROUT
             }, Modifier.size(36.dp, 48.dp))
@@ -202,7 +207,7 @@ private fun TaskCard(task: Task, onComplete: () -> Unit, onDelete: () -> Unit, r
                 if (task.kind == "TODO" && task.due.isNotBlank()) Text("Hạn: " + task.due, color = Muted, fontSize = 11.sp)
                 if (done) Text("Đã xong", color = Green, fontSize = 12.sp)
             }
-            if (!done) GardenBotanicalFrame(contentPadding = PaddingValues(horizontal = 5.dp, vertical = 3.dp),
+            if (!readOnly) GardenBotanicalFrame(contentPadding = PaddingValues(horizontal = 5.dp, vertical = 3.dp),
                 cornerSize = 9.dp, skin = com.mamxanh.app.presentation.ui.components.GardenPanelSkin.PRICE) {
                 Text("🪙+${task.reward} xu", color = Deep, fontSize = 11.sp, lineHeight = 14.sp, fontWeight = FontWeight.Bold)
             }
@@ -234,6 +239,22 @@ fun TasksScreenPopulatedPreview() {
             Task(1, "Đọc 10 trang sách", "HABIT", "Học tập", 10, "EVERY_DAY", "", "", 4, ""),
             Task(2, "Uống đủ nước", "DAILY", "Sức khỏe", 10, "EVERY_DAY", "", today(), 2, today()),
             Task(3, "Đi bộ 20 phút", "TODO", "Sức khỏe", 10, "ONCE", "", "", 0, "")
+        ), isLoading = false), {})
+    }
+}
+
+@Preview(name = "Tasks · extended document audit", widthDp = 360, heightDp = 1100,
+    device = "spec:width=360dp,height=1100dp,dpi=160")
+@Composable
+fun TasksExtendedDocumentPreview() {
+    MamXanhPreviewTheme {
+        TasksScreen(TasksUiState(tasks = listOf(
+            Task(1, "Đọc 10 trang sách", "HABIT", "Học tập", 10, "EVERY_DAY", "", "", 0, ""),
+            Task(2, "Uống đủ nước", "DAILY", "Sức khỏe", 10, "EVERY_DAY", "", today(), 1, today()),
+            Task(3, "Đi bộ 20 phút", "DAILY", "Sức khỏe", 10, "EVERY_DAY", "", today(), 1, today()),
+            Task(4, "Ôn từ vựng 15 phút", "DAILY", "Tiếng Anh", 10, "EVERY_DAY", "", "", 0, ""),
+            Task(5, "Dọn góc học tập", "TODO", "Giữ gọn gàng", 10, "ONCE", "", "", 0, ""),
+            Task(6, "Chuẩn bị bài cho ngày mai", "TODO", "Học tập", 10, "ONCE", "", "", 0, "")
         ), isLoading = false), {})
     }
 }
