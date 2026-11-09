@@ -1,12 +1,6 @@
 package com.mamxanh.app.feature.garden.domain
 
-import com.mamxanh.app.feature.garden.domain.model.Garden
-
-interface GardenRepository {
-    fun loadGarden(): Garden
-    fun plant(speciesId: String, name: String): Boolean
-}
-class LoadGarden(private val repository: GardenRepository) { operator fun invoke() = repository.loadGarden() }
-class PlantSeed(private val repository: GardenRepository) {
-    operator fun invoke(speciesId: String, name: String) = repository.plant(speciesId, name)
-}
+// Implementations live in the shared KMP module.
+typealias GardenRepository = com.mamxanh.shared.feature.garden.domain.GardenRepository
+typealias LoadGarden = com.mamxanh.shared.feature.garden.domain.LoadGarden
+typealias PlantSeed = com.mamxanh.shared.feature.garden.domain.PlantSeed

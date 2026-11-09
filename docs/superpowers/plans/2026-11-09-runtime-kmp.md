@@ -32,15 +32,18 @@ Files: gradle/libs.versions.toml, app/build.gradle.kts, app/src/main/AndroidMani
 
 ### 3. Shared KMP business/data
 Files: new shared/build.gradle.kts and shared/src/{commonMain,androidMain,iosMain}/kotlin/com/mamxanh/shared; root Gradle/catalog/settings; existing data and feature domain/repository files.
-- [ ] Configure Android and iOS arm64/simulator targets and framework using compatible plugins.
+- [x] Configure Android and iOS arm64/simulator targets and framework using compatible plugins.
+  Evidence: shared/build.gradle.kts uses the Android KMP plugin, iosArm64/iosSimulatorArm64 and MamXanhShared static frameworks. Kotlin upgraded to 2.4.21 to match the existing Gradle 9.5.1/AGP 8.13.2 compatibility range; all Android modules now use compilerOptions. Android assembleDebug and common metadata compilation passed.
+  Progress: portable persisted models/catalog, all six feature domain contracts/use cases/models and offline repository implementations now run from commonMain. Android source paths are aliases. SQL transaction/business rules and iOS persistence/bootstrap remain unfinished.
 - [ ] Move portable models/catalog/game rules and repository/storage contracts into commonMain; replace Android duplicates with shared types/adapters, retaining transactions and date behavior.
 - [ ] Connect Android SQLite storage through the common interface; add iOS persistence adapter/bootstrap usable by an iOS consumer.
 - [ ] Verify Android build and common metadata, inspect platform import boundaries; document native build commands and unavailable macOS-only verification honestly.
 
 ### 4. Ktor integration
 Files: shared common network configuration/client factory, Android/Darwin engine providers, shared DI module; Android manifest and application DI.
-- [ ] Add compatible Ktor core/engines and common configuration with timeouts and cancellation; inject it through Koin with explicit ownership/close behavior.
-- [ ] Expose configurable request execution without fabricated endpoints; preserve offline operation when no service is configured.
+- [x] Add compatible Ktor core/engines and common configuration with timeouts and cancellation; inject it through Koin with explicit ownership/close behavior.
+- [x] Expose configurable request execution without fabricated endpoints; preserve offline operation when no service is configured.
+  Evidence: Ktor 3.6.1 Android/Darwin factories, SharedModule client onClose, NetworkConfig/RemoteService, optional mamxanh.apiBaseUrl Gradle property. Android/common metadata builds and IDE sync passed; installed app navigated Home/Tasks/Nursery/Shop/Journal offline with saved data. No HTTP request, native engine runtime or client-close runtime assertion is claimed; those checks remain open.
 - [ ] Compile platform source sets available on this host, build/run Android and verify offline startup; document backend configuration and iOS verification steps.
 
 ### 5. Previous-plan closure

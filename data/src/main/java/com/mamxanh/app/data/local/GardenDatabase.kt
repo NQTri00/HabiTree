@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import java.util.Calendar
 import com.mamxanh.app.data.local.model.*
-class GardenDatabase(context: Context) : SQLiteOpenHelper(context, "mam_xanh.db", null, 2) {
+class GardenDatabase(context: Context) : SQLiteOpenHelper(context, "mam_xanh.db", null, 2), com.mamxanh.shared.data.GameDatabase {
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL("CREATE TABLE tasks(id INTEGER PRIMARY KEY AUTOINCREMENT,title TEXT NOT NULL,kind TEXT NOT NULL,category TEXT NOT NULL,reward INTEGER NOT NULL,frequency TEXT NOT NULL,due TEXT NOT NULL DEFAULT '',completed TEXT NOT NULL DEFAULT '',streak INTEGER NOT NULL DEFAULT 0,last_done TEXT NOT NULL DEFAULT '')")
         db.execSQL("CREATE TABLE trees(id INTEGER PRIMARY KEY AUTOINCREMENT,species_id TEXT NOT NULL,name TEXT NOT NULL,growth INTEGER NOT NULL DEFAULT 0,planted TEXT NOT NULL)")
@@ -47,10 +47,10 @@ class GardenDatabase(context: Context) : SQLiteOpenHelper(context, "mam_xanh.db"
         }
         db.insert("tasks", null, c)
     }
-    fun tasks(): List<Task> = readableDatabase.rawQuery("SELECT id,title,kind,category,reward,frequency,due,completed,streak,last_done FROM tasks ORDER BY CASE kind WHEN 'HABIT' THEN 0 WHEN 'DAILY' THEN 1 ELSE 2 END,id DESC", null).use { c ->
+    override fun tasks(): List<Task> = readableDatabase.rawQuery("SELECT id,title,kind,category,reward,frequency,due,completed,streak,last_done FROM tasks ORDER BY CASE kind WHEN 'HABIT' THEN 0 WHEN 'DAILY' THEN 1 ELSE 2 END,id DESC", null).use { c ->
         buildList { while (c.moveToNext()) add(Task(c.getLong(0),c.getString(1),c.getString(2),c.getString(3),c.getInt(4),c.getString(5),c.getString(6),c.getString(7),c.getInt(8),c.getString(9))) }
     }
-    fun garden(): Garden {
+    override fun garden(): Garden {
         val trees = readableDatabase.rawQuery("SELECT id,species_id,name,growth,planted,COALESCE((SELECT v FROM meta WHERE k='decoration_' || trees.id),'NONE'),CASE WHEN COALESCE((SELECT v FROM meta WHERE k='watered_' || trees.id),'')=? THEN 1 ELSE 0 END FROM trees ORDER BY id", arrayOf(today())).use { c ->
             buildList { while (c.moveToNext()) add(Tree(c.getLong(0),c.getString(1),c.getString(2),c.getInt(3),c.getString(4),c.getString(5),c.getInt(6)==1)) }
         }
@@ -59,7 +59,7 @@ class GardenDatabase(context: Context) : SQLiteOpenHelper(context, "mam_xanh.db"
         }
         return Garden(trees, inventory)
     }
-    fun statistics(): Statistics {
+    override fun statistics(): Statistics {
         val db = readableDatabase
         val coins = getMeta(db, "coins").toIntOrNull() ?: 0
         fun count(sql: String, args: Array<String>? = null) = db.rawQuery(sql,args).use { if (it.moveToFirst()) it.getInt(0) else 0 }
@@ -79,11 +79,11 @@ class GardenDatabase(context: Context) : SQLiteOpenHelper(context, "mam_xanh.db"
         return Statistics(coins,count("SELECT COUNT(*) FROM logs"),count("SELECT COUNT(*) FROM logs WHERE date=?", arrayOf(today())),
             count("SELECT COUNT(*) FROM logs WHERE date>=?",arrayOf(weekStart)),streak,count("SELECT COUNT(*) FROM trees"),recentDailyCompletions)
     }
-    fun addTask(title: String, kind: String, category: String, reward: Int, frequency: String, due: String) {
+    override fun addTask(title: String, kind: String, category: String, reward: Int, frequency: String, due: String) {
         task(writableDatabase,title.trim(),kind,category,reward.coerceIn(1,100),frequency,due.trim())
     }
-    fun deleteTask(id: Long) { writableDatabase.delete("tasks","id=?",arrayOf(id.toString())) }
-    fun complete(id: Long): Boolean {
+    override fun deleteTask(id: Long) { writableDatabase.delete("tasks","id=?",arrayOf(id.toString())) }
+    override fun complete(id: Long): Boolean {
         val db = writableDatabase
         var result = false
         db.beginTransaction()
@@ -112,7 +112,7 @@ class GardenDatabase(context: Context) : SQLiteOpenHelper(context, "mam_xanh.db"
         } finally { db.endTransaction() }
         return result
     }
-    fun dailyBonus(): Boolean {
+    override fun dailyBonus(): Boolean {
         val db = writableDatabase
         db.beginTransaction()
         try {
@@ -136,7 +136,7 @@ class GardenDatabase(context: Context) : SQLiteOpenHelper(context, "mam_xanh.db"
             else -> true
         }
     }
-    fun buySeed(id: String): Boolean {
+    override fun buySeed(id: String): Boolean {
         val item=catalog.firstOrNull { it.id==id } ?: return false
         val db=writableDatabase; db.beginTransaction()
         try {
@@ -147,7 +147,7 @@ class GardenDatabase(context: Context) : SQLiteOpenHelper(context, "mam_xanh.db"
             seed(db,id,count+1); db.setTransactionSuccessful(); return true
         } finally { db.endTransaction() }
     }
-    fun plant(id: String,name: String): Boolean {
+    override fun plant(id: String,name: String): Boolean {
         val db=writableDatabase; db.beginTransaction()
         try {
             val count=db.rawQuery("SELECT quantity FROM inventory WHERE item=?",arrayOf(id)).use { if(it.moveToFirst()) it.getInt(0) else 0 }
@@ -157,7 +157,7 @@ class GardenDatabase(context: Context) : SQLiteOpenHelper(context, "mam_xanh.db"
             db.insert("trees",null,c); seed(db,id,count-1); db.setTransactionSuccessful(); return true
         } finally { db.endTransaction() }
     }
-    fun buyFertilizer(): Boolean {
+    override fun buyFertilizer(): Boolean {
         val db=writableDatabase; db.beginTransaction()
         try {
             val coins=getMeta(db,"coins").toIntOrNull()?:0
@@ -167,7 +167,7 @@ class GardenDatabase(context: Context) : SQLiteOpenHelper(context, "mam_xanh.db"
             seed(db,"fertilizer",count+1); db.setTransactionSuccessful(); return true
         } finally { db.endTransaction() }
     }
-    fun fertilize(treeId: Long): Boolean {
+    override fun fertilize(treeId: Long): Boolean {
         val db=writableDatabase; db.beginTransaction()
         try {
             val count=db.rawQuery("SELECT quantity FROM inventory WHERE item='fertilizer'",null).use { if(it.moveToFirst()) it.getInt(0) else 0 }
@@ -176,7 +176,7 @@ class GardenDatabase(context: Context) : SQLiteOpenHelper(context, "mam_xanh.db"
             seed(db,"fertilizer",count-1); db.setTransactionSuccessful(); return true
         } finally { db.endTransaction() }
     }
-    fun water(treeId: Long): TreeWateringResult {
+    override fun water(treeId: Long): TreeWateringResult {
         val db=writableDatabase
         db.beginTransaction()
         try {
@@ -192,8 +192,8 @@ class GardenDatabase(context: Context) : SQLiteOpenHelper(context, "mam_xanh.db"
             return TreeWateringResult.WATERED
         } finally { db.endTransaction() }
     }
-    fun waterMl(): Int = getMeta(readableDatabase, "water_ml", "542").toIntOrNull() ?: 542
-    fun refillWater(amountMl: Int = 100): Int {
+    override fun waterMl(): Int = getMeta(readableDatabase, "water_ml", "542").toIntOrNull() ?: 542
+    override fun refillWater(amountMl: Int): Int {
         val db = writableDatabase
         db.beginTransaction()
         try {
@@ -204,7 +204,7 @@ class GardenDatabase(context: Context) : SQLiteOpenHelper(context, "mam_xanh.db"
             return refilled
         } finally { db.endTransaction() }
     }
-    fun decorate(treeId: Long, decoration: String) {
+    override fun decorate(treeId: Long, decoration: String) {
         require(decoration in setOf("NONE","FLOWERS","LANTERNS","RIBBON"))
         val db=writableDatabase
         val exists=db.rawQuery("SELECT 1 FROM trees WHERE id=?",arrayOf(treeId.toString())).use { it.moveToFirst() }

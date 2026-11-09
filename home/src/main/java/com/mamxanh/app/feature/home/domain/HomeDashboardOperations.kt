@@ -1,14 +1,6 @@
 package com.mamxanh.app.feature.home.domain
 
-import com.mamxanh.app.feature.home.domain.model.HomeDashboard
-
-interface HomeDashboardRepository {
-    fun load(): HomeDashboard
-    fun refillWater(): Int
-}
-class LoadHomeDashboard(private val repository: HomeDashboardRepository) {
-    operator fun invoke() = repository.load()
-}
-class RefillWater(private val repository: HomeDashboardRepository) {
-    operator fun invoke() = repository.refillWater()
-}
+// Implementations live in the shared KMP module.
+typealias HomeDashboardRepository = com.mamxanh.shared.feature.home.domain.HomeDashboardRepository
+typealias LoadHomeDashboard = com.mamxanh.shared.feature.home.domain.LoadHomeDashboard
+typealias RefillWater = com.mamxanh.shared.feature.home.domain.RefillWater

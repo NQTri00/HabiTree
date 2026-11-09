@@ -1,6 +1,5 @@
 package com.mamxanh.app.feature.stats.domain
 
-import com.mamxanh.app.feature.stats.domain.model.GardenStatistics
-
-interface StatisticsRepository { fun load(): GardenStatistics }
-class LoadGardenStatistics(private val repository: StatisticsRepository) { operator fun invoke() = repository.load() }
+// Implementations live in the shared KMP module.
+typealias StatisticsRepository = com.mamxanh.shared.feature.stats.domain.StatisticsRepository
+typealias LoadGardenStatistics = com.mamxanh.shared.feature.stats.domain.LoadGardenStatistics

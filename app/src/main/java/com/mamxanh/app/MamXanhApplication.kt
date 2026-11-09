@@ -2,6 +2,7 @@ package com.mamxanh.app
 
 import android.app.Application
 import com.mamxanh.app.di.appModule
+import com.mamxanh.shared.network.NetworkConfig
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
@@ -10,7 +11,7 @@ class MamXanhApplication : Application() {
         super.onCreate()
         startKoin {
             androidContext(this@MamXanhApplication)
-            modules(appModule)
+            modules(appModule(NetworkConfig(BuildConfig.API_BASE_URL.takeIf { it.isNotBlank() })))
         }
     }
 }

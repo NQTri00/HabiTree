@@ -1,19 +1,6 @@
 package com.mamxanh.app.feature.tasks.domain.model
 
-data class Task(
-    val id: Long,
-    val title: String,
-    val kind: String,
-    val category: String,
-    val reward: Int,
-    val frequency: String,
-    val due: String,
-    val completed: String,
-    val streak: Int,
-    val lastDone: String
-) {
-    val doneToday: Boolean get() = completed == today()
-    val finished: Boolean get() = kind == "TODO" && completed.isNotBlank()
-}
+// Implementations live in the shared KMP module.
+typealias Task = com.mamxanh.shared.feature.tasks.domain.model.Task
 
-fun today(): String = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US).format(java.util.Date())
+fun today(): String = com.mamxanh.shared.feature.tasks.domain.model.today()

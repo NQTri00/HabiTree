@@ -29,5 +29,10 @@ Koin 4.1.1 now starts in MamXanhApplication. AppModule binds one GardenDatabase 
 
 assembleDebug passed after dependency resolution. Install retained existing data; Home showed 125 coins and the existing cherry; Shop opened and showed the same balance. No ANR since boot. Recreation and all-destination checks remain open, so Koin runtime acceptance is not yet complete.
 
+## KMP/Ktor checkpoint
+Kotlin 2.4.21, Android KMP plugin 8.13.2 and Ktor 3.6.1 are configured. Android and iOS arm64/simulator framework targets exist. Common code owns persisted models/catalog, feature domain models/contracts/use cases, all six offline repositories, GameStorage/GameDatabase contract, Koin shared graph and Ktor transport. Android SQLite implements the common contract with unchanged file/schema and transaction bodies. iOS date and Darwin factories exist; native persistence/bootstrap and shared transaction rules remain open.
+
+Android assembleDebug and common metadata compilation passed. Installed APK retained 125 coins and the existing garden. Inspected Home → Tasks (3/7 today) → Nursery (3 trees, 1 seed) → Shop (125 coins) → Journal (13 completed, 3 trees). Each destination rendered and lastanr still reported none since boot. Latest application logcat had no fatal exception in the captured entries, but recorded a slow first frame around 1121 ms / 64 skipped frames. This is not evidence of full startup performance recovery. No HTTP request or iOS build/runtime is claimed.
+
 ## Next verification
-Collect additional navigation/runtime evidence, fix the constrained-height Home layout, and compare equivalent navigation before/after any image pipeline change. Preserve application data. Finish old plan acceptance and implement the requested KMP/Koin/Ktor stack without marking partial work complete.
+Complete native persistence/bootstrap and move portable transaction rules, verify configurable Ktor request execution/lifecycle, investigate remaining startup work, and exercise tree details/dialogs/back/recreation/large text. Finish previous visual acceptance against the simple-mics references. Preserve application data and keep all incomplete requirements visible.
