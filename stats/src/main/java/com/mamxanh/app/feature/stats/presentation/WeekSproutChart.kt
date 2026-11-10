@@ -48,7 +48,7 @@ internal fun WeekSproutChart(counts: List<Int>, days: List<String>, modifier: Mo
         val axisLabelHeight = with(density) { measurer.measure("0", style = axisStyle).size.height.toDp() }
         val countLabelHeight = with(density) {
             (values.maxOfOrNull {
-                measurer.measure(it.toString(), style = countStyle, constraints = labelConstraints).size.height
+                measurer.measure(if (it > axisMax) "$it↑" else it.toString(), style = countStyle, constraints = labelConstraints).size.height
             } ?: measurer.measure("0", style = countStyle).size.height).toDp()
         }
         val plotHeight = 112.dp

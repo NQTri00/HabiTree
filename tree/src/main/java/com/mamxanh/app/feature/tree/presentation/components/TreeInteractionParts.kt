@@ -6,6 +6,7 @@ import androidx.compose.foundation.selection.selectable
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
@@ -26,25 +27,25 @@ fun TreePortrait(tree: Tree, modifier: Modifier = Modifier, sharedTreeModifier: 
 @Composable
 fun TreeCareActions(wateredToday: Boolean, fertilizerCount: Int, wateringCanMl: Int,
     onWater: () -> Unit, onFertilize: () -> Unit,
-    onGetWater: (() -> Unit)? = null, onBuyFertilizer: (() -> Unit)? = null) {
+    onGetWater: (() -> Unit)? = null, onBuyFertilizer: (() -> Unit)? = null, showSupplyLinks: Boolean = true) {
     Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             CareTile(GardenArt.WATERING_CAN, if(wateredToday) "✓ Đã tưới" else "Tưới\n50 ml",
                 !wateredToday && wateringCanMl >= 50, onWater, Modifier.weight(1f).fillMaxHeight())
             CareTile(GardenArt.FERTILIZER, "Bón\n1 túi", fertilizerCount > 0, onFertilize, Modifier.weight(1f).fillMaxHeight())
         }
-        if(wateringCanMl < 50 && onGetWater != null) GardenPaintedButton("💧 Thiếu nước · Về sân vườn bơm ›", onGetWater, Modifier.fillMaxWidth(), primary = false)
-        if(fertilizerCount <= 0 && onBuyFertilizer != null) GardenPaintedButton("Hết phân · Ghé Tiệm hạt ›", onBuyFertilizer, Modifier.fillMaxWidth(), primary = false)
+        if(showSupplyLinks && wateringCanMl < 50 && onGetWater != null) GardenPaintedButton("💧 Thiếu nước · Về sân vườn bơm ›", onGetWater, Modifier.fillMaxWidth(), primary = false)
+        if(showSupplyLinks && fertilizerCount <= 0 && onBuyFertilizer != null) GardenPaintedButton("Hết phân · Ghé Tiệm hạt ›", onBuyFertilizer, Modifier.fillMaxWidth(), primary = false)
     }
 }
 
 @Composable
 private fun CareTile(art: GardenArt, label: String, enabled: Boolean, onClick: () -> Unit, modifier: Modifier) {
     GardenBotanicalFrame(modifier.clickable(enabled = enabled, role = Role.Button, onClick = onClick),
-        contentPadding = PaddingValues(10.dp)) {
+        contentPadding = PaddingValues(10.dp), skin = if(label.startsWith("✓")) GardenPanelSkin.HINT else GardenPanelSkin.BADGE) {
         Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-            GardenArtwork(art, Modifier.size(44.dp))
-            Text(label, color = if(enabled) Deep else Muted, fontWeight = FontWeight.Bold, fontSize = 15.sp, textAlign = TextAlign.Center)
+            GardenArtwork(art, Modifier.size(44.dp).alpha(if(enabled || label.startsWith("✓")) 1f else .35f))
+            Text(label, color = if(label.startsWith("✓")) Green else if(enabled) Deep else Muted, fontWeight = FontWeight.Bold, fontSize = 15.sp, textAlign = TextAlign.Center)
         }
     }
 }

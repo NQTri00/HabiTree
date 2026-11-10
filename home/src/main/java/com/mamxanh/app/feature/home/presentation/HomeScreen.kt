@@ -9,9 +9,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mamxanh.app.feature.home.domain.model.*
@@ -22,7 +23,6 @@ import com.mamxanh.app.presentation.ui.components.*
 fun HomeScreen(
     state: HomeUiState, onIntent: (HomeIntent) -> Unit, fertilizerCount: Int = 0,
     modifier: Modifier = Modifier, sharedTreeModifier: Modifier = Modifier,
-    previewApproach: Float = 0f, previewViewportHeight: Dp? = null,
     taskTitle: String = "Mỗi việc nhỏ, một bước lớn lên",
     canClaimBonus: Boolean = false, onClaimBonus: () -> Unit = { onIntent(HomeIntent.OpenTasks) }
 ) {
@@ -38,7 +38,7 @@ fun HomeScreen(
                     horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(10.dp)) {
                     if (tree == null) {
                         Spacer(Modifier.height(20.dp))
-                        GardenArtwork(GardenArt.SEED, Modifier.size(150.dp))
+                        MintEmptySprout(Modifier.size(150.dp))
                         Text("Chưa có cây trong vườn", fontWeight = FontWeight.Bold, fontSize = 21.sp, color = Deep)
                         Text("Hãy gieo mầm đầu tiên để bắt đầu\nhành trình chăm sóc cây cùng Mầm Xanh!",
                             color = Deep, textAlign = TextAlign.Center)
@@ -58,15 +58,15 @@ fun HomeScreen(
                         }
                         GardenPlantPortrait(tree.speciesId, tree.decoration,
                             sharedTreeModifier.fillMaxWidth().height(heroHeight)
-                                .clickable { onIntent(HomeIntent.OpenTree(tree.id)) }, growth = tree.growth)
-                        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                .clickable { onIntent(HomeIntent.OpenTree(tree.id)) }.semantics { contentDescription = "Chăm sóc " + tree.name }, growth = tree.growth)
+                        Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                             HomeCareTile(GardenArt.WATERING_CAN, if(tree.wateredToday) "✓ Đã tưới" else "Tưới",
-                                !tree.wateredToday && d.wateringCanMl >= 50, { onIntent(HomeIntent.WaterTree(tree.id)) }, Modifier.weight(1f))
+                                !tree.wateredToday && d.wateringCanMl >= 50, { onIntent(HomeIntent.WaterTree(tree.id)) }, Modifier.weight(1f).fillMaxHeight())
                             HomeCareTile(GardenArt.FERTILIZER, "Bón", fertilizerCount > 0,
-                                { onIntent(HomeIntent.FertilizeTree(tree.id)) }, Modifier.weight(1f))
-                            HomeCareTile(GardenArt.PUMP, "Bơm", true, { onIntent(HomeIntent.RefillWater) }, Modifier.weight(1f))
+                                { onIntent(HomeIntent.FertilizeTree(tree.id)) }, Modifier.weight(1f).fillMaxHeight())
+                            HomeCareTile(GardenArt.PUMP, "Bơm", true, { onIntent(HomeIntent.RefillWater) }, Modifier.weight(1f).fillMaxHeight())
                             HomeCareTile(GardenArt.DROP, "Nước\n${d.wateringCanMl} ml", true,
-                                { onIntent(HomeIntent.RefillWater) }, Modifier.weight(1f))
+                                { onIntent(HomeIntent.RefillWater) }, Modifier.weight(1f).fillMaxHeight())
                         }
                         HomeLink(GardenArt.CHECKLIST, "Việc nhỏ", taskTitle, { onIntent(HomeIntent.OpenTasks) })
                         val claimed = d.dailyRewardDate.isNotBlank()
@@ -90,10 +90,11 @@ fun HomeScreen(
 @Composable
 private fun HomeCareTile(art: GardenArt, label: String, enabled: Boolean, onClick: () -> Unit, modifier: Modifier) {
     GardenBotanicalFrame(modifier.clickable(enabled = enabled, onClick = onClick),
-        contentPadding = PaddingValues(horizontal = 4.dp, vertical = 8.dp), cornerSize = 22.dp) {
+        contentPadding = PaddingValues(horizontal = 4.dp, vertical = 8.dp), cornerSize = 22.dp,
+        skin = if(label.startsWith("✓")) GardenPanelSkin.HINT else GardenPanelSkin.BADGE) {
         Column(Modifier.fillMaxWidth().heightIn(min = 64.dp), horizontalAlignment = Alignment.CenterHorizontally) {
             GardenArtwork(art, Modifier.size(36.dp))
-            Text(label, color = if(enabled) Deep else Muted, fontSize = 12.sp, lineHeight = 15.sp,
+            Text(label, color = if(label.startsWith("✓")) Green else if(enabled) Deep else Muted, fontSize = 12.sp, lineHeight = 15.sp,
                 fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
         }
     }
@@ -127,7 +128,3 @@ fun HomeScreenEmptyPreview() { MamXanhPreviewTheme { HomeScreen(HomeUiState(Home
 @Preview(widthDp = 320, heightDp = 1000, fontScale = 1.3f, device = "spec:width=320dp,height=1000dp,dpi=160")
 @Composable
 fun HomeLongNamePreview() { MamXanhPreviewTheme { HomeScreen(previewHomeState("Cây đào bình yên bên cửa sổ của gia đình"), {}, 2) } }
-@Composable
-fun HomeCompactLongNamePreview() { HomeLongNamePreview() }
-@Composable
-fun HomeShopApproachPreview() { HomeScreenPreview() }

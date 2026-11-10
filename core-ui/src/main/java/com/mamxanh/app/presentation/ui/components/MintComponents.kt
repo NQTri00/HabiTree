@@ -44,10 +44,10 @@ fun MintProgress(value: Float, modifier: Modifier = Modifier) {
 
 @Composable
 fun MintSegments(labels: List<String>, selected: Int, onSelect: (Int) -> Unit, modifier: Modifier = Modifier) {
-    Row(modifier.fillMaxWidth().background(Color.White.copy(alpha = .7f), RoundedCornerShape(50))
+    Row(modifier.fillMaxWidth().height(IntrinsicSize.Min).background(Color.White.copy(alpha = .7f), RoundedCornerShape(50))
         .border(1.dp, Color(0xFFD9E9E3), RoundedCornerShape(50))) {
         labels.forEachIndexed { index, label ->
-            GardenChoiceChip(label, selected == index, { onSelect(index) }, Modifier.weight(1f))
+            GardenChoiceChip(label, selected == index, { onSelect(index) }, Modifier.weight(1f).fillMaxHeight())
         }
     }
 }

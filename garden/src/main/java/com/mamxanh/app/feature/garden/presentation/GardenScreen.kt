@@ -4,6 +4,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -92,7 +94,9 @@ fun GardenScreen(state: GardenUiState, onIntent: (GardenIntent) -> Unit, modifie
                 verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 items(plots, key = { it.id }) { plot ->
                     val tree = garden.trees.firstOrNull { it.id == plot.treeId }
-                    GardenBotanicalFrame(Modifier.fillMaxWidth().clickable(enabled = !state.isLoading) {
+                    GardenBotanicalFrame(Modifier.fillMaxWidth().border(2.dp,
+                        if(tree != null && tree.id == revealedTreeId) Color(0xFFEAC453).copy(alpha = plantingGlow.value) else Color.Transparent,
+                        RoundedCornerShape(22.dp)).clickable(enabled = !state.isLoading) {
                         if(tree != null) onIntent(GardenIntent.OpenTree(tree.id))
                         else if(plot.isUnlocked) { selectedPlotId = plot.id; choosingSeed = true }
                         else unlockingPlotId = plot.id
@@ -101,7 +105,7 @@ fun GardenScreen(state: GardenUiState, onIntent: (GardenIntent) -> Unit, modifie
                             horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                             if(tree != null) GardenPlantPortrait(tree.speciesId, tree.decoration,
                                 Modifier.size(84.dp).then(treeTransitionModifier(tree.id)), growth = tree.growth)
-                            else if(plot.isUnlocked) GardenArtwork(GardenArt.SEED, Modifier.size(74.dp))
+                            else if(plot.isUnlocked) MintEmptySprout(Modifier.size(74.dp))
                             else Text("🔒", Modifier.width(64.dp), fontSize = 32.sp, textAlign = TextAlign.Center)
                             GardenBotanicalFrame(contentPadding = PaddingValues(6.dp), cornerSize = 50.dp) {
                                 Text(plot.id.toString().padStart(2, '0'), fontWeight = FontWeight.Bold, color = Deep)
@@ -163,7 +167,7 @@ fun GardenScreen(state: GardenUiState, onIntent: (GardenIntent) -> Unit, modifie
                     Column(horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(12.dp)) {
                         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                            GardenArtwork(GardenArt.FLOWERS, Modifier.size(32.dp))
+                            GardenArtwork(GardenArt.SPROUT, Modifier.size(32.dp))
                             Text("Mở thêm ô trồng", Modifier.weight(1f), color = Deep,
                                 fontSize = 22.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
                             TextButton(onClick = { unlockingPlotId = null }) { Text("×", fontSize = 24.sp) }
@@ -213,8 +217,9 @@ fun GardenScreen(state: GardenUiState, onIntent: (GardenIntent) -> Unit, modifie
     }
     state.message?.let { message ->
         AlertDialog(onDismissRequest = { onIntent(GardenIntent.DismissMessage) },
-            text = { Text(message) },
-            confirmButton = { TextButton(onClick = { onIntent(GardenIntent.DismissMessage) }) { Text("Đã hiểu") } })
+            title = { Text(if(message.startsWith("Đã gieo")) "✓ Đã gieo cây!" else "Thông báo", fontWeight = FontWeight.Bold) },
+            text = { Text(message.substringAfter("\n", message)) },
+            confirmButton = { TextButton(onClick = { onIntent(GardenIntent.DismissMessage) }) { Text(if(message.startsWith("Đã gieo")) "Về vườn" else "OK") } })
     }
 }
 
@@ -388,8 +393,8 @@ private fun sampleGarden() = Garden(
 @Composable
 fun GardenScreenPopulatedPreview() { MamXanhPreviewTheme { GardenScreen(GardenUiState(sampleGarden(), false), {}) } }
 
-@Preview(name = "Nursery · extended plot audit", widthDp = 360, heightDp = 1200,
-    device = "spec:width=360dp,height=1200dp,dpi=160")
+@Preview(name = "Nursery · extended plot audit", widthDp = 360, heightDp = 990,
+    device = "spec:width=360dp,height=990dp,dpi=160")
 @Composable
 fun GardenExtendedPlotsPreview() {
     val fixture = sampleGarden().copy(plots = listOf(

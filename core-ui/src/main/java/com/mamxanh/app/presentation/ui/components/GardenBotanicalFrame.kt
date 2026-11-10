@@ -28,7 +28,7 @@ fun GardenBotanicalFrame(
     val fill = when (skin) {
         GardenPanelSkin.PRICE -> Color(0xFFFFF4CD)
         GardenPanelSkin.HINT -> Color(0xFFE8F4DE)
-        else -> Color(0xFFF9FDFB).copy(alpha = .94f)
+        else -> Color(0xFFF9FDFB)
     }
     Box(modifier.shadow(if (modal) 8.dp else 2.dp, shape)
         .background(fill, shape).border(1.dp, Color.White.copy(alpha = .95f), shape)) {

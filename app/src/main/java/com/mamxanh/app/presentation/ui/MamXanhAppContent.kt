@@ -45,13 +45,15 @@ fun MamXanhAppContent(
     val walletState = shop
     val statistics = stats
     val wallet = shop.wallet
-    val selectedTree = garden.garden.trees.firstOrNull { it.id == state.selectedTreeId }
-    MaterialTheme(colorScheme = lightColorScheme(primary = Green, secondary = Color(0xFFFFA01A), background = Cream, surface = Color.White), typography = GardenTypography) {
+    MaterialTheme(colorScheme = GardenColorScheme, typography = GardenTypography) {
         Scaffold(
             modifier = modifier,
             containerColor = Color(0xFFE9F7F2),
             bottomBar = {
-                GardenTrailBar(app.destination, { onAppIntent(AppIntent.Navigate(it)) })
+                GardenTrailBar(app.destination, {
+                    onTreeIntent(TreeIntent.SetPanelExpanded(false))
+                    onAppIntent(AppIntent.Navigate(it))
+                })
             }
         ) { padding ->
             SharedTransitionLayout(Modifier.fillMaxSize().padding(padding)) {
@@ -101,6 +103,10 @@ fun MamXanhAppContent(
                             modifier = Modifier,
                             sharedTreeModifier = treeSharedModifier,
                             coins = wallet.coins,
+                            onOpenGarden = {
+                                onTreeIntent(TreeIntent.SetPanelExpanded(false))
+                                onAppIntent(AppIntent.Navigate(AppDestination.GARDEN))
+                            },
                             onPrevious = garden.garden.trees.takeIf { it.size > 1 }?.let { trees -> {
                                 val index = trees.indexOfFirst { it.id == routeTree.id }
                                 onAppIntent(AppIntent.OpenTree(trees[(index - 1 + trees.size) % trees.size].id))
@@ -148,8 +154,9 @@ fun MamXanhAppContentHomePreview() {
     var route by remember { mutableStateOf(AppUiState()) }
     fun navigate(intent: AppIntent) {
         route = when (intent) {
-            is AppIntent.Navigate -> if (intent.destination == route.destination) route else route.copy(
-                destination = intent.destination, backStack = route.backStack + route.destination
+            is AppIntent.Navigate -> if (intent.destination == route.destination && route.selectedTreeId == null) route else route.copy(
+                destination = intent.destination, selectedTreeId = null,
+                backStack = if (intent.destination == route.destination) route.backStack else route.backStack + route.destination
             )
             is AppIntent.OpenTree -> route.copy(selectedTreeId = intent.id)
             AppIntent.Back -> if (route.selectedTreeId != null) route.copy(selectedTreeId = null)

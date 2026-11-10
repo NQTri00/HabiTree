@@ -223,7 +223,7 @@ private fun TaskFormSection(title: String, emoji: String, content: @Composable C
         }
     } else {
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text("$emoji $title", color = Deep, fontWeight = FontWeight.Bold, fontSize = 15.sp, modifier = Modifier.width(102.dp))
+            Text("$emoji $title", color = Deep, fontWeight = FontWeight.Bold, fontSize = 15.sp, modifier = Modifier.width(120.dp))
             Column(Modifier.weight(1f), content = content)
         }
     }

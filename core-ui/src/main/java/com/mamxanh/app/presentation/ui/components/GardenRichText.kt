@@ -63,7 +63,8 @@ fun GardenRichText(
         }
     }
     Text(annotated, modifier, color = color, fontSize = fontSize, fontStyle = fontStyle,
-        fontWeight = fontWeight, textAlign = textAlign, lineHeight = lineHeight,
+        fontWeight = fontWeight, textAlign = textAlign,
+        lineHeight = if (lineHeight == TextUnit.Unspecified && fontSize != TextUnit.Unspecified) fontSize * 1.25f else lineHeight,
         maxLines = maxLines, overflow = overflow, style = style, inlineContent = inline)
 }
 

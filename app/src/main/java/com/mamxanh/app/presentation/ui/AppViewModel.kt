@@ -11,8 +11,9 @@ class AppViewModel : ViewModel() {
     fun dispatch(intent: AppIntent) {
         val current = _uiState.value
         _uiState.value = when (intent) {
-            is AppIntent.Navigate -> if (intent.destination == current.destination) current else current.copy(
-                destination = intent.destination, backStack = current.backStack + current.destination
+            is AppIntent.Navigate -> if (intent.destination == current.destination && current.selectedTreeId == null) current else current.copy(
+                destination = intent.destination, selectedTreeId = null,
+                backStack = if (intent.destination == current.destination) current.backStack else current.backStack + current.destination
             )
             is AppIntent.OpenTree -> current.copy(selectedTreeId = intent.id)
             AppIntent.Back -> if (current.selectedTreeId != null) current.copy(selectedTreeId = null)

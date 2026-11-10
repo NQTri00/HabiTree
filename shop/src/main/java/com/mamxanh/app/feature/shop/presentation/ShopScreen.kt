@@ -117,15 +117,19 @@ private fun productName(seed: ShopSeed) = when(seed.id) {
 @Composable
 private fun ShopSeedDetailCard(plant: ShopSeed, ownedCount: Int, canAfford: Boolean,
     onDismiss: () -> Unit, onBuy: () -> Unit, missingCoins: Int = 0) {
-    GardenBotanicalFrame(Modifier.fillMaxWidth(), contentPadding = PaddingValues(18.dp), skin = GardenPanelSkin.DIALOG) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                Text("Chi tiết hạt giống", Modifier.weight(1f), color = Deep, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+    BoxWithConstraints {
+    val compact = maxHeight < 360.dp * androidx.compose.ui.platform.LocalDensity.current.fontScale
+    val fixedCompactClose = compact && maxHeight >= 240.dp
+    GardenBotanicalFrame(Modifier.fillMaxWidth(), contentPadding = PaddingValues(if(compact) 4.dp else 18.dp), skin = GardenPanelSkin.DIALOG) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(if(compact) 4.dp else 12.dp)) {
+            if(!compact) SeedDetailHeading(onDismiss)
+            if(fixedCompactClose) Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                 IconButton(onClick = onDismiss) { Text("×", fontSize = 28.sp) }
             }
             Column(Modifier.weight(1f, fill = false).verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                PaintedGardenPlant(plant.id, Modifier.fillMaxWidth().height(170.dp))
+                if(compact) SeedDetailHeading(onDismiss, showClose = !fixedCompactClose)
+                PaintedGardenPlant(plant.id, Modifier.fillMaxWidth().height(if(compact) 100.dp else 170.dp))
                 Text(plant.name, fontSize = 26.sp, fontWeight = FontWeight.Bold, color = Deep, textAlign = TextAlign.Center)
                 Text(plant.description, color = Deep, textAlign = TextAlign.Center)
                 FlowRow(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
@@ -140,13 +144,23 @@ private fun ShopSeedDetailCard(plant: ShopSeed, ownedCount: Int, canAfford: Bool
                 GardenBotanicalFrame(skin = GardenPanelSkin.HINT, contentPadding = PaddingValues(12.dp)) {
                     Text("Mua hạt để cất vào túi.\nGieo cây tại Vườn ươm.", textAlign = TextAlign.Center, color = Deep)
                 }
+                if(compact && missingCoins > 0) Text("Không đủ xu. Cần thêm $missingCoins xu để mua.", color = Color(0xFFB52A2A), textAlign = TextAlign.Center)
             }
-            if(missingCoins > 0) Text("Không đủ xu. Cần thêm $missingCoins xu để mua.", color = Color(0xFFB52A2A), textAlign = TextAlign.Center)
+            if(!compact && missingCoins > 0) Text("Không đủ xu. Cần thêm $missingCoins xu để mua.", color = Color(0xFFB52A2A), textAlign = TextAlign.Center)
             Row(Modifier.height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 GardenPaintedButton("Để sau", onDismiss, Modifier.weight(1f).fillMaxHeight(), primary = false)
                 GardenPaintedButton("Mua hạt · ${plant.price} xu", onBuy, Modifier.weight(1.6f).fillMaxHeight(), enabled = canAfford)
             }
         }
+    }
+}
+}
+
+@Composable
+private fun SeedDetailHeading(onDismiss: () -> Unit, showClose: Boolean = true) {
+    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+        Text("Chi tiết hạt giống", Modifier.weight(1f), color = Deep, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+        if(showClose) IconButton(onClick = onDismiss) { Text("×", fontSize = 28.sp) }
     }
 }
 

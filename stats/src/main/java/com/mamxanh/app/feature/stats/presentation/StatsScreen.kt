@@ -115,8 +115,8 @@ fun StatsScreenPreview() {
     }
 }
 
-@Preview(name = "Journal · extended document audit", widthDp = 360, heightDp = 740,
-    device = "spec:width=360dp,height=740dp,dpi=160")
+@Preview(name = "Journal · extended document audit", widthDp = 360, heightDp = 900,
+    device = "spec:width=360dp,height=900dp,dpi=160")
 @Composable
 fun StatsExtendedDocumentPreview() { StatsScreenPreview() }
 

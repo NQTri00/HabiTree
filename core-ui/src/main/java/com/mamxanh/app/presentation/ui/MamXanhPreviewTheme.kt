@@ -12,12 +12,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun MamXanhPreviewTheme(content: @Composable () -> Unit) {
     MaterialTheme(
-        colorScheme = lightColorScheme(
-            primary = Green,
-            secondary = Color(0xFFFFA01A),
-            background = Cream,
-            surface = Color.White
-        ),
+        colorScheme = GardenColorScheme,
         typography = GardenTypography,
         content = content
     )

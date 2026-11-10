@@ -25,17 +25,18 @@ import com.mamxanh.app.presentation.ui.components.*
 fun TreeInteractionScreen(
     tree: Tree, state: TreeUiState, fertilizerCount: Int, wateringCanMl: Int,
     onIntent: (TreeIntent) -> Unit, modifier: Modifier = Modifier, sharedTreeModifier: Modifier = Modifier,
-    coins: Int = 0, onPrevious: (() -> Unit)? = null, onNext: (() -> Unit)? = null
+    coins: Int = 0, onPrevious: (() -> Unit)? = null, onNext: (() -> Unit)? = null,
+    onOpenGarden: () -> Unit = { onIntent(TreeIntent.Back) }
 ) {
     var tab by rememberSaveable(tree.id) { mutableIntStateOf(0) }
     MintBackdrop(modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
             MintHeader("Mầm Xanh", coins)
             BoxWithConstraints(Modifier.weight(1f)) {
-                val heroHeight = (maxHeight - 290.dp).coerceIn(130.dp, 380.dp)
+                val heroHeight = (maxHeight - 350.dp).coerceIn(100.dp, 380.dp)
                 Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 16.dp, vertical = 8.dp),
                     horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                    GardenBotanicalFrame(Modifier.fillMaxWidth(.85f).clickable { onIntent(TreeIntent.Back) },
+                    GardenBotanicalFrame(Modifier.fillMaxWidth(.85f).clickable(onClick = onOpenGarden),
                         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp), cornerSize = 50.dp) {
                         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                             GardenArtwork(GardenArt.SPROUT, Modifier.size(24.dp))
@@ -56,7 +57,7 @@ fun TreeInteractionScreen(
                     }
                     TreeCareActions(tree.wateredToday, fertilizerCount, wateringCanMl,
                         { onIntent(TreeIntent.Water(tree.id)) }, { onIntent(TreeIntent.Fertilize(tree.id)) },
-                        { onIntent(TreeIntent.OpenWaterSupply) }, { onIntent(TreeIntent.OpenFertilizerShop) })
+                        { onIntent(TreeIntent.OpenWaterSupply) }, { onIntent(TreeIntent.OpenFertilizerShop) }, showSupplyLinks = false)
                     MintSegments(listOf("Chăm sóc", "Trang trí", "Thông tin"), tab,
                         { tab = it; onIntent(TreeIntent.SetPanelExpanded(true)) })
                 }

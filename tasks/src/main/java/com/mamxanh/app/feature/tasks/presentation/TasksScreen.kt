@@ -31,6 +31,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Check
+import androidx.compose.material.icons.rounded.CardGiftcard
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -91,7 +92,7 @@ fun TasksScreen(state: TasksUiState, onIntent: (TasksIntent) -> Unit, modifier: 
                 if(!state.isLoading && filtered.isEmpty()) item {
                     Column(Modifier.fillMaxWidth().padding(vertical = 24.dp), horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                        GardenArtwork(GardenArt.SEED, Modifier.size(110.dp))
+                        com.mamxanh.app.presentation.ui.components.MintEmptySprout(Modifier.size(110.dp))
                         Text(if(state.filter == TaskFilter.HABIT) "Chưa có việc thói quen" else "Chưa có việc nào",
                             color = Deep, fontSize = 21.sp, fontWeight = FontWeight.Bold,
                             textAlign = androidx.compose.ui.text.style.TextAlign.Center)
@@ -167,16 +168,14 @@ private fun DailyRewardCard(canClaim: Boolean, onClaim: () -> Unit, claimed: Boo
             role = androidx.compose.ui.semantics.Role.Button,
             onClickLabel = "Nhận thưởng hôm nay", onClick = onClaim),
             contentPadding = PaddingValues(horizontal = 10.dp, vertical = 8.dp),
-            skin = com.mamxanh.app.presentation.ui.components.GardenPanelSkin.PRICE) {
+            skin = com.mamxanh.app.presentation.ui.components.GardenPanelSkin.HINT) {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                GardenArtwork(GardenArt.COIN, Modifier.size(32.dp))
+                Icon(Icons.Rounded.CardGiftcard, null, Modifier.size(32.dp), tint = Green)
                 Text("Thưởng hôm nay", Modifier.weight(1f),
                     color = Deep, fontSize = 15.sp, lineHeight = 18.sp, fontWeight = FontWeight.Bold)
                 Text("+20 xu", color = Deep, fontSize = 17.sp, lineHeight = 20.sp, fontWeight = FontWeight.Bold)
             }
         }
-        GardenSprig(Modifier.align(Alignment.BottomStart).offset(x = (-10).dp, y = 4.dp).size(18.dp, 28.dp))
-        GardenSprig(Modifier.align(Alignment.BottomEnd).offset(x = 10.dp, y = 4.dp).size(18.dp, 28.dp), mirrored = true)
     }
 }
 
@@ -250,8 +249,8 @@ fun TasksScreenPopulatedPreview() {
     }
 }
 
-@Preview(name = "Tasks · extended document audit", widthDp = 360, heightDp = 1100,
-    device = "spec:width=360dp,height=1100dp,dpi=160")
+@Preview(name = "Tasks · extended document audit", widthDp = 360, heightDp = 900,
+    device = "spec:width=360dp,height=900dp,dpi=160")
 @Composable
 fun TasksExtendedDocumentPreview() {
     MamXanhPreviewTheme {

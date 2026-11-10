@@ -28,6 +28,7 @@ enum class GardenArt {
 @Composable
 fun GardenArtwork(art: GardenArt, modifier: Modifier = Modifier) {
     when (art) {
+        GardenArt.SPROUT -> MintSprout(modifier)
         GardenArt.WATERING_CAN -> GardenSourceImage(R.drawable.simple_tools, modifier)
         GardenArt.SEED -> GardenSourceImage(R.drawable.simple_seed, modifier)
         else -> SimpleGardenArt(art, modifier)
