@@ -35,6 +35,8 @@ fun TreeInteractionScreen(
     }
     BoxWithConstraints(modifier.fillMaxSize()) {
         val sceneHeight = maxOf(maxHeight, 560.dp * LocalDensity.current.fontScale.coerceAtLeast(1f))
+        // Include the material drag handle in the panel's height budget.
+        val panelMaxHeight = (maxHeight * .75f - 48.dp).coerceAtLeast(120.dp)
         GardenForestScene(Modifier.fillMaxSize(), setting = ForestSetting.TREE)
         Box(Modifier.fillMaxSize().verticalScroll(sceneScroll)) {
         Column(
@@ -74,43 +76,87 @@ fun TreeInteractionScreen(
         }
         if (state.isPanelExpanded) {
             ModalBottomSheet(
-                modifier = Modifier.fillMaxHeight(.75f),
                 onDismissRequest = { onIntent(TreeIntent.SetPanelExpanded(false)) },
                 sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
                 containerColor = Color(0xFFFFEBC9),
                 contentColor = Deep
             ) {
-                Column(
-                    Modifier.fillMaxWidth().navigationBarsPadding().padding(horizontal = 16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(10.dp)
-                ) {
-                    Text("🌱 Chăm sóc cây", fontSize = 20.sp, fontWeight = FontWeight.Bold)
-                    TreeCareActions(tree.wateredToday, fertilizerCount, wateringCanMl,
-                        { onIntent(TreeIntent.Water(tree.id)) }, { onIntent(TreeIntent.Fertilize(tree.id)) },
-                        onGetWater = { onIntent(TreeIntent.OpenWaterSupply) },
-                        onBuyFertilizer = { onIntent(TreeIntent.OpenFertilizerShop) })
-                    Column(
-                        Modifier.weight(1f, fill = false).verticalScroll(rememberScrollState()),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(10.dp)
-                    ) {
-                        Text("Trang trí", fontSize = 18.sp, fontWeight = FontWeight.Bold)
-                        DecorationPicker(tree.decoration, { onIntent(TreeIntent.Decorate(tree.id, it)) })
-                        GardenBotanicalFrame(Modifier.fillMaxWidth(),
-                            contentPadding = PaddingValues(12.dp), cornerSize = 20.dp) {
-                            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                                Text("Thông tin cây", fontSize = 18.sp, fontWeight = FontWeight.Bold)
-                                Text("Loài cây: " + (com.mamxanh.app.feature.tree.domain.model.treeSpeciesCatalog
-                                    .firstOrNull { it.id == tree.speciesId }?.name ?: tree.speciesId), color = Deep)
-                                Text("Ngày trồng: ${tree.planted}", color = Deep)
-                                Text("Độ lớn: $displayedGrowth / 120", color = Deep)
-                            }
+                ExpandedCarePanel(tree, fertilizerCount, wateringCanMl, onIntent,
+                    Modifier.fillMaxWidth().heightIn(max = panelMaxHeight)
+                        .navigationBarsPadding().padding(horizontal = 16.dp))
+            }
+        }
+    }
+}
+
+@Composable
+private fun ExpandedCarePanel(tree: Tree, fertilizerCount: Int, wateringCanMl: Int,
+    onIntent: (TreeIntent) -> Unit, modifier: Modifier = Modifier) {
+    BoxWithConstraints(modifier) {
+        val dockScrolls = maxHeight < 360.dp * LocalDensity.current.fontScale.coerceAtLeast(1f)
+        val detailScroll = rememberScrollState()
+        val careDock: @Composable () -> Unit = {
+            TreeCareActions(tree.wateredToday, fertilizerCount, wateringCanMl,
+                { onIntent(TreeIntent.Water(tree.id)) }, { onIntent(TreeIntent.Fertilize(tree.id)) },
+                onGetWater = { onIntent(TreeIntent.OpenWaterSupply) },
+                onBuyFertilizer = { onIntent(TreeIntent.OpenFertilizerShop) })
+        }
+        Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            Text("🌱 Chăm sóc cây", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+            if (!dockScrolls) careDock()
+            Column(Modifier.weight(1f).verticalScroll(detailScroll),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                if (dockScrolls) careDock()
+                Row(verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    GardenSprig(Modifier.size(18.dp, 28.dp))
+                    Text("Trang trí", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                    GardenSprig(Modifier.size(18.dp, 28.dp), mirrored = true)
+                }
+                DecorationPicker(tree.decoration, { onIntent(TreeIntent.Decorate(tree.id, it)) })
+                GardenBotanicalFrame(Modifier.fillMaxWidth(),
+                    contentPadding = PaddingValues(12.dp), cornerSize = 20.dp) {
+                    Row(verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                        GardenPlantPortrait(tree.speciesId, tree.decoration,
+                            Modifier.width(76.dp).height(100.dp), growth = tree.growth)
+                        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                            Text("Thông tin cây", color = Deep, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                            Text("Loài cây: " + (com.mamxanh.app.feature.tree.domain.model.treeSpeciesCatalog
+                                .firstOrNull { it.id == tree.speciesId }?.name ?: tree.speciesId),
+                                color = Deep, fontSize = 13.sp, lineHeight = 17.sp)
+                            Text("Ngày trồng: ${tree.planted}", color = Deep, fontSize = 13.sp, lineHeight = 17.sp)
+                            Text("Độ lớn: ${tree.growth.coerceIn(0, 120)} / 120",
+                                color = Deep, fontSize = 13.sp, lineHeight = 17.sp)
                         }
                     }
-                    Spacer(Modifier.height(12.dp))
                 }
             }
+            Spacer(Modifier.height(12.dp))
+        }
+    }
+}
+
+@Preview(name = "Care panel · short window, large text", widthDp = 360, heightDp = 240,
+    fontScale = 1.3f, device = "spec:width=360dp,height=240dp,dpi=160")
+@Composable
+fun ExpandedCarePanelShortPreview() {
+    MamXanhPreviewTheme {
+        Surface(color = Color(0xFFFFEBC9)) {
+            ExpandedCarePanel(previewTree(), 0, 0, {}, Modifier.fillMaxSize().padding(horizontal = 16.dp))
+        }
+    }
+}
+
+@Preview(name = "Care panel · extended content audit", widthDp = 360, heightDp = 650,
+    fontScale = 1.3f, device = "spec:width=360dp,height=650dp,dpi=160")
+@Composable
+fun ExpandedCarePanelExtendedPreview() {
+    MamXanhPreviewTheme {
+        Surface(color = Color(0xFFFFEBC9)) {
+            ExpandedCarePanel(previewTree(), 0, 0, {}, Modifier.fillMaxSize().padding(horizontal = 16.dp))
         }
     }
 }
