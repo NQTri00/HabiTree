@@ -37,7 +37,7 @@ private val SeedDetailDialogBounds = Modifier.widthIn(max = 440.dp).fillMaxWidth
 fun ShopScreen(state: ShopUiState, onIntent: (ShopIntent) -> Unit, modifier: Modifier = Modifier) {
     var selectedId by rememberSaveable { mutableStateOf<String?>(null) }
     val selected = shopCatalog.firstOrNull { it.id == selectedId }
-    val featuredIds = listOf("succulent", "pine", "cherry", "mandarin")
+    val featuredIds = listOf("succulent", "pine", "cherry", "mandarin", "cactus", "lavender")
     val featured = featuredIds.mapNotNull { id -> shopCatalog.firstOrNull { it.id == id } }
     val other = shopCatalog.filterNot { it.id in featuredIds }
     Box(modifier.fillMaxSize()) {
@@ -50,32 +50,26 @@ fun ShopScreen(state: ShopUiState, onIntent: (ShopIntent) -> Unit, modifier: Mod
             Modifier.fillMaxSize().padding(horizontal = 18.dp, vertical = 20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            GardenWoodSign("Tiệm hạt", Modifier.fillMaxWidth(.85f))
+            Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.TopCenter) {
+                GardenWoodSign("Tiệm hạt", Modifier.padding(top = 10.dp).fillMaxWidth(.85f))
+                GardenArtwork(GardenArt.SPROUT, Modifier.size(28.dp))
+            }
             GardenBotanicalFrame(contentPadding = PaddingValues(horizontal = 22.dp, vertical = 8.dp), cornerSize = 20.dp) {
                 Text("🪙 ${state.wallet.coins} xu", color = Deep, fontSize = 18.sp, fontWeight = FontWeight.Bold)
             }
             Column(Modifier.weight(1f).verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally) {
             Spacer(Modifier.height(32.dp))
-            featured.chunked(2).forEach { row ->
+            (featured + other).chunked(2).forEach { row ->
                 NurseryShelf {
                     row.forEach { seed -> ShelfSeed(seed, { selectedId = seed.id }, Modifier.weight(1f)) }
+                    if (row.size == 1) Spacer(Modifier.weight(1f))
                 }
             }
             NurseryShelf {
                 FertilizerShopCard(state.wallet.inventory["fertilizer"] ?: 0, state.wallet.coins >= 25, { onIntent(ShopIntent.BuyFertilizer) })
             }
             ShopGardenFooter { onIntent(ShopIntent.OpenGarden) }
-            if (other.isNotEmpty()) {
-                GardenBotanicalFrame(Modifier.padding(top = 12.dp), contentPadding = PaddingValues(horizontal = 20.dp, vertical = 8.dp), cornerSize = 20.dp) {
-                    Text("Những mầm xanh khác", color = Deep, fontWeight = FontWeight.Bold)
-                }
-                other.chunked(2).forEach { row ->
-                    NurseryShelf {
-                        row.forEach { seed -> ShelfSeed(seed, { selectedId = seed.id }, Modifier.weight(1f)) }
-                    }
-                }
-            }
             }
         }
     }
@@ -206,6 +200,11 @@ private fun DetailBadge(text: String, modifier: Modifier = Modifier) {
 @Preview(name = "Seed shop · large text", widthDp = 360, heightDp = 800, fontScale = 1.3f)
 @Composable
 fun ShopScreenPreview() { MamXanhPreviewTheme { ShopScreen(ShopUiState(ShopWallet(120, mapOf("succulent" to 2, "fertilizer" to 1)), false), {}) } }
+
+@Preview(name = "Shop · full catalog document", widthDp = 360, heightDp = 1420,
+    device = "spec:width=360dp,height=1420dp,dpi=160")
+@Composable
+fun ShopExtendedDocumentPreview() { ShopScreenPreview() }
 
 @Preview(name = "Seed detail popup", widthDp = 360, heightDp = 800,
     device = "spec:width=360dp,height=800dp,dpi=160")

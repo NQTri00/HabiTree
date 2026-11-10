@@ -30,6 +30,7 @@ import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.contentDescription
@@ -52,6 +53,7 @@ import com.mamxanh.app.presentation.ui.components.GardenJournalPage
 
 @Composable
 fun TasksScreen(state: TasksUiState, onIntent: (TasksIntent) -> Unit, modifier: Modifier = Modifier) {
+    var pendingDeleteId by rememberSaveable { mutableStateOf<Long?>(null) }
     val filtered = state.tasks.filter { task ->
         when (state.filter) {
             TaskFilter.ALL -> true
@@ -81,10 +83,12 @@ fun TasksScreen(state: TasksUiState, onIntent: (TasksIntent) -> Unit, modifier: 
                 }
                 if (state.isLoading && state.tasks.isEmpty()) item { LinearProgressIndicator(Modifier.fillMaxWidth()) }
                 if (!state.isLoading && filtered.isEmpty()) item {
-                    Column(Modifier.fillMaxWidth().padding(vertical = 24.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text("🌱", fontSize = 30.sp)
+                    Column(Modifier.fillMaxWidth().padding(vertical = if (state.tasks.isEmpty()) 24.dp else 4.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                        if (state.tasks.isEmpty()) GardenArtwork(GardenArt.SPROUT, Modifier.size(36.dp))
+                        else TaskFilterSearchArtwork()
                         Text(if (state.tasks.isEmpty()) "Gieo một việc nhỏ hôm nay" else "Không có việc nào phù hợp",
-                            color = Deep, fontWeight = FontWeight.Bold)
+                            modifier = Modifier.widthIn(max = 200.dp), color = Deep, fontWeight = FontWeight.Bold,
+                            textAlign = androidx.compose.ui.text.style.TextAlign.Center, lineHeight = 20.sp)
                         if (state.tasks.isEmpty()) {
                             Text("Mỗi bước nhỏ đều giúp bạn lớn lên.", color = Muted, fontSize = 13.sp)
                         } else {
@@ -94,7 +98,7 @@ fun TasksScreen(state: TasksUiState, onIntent: (TasksIntent) -> Unit, modifier: 
                     }
                 }
                 items(filtered, key = { it.id }) { task ->
-                    TaskCard(task, { onIntent(TasksIntent.Complete(task.id)) }, { onIntent(TasksIntent.Delete(task.id)) }, task.finished)
+                    TaskCard(task, { onIntent(TasksIntent.Complete(task.id)) }, { pendingDeleteId = task.id }, task.finished)
                 }
                 val completed = filtered.filter { it.doneToday || it.finished }
                 if (completed.isNotEmpty()) {
@@ -106,7 +110,7 @@ fun TasksScreen(state: TasksUiState, onIntent: (TasksIntent) -> Unit, modifier: 
                         }
                     }
                     items(completed, key = { "completed-${it.id}" }) { task ->
-                        TaskCard(task, {}, { onIntent(TasksIntent.Delete(task.id)) }, readOnly = true)
+                        TaskCard(task, {}, { pendingDeleteId = task.id }, readOnly = true)
                     }
                 }
                 if (daily.isNotEmpty() && state.filter in setOf(TaskFilter.ALL, TaskFilter.DAILY)) item {
@@ -117,6 +121,20 @@ fun TasksScreen(state: TasksUiState, onIntent: (TasksIntent) -> Unit, modifier: 
             GardenPaintedButton("+ Thêm việc", { onIntent(TasksIntent.ShowAddDialog) }, Modifier.fillMaxWidth())
             }
         }
+    }
+    state.tasks.firstOrNull { it.id == pendingDeleteId }?.let { task ->
+        AlertDialog(
+            onDismissRequest = { pendingDeleteId = null },
+            title = { Text("Xóa nhiệm vụ?") },
+            text = { Text("“" + task.title + "” sẽ bị xóa khỏi danh sách.") },
+            confirmButton = {
+                TextButton(onClick = {
+                    pendingDeleteId = null
+                    onIntent(TasksIntent.Delete(task.id))
+                }) { Text("Xóa") }
+            },
+            dismissButton = { TextButton(onClick = { pendingDeleteId = null }) { Text("Giữ lại") } }
+        )
     }
     if (state.isAddingTask) AddTaskDialog(
         onDismiss = { onIntent(TasksIntent.DismissAddDialog) },
@@ -166,15 +184,31 @@ private fun TaskQuestHeader(done: Int, total: Int, progress: Float, allComplete:
 @Composable
 private fun DailyRewardCard(canClaim: Boolean, onClaim: () -> Unit, claimed: Boolean = false) {
     Box(Modifier.fillMaxWidth()) {
-        GardenBotanicalFrame(Modifier.fillMaxWidth().clickable(enabled = canClaim && !claimed,
+        if (claimed) {
+            Surface(Modifier.fillMaxWidth().clickable(enabled = false,
+                role = androidx.compose.ui.semantics.Role.Button, onClick = onClaim),
+                shape = RoundedCornerShape(22.dp), color = Color(0xFFE0DFD1),
+                border = BorderStroke(1.dp, Color(0xFFC8C7B7))) {
+                Row(Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Surface(shape = CircleShape, color = Color(0xFF939C80), modifier = Modifier.size(30.dp)) {
+                        Icon(Icons.Rounded.Check, null, tint = Color(0xFFFFF9E9), modifier = Modifier.padding(5.dp))
+                    }
+                    Text("Đã nhận thưởng", Modifier.weight(1f), color = Color(0xFF626756),
+                        fontSize = 15.sp, lineHeight = 18.sp, fontWeight = FontWeight.Bold)
+                }
+            }
+        } else GardenBotanicalFrame(Modifier.fillMaxWidth().clickable(enabled = canClaim,
+            role = androidx.compose.ui.semantics.Role.Button,
             onClickLabel = "Nhận thưởng hôm nay", onClick = onClaim),
             contentPadding = PaddingValues(horizontal = 10.dp, vertical = 8.dp),
             skin = com.mamxanh.app.presentation.ui.components.GardenPanelSkin.PRICE) {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 GardenArtwork(GardenArt.COIN, Modifier.size(32.dp))
-                Text(if (claimed) "✓ Đã nhận thưởng" else "Thưởng hôm nay", Modifier.weight(1f),
-                    color = if (claimed) Muted else Deep, fontSize = 15.sp, lineHeight = 18.sp, fontWeight = FontWeight.Bold)
-                if (!claimed) Text("+20 xu", color = Deep, fontSize = 17.sp, lineHeight = 20.sp, fontWeight = FontWeight.Bold)
+                Text("Thưởng hôm nay", Modifier.weight(1f),
+                    color = Deep, fontSize = 15.sp, lineHeight = 18.sp, fontWeight = FontWeight.Bold)
+                Text("+20 xu", color = Deep, fontSize = 17.sp, lineHeight = 20.sp, fontWeight = FontWeight.Bold)
             }
         }
         GardenSprig(Modifier.align(Alignment.BottomStart).offset(x = (-10).dp, y = 4.dp).size(18.dp, 28.dp))
@@ -183,14 +217,30 @@ private fun DailyRewardCard(canClaim: Boolean, onClaim: () -> Unit, claimed: Boo
 }
 
 @Composable
+private fun TaskFilterSearchArtwork() {
+    Box(Modifier.size(48.dp)) {
+        Canvas(Modifier.fillMaxSize()) {
+            val center = Offset(size.width * .42f, size.height * .40f)
+            val radius = size.minDimension * .29f
+            drawLine(Color(0xFFD7A15D), Offset(size.width * .63f, size.height * .61f),
+                Offset(size.width * .86f, size.height * .84f), 10.dp.toPx(), cap = StrokeCap.Round)
+            drawCircle(Color(0xFFFFF8E8), radius, center)
+            drawCircle(Color(0xFFE3AD68), radius, center,
+                style = androidx.compose.ui.graphics.drawscope.Stroke(3.dp.toPx()))
+        }
+        GardenArtwork(GardenArt.SPROUT,
+            Modifier.align(Alignment.TopStart).offset(11.dp, 10.dp).size(18.dp))
+    }
+}
+
+@Composable
 private fun TaskCard(task: Task, onComplete: () -> Unit, onDelete: () -> Unit, readOnly: Boolean = false) {
-    var askDelete by remember { mutableStateOf(false) }
     val done = task.doneToday || readOnly
     Column {
         Row(Modifier.fillMaxWidth().heightIn(min = if (readOnly) 56.dp else 64.dp)
             .background(if (readOnly) Color(0xFFE5EAC6) else Color.Transparent, RoundedCornerShape(14.dp))
-            .combinedClickable(onClick = { if (!done) onComplete() }, onLongClickLabel = "Xóa nhiệm vụ", onLongClick = { askDelete = true })
-            .semantics { customActions = listOf(CustomAccessibilityAction("Xóa nhiệm vụ") { askDelete = true; true }) }
+            .combinedClickable(onClick = { if (!done) onComplete() }, onLongClickLabel = "Xóa nhiệm vụ", onLongClick = onDelete)
+            .semantics { customActions = listOf(CustomAccessibilityAction("Xóa nhiệm vụ") { onDelete(); true }) }
             .padding(vertical = 4.dp), verticalAlignment = Alignment.CenterVertically) {
             GardenArtwork(when {
                 task.title.contains("bộ", ignoreCase = true) -> GardenArt.BOOTS
@@ -221,13 +271,6 @@ private fun TaskCard(task: Task, onComplete: () -> Unit, onDelete: () -> Unit, r
         }
         HorizontalDivider(color = Color(0xFFBE9454).copy(alpha = .45f), thickness = .6.dp)
     }
-    if (askDelete) AlertDialog(
-        onDismissRequest = { askDelete = false },
-        title = { Text("Xóa nhiệm vụ?") },
-        text = { Text("“" + task.title + "” sẽ bị xóa khỏi danh sách.") },
-        confirmButton = { TextButton(onClick = { onDelete(); askDelete = false }) { Text("Xóa") } },
-        dismissButton = { TextButton(onClick = { askDelete = false }) { Text("Giữ lại") } }
-    )
 }
 
 @Preview(name = "Tasks · populated, large text", showBackground = true, widthDp = 360, heightDp = 800, fontScale = 1.3f)
@@ -262,6 +305,26 @@ fun TasksExtendedDocumentPreview() {
 @Preview(name = "Tasks · empty", showBackground = true, widthDp = 360, heightDp = 800)
 @Composable
 fun TasksScreenEmptyPreview() { MamXanhPreviewTheme { TasksScreen(TasksUiState(isLoading = false), {}) } }
+
+@Preview(name = "Tasks · empty filter", widthDp = 360, heightDp = 514,
+    device = "spec:width=360dp,height=514dp,dpi=160")
+@Composable
+fun TasksEmptyFilterPreview() {
+    MamXanhPreviewTheme {
+        TasksScreen(TasksUiState(tasks = listOf(
+            Task(1, "Uống đủ nước", "DAILY", "Sức khỏe", 10, "EVERY_DAY", "", "", 0, "")
+        ), filter = TaskFilter.HABIT, isLoading = false), {})
+    }
+}
+
+@Preview(name = "Tasks · daily reward claimed", widthDp = 300, heightDp = 90,
+    device = "spec:width=300dp,height=90dp,dpi=160")
+@Composable
+fun DailyRewardClaimedPreview() {
+    MamXanhPreviewTheme {
+        Box(Modifier.padding(16.dp)) { DailyRewardCard(false, {}, claimed = true) }
+    }
+}
 
 @Preview(name = "Quest progress header", showBackground = true, widthDp = 360)
 @Composable
