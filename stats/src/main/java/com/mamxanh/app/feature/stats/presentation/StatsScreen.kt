@@ -30,6 +30,7 @@ import java.util.Calendar
 @Composable
 fun StatsScreen(state: StatsUiState, onIntent: (StatsIntent) -> Unit, modifier: Modifier = Modifier) {
     val s = state.statistics
+    val firstUse = s.total == 0 && s.treeCount == 0
     val recent = s.recentDailyCompletions.takeLast(7).let { if (it.size == 7) it else List(7 - it.size) { 0 } + it }
     val days = (6 downTo 0).map { offset ->
         val day = Calendar.getInstance().apply { add(Calendar.DAY_OF_YEAR, -offset) }.get(Calendar.DAY_OF_WEEK)
@@ -56,7 +57,7 @@ fun StatsScreen(state: StatsUiState, onIntent: (StatsIntent) -> Unit, modifier: 
                             GardenSprig(Modifier.size(24.dp, 68.dp))
                             JourneyCard("", "Cây trong vườn", s.treeCount.toString(), "", Modifier.weight(1f))
                         }
-                        PressedGinkgo(Modifier.align(Alignment.TopEnd).offset(x = 16.dp, y = (-8).dp).size(44.dp, 72.dp))
+                        if (!firstUse) PressedGinkgo(Modifier.align(Alignment.TopEnd).offset(x = 16.dp, y = (-8).dp).size(44.dp, 72.dp))
                     }
                     HorizontalDivider(color = Color(0xFFBC9659).copy(alpha = .4f))
                 }
@@ -85,7 +86,7 @@ fun StatsScreen(state: StatsUiState, onIntent: (StatsIntent) -> Unit, modifier: 
                     }
                     HorizontalDivider(color = Color(0xFF8B6A39))
                 }
-                item {
+                if (!firstUse) item {
                     Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically) {
                         GardenSprig(Modifier.size(24.dp, 34.dp))
                         GardenBotanicalFrame(Modifier.weight(1f),
@@ -107,10 +108,23 @@ fun StatsScreen(state: StatsUiState, onIntent: (StatsIntent) -> Unit, modifier: 
                     }
                 }
                 item {
-                    HorizontalDivider(color = Color(0xFFBC9659).copy(alpha = .4f))
-                    Text(if (s.total == 0 && s.treeCount == 0) "Hãy bắt đầu chăm cây để ghi lại hành trình của bạn nhé!"
-                        else "Số liệu được lưu trên thiết bị", Modifier.fillMaxWidth().padding(top = 14.dp),
-                        textAlign = androidx.compose.ui.text.style.TextAlign.Center, color = Color(0xFF78552D), fontSize = 13.sp, fontStyle = FontStyle.Italic)
+                    if (firstUse) {
+                        GardenBotanicalFrame(Modifier.fillMaxWidth(),
+                            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 10.dp)) {
+                            Row(verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                GardenSprig(Modifier.size(26.dp, 38.dp))
+                                Text("Hãy bắt đầu chăm cây để ghi lại hành trình của bạn nhé!",
+                                    Modifier.weight(1f), textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                                    color = Color(0xFF78552D), fontSize = 13.sp, fontStyle = FontStyle.Italic)
+                            }
+                        }
+                    } else {
+                        HorizontalDivider(color = Color(0xFFBC9659).copy(alpha = .4f))
+                        Text("Số liệu được lưu trên thiết bị", Modifier.fillMaxWidth().padding(top = 14.dp),
+                            textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                            color = Color(0xFF78552D), fontSize = 13.sp, fontStyle = FontStyle.Italic)
+                    }
                 }
             }
             }
@@ -167,6 +181,18 @@ fun StatsLargeValuesPreview() {
             coins = 1_234_567_890, total = 1_234_567_890, today = 12_345, week = 1_234_567,
             streak = 12_345, treeCount = 1_234_567_890,
             recentDailyCompletions = listOf(0, 1, 1_234, Int.MAX_VALUE, 12_345, 1, 3)
+        ), false), {})
+    }
+}
+
+@Preview(name = "Journal · first use", widthDp = 360, heightDp = 680,
+    device = "spec:width=360dp,height=680dp,dpi=160")
+@Composable
+fun StatsZeroHistoryPreview() {
+    MamXanhPreviewTheme {
+        StatsScreen(StatsUiState(com.mamxanh.app.feature.stats.domain.model.GardenStatistics(
+            coins = 60, total = 0, today = 0, week = 0, streak = 0, treeCount = 0,
+            recentDailyCompletions = List(7) { 0 }
         ), false), {})
     }
 }

@@ -20,7 +20,15 @@ android {
     buildTypes {
         create("verification") {
             initWith(getByName("debug"))
-            applicationIdSuffix = ".verification"
+            // A distinct package allows fresh-data checks without resetting an existing garden.
+            applicationIdSuffix = providers.gradleProperty("mamxanh.verificationSuffix")
+                .orElse(".verification").get().also { suffix ->
+                    require(suffix.startsWith(".") && suffix.drop(1).split('.').all {
+                        it.matches(Regex("[A-Za-z][A-Za-z0-9_]*"))
+                    }) {
+                        "Verification suffix must contain dot-separated package segments."
+                    }
+                }
             matchingFallbacks += listOf("debug")
         }
     }
