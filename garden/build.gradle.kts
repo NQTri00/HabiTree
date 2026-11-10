@@ -19,7 +19,6 @@ kotlin {
 dependencies {
     implementation(project(":data"))
     implementation(project(":core-ui"))
-    implementation(project(":shop"))
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.foundation)
