@@ -123,11 +123,12 @@ fun HomeScreen(
             }
         }
         if (tree != null) BoxWithConstraints(Modifier.fillMaxSize().graphicsLayer { alpha = 1f - approach }) {
-            GardenBotanicalFrame(Modifier.align(Alignment.TopCenter).offset(y = maxHeight * .54f).width(190.dp),
+            GardenBotanicalFrame(Modifier.align(Alignment.TopCenter).offset(y = maxHeight * .54f)
+                .width(if (fontScale > 1.15f) maxWidth * .80f else 220.dp),
                 contentPadding = PaddingValues(horizontal = 16.dp, vertical = 7.dp), cornerSize = 24.dp) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(3.dp)) {
-                    Text(tree.name, color = Deep, fontWeight = FontWeight.Bold, fontSize = 16.sp, lineHeight = 18.sp,
-                        maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
+                    Text(tree.name, Modifier.fillMaxWidth(), color = Deep, fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp, lineHeight = 20.sp, textAlign = TextAlign.Center)
                     LinearProgressIndicator(progress = { (tree.growth / 120f).coerceIn(0f,1f) },
                         Modifier.fillMaxWidth().height(6.dp), color = Green, trackColor = Color(0xFFD6B78D), drawStopIndicator = {})
                     Text("${dashboard.completedTasks} / ${dashboard.totalTasks} việc hôm nay",
@@ -264,7 +265,8 @@ fun HomeShopApproachPreview() { MamXanhPreviewTheme { HomeScreen(previewHomeStat
 @Composable
 fun GardenPlacePreview() { MamXanhPreviewTheme { GardenPlace("SHOP", "Tiệm hạt", {}, Modifier.fillMaxSize()) } }
 
-@Preview(name = "Home · long name, large text", widthDp = 360, heightDp = 800, fontScale = 1.3f)
+@Preview(name = "Home · full document, long name, large text", widthDp = 360, heightDp = 884, fontScale = 1.3f,
+    device = "spec:width=360dp,height=884dp,dpi=160")
 @Composable
 fun HomeLongNamePreview() {
     MamXanhPreviewTheme {
