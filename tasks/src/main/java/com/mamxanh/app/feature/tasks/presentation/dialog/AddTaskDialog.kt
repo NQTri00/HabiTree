@@ -1,7 +1,7 @@
 package com.mamxanh.app.feature.tasks.presentation.dialog
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -15,6 +15,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
@@ -41,8 +42,15 @@ fun AddTaskDialog(onDismiss: () -> Unit, onSave: (String, String, String, Int, S
     }
     Dialog(onDismissRequest = requestDismiss,
         properties = DialogProperties(usePlatformDefaultWidth = false, decorFitsSystemWindows = false)) {
-        Box(Modifier.fillMaxSize().safeDrawingPadding(), contentAlignment = Alignment.Center) {
-            AddTaskParchment(form, requestDismiss, onSave, TaskDialogBounds)
+        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Box(Modifier.matchParentSize().pointerInput(requestDismiss) {
+                detectTapGestures { requestDismiss() }
+            })
+            Box(Modifier.safeDrawingPadding()) {
+                AddTaskParchment(form, requestDismiss, onSave, TaskDialogBounds.pointerInput(Unit) {
+                    detectTapGestures { /* Keep blank parchment taps inside the form. */ }
+                })
+            }
         }
     }
     if (confirmingDiscard) {
@@ -67,16 +75,16 @@ private fun TaskDiscardConfirmation(onContinue: () -> Unit, onDiscard: () -> Uni
             Text("Bạn có muốn bỏ các thông tin đang nhập?", color = Deep,
                 fontStyle = FontStyle.Italic, textAlign = TextAlign.Center,
                 modifier = Modifier.weight(1f, fill = false).verticalScroll(rememberScrollState()))
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                GardenPaintedButton("Tiếp tục sửa", onContinue, Modifier.weight(1f), primary = false)
-                GardenPaintedButton("Bỏ thay đổi", onDiscard, Modifier.weight(1f))
+            Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                GardenPaintedButton("Tiếp tục sửa", onContinue, Modifier.weight(1f).fillMaxHeight(), primary = false)
+                GardenPaintedButton("Bỏ thay đổi", onDiscard, Modifier.weight(1f).fillMaxHeight())
             }
         }
     }
 }
 
-@Preview(name = "Discard task draft", widthDp = 340,
-    device = "spec:width=340dp,height=220dp,dpi=160")
+@Preview(name = "Discard task draft · narrow, large text", widthDp = 324, fontScale = 1.3f,
+    device = "spec:width=324dp,height=300dp,dpi=160")
 @Composable
 fun TaskDiscardConfirmationPreview() {
     MamXanhPreviewTheme { TaskDiscardConfirmation({}, {}) }
