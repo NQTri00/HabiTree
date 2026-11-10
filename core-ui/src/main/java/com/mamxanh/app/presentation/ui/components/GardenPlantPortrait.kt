@@ -6,11 +6,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
-/** Static specimen presentation. Growth remains live data; animation is deferred. */
+/** Persisted growth presentation, using the supplied cherry sequence at a stable root. */
 @Composable
 fun GardenPlantPortrait(speciesId: String, decoration: String, modifier: Modifier = Modifier, growth: Int = 120) {
     BoxWithConstraints(modifier) {
-        if (growth <= 0) {
+        if (speciesId == "cherry") {
+            CherryGrowthArtwork(growth, Modifier.fillMaxSize())
+        } else if (growth <= 0) {
             GardenArtwork(GardenArt.SEED, Modifier.align(androidx.compose.ui.Alignment.BottomCenter)
                 .fillMaxWidth(.65f).height(maxHeight * .45f))
         } else {
@@ -27,7 +29,8 @@ fun GardenPlantPortrait(speciesId: String, decoration: String, modifier: Modifie
     }
 }
 
-@Preview(name = "Static cherry specimen", widthDp = 320, heightDp = 300)
+@Preview(name = "Cherry specimen", widthDp = 320, heightDp = 300,
+    device = "spec:width=320dp,height=300dp,dpi=160")
 @Composable
 fun GardenPlantPortraitPreview() { GardenPlantPortrait("cherry", "LANTERNS", Modifier.size(320.dp, 300.dp)) }
 
@@ -35,3 +38,17 @@ fun GardenPlantPortraitPreview() { GardenPlantPortrait("cherry", "LANTERNS", Mod
     device = "spec:width=170dp,height=150dp,dpi=160")
 @Composable
 fun GardenNewPlantPortraitPreview() { GardenPlantPortrait("cherry", "NONE", Modifier.fillMaxSize(), growth = 0) }
+
+@Preview(name = "Supplied cherry growth · fixed root", widthDp = 360, heightDp = 130,
+    device = "spec:width=360dp,height=130dp,dpi=160")
+@Composable
+fun CherryGrowthStagesPreview() {
+    Row(Modifier.fillMaxSize()) {
+        listOf(0, 24, 66, 120).forEach { growth ->
+            Column(Modifier.weight(1f), horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally) {
+                GardenPlantPortrait("cherry", "NONE", Modifier.fillMaxWidth().height(104.dp), growth)
+                GardenRichText("$growth / 120")
+            }
+        }
+    }
+}
