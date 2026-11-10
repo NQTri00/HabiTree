@@ -1,6 +1,9 @@
 package com.mamxanh.app.feature.tasks.presentation.dialog
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -17,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
@@ -96,36 +100,52 @@ private fun AddTaskParchment(
     onSave: (String, String, String, Int, String, String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    GardenBotanicalFrame(modifier, contentPadding = PaddingValues(horizontal = 24.dp, vertical = 24.dp), cornerSize = 40.dp, skin = GardenPanelSkin.TASK_DIALOG) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.Top) {
-                    GardenLeafPlaque("Gieo một việc nhỏ", Modifier.weight(1f))
-                    TextButton(onClick = onDismiss, modifier = Modifier.sizeIn(minWidth = 48.dp, minHeight = 48.dp)) {
-                        Text("×", fontSize = 24.sp)
+    BoxWithConstraints(modifier) {
+        val shortWindow = maxHeight < 360.dp * androidx.compose.ui.platform.LocalDensity.current.fontScale
+        val veryShortWindow = maxHeight < 220.dp
+        val scroll = rememberScrollState()
+        GardenBotanicalFrame(Modifier.fillMaxWidth().heightIn(max = maxHeight),
+            contentPadding = PaddingValues(horizontal = 24.dp,
+                vertical = if (veryShortWindow) 0.dp else if (shortWindow) 12.dp else 24.dp),
+            cornerSize = 40.dp, skin = GardenPanelSkin.TASK_DIALOG) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(if (veryShortWindow) 0.dp else 8.dp)) {
+                if (!shortWindow) AddTaskDialogHeader(onDismiss)
+                Column(Modifier.weight(1f, fill = false).verticalScroll(scroll)) {
+                    if (shortWindow) {
+                        AddTaskDialogHeader(onDismiss)
+                        Spacer(Modifier.height(8.dp))
                     }
+                    AddTaskDialogFields(form)
                 }
-                GardenArtwork(GardenArt.SEED, Modifier.size(70.dp, 42.dp).padding(top = 3.dp))
-            }
-            Column(Modifier.weight(1f, fill = false).verticalScroll(rememberScrollState())) { AddTaskDialogFields(form) }
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-                GardenPaintedButton("Để sau", onDismiss, Modifier.weight(.8f), primary = false)
-                GardenPaintedButton("Gieo nhiệm vụ", {
-                    form.validationRequested = true
-                    val reward = form.reward.toIntOrNull()
-                    if (form.title.isNotBlank() && reward != null && reward in 1..100) {
-                        onSave(form.title.trim(), form.kind, form.category, reward, form.frequency, form.due.trim())
-                    }
-                }, Modifier.weight(1.3f))
+                Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    GardenPaintedButton("Để sau", onDismiss, Modifier.weight(.8f).fillMaxHeight(), primary = false)
+                    GardenPaintedButton("Gieo nhiệm vụ", {
+                        form.validationRequested = true
+                        val reward = form.reward.toIntOrNull()
+                        if (form.title.isNotBlank() && reward != null && reward in 1..100) {
+                            onSave(form.title.trim(), form.kind, form.category, reward, form.frequency, form.due.trim())
+                        }
+                    }, Modifier.weight(1.3f).fillMaxHeight())
+                }
             }
         }
     }
 }
 
 @Composable
-private fun AddTaskDialogHeader() {
+private fun AddTaskDialogHeader(onDismiss: () -> Unit = {}) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        GardenLeafPlaque("Gieo một việc nhỏ", Modifier.fillMaxWidth())
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.Top) {
+            GardenArchedHeading("Gieo một việc nhỏ", Modifier.weight(1f))
+            Box(Modifier.offset(x = 12.dp, y = (-12).dp).size(48.dp).clickable(role = Role.Button, onClick = onDismiss)
+                .semantics { contentDescription = "Đóng" }, contentAlignment = Alignment.Center) {
+                Box(Modifier.size(34.dp).background(Color(0xFFFFE9B7), CircleShape)
+                    .border(2.dp, Color(0xFFC89B61), CircleShape), contentAlignment = Alignment.Center) {
+                    Text("×", color = Color(0xFF684224), fontSize = 24.sp, lineHeight = 26.sp)
+                }
+            }
+        }
         GardenArtwork(GardenArt.SEED, Modifier.size(70.dp, 42.dp).padding(top = 3.dp))
     }
 }
@@ -145,9 +165,9 @@ private fun AddTaskDialogFields(form: AddTaskFormState) {
         }
         Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {
             Text("🌱  Loại việc", color = Deep, fontSize = 16.sp, fontWeight = FontWeight.Bold)
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+            Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                 listOf("HABIT" to "Thói quen", "DAILY" to "Hằng ngày", "TODO" to "Một lần").forEach { (value, label) ->
-                    TaskChoiceChip(label, form.kind == value, Modifier.weight(1f)) {
+                    TaskChoiceChip(label, form.kind == value, Modifier.weight(1f).fillMaxHeight()) {
                         form.kind = value
                         form.frequency = if (value == "TODO") "ONCE" else "EVERY_DAY"
                     }
@@ -181,7 +201,7 @@ private fun AddTaskDialogFields(form: AddTaskFormState) {
             }
             Text("Hạn chót không bắt buộc.", color = Deep, fontSize = 12.sp, fontStyle = FontStyle.Italic)
         }
-        TaskFormSection("Thưởng", "🪙") {
+        TaskFormSection("Phần thưởng", "🪙") {
             GardenTextField(form.reward, { form.reward = it.filter(Char::isDigit).take(3) }, "Phần thưởng từ 1 đến 100 xu",
                 Modifier.fillMaxWidth(), trailingText = "xu", keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 errorMessage = if (form.validationRequested && form.reward.toIntOrNull()?.let { it in 1..100 } != true)
@@ -203,7 +223,7 @@ private fun TaskFormSection(title: String, emoji: String, content: @Composable C
         }
     } else {
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text("$emoji $title", color = Deep, fontWeight = FontWeight.Bold, fontSize = 15.sp, modifier = Modifier.width(95.dp))
+            Text("$emoji $title", color = Deep, fontWeight = FontWeight.Bold, fontSize = 15.sp, modifier = Modifier.width(120.dp))
             Column(Modifier.weight(1f), content = content)
         }
     }
@@ -259,6 +279,11 @@ fun AddTaskDialogPreviewContent(initialKind: String = "DAILY", background: (@Com
         AddTaskParchment(form, {}, { _,_,_,_,_,_ -> }, TaskDialogBounds)
     }
 }
+
+@Preview(name = "Task popup · short window", widthDp = 640, heightDp = 180, fontScale = 1.3f,
+    device = "spec:width=640dp,height=180dp,dpi=160")
+@Composable
+fun AddTaskShortWindowPreview() { MamXanhPreviewTheme { AddTaskDialogPreviewContent() } }
 
 @Preview(name = "Task popup · header", widthDp = 300)
 @Composable
