@@ -35,11 +35,22 @@ fun GardenArtwork(art: GardenArt, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun GardenCareAction(art: GardenArt, label: String, onClick: () -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true) {
-    Column(modifier.alpha(if (enabled) 1f else .5f).clickable(enabled = enabled, role = Role.Button, onClick = onClick),
+fun GardenCareAction(art: GardenArt, label: String, onClick: () -> Unit, modifier: Modifier = Modifier,
+    enabled: Boolean = true, completed: Boolean = false) {
+    Column(modifier.alpha(if (enabled || completed) 1f else .5f)
+        .clickable(enabled = enabled && !completed, role = Role.Button, onClick = onClick),
         horizontalAlignment = Alignment.CenterHorizontally) {
         GardenArtwork(art, Modifier.fillMaxWidth().height(58.dp))
-        GardenBotanicalFrame(Modifier.fillMaxWidth().heightIn(min = 30.dp),
+        if (completed) {
+            val shape = RoundedCornerShape(14.dp)
+            Box(Modifier.fillMaxWidth().heightIn(min = 30.dp)
+                .background(Brush.verticalGradient(listOf(Color(0xFF739747), Color(0xFF3E6B2F))), shape)
+                .border(1.5.dp, Color(0xFF8DAB59), shape)
+                .padding(horizontal = 6.dp, vertical = 5.dp), contentAlignment = Alignment.Center) {
+                GardenRichText("✓ $label", color = Color(0xFFFFF5DB), fontSize = 15.sp, lineHeight = 17.sp,
+                    fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
+            }
+        } else GardenBotanicalFrame(Modifier.fillMaxWidth().heightIn(min = 30.dp),
             contentPadding = PaddingValues(horizontal = 6.dp, vertical = 5.dp), cornerSize = 14.dp) {
             GardenRichText(label, color = Deep, fontSize = 15.sp, lineHeight = 17.sp, fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())

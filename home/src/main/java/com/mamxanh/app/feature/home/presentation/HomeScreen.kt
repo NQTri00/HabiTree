@@ -143,7 +143,8 @@ fun HomeScreen(
                 Row(horizontalArrangement = Arrangement.spacedBy(5.dp), verticalAlignment = Alignment.Bottom) {
                     GardenCareAction(GardenArt.WATERING_CAN, if (tree?.wateredToday == true) "Đã tưới" else "Tưới",
                         { tree?.let { onIntent(HomeIntent.WaterTree(it.id)) } }, Modifier.weight(1f),
-                        enabled = !entering && tree != null && !tree.wateredToday && dashboard.wateringCanMl >= 50)
+                        enabled = !entering && tree != null && !tree.wateredToday && dashboard.wateringCanMl >= 50,
+                        completed = tree?.wateredToday == true)
                     GardenCareAction(GardenArt.FERTILIZER, "Bón",
                         { tree?.let { onIntent(HomeIntent.FertilizeTree(it.id)) } }, Modifier.weight(1f),
                         enabled = !entering && tree != null && fertilizerCount > 0)

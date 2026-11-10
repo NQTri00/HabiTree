@@ -38,7 +38,7 @@ fun TreeCareActions(wateredToday: Boolean, fertilizerCount: Int, wateringCanMl: 
                     wateredToday -> "Đã tưới"
                     wateringCanMl < 50 -> "Cần nước"
                     else -> "Tưới · 50 ml"
-                }, onWater, Modifier.weight(1f), enabled = !wateredToday && wateringCanMl >= 50)
+                }, onWater, Modifier.weight(1f), enabled = !wateredToday && wateringCanMl >= 50, completed = wateredToday)
                 GardenCareAction(GardenArt.FERTILIZER, "Bón · 1 túi", onFertilize, Modifier.weight(1f), enabled = fertilizerCount > 0)
             }
         }
@@ -89,6 +89,11 @@ fun DecorationPicker(selected: String, onSelect: (String) -> Unit) {
 @Preview(name = "Painted tree care", widthDp = 340)
 @Composable
 fun TreeCareActionsPreview() { MamXanhPreviewTheme { TreeCareActions(false, 2, 500, {}, {}) } }
+
+@Preview(name = "Care dock · watered today", widthDp = 340, heightDp = 170,
+    device = "spec:width=340dp,height=170dp,dpi=160")
+@Composable
+fun WateredCareActionsPreview() { MamXanhPreviewTheme { TreeCareActions(true, 2, 450, {}, {}) } }
 
 @Preview(name = "Painted decoration tray", widthDp = 340)
 @Composable
