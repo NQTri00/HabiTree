@@ -81,25 +81,41 @@ fun GardenScreen(state: GardenUiState, onIntent: (GardenIntent) -> Unit, modifie
                     fontSize = 17.sp, fontWeight = FontWeight.Bold)
             }
             if (state.isLoading) LinearProgressIndicator(Modifier.fillMaxWidth(), color = Green)
-            Column(Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(vertical = 12.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Box(Modifier.weight(1f).verticalScroll(rememberScrollState())) {
+                GardenForestScene(Modifier.matchParentSize(), setting = ForestSetting.GARDEN)
+                Column(Modifier.fillMaxWidth().padding(vertical = 12.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 plots.forEach { plot ->
                     val tree = garden.trees.firstOrNull { it.id == plot.treeId }
-                    Row(Modifier.fillMaxWidth().heightIn(min = 150.dp).drawBehind {
+                    val plotScale = androidx.compose.ui.platform.LocalDensity.current.fontScale.coerceAtLeast(1f)
+                    Row(Modifier.fillMaxWidth().heightIn(min = (if (tree != null) 130.dp else 145.dp) * plotScale).drawBehind {
                         // The clearing and its path belong to the scrolling plot, not the fixed forest.
                         val path = androidx.compose.ui.graphics.Path().apply {
-                            moveTo(size.width * .34f, 0f)
-                            cubicTo(size.width * .75f, size.height * .28f, size.width * .12f,
-                                size.height * .72f, size.width * .62f, size.height)
+                            moveTo(size.width * .5f, -6.dp.toPx())
+                            cubicTo(size.width * .7f, size.height * .25f, size.width * .3f,
+                                size.height * .75f, size.width * .5f, size.height + 6.dp.toPx())
                         }
-                        drawPath(path, Color(0xFFCFAB70),
-                            style = androidx.compose.ui.graphics.drawscope.Stroke(width = size.width * .16f))
+                        drawPath(path, Color(0xFFB68F5B),
+                            style = androidx.compose.ui.graphics.drawscope.Stroke(width = size.width * .16f,
+                                cap = androidx.compose.ui.graphics.StrokeCap.Round))
+                        drawPath(path, Color(0xFFD7B77D),
+                            style = androidx.compose.ui.graphics.drawscope.Stroke(width = size.width * .12f,
+                                cap = androidx.compose.ui.graphics.StrokeCap.Round))
                         drawOval(Color(0xFF95A64A), Offset(size.width * .01f, size.height * .40f),
                             Size(size.width * .96f, size.height * .60f))
                         drawOval(Color(0xFFC3A16C), Offset(size.width * .04f, size.height * .43f),
                             Size(size.width * .90f, size.height * .51f))
                         drawOval(Color(0xFFD8BB88), Offset(size.width * .09f, size.height * .46f),
                             Size(size.width * .80f, size.height * .42f))
+                        repeat(14) { index ->
+                            val angle = index * kotlin.math.PI * 2 / 14
+                            val x = size.width * (.5f + .43f * kotlin.math.cos(angle).toFloat())
+                            val y = size.height * (.70f + .23f * kotlin.math.sin(angle).toFloat())
+                            drawOval(Color(0xFFA6865D), Offset(x - 10.dp.toPx(), y - 5.dp.toPx()),
+                                Size(20.dp.toPx(), 10.dp.toPx()))
+                            drawOval(Color(0xFFD6B98C), Offset(x - 8.dp.toPx(), y - 5.dp.toPx()),
+                                Size(16.dp.toPx(), 6.dp.toPx()))
+                        }
                         if (tree != null && tree.id == revealedTreeId) {
                             drawOval(Color(0xFFFFD85A).copy(alpha = plantingGlow.value),
                                 Offset(size.width * .04f, size.height * .43f),
@@ -110,37 +126,49 @@ fun GardenScreen(state: GardenUiState, onIntent: (GardenIntent) -> Unit, modifie
                         verticalAlignment = Alignment.CenterVertically) {
                         if (tree != null) {
                             GardenPlantPortrait(tree.speciesId, tree.decoration,
-                                Modifier.weight(1f).height(150.dp).then(treeTransitionModifier(tree.id))
+                                Modifier.weight(.9f).height(130.dp * plotScale).then(treeTransitionModifier(tree.id))
                                     .clickable(onClickLabel = "Chăm sóc ${tree.name}") { onIntent(GardenIntent.OpenTree(tree.id)) }, growth = tree.growth)
-                        } else {
-                            Box(Modifier.weight(1f).height(120.dp), contentAlignment = Alignment.Center) {
-                                Text(if (plot.isUnlocked) "+" else "🔒", color = Green,
-                                    fontSize = 42.sp, fontWeight = FontWeight.Bold)
-                            }
-                        }
-                        GardenBotanicalFrame(Modifier.weight(1f),
-                            contentPadding = PaddingValues(horizontal = 10.dp, vertical = 12.dp)) {
-                            Column(horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                                Text(plot.id.toString().padStart(2, '0'), color = Deep,
-                                    fontSize = 20.sp, fontWeight = FontWeight.Bold)
-                                if (tree != null) {
-                                    Text(tree.name, color = Deep, textAlign = TextAlign.Center,
-                                        modifier = Modifier.clickable { onIntent(GardenIntent.OpenTree(tree.id)) })
-                                    LinearProgressIndicator(progress = { (tree.growth / 120f).coerceIn(0f, 1f) },
-                                        modifier = Modifier.fillMaxWidth().height(6.dp), color = Green,
-                                        trackColor = Color(0xFFD6B78D), drawStopIndicator = {})
-                                    Text("${tree.growth} / 120", color = Deep, fontWeight = FontWeight.Bold)
-                                } else if (plot.isUnlocked) {
-                                    GardenPaintedButton("Gieo cây", {
-                                        selectedPlotId = plot.id
-                                        choosingSeed = true
-                                    }, enabled = !state.isLoading)
-                                } else {
-                                    Text("Đang khóa", color = Deep)
-                                    GardenPaintedButton("Mở ô · ${com.mamxanh.shared.model.GardenPlotPolicy.UNLOCK_PRICE} xu",
-                                        { unlockingPlotId = plot.id }, enabled = !state.isLoading)
+                        } else Spacer(Modifier.weight(.45f))
+                        Box(Modifier.weight(if (tree != null) 1.1f else 1.55f)
+                            .padding(start = 8.dp, top = 12.dp, bottom = 6.dp)) {
+                            GardenBotanicalFrame(Modifier.fillMaxWidth(),
+                                contentPadding = PaddingValues(start = 18.dp, end = 10.dp, top = 10.dp, bottom = 10.dp)) {
+                                Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                                    if (tree != null) {
+                                        Text(tree.name, color = Deep, fontSize = 16.sp, lineHeight = 18.sp,
+                                            textAlign = TextAlign.Center, fontWeight = FontWeight.Bold,
+                                            modifier = Modifier.clickable { onIntent(GardenIntent.OpenTree(tree.id)) })
+                                        LinearProgressIndicator(progress = { (tree.growth / 120f).coerceIn(0f, 1f) },
+                                            modifier = Modifier.fillMaxWidth().height(6.dp), color = Green,
+                                            trackColor = Color(0xFFD6B78D), drawStopIndicator = {})
+                                        Text("${tree.growth} / 120", color = Deep, fontSize = 15.sp,
+                                            lineHeight = 18.sp, fontWeight = FontWeight.Bold)
+                                    } else if (plot.isUnlocked) {
+                                        Box(Modifier.size(30.dp).drawBehind {
+                                            drawCircle(Color(0xFFFFE9B6))
+                                            drawCircle(Green, style = androidx.compose.ui.graphics.drawscope.Stroke(1.5.dp.toPx()))
+                                        }, contentAlignment = Alignment.Center) {
+                                            Text("+", color = Green, fontSize = 28.sp, lineHeight = 30.sp, fontWeight = FontWeight.Bold)
+                                        }
+                                        GardenPaintedButton("Gieo cây", {
+                                            selectedPlotId = plot.id
+                                            choosingSeed = true
+                                        }, enabled = !state.isLoading)
+                                    } else {
+                                        Text("🔒", fontSize = 26.sp)
+                                        Text("Ô trồng ${plot.id.toString().padStart(2, '0')} · Đang khóa", color = Deep,
+                                            fontSize = 14.sp, lineHeight = 17.sp, textAlign = TextAlign.Center,
+                                            fontWeight = FontWeight.Bold)
+                                        GardenPaintedButton("Mở ô · ${com.mamxanh.shared.model.GardenPlotPolicy.UNLOCK_PRICE} xu",
+                                            { unlockingPlotId = plot.id }, enabled = !state.isLoading)
+                                    }
                                 }
+                            }
+                            GardenBotanicalFrame(Modifier.align(Alignment.TopStart).offset(x = (-8).dp, y = (-10).dp),
+                                contentPadding = PaddingValues(horizontal = 9.dp, vertical = 4.dp), cornerSize = 20.dp) {
+                                Text(plot.id.toString().padStart(2, '0'), color = Deep,
+                                    fontSize = 16.sp, lineHeight = 18.sp, fontWeight = FontWeight.Bold)
                             }
                         }
                     }
@@ -149,6 +177,7 @@ fun GardenScreen(state: GardenUiState, onIntent: (GardenIntent) -> Unit, modifie
                     selectedPlotId = null
                     selectedSeedId = it.id
                 }, onOpenShop = { onIntent(GardenIntent.OpenShop) })
+                }
             }
         }
     }
@@ -374,6 +403,21 @@ private fun sampleGarden() = Garden(
 @Preview(name = "Nursery · large text", widthDp = 360, heightDp = 800, fontScale = 1.3f)
 @Composable
 fun GardenScreenPopulatedPreview() { MamXanhPreviewTheme { GardenScreen(GardenUiState(sampleGarden(), false), {}) } }
+
+@Preview(name = "Nursery · extended plot audit", widthDp = 360, heightDp = 1200,
+    device = "spec:width=360dp,height=1200dp,dpi=160")
+@Composable
+fun GardenExtendedPlotsPreview() {
+    val fixture = sampleGarden().copy(plots = listOf(
+        com.mamxanh.shared.model.GardenPlot(1, true, 1L),
+        com.mamxanh.shared.model.GardenPlot(2, true, 2L),
+        com.mamxanh.shared.model.GardenPlot(3, true),
+        com.mamxanh.shared.model.GardenPlot(4, true, 3L),
+        com.mamxanh.shared.model.GardenPlot(5, true),
+        com.mamxanh.shared.model.GardenPlot(6, false)
+    ), coins = 120)
+    MamXanhPreviewTheme { GardenScreen(GardenUiState(fixture, false), {}) }
+}
 
 @Preview(name = "Nursery · empty", widthDp = 360, heightDp = 800)
 @Composable
