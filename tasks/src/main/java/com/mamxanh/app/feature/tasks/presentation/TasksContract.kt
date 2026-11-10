@@ -2,7 +2,7 @@ package com.mamxanh.app.feature.tasks.presentation
 
 import com.mamxanh.app.feature.tasks.domain.model.Task
 
-enum class TaskFilter { ALL, HABIT, DAILY, ONCE }
+enum class TaskFilter { ALL, HABIT, DAILY, ONCE, COMPLETED }
 
 data class TasksUiState(
     val tasks: List<Task> = emptyList(),

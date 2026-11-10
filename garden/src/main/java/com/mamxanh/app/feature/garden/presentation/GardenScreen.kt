@@ -1,10 +1,15 @@
 package com.mamxanh.app.feature.garden.presentation
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.relocation.BringIntoViewRequester
+import androidx.compose.foundation.relocation.bringIntoViewRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
@@ -14,6 +19,8 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
@@ -71,112 +78,57 @@ fun GardenScreen(state: GardenUiState, onIntent: (GardenIntent) -> Unit, modifie
             revealedTreeId = null
         }
     }
-    Box(modifier.fillMaxSize()) {
-        GardenForestScene(Modifier.fillMaxSize(), setting = ForestSetting.GARDEN)
-        Column(Modifier.fillMaxSize().padding(horizontal = 10.dp),
-            horizontalAlignment = Alignment.CenterHorizontally) {
-            GardenWoodSign("Vườn ươm", Modifier.widthIn(max = 285.dp).fillMaxWidth(.85f))
-            GardenBotanicalFrame(contentPadding = PaddingValues(horizontal = 20.dp, vertical = 6.dp)) {
-                Text("${garden.trees.size} cây · ${plots.count { it.isUnlocked }} ô mở", color = Deep,
-                    fontSize = 17.sp, fontWeight = FontWeight.Bold)
+    MintBackdrop(modifier.fillMaxSize()) {
+        Column(Modifier.fillMaxSize()) {
+            MintHeader("Mầm Xanh", garden.coins)
+            Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 10.dp),
+                verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                Text("Vườn ươm", Modifier.weight(1f), color = Deep, fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                GardenBotanicalFrame(contentPadding = PaddingValues(horizontal = 10.dp, vertical = 6.dp)) {
+                    Text("${garden.trees.size} cây · ${plots.count { it.isUnlocked }} ô mở", color = Deep, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                }
             }
-            if (state.isLoading) LinearProgressIndicator(Modifier.fillMaxWidth(), color = Green)
-            Box(Modifier.weight(1f).verticalScroll(rememberScrollState())) {
-                GardenForestScene(Modifier.matchParentSize(), setting = ForestSetting.GARDEN)
-                Column(Modifier.fillMaxWidth().padding(vertical = 12.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                plots.forEach { plot ->
+            LazyColumn(Modifier.weight(1f), contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                items(plots, key = { it.id }) { plot ->
                     val tree = garden.trees.firstOrNull { it.id == plot.treeId }
-                    val plotScale = androidx.compose.ui.platform.LocalDensity.current.fontScale.coerceAtLeast(1f)
-                    Row(Modifier.fillMaxWidth().heightIn(min = (if (tree != null) 130.dp else 145.dp) * plotScale).drawBehind {
-                        // The clearing and its path belong to the scrolling plot, not the fixed forest.
-                        val path = androidx.compose.ui.graphics.Path().apply {
-                            moveTo(size.width * .5f, -6.dp.toPx())
-                            cubicTo(size.width * .7f, size.height * .25f, size.width * .3f,
-                                size.height * .75f, size.width * .5f, size.height + 6.dp.toPx())
-                        }
-                        drawPath(path, Color(0xFFB68F5B),
-                            style = androidx.compose.ui.graphics.drawscope.Stroke(width = size.width * .16f,
-                                cap = androidx.compose.ui.graphics.StrokeCap.Round))
-                        drawPath(path, Color(0xFFD7B77D),
-                            style = androidx.compose.ui.graphics.drawscope.Stroke(width = size.width * .12f,
-                                cap = androidx.compose.ui.graphics.StrokeCap.Round))
-                        drawOval(Color(0xFF95A64A), Offset(size.width * .01f, size.height * .40f),
-                            Size(size.width * .96f, size.height * .60f))
-                        drawOval(Color(0xFFC3A16C), Offset(size.width * .04f, size.height * .43f),
-                            Size(size.width * .90f, size.height * .51f))
-                        drawOval(Color(0xFFD8BB88), Offset(size.width * .09f, size.height * .46f),
-                            Size(size.width * .80f, size.height * .42f))
-                        repeat(14) { index ->
-                            val angle = index * kotlin.math.PI * 2 / 14
-                            val x = size.width * (.5f + .43f * kotlin.math.cos(angle).toFloat())
-                            val y = size.height * (.70f + .23f * kotlin.math.sin(angle).toFloat())
-                            drawOval(Color(0xFFA6865D), Offset(x - 10.dp.toPx(), y - 5.dp.toPx()),
-                                Size(20.dp.toPx(), 10.dp.toPx()))
-                            drawOval(Color(0xFFD6B98C), Offset(x - 8.dp.toPx(), y - 5.dp.toPx()),
-                                Size(16.dp.toPx(), 6.dp.toPx()))
-                        }
-                        if (tree != null && tree.id == revealedTreeId) {
-                            drawOval(Color(0xFFFFD85A).copy(alpha = plantingGlow.value),
-                                Offset(size.width * .04f, size.height * .43f),
-                                Size(size.width * .90f, size.height * .51f),
-                                style = androidx.compose.ui.graphics.drawscope.Stroke(5.dp.toPx()))
-                        }
-                    },
-                        verticalAlignment = Alignment.CenterVertically) {
-                        if (tree != null) {
-                            GardenPlantPortrait(tree.speciesId, tree.decoration,
-                                Modifier.weight(.9f).height(130.dp * plotScale).then(treeTransitionModifier(tree.id))
-                                    .clickable(onClickLabel = "Chăm sóc ${tree.name}") { onIntent(GardenIntent.OpenTree(tree.id)) }, growth = tree.growth)
-                        } else Spacer(Modifier.weight(.45f))
-                        Box(Modifier.weight(if (tree != null) 1.1f else 1.55f)
-                            .padding(start = 8.dp, top = 12.dp, bottom = 6.dp)) {
-                            GardenBotanicalFrame(Modifier.fillMaxWidth(),
-                                contentPadding = PaddingValues(start = 18.dp, end = 10.dp, top = 10.dp, bottom = 10.dp)) {
-                                Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally,
-                                    verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                                    if (tree != null) {
-                                        Text(tree.name, color = Deep, fontSize = 16.sp, lineHeight = 18.sp,
-                                            textAlign = TextAlign.Center, fontWeight = FontWeight.Bold,
-                                            modifier = Modifier.clickable { onIntent(GardenIntent.OpenTree(tree.id)) })
-                                        LinearProgressIndicator(progress = { (tree.growth / 120f).coerceIn(0f, 1f) },
-                                            modifier = Modifier.fillMaxWidth().height(6.dp), color = Green,
-                                            trackColor = Color(0xFFD6B78D), drawStopIndicator = {})
-                                        Text("${tree.growth} / 120", color = Deep, fontSize = 15.sp,
-                                            lineHeight = 18.sp, fontWeight = FontWeight.Bold)
-                                    } else if (plot.isUnlocked) {
-                                        Box(Modifier.size(30.dp).drawBehind {
-                                            drawCircle(Color(0xFFFFE9B6))
-                                            drawCircle(Green, style = androidx.compose.ui.graphics.drawscope.Stroke(1.5.dp.toPx()))
-                                        }, contentAlignment = Alignment.Center) {
-                                            Text("+", color = Green, fontSize = 28.sp, lineHeight = 30.sp, fontWeight = FontWeight.Bold)
-                                        }
-                                        GardenPaintedButton("Gieo cây", {
-                                            selectedPlotId = plot.id
-                                            choosingSeed = true
-                                        }, enabled = !state.isLoading)
-                                    } else {
-                                        Text("🔒", fontSize = 26.sp)
-                                        Text("Ô trồng ${plot.id.toString().padStart(2, '0')} · Đang khóa", color = Deep,
-                                            fontSize = 14.sp, lineHeight = 17.sp, textAlign = TextAlign.Center,
-                                            fontWeight = FontWeight.Bold)
-                                        GardenPaintedButton("Mở ô · ${com.mamxanh.shared.model.GardenPlotPolicy.UNLOCK_PRICE} xu",
-                                            { unlockingPlotId = plot.id }, enabled = !state.isLoading)
-                                    }
+                    GardenBotanicalFrame(Modifier.fillMaxWidth().clickable(enabled = !state.isLoading) {
+                        if(tree != null) onIntent(GardenIntent.OpenTree(tree.id))
+                        else if(plot.isUnlocked) { selectedPlotId = plot.id; choosingSeed = true }
+                        else unlockingPlotId = plot.id
+                    }, contentPadding = PaddingValues(10.dp), cornerSize = 22.dp) {
+                        Row(Modifier.fillMaxWidth().heightIn(min = 86.dp), verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                            if(tree != null) GardenPlantPortrait(tree.speciesId, tree.decoration,
+                                Modifier.size(84.dp).then(treeTransitionModifier(tree.id)), growth = tree.growth)
+                            else if(plot.isUnlocked) GardenArtwork(GardenArt.SEED, Modifier.size(74.dp))
+                            else Text("🔒", Modifier.width(64.dp), fontSize = 32.sp, textAlign = TextAlign.Center)
+                            GardenBotanicalFrame(contentPadding = PaddingValues(6.dp), cornerSize = 50.dp) {
+                                Text(plot.id.toString().padStart(2, '0'), fontWeight = FontWeight.Bold, color = Deep)
+                            }
+                            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                                Text(tree?.name ?: if(plot.isUnlocked) "Ô trống" else "Ô trống (Đang khóa)",
+                                    fontWeight = FontWeight.Bold, fontSize = 17.sp, color = Deep)
+                                if(tree != null) {
+                                    MintProgress(tree.growth / 120f, Modifier.fillMaxWidth())
+                                    Text("${tree.growth.coerceIn(0,120)} / 120", fontSize = 13.sp, color = Deep)
+                                } else {
+                                    GardenPaintedButton(if(plot.isUnlocked) "Gieo cây" else "Mở ô · ${com.mamxanh.shared.model.GardenPlotPolicy.UNLOCK_PRICE} xu",
+                                        {
+                                            if(plot.isUnlocked) { selectedPlotId = plot.id; choosingSeed = true }
+                                            else unlockingPlotId = plot.id
+                                        }, Modifier.fillMaxWidth(), primary = plot.isUnlocked)
                                 }
                             }
-                            GardenBotanicalFrame(Modifier.align(Alignment.TopStart).offset(x = (-8).dp, y = (-10).dp),
-                                contentPadding = PaddingValues(horizontal = 9.dp, vertical = 4.dp), cornerSize = 20.dp) {
-                                Text(plot.id.toString().padStart(2, '0'), color = Deep,
-                                    fontSize = 16.sp, lineHeight = 18.sp, fontWeight = FontWeight.Bold)
-                            }
+                            Text("›", fontSize = 26.sp, color = Deep)
                         }
                     }
                 }
-                SeedBasket(seeds, garden.inventory, onSelect = {
-                    selectedPlotId = null
-                    selectedSeedId = it.id
-                }, onOpenShop = { onIntent(GardenIntent.OpenShop) })
+                item(key = "seed-inventory") {
+                    SeedBasket(seeds, garden.inventory, onSelect = {
+                        selectedPlotId = plots.firstOrNull { plot -> plot.isUnlocked && plot.treeId == null }?.id
+                        selectedSeedId = it.id
+                    }, onOpenShop = { onIntent(GardenIntent.OpenShop) })
                 }
             }
         }
@@ -243,6 +195,9 @@ fun GardenScreen(state: GardenUiState, onIntent: (GardenIntent) -> Unit, modifie
         val available = plots.any { it.isUnlocked && it.treeId == null &&
             (selectedPlotId == null || it.id == selectedPlotId) }
         if (available) PlantingDialog(seed, garden.inventory[seed.id] ?: 0,
+            targetPlotId = selectedPlotId ?: plots.firstOrNull { it.isUnlocked && it.treeId == null }?.id,
+            availablePlotIds = plots.filter { it.isUnlocked && it.treeId == null }.map { it.id },
+            onSelectPlot = { selectedPlotId = it },
             onDismiss = { selectedSeedId = null },
             onPlant = { name ->
                 onIntent(GardenIntent.Plant(seed.id, name, selectedPlotId)); selectedSeedId = null
@@ -308,37 +263,19 @@ private fun GardenTreeIsland(tree: Tree, onClick: () -> Unit, modifier: Modifier
 @Composable
 private fun SeedBasket(seeds: List<Species>, inventory: Map<String, Int>, onSelect: (Species) -> Unit,
     onOpenShop: () -> Unit = {}) {
-    Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-        GardenBotanicalFrame(contentPadding = PaddingValues(horizontal = 22.dp, vertical = 6.dp), cornerSize = 20.dp) {
-            Text("🌱 Hạt trong túi", color = Deep, fontSize = 17.sp, lineHeight = 20.sp, fontWeight = FontWeight.Bold)
-        }
-        Box(Modifier.fillMaxWidth().heightIn(min = 150.dp), contentAlignment = Alignment.BottomCenter) {
-            GardenSeedBasketSurface(Modifier.matchParentSize())
-            if (seeds.isEmpty()) {
-                GardenBotanicalFrame(Modifier.padding(22.dp), contentPadding = PaddingValues(14.dp), cornerSize = 22.dp) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Text("Túi hạt đang trống", color = Deep, fontSize = 13.sp, textAlign = TextAlign.Center)
-                        GardenPaintedButton("Ghé Tiệm →", onOpenShop, primary = false)
-                    }
+    GardenBotanicalFrame(Modifier.fillMaxWidth(), contentPadding = PaddingValues(14.dp)) {
+        Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            Text("Hạt trong túi", color = Deep, fontWeight = FontWeight.Bold)
+            if(seeds.isEmpty()) {
+                Text("Bạn chưa có hạt", color = Deep)
+                GardenPaintedButton("Tiệm hạt", onOpenShop, Modifier.fillMaxWidth())
+            } else seeds.forEach { seed ->
+                Row(Modifier.fillMaxWidth().clickable { onSelect(seed) }, verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    PaintedGardenPlant(seed.id, Modifier.size(46.dp))
+                    Text("${seed.name} · Còn ${inventory[seed.id] ?: 0}", Modifier.weight(1f), color = Deep)
+                    Text("Gieo ›", color = Green, fontWeight = FontWeight.Bold)
                 }
-            } else Row(Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 18.dp), verticalAlignment = Alignment.CenterVertically) {
-                Row(Modifier.weight(1f).horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                    seeds.forEach { seed ->
-                        GardenBotanicalFrame(Modifier.width(78.dp).heightIn(min = 108.dp)
-                            .clickable(onClickLabel = "Gieo ${seed.name}, còn ${inventory[seed.id] ?: 0} hạt", onClick = { onSelect(seed) }),
-                            contentPadding = PaddingValues(horizontal = 5.dp, vertical = 8.dp), cornerSize = 14.dp) {
-                            Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.spacedBy(3.dp)) {
-                                PaintedGardenPlant(seed.id, Modifier.size(46.dp, 40.dp))
-                                Text(when(seed.id) { "cherry" -> "Đào"; "pine" -> "Thông"; "succulent" -> "Sen đá"; "mandarin" -> "Quýt"; else -> seed.name },
-                                    color = Deep, fontSize = 12.sp, lineHeight = 14.sp, fontWeight = FontWeight.Bold,
-                                    textAlign = TextAlign.Center, maxLines = 2, overflow = TextOverflow.Ellipsis)
-                                Text("×${inventory[seed.id] ?: 0}", color = Deep, fontSize = 12.sp, lineHeight = 14.sp, fontWeight = FontWeight.Bold)
-                            }
-                        }
-                    }
-                }
-                GardenPaintedButton("Gieo hạt", { onSelect(seeds.first()) }, Modifier.width(112.dp))
             }
         }
     }
@@ -347,50 +284,97 @@ private fun SeedBasket(seeds: List<Species>, inventory: Map<String, Int>, onSele
 private val PlantingDialogBounds = Modifier.widthIn(max = 440.dp).fillMaxWidth(.92f).heightIn(max = 700.dp)
 
 @Composable
-private fun PlantingDialog(seed: Species, count: Int, onDismiss: () -> Unit, onPlant: (String) -> Unit) {
+private fun PlantingDialog(seed: Species, count: Int, targetPlotId: Int?, availablePlotIds: List<Int>, onSelectPlot: (Int) -> Unit, onDismiss: () -> Unit, onPlant: (String) -> Unit) {
     Dialog(onDismissRequest = onDismiss,
         properties = DialogProperties(usePlatformDefaultWidth = false, decorFitsSystemWindows = false)) {
         Box(Modifier.fillMaxSize().safeDrawingPadding(), contentAlignment = Alignment.Center) {
-            Box(PlantingDialogBounds) { PlantingParchment(seed, count, onDismiss, onPlant) }
+            Box(PlantingDialogBounds) { PlantingParchment(seed, count, onDismiss, onPlant, targetPlotId, availablePlotIds, onSelectPlot) }
         }
     }
 }
 
 @Composable
-private fun PlantingParchment(seed: Species, count: Int, onDismiss: () -> Unit, onPlant: (String) -> Unit) {
+private fun PlantingParchment(seed: Species, count: Int, onDismiss: () -> Unit, onPlant: (String) -> Unit,
+    targetPlotId: Int? = 4, availablePlotIds: List<Int> = listOf(4), onSelectPlot: (Int) -> Unit = {}) {
+    var plotMenu by remember { mutableStateOf(false) }
     var name by rememberSaveable(seed.id) { mutableStateOf("") }
-    Box {
-        GardenBotanicalFrame(Modifier.fillMaxWidth(), contentPadding = PaddingValues(horizontal = 26.dp, vertical = 30.dp), cornerSize = 42.dp, skin = GardenPanelSkin.PLANTING_DIALOG) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.Top) {
-                    GardenLeafPlaque("Gieo mầm bình yên", Modifier.weight(1f))
-                    TextButton(onClick = onDismiss, modifier = Modifier.sizeIn(minWidth = 48.dp, minHeight = 48.dp)) {
-                        Text("×", fontSize = 24.sp)
-                    }
+    val density = androidx.compose.ui.platform.LocalDensity.current
+    val fontScale = density.fontScale
+    val nameBringIntoView = remember { BringIntoViewRequester() }
+    var nameFocused by remember { mutableStateOf(false) }
+    val imeBottom = WindowInsets.ime.getBottom(density)
+    LaunchedEffect(nameFocused, imeBottom) {
+        if (nameFocused && imeBottom > 0) {
+            withFrameNanos { }
+            nameBringIntoView.bringIntoView()
+        }
+    }
+    BoxWithConstraints {
+        val compact = maxHeight < 360.dp * fontScale
+        val veryShort = maxHeight < 160.dp * fontScale
+        GardenBotanicalFrame(Modifier.fillMaxWidth(), contentPadding = PaddingValues(
+            horizontal = if (veryShort) 12.dp else 26.dp,
+            vertical = if (veryShort) 0.dp else if (compact) 4.dp else 30.dp),
+            cornerSize = 42.dp, skin = GardenPanelSkin.PLANTING_DIALOG) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(if (veryShort) 0.dp else if (compact) 4.dp else 12.dp)) {
+                if (!veryShort) Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                    Text("Gieo cây", Modifier.weight(1f), fontSize = if (compact) 18.sp else 22.sp, fontWeight = FontWeight.Bold, color = Deep)
+                    PlantingCloseButton(onDismiss)
                 }
-                Column(Modifier.weight(1f, fill = false).verticalScroll(rememberScrollState()),
+                Box(Modifier.weight(1f, fill = false).fillMaxWidth()) {
+                Column(Modifier.fillMaxWidth().padding(end = if (veryShort) 56.dp else 0.dp)
+                    .verticalScroll(rememberScrollState()),
                     horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    if (veryShort) Text("Gieo cây", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Deep)
                     GardenArtwork(GardenArt.SEED, Modifier.size(150.dp, 100.dp))
                     GardenBotanicalFrame(contentPadding = PaddingValues(horizontal = 18.dp, vertical = 8.dp), cornerSize = 18.dp) {
                         Text("${seed.name} · Còn $count", color = Deep, fontSize = 16.sp,
                             fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
                     }
                     Text("✏️ Tên cây · tùy chọn", color = Deep, fontSize = 17.sp, fontWeight = FontWeight.Bold, modifier = Modifier.fillMaxWidth())
-                    GardenTextField(name, { name = it }, "Tên cây tùy chọn", Modifier.fillMaxWidth(), placeholder = "Mầm bình yên")
-                    Text("Bỏ trống để dùng tên loài cây.", color = Deep, fontStyle = FontStyle.Italic, textAlign = TextAlign.Center)
+                    GardenTextField(name, { name = it }, "Tên cây tùy chọn", Modifier.fillMaxWidth()
+                        .bringIntoViewRequester(nameBringIntoView)
+                        .onFocusChanged { nameFocused = it.hasFocus }, placeholder = "Mầm bình yên")
+                    Text("Bỏ trống để dùng tên loài cây.", color = Muted, fontSize = 13.sp, textAlign = TextAlign.Center)
+                    Box(Modifier.fillMaxWidth()) {
+                        GardenFieldButton("Ô đất mục tiêu · Ô số " + (targetPlotId?.toString()?.padStart(2, '0') ?: "—") + " (trống)",
+                            { plotMenu = true }, Modifier.fillMaxWidth())
+                        DropdownMenu(expanded = plotMenu, onDismissRequest = { plotMenu = false }) {
+                            availablePlotIds.forEach { id ->
+                                DropdownMenuItem(text = { Text("Ô số " + id.toString().padStart(2, '0')) },
+                                    onClick = { onSelectPlot(id); plotMenu = false })
+                            }
+                        }
+                    }
                     GardenBotanicalFrame(contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
                         cornerSize = 18.dp, skin = GardenPanelSkin.HINT) {
                         Text("Gieo cây sẽ dùng 1 hạt trong túi.", color = Deep, fontSize = 15.sp,
                             fontStyle = FontStyle.Italic, textAlign = TextAlign.Center)
                     }
                 }
-                Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    GardenPaintedButton("Để sau", onDismiss, Modifier.weight(1f), primary = false)
-                    GardenPaintedButton("Gieo cây", { onPlant(name) }, Modifier.weight(1.2f), enabled = count > 0)
+                if (veryShort) PlantingCloseButton(onDismiss, Modifier.align(Alignment.TopEnd))
+                }
+                Row(Modifier.height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    GardenPaintedButton("Để sau", onDismiss, Modifier.weight(1f).fillMaxHeight(), primary = false)
+                    GardenPaintedButton("Gieo cây", { onPlant(name) }, Modifier.weight(1.2f).fillMaxHeight(), enabled = count > 0)
                 }
             }
         }
-        GardenBookHandles(Modifier.matchParentSize())
+
+    }
+}
+
+@Composable
+private fun PlantingCloseButton(onDismiss: () -> Unit, modifier: Modifier = Modifier) {
+    IconButton(onClick = onDismiss, modifier = modifier.size(48.dp)
+        .background(Color(0xFFF5FCF8), CircleShape)
+        .drawBehind {
+            drawCircle(Color(0xFFC9DDD2),
+                style = androidx.compose.ui.graphics.drawscope.Stroke(1.5.dp.toPx()))
+        }
+        .semantics { contentDescription = "Đóng gieo cây" }) {
+        Text("×", color = Deep, fontSize = 24.sp, fontWeight = FontWeight.Bold)
     }
 }
 
@@ -429,7 +413,7 @@ fun GardenScreenEmptyPreview() { MamXanhPreviewTheme { GardenScreen(GardenUiStat
 fun PlantingDialogPreview(background: (@Composable () -> Unit)? = null) {
     MamXanhPreviewTheme {
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            if (background == null) GardenForestScene(Modifier.fillMaxSize(), setting = ForestSetting.GARDEN)
+            if (background == null) MintBackdrop(Modifier.fillMaxSize()) {}
             else {
                 background()
                 Box(Modifier.matchParentSize().background(Color.Black.copy(alpha = .32f)))
@@ -442,7 +426,22 @@ fun PlantingDialogPreview(background: (@Composable () -> Unit)? = null) {
 @Preview(name = "Planting · large text, no stock", widthDp = 360, heightDp = 800, fontScale = 1.3f,
     device = "spec:width=360dp,height=800dp,dpi=160")
 @Composable
-fun PlantingDialogLargeTextPreview() { MamXanhPreviewTheme { Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { GardenForestScene(Modifier.fillMaxSize(), setting = ForestSetting.GARDEN); Box(PlantingDialogBounds) { PlantingParchment(seedCatalog.first { it.id == "cherry" }, 0, {}, {}) } } } }
+fun PlantingDialogLargeTextPreview() { MamXanhPreviewTheme { Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { MintBackdrop(Modifier.fillMaxSize()) {}; Box(PlantingDialogBounds) { PlantingParchment(seedCatalog.first { it.id == "cherry" }, 0, {}, {}) } } } }
+
+@Preview(name = "Planting · short window, large text", widthDp = 640, heightDp = 180,
+    fontScale = 1.3f, device = "spec:width=640dp,height=180dp,dpi=160")
+@Preview(name = "Planting · landscape IME height", widthDp = 640, heightDp = 97,
+    device = "spec:width=640dp,height=97dp,dpi=160")
+@Composable
+fun PlantingShortWindowPreview() {
+    MamXanhPreviewTheme {
+        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Box(Modifier.widthIn(max = 440.dp).fillMaxWidth(.92f)) {
+                PlantingParchment(seedCatalog.first { it.id == "cherry" }, 1, {}, {})
+            }
+        }
+    }
+}
 
 @Preview(name = "Nursery overview", widthDp = 360)
 @Composable

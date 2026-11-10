@@ -49,11 +49,9 @@ fun MamXanhAppContent(
     MaterialTheme(colorScheme = lightColorScheme(primary = Green, secondary = Color(0xFFFFA01A), background = Cream, surface = Color.White), typography = GardenTypography) {
         Scaffold(
             modifier = modifier,
-            containerColor = Color(0xFF073D36),
+            containerColor = Color(0xFFE9F7F2),
             bottomBar = {
-                if (selectedTree == null) {
-                    GardenTrailBar(app.destination, { onAppIntent(AppIntent.Navigate(it)) })
-                }
+                GardenTrailBar(app.destination, { onAppIntent(AppIntent.Navigate(it)) })
             }
         ) { padding ->
             SharedTransitionLayout(Modifier.fillMaxSize().padding(padding)) {
@@ -101,13 +99,25 @@ fun MamXanhAppContent(
                             wateringCanMl = dashboard.dashboard.wateringCanMl,
                             onIntent = { onTreeIntent(it) },
                             modifier = Modifier,
-                            sharedTreeModifier = treeSharedModifier
+                            sharedTreeModifier = treeSharedModifier,
+                            coins = wallet.coins,
+                            onPrevious = garden.garden.trees.takeIf { it.size > 1 }?.let { trees -> {
+                                val index = trees.indexOfFirst { it.id == routeTree.id }
+                                onAppIntent(AppIntent.OpenTree(trees[(index - 1 + trees.size) % trees.size].id))
+                            } },
+                            onNext = garden.garden.trees.takeIf { it.size > 1 }?.let { trees -> {
+                                val index = trees.indexOfFirst { it.id == routeTree.id }
+                                onAppIntent(AppIntent.OpenTree(trees[(index + 1) % trees.size].id))
+                            } }
                         )
                         else -> when (destination) {
                             AppDestination.HOME -> HomeScreen(state = dashboard, onIntent = onHomeIntent,
                                 fertilizerCount = wallet.inventory["fertilizer"] ?: 0, modifier = Modifier,
-                                sharedTreeModifier = treeSharedModifier)
-                            AppDestination.TASKS -> TasksScreen(tasks, onTasksIntent, Modifier)
+                                sharedTreeModifier = treeSharedModifier,
+                                taskTitle = tasks.tasks.firstOrNull { !it.doneToday && !it.finished }?.title ?: "Mọi việc đã xong hôm nay",
+                                canClaimBonus = tasks.canClaimDailyBonus && !tasks.isDailyBonusClaimed,
+                                onClaimBonus = { onTasksIntent(TasksIntent.ClaimBonus) })
+                            AppDestination.TASKS -> TasksScreen(tasks, onTasksIntent, Modifier, coins = wallet.coins)
                             AppDestination.GARDEN -> GardenScreen(gardenState, onGardenIntent, Modifier,
                                 treeTransitionModifier = { id ->
                                     Modifier.sharedElement(

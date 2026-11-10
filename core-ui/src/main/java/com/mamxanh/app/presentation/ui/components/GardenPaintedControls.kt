@@ -28,11 +28,11 @@ import com.mamxanh.app.presentation.ui.Deep
 fun GardenPaintedButton(text: String, onClick: () -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true, primary: Boolean = true) {
     val shape = RoundedCornerShape(50)
     Box(modifier.heightIn(min = 48.dp).alpha(if (enabled) 1f else .5f).clip(shape)
-        .background(Brush.verticalGradient(if (primary) listOf(Color(0xFF739747), Color(0xFF3E6B2F))
-            else listOf(Color(0xFFFFE9B7), Color(0xFFF7D59C))))
-        .border(1.5.dp, if (primary) Color(0xFF8DAB59) else Color(0xFFC89B61), shape)
+        .background(Brush.verticalGradient(if (primary) listOf(Color(0xFF3BA657), Color(0xFF006C38))
+            else listOf(Color(0xFFFAFDFB), Color(0xFFE7F4EC))))
+        .border(1.5.dp, if (primary) Color(0xFF4DA66B) else Color(0xFFCBDDD2), shape)
         .clickable(enabled = enabled, role = Role.Button, onClick = onClick), contentAlignment = Alignment.Center) {
-        GardenRichText(text, color = if (primary) Color(0xFFFFF5DB) else Deep, fontSize = 17.sp, lineHeight = 20.sp,
+        GardenRichText(text, color = if (primary) Color(0xFFFFFFFF) else Deep, fontSize = 17.sp, lineHeight = 20.sp,
             fontWeight = FontWeight.Bold, textAlign = TextAlign.Center,
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp))
     }

@@ -137,16 +137,16 @@ private fun AddTaskParchment(
 private fun AddTaskDialogHeader(onDismiss: () -> Unit = {}) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.Top) {
-            GardenArchedHeading("Gieo một việc nhỏ", Modifier.weight(1f))
+            Text("Gieo nhiệm vụ", Modifier.weight(1f).padding(top = 6.dp), fontSize = 22.sp, fontWeight = FontWeight.Bold, color = Deep)
             Box(Modifier.offset(x = 12.dp, y = (-12).dp).size(48.dp).clickable(role = Role.Button, onClick = onDismiss)
                 .semantics { contentDescription = "Đóng" }, contentAlignment = Alignment.Center) {
-                Box(Modifier.size(34.dp).background(Color(0xFFFFE9B7), CircleShape)
-                    .border(2.dp, Color(0xFFC89B61), CircleShape), contentAlignment = Alignment.Center) {
-                    Text("×", color = Color(0xFF684224), fontSize = 24.sp, lineHeight = 26.sp)
+                Box(Modifier.size(34.dp).background(Color(0xFFF8FCFA), CircleShape)
+                    .border(2.dp, Color(0xFFD2E3DA), CircleShape), contentAlignment = Alignment.Center) {
+                    Text("×", color = Deep, fontSize = 24.sp, lineHeight = 26.sp)
                 }
             }
         }
-        GardenArtwork(GardenArt.SEED, Modifier.size(70.dp, 42.dp).padding(top = 3.dp))
+        GardenArtwork(GardenArt.SEED, Modifier.size(110.dp, 70.dp).padding(top = 3.dp))
     }
 }
 
@@ -223,7 +223,7 @@ private fun TaskFormSection(title: String, emoji: String, content: @Composable C
         }
     } else {
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text("$emoji $title", color = Deep, fontWeight = FontWeight.Bold, fontSize = 15.sp, modifier = Modifier.width(120.dp))
+            Text("$emoji $title", color = Deep, fontWeight = FontWeight.Bold, fontSize = 15.sp, modifier = Modifier.width(102.dp))
             Column(Modifier.weight(1f), content = content)
         }
     }
@@ -270,7 +270,7 @@ fun AddTaskDialogPreview() { MamXanhPreviewTheme { AddTaskDialogPreviewContent()
 @Composable
 fun AddTaskDialogPreviewContent(initialKind: String = "DAILY", background: (@Composable () -> Unit)? = null) {
     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        if (background == null) GardenForestScene(Modifier.fillMaxSize(), false)
+        if (background == null) MintBackdrop(Modifier.fillMaxSize()) {}
         else {
             background()
             Box(Modifier.matchParentSize().background(Color.Black.copy(alpha = .32f)))

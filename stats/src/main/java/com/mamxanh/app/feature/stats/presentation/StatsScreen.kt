@@ -36,107 +36,67 @@ fun StatsScreen(state: StatsUiState, onIntent: (StatsIntent) -> Unit, modifier: 
         val day = Calendar.getInstance().apply { add(Calendar.DAY_OF_YEAR, -offset) }.get(Calendar.DAY_OF_WEEK)
         if (day == Calendar.SUNDAY) "CN" else "T$day"
     }
-    Box(modifier.fillMaxSize()) {
-        GardenSceneBackdrop(GardenScene.GROWTH_JOURNAL, Modifier.fillMaxSize())
-        GardenJournalPage(Modifier.fillMaxSize().padding(horizontal = 8.dp, vertical = 6.dp)) {
-            Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(14.dp)) {
-                    Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(5.dp)) {
-                        Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-                            Text("Nhật ký khu vườn", color = Deep, fontSize = 24.sp, fontWeight = FontWeight.Bold,
-                                textAlign = androidx.compose.ui.text.style.TextAlign.Center)
-                            GardenSprig(Modifier.align(Alignment.CenterStart).offset(x = (-14).dp).size(22.dp, 34.dp))
-                            GardenSprig(Modifier.align(Alignment.CenterEnd).offset(x = 14.dp).size(22.dp, 34.dp), mirrored = true)
-                        }
-                        Text("Mỗi ngày một chút, bạn đang lớn lên", color = Color(0xFF78552D), fontSize = 13.sp, fontStyle = FontStyle.Italic, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
-                    }
-            LazyColumn(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(18.dp), contentPadding = PaddingValues(bottom = 16.dp)) {
+    MintBackdrop(modifier.fillMaxSize()) {
+        Column(Modifier.fillMaxSize()) {
+            MintHeader("Nhật ký", s.coins)
+            LazyColumn(Modifier.weight(1f), contentPadding = PaddingValues(16.dp),
+                verticalArrangement = Arrangement.spacedBy(14.dp)) {
                 item {
-                    Box(Modifier.fillMaxWidth()) {
-                        Row(Modifier.fillMaxWidth().padding(end = 12.dp), horizontalArrangement = Arrangement.SpaceEvenly) {
-                            JourneyCard("", "Việc đã xong", s.total.toString(), "", Modifier.weight(1f))
-                            GardenSprig(Modifier.size(24.dp, 68.dp))
-                            JourneyCard("", "Cây trong vườn", s.treeCount.toString(), "", Modifier.weight(1f))
+                    GardenBotanicalFrame(Modifier.fillMaxWidth()) {
+                        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                            JourneyCard("✓", "Việc đã xong", s.total.toString(), "", Modifier.weight(1f))
+                            VerticalDivider(Modifier.height(54.dp))
+                            JourneyCard("🌱", "Cây trong vườn", s.treeCount.toString(), "", Modifier.weight(1f))
                         }
-                        if (!firstUse) PressedGinkgo(Modifier.align(Alignment.TopEnd).offset(x = 16.dp, y = (-8).dp).size(44.dp, 72.dp))
                     }
-                    HorizontalDivider(color = Color(0xFFBC9659).copy(alpha = .4f))
                 }
                 item {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        GardenSprig(Modifier.size(22.dp, 34.dp))
-                        GardenBotanicalFrame(Modifier.weight(1f),
-                            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 6.dp)) {
-                            Text("Nhịp xanh 7 ngày", Modifier.fillMaxWidth(), color = Deep, fontWeight = FontWeight.Bold, fontSize = 18.sp, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
-                        }
-                        IconButton(onClick = { onIntent(StatsIntent.Refresh) }, modifier = Modifier.semantics {
-                            stateDescription = if (state.isLoading) "Đang làm mới thống kê" else "Sẵn sàng làm mới"
-                            liveRegion = LiveRegionMode.Polite
-                        }) {
-                            Box(Modifier.size(34.dp).background(Color(0xFFFFDF9D), RoundedCornerShape(50))
-                                .border(1.5.dp, Color(0xFFC99654), RoundedCornerShape(50)), contentAlignment = Alignment.Center) {
-                                Icon(Icons.Rounded.Refresh, "Làm mới thống kê", tint = Green)
+                    GardenBotanicalFrame(Modifier.fillMaxWidth(), contentPadding = PaddingValues(14.dp)) {
+                        Column {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text("Nhịp xanh 7 ngày", Modifier.weight(1f), color = Deep, fontSize = 21.sp, fontWeight = FontWeight.Bold)
+                                IconButton(onClick = { onIntent(StatsIntent.Refresh) }, modifier = Modifier.semantics {
+                                    stateDescription = if(state.isLoading) "Đang làm mới thống kê" else "Sẵn sàng làm mới"
+                                    liveRegion = LiveRegionMode.Polite
+                                }) { Icon(Icons.Rounded.Refresh, "Làm mới thống kê", tint = Green) }
+                            }
+                            Box {
+                                WeekSproutChart(recent, days, Modifier.padding(top = 4.dp))
+                                if(state.isLoading) LinearProgressIndicator(Modifier.fillMaxWidth().height(3.dp).clearAndSetSemantics {})
                             }
                         }
                     }
-                    Box(Modifier.fillMaxWidth()) {
-                        WeekSproutChart(recent, days, Modifier.padding(top = 8.dp))
-                        if (state.isLoading) LinearProgressIndicator(
-                            Modifier.fillMaxWidth().height(4.dp).align(Alignment.TopCenter).clearAndSetSemantics {},
-                            color = Green, trackColor = Color(0xFFEAD8AD))
-                    }
-                    HorizontalDivider(color = Color(0xFF8B6A39))
                 }
-                if (!firstUse) item {
-                    Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically) {
-                        GardenSprig(Modifier.size(24.dp, 34.dp))
-                        GardenBotanicalFrame(Modifier.weight(1f),
-                            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 6.dp)) {
-                            Text("Tuần này", Modifier.fillMaxWidth(), textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-                                color = Deep, fontSize = 22.sp, fontWeight = FontWeight.Bold)
+                if(!firstUse) item {
+                    GardenBotanicalFrame(Modifier.fillMaxWidth(), contentPadding = PaddingValues(14.dp)) {
+                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Text("Tuần này", color = Deep, fontSize = 22.sp, fontWeight = FontWeight.Bold)
+                            listOf("☑ ${s.week} việc hoàn thành", "🌱 ${s.today} việc hôm nay",
+                                "📅 ${s.streak} ngày đều đặn", "🪙 ${s.coins} xu trong túi").forEachIndexed { index, text ->
+                                if(index > 0) HorizontalDivider(color = Color(0xFFE0EAE5))
+                                Row(Modifier.fillMaxWidth().heightIn(min = 36.dp), verticalAlignment = Alignment.CenterVertically) {
+                                    Text(text, Modifier.weight(1f), color = Deep, fontSize = 16.sp)
+                                }
+                            }
                         }
-                        GardenArtwork(GardenArt.FLOWERS, Modifier.size(32.dp, 38.dp))
-                    }
-                    Spacer(Modifier.height(14.dp))
-                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Text("☑ ${s.week} việc hoàn thành", Modifier.weight(1f), color = Deep, fontSize = 12.5.sp)
-                        Text("🌱 ${s.today} việc hôm nay", Modifier.weight(1f), color = Deep, fontSize = 12.5.sp)
-                    }
-                    Spacer(Modifier.height(12.dp))
-                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Text("📅 ${s.streak} ngày đều đặn", Modifier.weight(1f), color = Deep, fontSize = 12.5.sp)
-                        Text("🪙 ${s.coins} xu trong túi", Modifier.weight(1f), color = Deep, fontSize = 12.5.sp)
                     }
                 }
                 item {
-                    if (firstUse) {
-                        GardenBotanicalFrame(Modifier.fillMaxWidth(),
-                            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 10.dp)) {
-                            Row(verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                                GardenSprig(Modifier.size(26.dp, 38.dp))
-                                Text("Hãy bắt đầu chăm cây để ghi lại hành trình của bạn nhé!",
-                                    Modifier.weight(1f), textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-                                    color = Color(0xFF78552D), fontSize = 13.sp, fontStyle = FontStyle.Italic)
-                            }
-                        }
-                    } else {
-                        HorizontalDivider(color = Color(0xFFBC9659).copy(alpha = .4f))
-                        Text("Số liệu được lưu trên thiết bị", Modifier.fillMaxWidth().padding(top = 14.dp),
-                            textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-                            color = Color(0xFF78552D), fontSize = 13.sp, fontStyle = FontStyle.Italic)
-                    }
+                    if(firstUse) GardenBotanicalFrame(Modifier.fillMaxWidth(), skin = GardenPanelSkin.HINT) {
+                        Text("🌱 Hãy bắt đầu chăm cây để ghi lại hành trình của bạn nhé!",
+                            color = Deep, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
+                    } else Text("Số liệu được lưu trên thiết bị", Modifier.fillMaxWidth(),
+                        color = Muted, fontSize = 13.sp, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
                 }
-            }
             }
         }
-        GardenArtwork(GardenArt.SPROUT, Modifier.align(Alignment.TopCenter).padding(top = 16.dp).size(26.dp))
     }
 }
 
 @Composable
 private fun JourneyCard(emoji: String, title: String, value: String, caption: String, modifier: Modifier = Modifier) {
     Column(modifier, horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(value, Modifier.fillMaxWidth(), color = Deep, fontSize = 40.sp, fontWeight = FontWeight.Bold,
+        Text("$emoji $value", Modifier.fillMaxWidth(), color = Green, fontSize = 40.sp, fontWeight = FontWeight.Bold,
             textAlign = androidx.compose.ui.text.style.TextAlign.Center)
         Text(title, color = Deep, fontSize = 15.sp, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
         if (caption.isNotBlank()) Text(caption, color = Muted, fontSize = 11.sp)

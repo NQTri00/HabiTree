@@ -22,6 +22,10 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import com.mamxanh.app.presentation.ui.components.MintBackdrop
+import com.mamxanh.app.presentation.ui.components.MintHeader
+import com.mamxanh.app.presentation.ui.components.MintProgress
+import com.mamxanh.app.presentation.ui.components.MintSegments
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -52,74 +56,60 @@ import com.mamxanh.app.presentation.ui.components.GardenSceneBackdrop
 import com.mamxanh.app.presentation.ui.components.GardenJournalPage
 
 @Composable
-fun TasksScreen(state: TasksUiState, onIntent: (TasksIntent) -> Unit, modifier: Modifier = Modifier) {
+fun TasksScreen(state: TasksUiState, onIntent: (TasksIntent) -> Unit, modifier: Modifier = Modifier, coins: Int = 0) {
     var pendingDeleteId by rememberSaveable { mutableStateOf<Long?>(null) }
     val filtered = state.tasks.filter { task ->
-        when (state.filter) {
+        when(state.filter) {
             TaskFilter.ALL -> true
             TaskFilter.HABIT -> task.kind == "HABIT"
             TaskFilter.DAILY -> task.kind == "DAILY"
             TaskFilter.ONCE -> task.kind == "TODO"
+            TaskFilter.COMPLETED -> task.doneToday || task.finished
         }
     }
-    val done = state.tasks.count { it.doneToday || it.finished }
-    val daily = state.tasks.filter { it.kind == "DAILY" }
-    Box(modifier.fillMaxSize()) {
-        GardenSceneBackdrop(GardenScene.JOURNAL, Modifier.fillMaxSize())
-        GardenJournalPage(Modifier.fillMaxSize().padding(horizontal = 8.dp, vertical = 6.dp)) {
-            Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            LazyColumn(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(12.dp), contentPadding = PaddingValues(bottom = 12.dp)) {
-                item {
-                    TaskQuestHeader(done, state.tasks.size, done.toFloat() / state.tasks.size.coerceAtLeast(1),
-                        state.tasks.isNotEmpty() && done == state.tasks.size, {})
-                }
-                item {
-                    Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(5.dp)) {
-                        listOf(TaskFilter.ALL to "Tất cả", TaskFilter.HABIT to "Thói quen", TaskFilter.DAILY to "Hằng ngày", TaskFilter.ONCE to "Một lần").forEach { (filter, label) ->
-                            GardenChoiceChip(label, state.filter == filter,
-                                { onIntent(TasksIntent.SetFilter(filter)) })
-                        }
+    val done = filtered.count { it.doneToday || it.finished }
+    MintBackdrop(modifier.fillMaxSize()) {
+        Column(Modifier.fillMaxSize()) {
+            MintHeader("Việc nhỏ", coins)
+            MintSegments(listOf("Hôm nay", "Thói quen", "Đã xong"),
+                when(state.filter) { TaskFilter.HABIT -> 1; TaskFilter.COMPLETED -> 2; else -> 0 },
+                { onIntent(TasksIntent.SetFilter(listOf(TaskFilter.ALL, TaskFilter.HABIT, TaskFilter.COMPLETED)[it])) },
+                Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
+            GardenBotanicalFrame(Modifier.padding(horizontal = 16.dp).fillMaxWidth(),
+                contentPadding = PaddingValues(12.dp)) {
+                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    GardenArtwork(GardenArt.SPROUT, Modifier.size(30.dp))
+                    Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                        Text("Đã hoàn thành $done / ${filtered.size} việc", color = Deep, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                        MintProgress(done.toFloat() / filtered.size.coerceAtLeast(1), Modifier.fillMaxWidth())
                     }
                 }
-                if (state.isLoading && state.tasks.isEmpty()) item { LinearProgressIndicator(Modifier.fillMaxWidth()) }
-                if (!state.isLoading && filtered.isEmpty()) item {
-                    Column(Modifier.fillMaxWidth().padding(vertical = if (state.tasks.isEmpty()) 24.dp else 4.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                        if (state.tasks.isEmpty()) GardenArtwork(GardenArt.SPROUT, Modifier.size(36.dp))
-                        else TaskFilterSearchArtwork()
-                        Text(if (state.tasks.isEmpty()) "Gieo một việc nhỏ hôm nay" else "Không có việc nào phù hợp",
-                            modifier = Modifier.widthIn(max = 200.dp), color = Deep, fontWeight = FontWeight.Bold,
-                            textAlign = androidx.compose.ui.text.style.TextAlign.Center, lineHeight = 20.sp)
-                        if (state.tasks.isEmpty()) {
-                            Text("Mỗi bước nhỏ đều giúp bạn lớn lên.", color = Muted, fontSize = 13.sp)
-                        } else {
-                            GardenPaintedButton("Xem tất cả", { onIntent(TasksIntent.SetFilter(TaskFilter.ALL)) },
-                                primary = false)
-                        }
+            }
+            LazyColumn(Modifier.weight(1f), contentPadding = PaddingValues(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                if(state.isLoading && state.tasks.isEmpty()) item { LinearProgressIndicator(Modifier.fillMaxWidth()) }
+                if(!state.isLoading && filtered.isEmpty()) item {
+                    Column(Modifier.fillMaxWidth().padding(vertical = 24.dp), horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                        GardenArtwork(GardenArt.SEED, Modifier.size(110.dp))
+                        Text(if(state.filter == TaskFilter.HABIT) "Chưa có việc thói quen" else "Chưa có việc nào",
+                            color = Deep, fontSize = 21.sp, fontWeight = FontWeight.Bold,
+                            textAlign = androidx.compose.ui.text.style.TextAlign.Center)
+                        Text("Hãy thêm việc nhỏ để xây dựng thói quen mỗi ngày.", color = Deep,
+                            textAlign = androidx.compose.ui.text.style.TextAlign.Center)
+                        if(state.tasks.isNotEmpty()) GardenPaintedButton("Xem tất cả",
+                            { onIntent(TasksIntent.SetFilter(TaskFilter.ALL)) }, primary = false)
                     }
                 }
                 items(filtered, key = { it.id }) { task ->
                     TaskCard(task, { onIntent(TasksIntent.Complete(task.id)) }, { pendingDeleteId = task.id }, task.finished)
                 }
-                val completed = filtered.filter { it.doneToday || it.finished }
-                if (completed.isNotEmpty()) {
-                    item(key = "completed-heading") {
-                        GardenBotanicalFrame(Modifier.fillMaxWidth(),
-                            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp),
-                            skin = com.mamxanh.app.presentation.ui.components.GardenPanelSkin.HINT) {
-                            Text("✓ Đã xong · ${completed.size}", color = Deep, fontWeight = FontWeight.Bold)
-                        }
-                    }
-                    items(completed, key = { "completed-${it.id}" }) { task ->
-                        TaskCard(task, {}, { pendingDeleteId = task.id }, readOnly = true)
-                    }
-                }
-                if (daily.isNotEmpty() && state.filter in setOf(TaskFilter.ALL, TaskFilter.DAILY)) item {
-                    DailyRewardCard(state.canClaimDailyBonus && !state.isLoading,
-                        { onIntent(TasksIntent.ClaimBonus) }, state.isDailyBonusClaimed)
+                if(state.tasks.any { it.kind == "DAILY" } && state.filter in setOf(TaskFilter.ALL, TaskFilter.DAILY)) item {
+                    DailyRewardCard(state.canClaimDailyBonus && !state.isLoading, { onIntent(TasksIntent.ClaimBonus) }, state.isDailyBonusClaimed)
                 }
             }
-            GardenPaintedButton("+ Thêm việc", { onIntent(TasksIntent.ShowAddDialog) }, Modifier.fillMaxWidth())
-            }
+            GardenPaintedButton("+ Thêm việc", { onIntent(TasksIntent.ShowAddDialog) },
+                Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 8.dp))
         }
     }
     state.tasks.firstOrNull { it.id == pendingDeleteId }?.let { task ->
@@ -147,37 +137,11 @@ fun TasksScreen(state: TasksUiState, onIntent: (TasksIntent) -> Unit, modifier: 
 
 @Composable
 private fun TaskQuestHeader(done: Int, total: Int, progress: Float, allComplete: Boolean, onAddTask: () -> Unit) {
-    Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-            Text("Việc nhỏ, lớn lên", color = Deep, fontSize = 25.sp, fontWeight = FontWeight.Bold)
-            GardenSprig(Modifier.align(Alignment.CenterEnd).offset(x = 14.dp).size(24.dp, 36.dp), mirrored = true)
+    GardenBotanicalFrame(Modifier.fillMaxWidth()) {
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text("Đã hoàn thành $done / $total việc", fontWeight = FontWeight.Bold, color = Deep)
+            MintProgress(progress, Modifier.fillMaxWidth())
         }
-        Text("$done / $total việc hôm nay", color = Deep, fontSize = 16.sp, lineHeight = 20.sp)
-        Canvas(Modifier.fillMaxWidth().height(44.dp).semantics {
-            contentDescription = "$done trên $total việc đã hoàn thành"
-        }) {
-            val y = size.height * .84f
-            val stem = Path().apply {
-                moveTo(size.width * .04f,y)
-                cubicTo(size.width*.28f,y-9.dp.toPx(),size.width*.60f,y+9.dp.toPx(),size.width*.96f,y)
-            }
-            drawPath(stem,Color(0xFFB38351),style=androidx.compose.ui.graphics.drawscope.Stroke(4.dp.toPx(),cap=StrokeCap.Round))
-            val leafCount = total.coerceIn(0, 12)
-            repeat(leafCount) { index ->
-                val x = size.width * (.08f + (index + .15f) * .84f / leafCount)
-                val leafWidth = minOf(23.dp.toPx(), size.width * .65f / leafCount)
-                val leaf = Path().apply {
-                    moveTo(x,y)
-                    cubicTo(x-leafWidth*.3f,y-22.dp.toPx(),x+leafWidth*.4f,y-27.dp.toPx(),x+leafWidth,y-27.dp.toPx())
-                    cubicTo(x+leafWidth*.87f,y-10.dp.toPx(),x+leafWidth*.48f,y-3.dp.toPx(),x,y)
-                }
-                val filled = progress >= (index + 1).toFloat() / leafCount
-                drawPath(leaf,if(filled) Color(0xFF93B43B) else Color(0xFFF7E3BE))
-                drawPath(leaf,if(filled) Color(0xFF7E9E37) else Color(0xFFDFC29C),
-                    style=androidx.compose.ui.graphics.drawscope.Stroke(1.dp.toPx()))
-            }
-        }
-        if (allComplete) Text("Mọi việc đã xong. Khu vườn cảm ơn bạn!", color = Green, fontSize = 12.sp)
     }
 }
 
@@ -238,10 +202,10 @@ private fun TaskCard(task: Task, onComplete: () -> Unit, onDelete: () -> Unit, r
     val done = task.doneToday || readOnly
     Column {
         Row(Modifier.fillMaxWidth().heightIn(min = if (readOnly) 56.dp else 64.dp)
-            .background(if (readOnly) Color(0xFFE5EAC6) else Color.Transparent, RoundedCornerShape(14.dp))
+            .background(if (done) Color(0xFFEAF5DF) else Color(0xFFF9FDFC), RoundedCornerShape(18.dp))
             .combinedClickable(onClick = { if (!done) onComplete() }, onLongClickLabel = "Xóa nhiệm vụ", onLongClick = onDelete)
             .semantics { customActions = listOf(CustomAccessibilityAction("Xóa nhiệm vụ") { onDelete(); true }) }
-            .padding(vertical = 4.dp), verticalAlignment = Alignment.CenterVertically) {
+            .padding(horizontal = 8.dp, vertical = 6.dp), verticalAlignment = Alignment.CenterVertically) {
             GardenArtwork(when {
                 task.title.contains("bộ", ignoreCase = true) -> GardenArt.BOOTS
                 task.title.contains("nước", ignoreCase = true) -> GardenArt.GLASS
@@ -261,7 +225,7 @@ private fun TaskCard(task: Task, onComplete: () -> Unit, onDelete: () -> Unit, r
                 cornerSize = 9.dp, skin = com.mamxanh.app.presentation.ui.components.GardenPanelSkin.PRICE) {
                 Text("🪙+${task.reward} xu", color = Deep, fontSize = 11.sp, lineHeight = 14.sp, fontWeight = FontWeight.Bold)
             }
-            IconButton(onClick = onComplete, enabled = !done, modifier = Modifier.size(36.dp, 48.dp).semantics { contentDescription = if (done) "Đã hoàn thành" else "Hoàn thành nhiệm vụ" }) {
+            IconButton(onClick = onComplete, enabled = !done, modifier = Modifier.size(48.dp).semantics { contentDescription = if (done) "Đã hoàn thành" else "Hoàn thành nhiệm vụ" }) {
                 Surface(shape = CircleShape, color = if (done) Color(0xFF7B9D3D) else Color.Transparent,
                     border = if (done) null else BorderStroke(1.5.dp,Color(0xFF9B7854)), modifier = Modifier.size(24.dp)) {
                     if (done) Icon(Icons.Rounded.Check, null, tint = Color(0xFFFFF5DC), modifier = Modifier.padding(3.dp))
@@ -269,7 +233,7 @@ private fun TaskCard(task: Task, onComplete: () -> Unit, onDelete: () -> Unit, r
             }
 
         }
-        HorizontalDivider(color = Color(0xFFBE9454).copy(alpha = .45f), thickness = .6.dp)
+
     }
 }
 

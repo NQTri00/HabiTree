@@ -6,68 +6,62 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.*
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Storefront
+import androidx.compose.material.icons.filled.MenuBook
+import androidx.compose.material.icons.filled.FactCheck
+import androidx.compose.material.icons.filled.Park
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.mamxanh.app.presentation.ui.components.GardenArt
-import com.mamxanh.app.presentation.ui.components.GardenArtwork
 
 @Composable
 fun GardenTrailBar(selected: AppDestination, onNavigate: (AppDestination) -> Unit, modifier: Modifier = Modifier) {
-    val fontScale = LocalDensity.current.fontScale
-    val labelLines = if (fontScale > 1.15f) 2 else 1
-    val labelHeight = (if (labelLines > 1) 20.dp else 17.dp) * fontScale * labelLines
-    val tabHeight = (30.dp + labelHeight + 24.dp).coerceAtLeast(74.dp)
     val shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
-    Row(modifier.fillMaxWidth()
-        .background(Brush.verticalGradient(listOf(Color(0xFF276452), Color(0xFF164C3F))), shape)
-        .border(1.dp, Color(0xFF638D6B), shape)
-        .navigationBarsPadding().padding(horizontal = 5.dp, vertical = 2.dp).selectableGroup(),
-        horizontalArrangement = Arrangement.spacedBy(1.dp)) {
+    Row(modifier.fillMaxWidth().background(Color(0xFFF9FDFC), shape)
+        .border(1.dp, Color(0xFFDFEAE5), shape).navigationBarsPadding()
+        .padding(horizontal = 4.dp, vertical = 4.dp).selectableGroup()) {
         AppDestination.entries.forEach { destination ->
-            val active = selected == destination
-            Box(Modifier.weight(1f).height(tabHeight).selectable(active, role = Role.Tab, onClick = { onNavigate(destination) }),
-                contentAlignment = Alignment.Center) {
-                if (active) Box(Modifier.align(Alignment.BottomCenter).padding(bottom = 5.dp)
-                    .width(48.dp).height(4.dp).background(Color(0xFFFFDE75), RoundedCornerShape(50)))
-                Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(vertical = 6.dp)) {
-                    GardenArtwork(when (destination) {
-                        AppDestination.HOME -> GardenArt.SPROUT
-                        AppDestination.TASKS -> GardenArt.CHECKLIST
-                        AppDestination.GARDEN -> GardenArt.TREE
-                        AppDestination.SHOP -> GardenArt.SHOP
-                        AppDestination.STATS -> GardenArt.JOURNAL
-                    }, Modifier.size(30.dp))
-                    Text(when (destination) {
-                        AppDestination.HOME -> "Vườn"
-                        AppDestination.TASKS -> "Việc"
-                        AppDestination.GARDEN -> "Cây"
-                        AppDestination.SHOP -> "Tiệm"
-                        AppDestination.STATS -> if (labelLines > 1) "Nhật\nký" else "Nhật ký"
-                    }, Modifier.fillMaxWidth().height(labelHeight), color = Color(0xFFFFEBC0),
-                        fontSize = 14.sp, lineHeight = 17.sp, fontWeight = FontWeight.Normal,
-                        textAlign = TextAlign.Center, maxLines = labelLines, overflow = TextOverflow.Ellipsis)
-                }
+            val active = destination == selected
+            val icon = when(destination) {
+                AppDestination.HOME -> if(active) Icons.Filled.Home else Icons.Outlined.Home
+                AppDestination.TASKS -> if(active) Icons.Filled.FactCheck else Icons.Outlined.FactCheck
+                AppDestination.GARDEN -> if(active) Icons.Filled.Park else Icons.Outlined.Park
+                AppDestination.SHOP -> if(active) Icons.Filled.Storefront else Icons.Outlined.Storefront
+                AppDestination.STATS -> if(active) Icons.Filled.MenuBook else Icons.Outlined.MenuBook
+            }
+            val label = when(destination) {
+                AppDestination.HOME -> "Vườn"; AppDestination.TASKS -> "Việc"
+                AppDestination.GARDEN -> "Cây"; AppDestination.SHOP -> "Tiệm"; AppDestination.STATS -> "Nhật ký"
+            }
+            Column(Modifier.weight(1f).heightIn(min = 60.dp)
+                .selectable(active, role = Role.Tab, onClick = { onNavigate(destination) })
+                .padding(top = 4.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                Icon(icon, null, Modifier.size(25.dp), tint = if(active) Color(0xFF08753D) else Color(0xFF475569))
+                Text(label, Modifier.fillMaxWidth().padding(top = 2.dp), color = if(active) Color(0xFF08753D) else Color(0xFF334155),
+                    fontSize = 11.sp, lineHeight = 14.sp, textAlign = TextAlign.Center,
+                    fontWeight = if(active) FontWeight.Bold else FontWeight.Normal)
+                Box(Modifier.padding(top = 3.dp).width(40.dp).height(3.dp)
+                    .background(if(active) Color(0xFF08753D) else Color.Transparent, RoundedCornerShape(50)))
             }
         }
     }
 }
 
-@Preview(name = "Reference navigation", widthDp = 360)
+@Preview(widthDp = 360, device = "spec:width=360dp,height=70dp,dpi=160")
 @Composable
 fun GardenTrailBarPreview() { MamXanhPreviewTheme { GardenTrailBar(AppDestination.HOME, {}) } }
-
-@Preview(name = "Navigation · large text", widthDp = 360, fontScale = 1.3f)
+@Preview(widthDp = 320, fontScale = 1.3f, device = "spec:width=320dp,height=90dp,dpi=160")
 @Composable
 fun GardenTrailBarLargeTextPreview() { MamXanhPreviewTheme { GardenTrailBar(AppDestination.STATS, {}) } }

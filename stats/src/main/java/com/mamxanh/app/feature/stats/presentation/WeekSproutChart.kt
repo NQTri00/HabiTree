@@ -32,7 +32,7 @@ import com.mamxanh.app.presentation.ui.components.GardenArtwork
 @Composable
 internal fun WeekSproutChart(counts: List<Int>, days: List<String>, modifier: Modifier = Modifier) {
     val values = counts.map { it.coerceAtLeast(0) }
-    val axisMax = ((((values.maxOrNull() ?: 0).coerceAtLeast(3).toLong() + 2) / 3) * 3)
+    val axisMax = 3
     val density = LocalDensity.current
     val measurer = rememberTextMeasurer(cacheSize = 16)
     val countStyle = LocalTextStyle.current.copy(fontSize = 13.sp, lineHeight = 16.sp, fontWeight = FontWeight.Bold)
@@ -69,10 +69,10 @@ internal fun WeekSproutChart(counts: List<Int>, days: List<String>, modifier: Mo
                         val height = plotHeight.toPx()
                         (0..3).forEach { tick ->
                             val y = top + height * (1f - tick / 3f)
-                            drawLine(Color(0xFFB58C54).copy(alpha = if (tick == 0) .85f else .25f),
+                            drawLine(Color(0xFF9EB6AA).copy(alpha = if (tick == 0) .85f else .25f),
                                 Offset(0f, y), Offset(size.width, y), 1.dp.toPx())
                         }
-                        drawLine(Color(0xFF8B6A39), Offset(0f, top), Offset(0f, top + height), 1.dp.toPx())
+                        drawLine(Color(0xFF82988D), Offset(0f, top), Offset(0f, top + height), 1.dp.toPx())
                     }
                     Row(Modifier.fillMaxSize(), horizontalArrangement = Arrangement.spacedBy(7.dp),
                         verticalAlignment = Alignment.Bottom) {
@@ -80,12 +80,12 @@ internal fun WeekSproutChart(counts: List<Int>, days: List<String>, modifier: Mo
                             Column(Modifier.weight(1f).fillMaxHeight().semantics(mergeDescendants = true) {
                                 contentDescription = "${days.getOrElse(index) { "" }}: $count việc hoàn thành"
                             }, horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Bottom) {
-                                Text(count.toString(), Modifier.fillMaxWidth(), color = Deep,
+                                Text(if (count > axisMax) "$count↑" else count.toString(), Modifier.fillMaxWidth(), color = Deep,
                                     style = countStyle, textAlign = TextAlign.Center)
-                                if (count > 0) GardenArtwork(GardenArt.SPROUT, Modifier.width(26.dp).height(18.dp))
-                                Box(Modifier.width(27.dp).height(if (count == 0) 0.dp else plotHeight * (count.toFloat() / axisMax))
+
+                                Box(Modifier.width(27.dp).height(if (count == 0) 0.dp else plotHeight * (count.toFloat() / axisMax).coerceAtMost(1f))
                                     .clip(RoundedCornerShape(topStart = 5.dp, topEnd = 5.dp))
-                                    .background(Brush.horizontalGradient(listOf(Color(0xFF789C22), Color(0xFFA6BD45), Color(0xFF6B9022)))))
+                                    .background(Brush.horizontalGradient(listOf(Color(0xFF8BD32C), Color(0xFFB5E65A), Color(0xFF94D83B)))))
                             }
                         }
                     }

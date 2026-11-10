@@ -44,6 +44,7 @@ class GardenViewModel(private val repository: GardenRepository) : ViewModel() {
                         }
                         val garden = withContext(Dispatchers.IO) { LoadGarden(repository)() }
                         _uiState.value = GardenUiState(garden, false, when {
+                            changed && intent is GardenIntent.Plant -> "Đã gieo cây!\nĐã trồng " + (intent.name.ifBlank { "mầm mới" }) + " tại ô " + (intent.plotId?.toString()?.padStart(2, '0') ?: garden.plots.firstOrNull { it.treeId == garden.trees.maxByOrNull { tree -> tree.id }?.id }?.id ?: "")
                             changed -> null
                             intent is GardenIntent.UnlockPlot -> "Không thể mở ô trồng. Hãy kiểm tra số xu hiện có."
                             else -> "Chưa thể gieo cây. Hãy kiểm tra hạt trong túi và ô trồng còn trống."
