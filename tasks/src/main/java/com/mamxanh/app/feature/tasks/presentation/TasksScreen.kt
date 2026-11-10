@@ -128,6 +128,8 @@ fun TasksScreen(state: TasksUiState, onIntent: (TasksIntent) -> Unit, modifier: 
         )
     }
     if (state.isAddingTask) AddTaskDialog(
+        draft = state.draft,
+        onDraftChange = { onIntent(TasksIntent.UpdateDraft(it)) },
         onDismiss = { onIntent(TasksIntent.DismissAddDialog) },
         onSave = { title, kind, category, reward, frequency, due ->
             onIntent(TasksIntent.Add(title, kind, category, reward, frequency, due))

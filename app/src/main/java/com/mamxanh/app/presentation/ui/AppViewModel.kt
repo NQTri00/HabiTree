@@ -1,11 +1,18 @@
 package com.mamxanh.app.presentation.ui
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-class AppViewModel : ViewModel() {
-    private val _uiState = MutableStateFlow(AppUiState())
+class AppViewModel(private val savedState: SavedStateHandle) : ViewModel() {
+    private fun destination(name: String?): AppDestination? = AppDestination.entries.firstOrNull { it.name == name }
+
+    private val _uiState = MutableStateFlow(AppUiState(
+        destination = destination(savedState["destination"]) ?: AppDestination.HOME,
+        backStack = savedState.get<ArrayList<String>>("backStack").orEmpty().mapNotNull(::destination),
+        selectedTreeId = savedState["selectedTreeId"]
+    ))
     val uiState = _uiState.asStateFlow()
 
     fun dispatch(intent: AppIntent) {
@@ -22,5 +29,9 @@ class AppViewModel : ViewModel() {
             AppIntent.DismissMessage -> current.copy(message = "")
             is AppIntent.ShowMessage -> current.copy(message = intent.message)
         }
+        // Store only navigation primitives; transient feedback is not replayed after process death.
+        savedState["destination"] = _uiState.value.destination.name
+        savedState["backStack"] = ArrayList(_uiState.value.backStack.map { it.name })
+        savedState["selectedTreeId"] = _uiState.value.selectedTreeId
     }
 }

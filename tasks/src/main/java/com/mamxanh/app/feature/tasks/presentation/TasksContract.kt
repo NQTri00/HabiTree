@@ -9,6 +9,7 @@ data class TasksUiState(
     val isLoading: Boolean = true,
     val filter: TaskFilter = TaskFilter.ALL,
     val isAddingTask: Boolean = false,
+    val draft: List<String> = emptyList(),
     val isDailyBonusClaimed: Boolean = false,
     val canClaimDailyBonus: Boolean = false
 )
@@ -17,6 +18,7 @@ sealed interface TasksIntent {
     data object Refresh : TasksIntent
     data object ShowAddDialog : TasksIntent
     data object DismissAddDialog : TasksIntent
+    data class UpdateDraft(val values: List<String>) : TasksIntent
     data class SetFilter(val filter: TaskFilter) : TasksIntent
     data class Add(val title: String, val kind: String, val category: String, val reward: Int, val frequency: String, val due: String) : TasksIntent
     data class Delete(val id: Long) : TasksIntent

@@ -38,8 +38,15 @@ import com.mamxanh.app.presentation.ui.components.*
 private val TaskDialogBounds = Modifier.widthIn(max = 480.dp).fillMaxWidth(.94f).heightIn(max = 700.dp)
 
 @Composable
-fun AddTaskDialog(onDismiss: () -> Unit, onSave: (String, String, String, Int, String, String) -> Unit) {
-    val form = rememberSaveable(saver = AddTaskFormSaver) { AddTaskFormState() }
+fun AddTaskDialog(
+    onDismiss: () -> Unit, onSave: (String, String, String, Int, String, String) -> Unit,
+    draft: List<String> = emptyList(), onDraftChange: (List<String>) -> Unit = {}
+) {
+    val form = rememberSaveable(saver = AddTaskFormSaver) { restoreTaskForm(draft) }
+    val updateDraft by rememberUpdatedState(onDraftChange)
+    LaunchedEffect(form) {
+        snapshotFlow { form.savedValues() }.collect { updateDraft(it) }
+    }
     var confirmingDiscard by rememberSaveable { mutableStateOf(false) }
     val requestDismiss = {
         if (form.isDirty) confirmingDiscard = true else onDismiss()
@@ -252,11 +259,17 @@ private class AddTaskFormState(
             reward != "10" || frequency != "EVERY_DAY" || due.isNotEmpty()
 }
 
-private val AddTaskFormSaver = listSaver<AddTaskFormState, String>(
-    save = { listOf(it.title, it.kind, it.category, it.reward, it.frequency, it.due, it.validationRequested.toString()) },
-    restore = { values -> AddTaskFormState(values[0], values[1], values[2], values[3], values[4], values[5]).apply {
+private fun AddTaskFormState.savedValues() =
+    listOf(title, kind, category, reward, frequency, due, validationRequested.toString())
+
+private fun restoreTaskForm(values: List<String>): AddTaskFormState =
+    if (values.size < 6) AddTaskFormState()
+    else AddTaskFormState(values[0], values[1], values[2], values[3], values[4], values[5]).apply {
         validationRequested = values.getOrNull(6)?.toBooleanStrictOrNull() ?: false
-    } }
+    }
+
+private val AddTaskFormSaver = listSaver<AddTaskFormState, String>(
+    save = { it.savedValues() }, restore = ::restoreTaskForm
 )
 
 @Preview(name = "Task popup · daily", widthDp = 360, heightDp = 800,

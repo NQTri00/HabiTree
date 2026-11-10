@@ -59,6 +59,15 @@ No complete demo screenshot is used as a runtime background.
 - Latest captured dumpsys activity lastanr reported no ANR since boot.
 - git diff --check passed.
 
+## Additional verification — saved drafts and larger phones
+- 393dp/1.3×: latest installed APK shows equal-height Home care tiles; Tasks and its form fit without overlap.
+- Rotation with the keyboard open retained the task title. In landscape, the focused field and fixed Save/Cancel actions remain above the keyboard.
+- 412dp/1.3×: Home and all task form fields/actions fit the portrait viewport.
+- A confirmed background-process kill initially reset navigation and lost the draft. AppViewModel now saves navigation primitives; TasksViewModel saves filter, dialog visibility and draft values using SavedStateHandle.
+- Retest: PID9875 disappeared; cold relaunch created PID9986. Tasks, open dialog and Mint-restored-draft title returned. No task was inserted.
+- Explicit discard prompted confirmation; reopening showed an empty title and default fields.
+- Both assembleDebug and assembleVerification passed after the fix (26 seconds, 250 tasks). The IDE build request had timed out; the successful result came from the Studio terminal using the configured JBR and offline cached dependencies.
+
 ## Acceptance still open
 Exact plant/icon silhouettes and illustration style differ from the new sheets; reused/generated art is not lossless source extraction. Do not describe this checkpoint as 100% visually identical.
 The full 393/412dp, landscape/IME, long-name, process-death, reward-claim, transaction-race and every annotated outcome matrix has not been re-executed for this redesign. Existing historical evidence does not automatically close those checks.
