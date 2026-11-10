@@ -3,6 +3,7 @@ package com.mamxanh.app.feature.home.presentation
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.rememberScrollState
@@ -24,6 +25,9 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.contentDescription
@@ -49,7 +53,8 @@ fun HomeScreen(
     fertilizerCount: Int = 0,
     modifier: Modifier = Modifier,
     sharedTreeModifier: Modifier = Modifier,
-    previewApproach: Float = 0f
+    previewApproach: Float = 0f,
+    previewViewportHeight: Dp? = null
 ) {
     val dashboard = state.dashboard
     val tree = dashboard.trees.firstOrNull()
@@ -77,9 +82,28 @@ fun HomeScreen(
         }
     }
     val approach = if (previewApproach > 0f) previewApproach else camera.value
-    val fontScale = LocalDensity.current.fontScale.coerceAtLeast(1f)
+    val density = LocalDensity.current
+    val fontScale = density.fontScale.coerceAtLeast(1f)
+    val textMeasurer = rememberTextMeasurer()
+    val textStyle = LocalTextStyle.current
     BoxWithConstraints(modifier.fillMaxSize()) {
-        val sceneHeight = maxOf(maxHeight, 680.dp * fontScale)
+        // A full-document preview keeps the real viewport geometry while exposing overflow.
+        val viewportHeight = previewViewportHeight ?: maxHeight
+        val compact = fontScale <= 1.15f && viewportHeight < 680.dp
+        val baseSceneHeight = maxOf(viewportHeight, if (compact) 514.dp else 680.dp * fontScale)
+        val extraPlaqueHeight = if (compact && tree != null) {
+            val textConstraints = Constraints(maxWidth = with(density) { 188.dp.roundToPx() })
+            val nameHeight = textMeasurer.measure(tree.name,
+                style = textStyle.copy(fontSize = 16.sp, lineHeight = 20.sp, fontWeight = FontWeight.Bold),
+                constraints = textConstraints).size.height
+            val countHeight = textMeasurer.measure("${dashboard.completedTasks} / ${dashboard.totalTasks} việc hôm nay",
+                style = textStyle.copy(fontSize = 14.sp, lineHeight = 17.sp, fontWeight = FontWeight.Bold),
+                constraints = textConstraints).size.height
+            val plaqueHeight = with(density) { (nameHeight + countHeight).toDp() } + 26.dp
+            val availablePlaqueHeight = baseSceneHeight * (.66f - .52f) - 8.dp
+            (plaqueHeight - availablePlaqueHeight).coerceAtLeast(0.dp)
+        } else 0.dp
+        val sceneHeight = baseSceneHeight + extraPlaqueHeight
         Box(Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
         Box(Modifier.fillMaxWidth().height(sceneHeight)) {
         Box(Modifier.fillMaxSize().graphicsLayer {
@@ -88,28 +112,31 @@ fun HomeScreen(
             FarmPastoralBackdrop(Modifier.fillMaxSize())
             BoxWithConstraints(Modifier.fillMaxSize()) {
                 GardenHangingLantern(Modifier.offset(14.dp, 6.dp).size(44.dp, 86.dp))
-                GardenCottage(Modifier.offset(maxWidth * .07f, maxHeight * .245f).size(54.dp, 52.dp))
+                GardenCottage(Modifier.offset(maxWidth * .07f, baseSceneHeight * .245f).size(54.dp, 52.dp))
                 GardenPlace("TASKS", "Việc nhỏ", { enter(HomePlace.TASKS) },
-                    Modifier.offset(maxWidth * .04f, maxHeight * .70f).width(maxWidth * .46f).height(maxHeight * .12f))
+                    Modifier.offset(maxWidth * .04f, baseSceneHeight * (if (compact) .66f else .70f) + extraPlaqueHeight).width(maxWidth * .46f).height(baseSceneHeight * .12f), compact = compact)
                 GardenPlace("SHOP", "Tiệm hạt", { enter(HomePlace.SHOP) },
-                    Modifier.offset(maxWidth * .60f, maxHeight * .66f).width(maxWidth * .36f).height(maxHeight * .16f))
+                    Modifier.offset(maxWidth * .60f, baseSceneHeight * (if (compact) .60f else .66f) + extraPlaqueHeight).width(maxWidth * .36f).height(baseSceneHeight * (if (compact) .18f else .16f)), compact = compact)
                 Box(
-                    Modifier.offset(maxWidth * .10f, maxHeight * .27f).width(maxWidth * .80f).height(maxHeight * .28f),
+                    Modifier.offset(maxWidth * .10f, baseSceneHeight * (if (compact) .25f else .27f)).width(maxWidth * .80f).height(baseSceneHeight * .28f),
                     contentAlignment = Alignment.BottomCenter
                 ) {
                     if (tree != null) {
                         GardenPlantPortrait(tree.speciesId, tree.decoration,
                             sharedTreeModifier.fillMaxSize().clickable(enabled = !entering) { onIntent(HomeIntent.OpenTree(tree.id)) }, growth = tree.growth)
                     } else {
-                        GardenPlace("GARDEN", "Gieo mầm đầu tiên", { enter(HomePlace.GARDEN) }, Modifier.fillMaxSize())
+                        HomeEmptyClearing(onPlant = { enter(HomePlace.GARDEN) }, enabled = !entering)
                     }
                 }
             }
         }
-        Column(Modifier.align(Alignment.TopCenter).fillMaxWidth().padding(horizontal = 16.dp, vertical = 10.dp).graphicsLayer { alpha = 1f - approach },
-            horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            GardenWoodSign("Mầm Xanh", Modifier.width(220.dp)
-                .clickable(enabled = !entering, role = Role.Button, onClickLabel = "Người bạn khu vườn") { companion = true }, fontSize = 28.sp)
+        Column(Modifier.align(Alignment.TopCenter).fillMaxWidth().padding(horizontal = 16.dp, vertical = if (compact) 4.dp else 10.dp).graphicsLayer { alpha = 1f - approach },
+            horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(if (compact) 2.dp else 8.dp)) {
+            Box(contentAlignment = Alignment.TopCenter) {
+                GardenWoodSign("Mầm Xanh", Modifier.padding(top = if (compact) 6.dp else 10.dp).width(220.dp)
+                    .clickable(enabled = !entering, role = Role.Button, onClickLabel = "Người bạn khu vườn") { companion = true }, fontSize = if (compact) 22.sp else 28.sp)
+                GardenArtwork(GardenArt.SPROUT, Modifier.size(28.dp))
+            }
             GardenBotanicalFrame(contentPadding = PaddingValues(horizontal = 14.dp, vertical = 4.dp), cornerSize = 20.dp) {
                 Text("🪙 ${dashboard.coins} xu", color = Deep, fontSize = 17.sp, lineHeight = 19.sp, fontWeight = FontWeight.Bold)
             }
@@ -123,7 +150,7 @@ fun HomeScreen(
             }
         }
         if (tree != null) BoxWithConstraints(Modifier.fillMaxSize().graphicsLayer { alpha = 1f - approach }) {
-            GardenBotanicalFrame(Modifier.align(Alignment.TopCenter).offset(y = maxHeight * .54f)
+            GardenBotanicalFrame(Modifier.align(Alignment.TopCenter).offset(y = baseSceneHeight * (if (compact) .52f else .54f))
                 .width(if (fontScale > 1.15f) maxWidth * .80f else 220.dp),
                 contentPadding = PaddingValues(horizontal = 16.dp, vertical = 7.dp), cornerSize = 24.dp) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(3.dp)) {
@@ -202,11 +229,49 @@ fun HomeScreen(
 }
 
 @Composable
-private fun GardenPlace(kind: String, label: String, onClick: () -> Unit, modifier: Modifier = Modifier) {
+private fun HomeEmptyClearing(onPlant: () -> Unit, enabled: Boolean) {
+    Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+        Canvas(Modifier.fillMaxWidth(.88f).height(72.dp)) {
+            val w = size.width
+            val h = size.height
+            drawOval(Color(0xFF6A4932), Offset(w * .03f, h * .45f), Size(w * .94f, h * .46f))
+            val soil = androidx.compose.ui.graphics.Path().apply {
+                moveTo(w * .05f, h * .69f)
+                cubicTo(w * .18f, h * .44f, w * .24f, h * .43f, w * .32f, h * .39f)
+                cubicTo(w * .48f, h * .22f, w * .68f, h * .36f, w * .76f, h * .45f)
+                quadraticTo(w * .89f, h * .50f, w * .96f, h * .70f)
+                quadraticTo(w * .52f, h * .94f, w * .05f, h * .69f)
+                close()
+            }
+            drawPath(soil, androidx.compose.ui.graphics.Brush.verticalGradient(
+                listOf(Color(0xFFB98C5A), Color(0xFF87613F)), h * .3f, h * .9f))
+            repeat(9) { index ->
+                val x = .14f + index * .085f
+                val y = .58f + (index % 3) * .085f
+                drawOval(if (index % 2 == 0) Color(0xFFCCA574) else Color(0xFF715037),
+                    Offset(w * x, h * y), Size(w * .07f, h * .065f))
+            }
+            listOf(.15f, .82f).forEach { x ->
+                drawOval(Color(0xFFACA58A), Offset(w * x, h * .74f), Size(w * .10f, h * .12f))
+            }
+            repeat(3) { index ->
+                val x = w * (.39f + index * .11f)
+                drawLine(Color(0xFFFFD36F), Offset(x, h * .14f), Offset(x, h * .04f),
+                    3.dp.toPx(), cap = androidx.compose.ui.graphics.StrokeCap.Round)
+            }
+        }
+        GardenPaintedButton("Gieo mầm đầu tiên", onPlant, Modifier.fillMaxWidth(.86f), enabled = enabled)
+    }
+}
+
+@Composable
+private fun GardenPlace(kind: String, label: String, onClick: () -> Unit, modifier: Modifier = Modifier, compact: Boolean = false) {
     Column(modifier.clickable(role = Role.Button, onClickLabel = label, onClick = onClick),
         horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Bottom) {
         if (kind == "SHOP") GardenArtwork(GardenArt.SHOP,
-            Modifier.size(if (androidx.compose.ui.platform.LocalDensity.current.fontScale > 1.15f) 48.dp else 64.dp))
+            Modifier.align(if (compact) Alignment.End else Alignment.CenterHorizontally)
+                .padding(end = if (compact) 12.dp else 0.dp)
+                .size(if (compact) 32.dp else if (androidx.compose.ui.platform.LocalDensity.current.fontScale > 1.15f) 48.dp else 64.dp))
         Box(Modifier.fillMaxWidth().padding(bottom = 10.dp).drawBehind {
             val w = size.width
             val h = size.height
@@ -248,13 +313,31 @@ private fun previewHomeState(treeName: String = "Đào hồng xuân") = HomeUiSt
     completedTasks = 2, totalTasks = 4, coins = 120, wateringCanMl = 500
 ), false)
 
-@Preview(name = "Painted forest garden", widthDp = 360, heightDp = 800, showBackground = true)
+@Preview(name = "Home · compact phone content", widthDp = 360, heightDp = 514, showBackground = true,
+    device = "spec:width=360dp,height=514dp,dpi=160")
 @Composable
 fun HomeScreenPreview() { MamXanhPreviewTheme { HomeScreen(previewHomeState(), {}, 2) } }
 
-@Preview(name = "Forest garden · empty", widthDp = 360, heightDp = 800, showBackground = true)
+@Preview(name = "Forest garden · empty, full document", widthDp = 360, heightDp = 680, showBackground = true,
+    device = "spec:width=360dp,height=680dp,dpi=160")
 @Composable
-fun HomeScreenEmptyPreview() { MamXanhPreviewTheme { HomeScreen(HomeUiState(isLoading = false), {}) } }
+fun HomeScreenEmptyPreview() {
+    MamXanhPreviewTheme {
+        HomeScreen(HomeUiState(HomeDashboard(coins = 60, wateringCanMl = 542), isLoading = false), {})
+    }
+}
+
+@Preview(name = "Home · compact phone, long name", widthDp = 360, heightDp = 514,
+    device = "spec:width=360dp,height=514dp,dpi=160")
+@Preview(name = "Home · compact long name, full document", widthDp = 360, heightDp = 534,
+    device = "spec:width=360dp,height=534dp,dpi=160")
+@Composable
+fun HomeCompactLongNamePreview() {
+    MamXanhPreviewTheme {
+        HomeScreen(previewHomeState("Cây đào bình yên bên cửa sổ của gia đình"), {}, 2,
+            previewViewportHeight = 514.dp)
+    }
+}
 
 @Preview(name = "Camera approaching seed stall", widthDp = 360, heightDp = 800, showBackground = true)
 @Composable
