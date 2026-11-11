@@ -79,19 +79,29 @@ fun GardenScreen(state: GardenUiState, onIntent: (GardenIntent) -> Unit, modifie
             MintCompactHeader(garden.coins)
             Row(Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 2.dp),
                 verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                Text("Vườn ươm", Modifier.weight(1f), color = Deep, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                Column(Modifier.weight(1f)) {
+                    Text("Vườn ươm", color = Deep, fontSize = 14.sp, lineHeight = 17.sp, fontWeight = FontWeight.Bold)
+                    Text("${garden.trees.size} cây · ${plots.count { it.isUnlocked }} ô mở", color = Muted, fontSize = 10.sp, lineHeight = 13.sp)
+                }
+                Box(Modifier.heightIn(min = 48.dp).clip(RoundedCornerShape(12.dp))
+                    .clickable(enabled = garden.waterAll.eligible > 0 && !state.isLoading,
+                        onClick = { waterAllKey = java.util.UUID.randomUUID().toString() }),
+                    contentAlignment = Alignment.Center) {
+                    Surface(shape = RoundedCornerShape(12.dp),
+                        color = if(garden.waterAll.eligible > 0) Green else Green.copy(alpha = .12f)) {
+                        Text("💧 Tưới · ${garden.waterAll.eligible}",
+                            Modifier.padding(horizontal = 10.dp, vertical = 7.dp),
+                            color = if(garden.waterAll.eligible > 0) Color.White else Muted,
+                            fontSize = 11.sp, lineHeight = 14.sp, fontWeight = FontWeight.Bold)
+                    }
+                }
                 IconButton(onClick = { onOpenInventory(null) }) {
                     Icon(androidx.compose.material.icons.Icons.Rounded.Inventory2, "Túi đồ", tint = Green)
                 }
-                GardenBotanicalFrame(contentPadding = PaddingValues(horizontal = 6.dp, vertical = 4.dp)) {
-                    Text("${garden.trees.size} cây · ${plots.count { it.isUnlocked }} ô mở", color = Deep, fontSize = 11.sp, fontWeight = FontWeight.Bold)
-                }
+
             }
             Column(Modifier.fillMaxWidth().padding(horizontal = 12.dp),
                 verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                MintDialogAction("Tưới tất cả · ${garden.waterAll.eligible} cây",
-                    { waterAllKey = java.util.UUID.randomUUID().toString() }, Modifier.fillMaxWidth(),
-                    enabled = garden.waterAll.eligible > 0 && !state.isLoading)
                 Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
                     horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                     listOf("Tất cả","Cần tưới","Đang lớn","Trưởng thành","Khô héo").forEachIndexed { index,label ->
@@ -104,7 +114,7 @@ fun GardenScreen(state: GardenUiState, onIntent: (GardenIntent) -> Unit, modifie
             }
             LazyColumn(Modifier.weight(1f).mintScrollEdges(listState.canScrollBackward, listState.canScrollForward),
                 state = listState, contentPadding = PaddingValues(start = 12.dp, end = 12.dp, top = 4.dp, bottom = 12.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 if(visiblePlots.isEmpty()) item { Text("Chưa có cây phù hợp.",color=Muted) }
                 items(visiblePlots, key = { it.id }) { plot ->
                     val tree = garden.trees.firstOrNull { it.id == plot.treeId }
@@ -126,25 +136,27 @@ fun GardenScreen(state: GardenUiState, onIntent: (GardenIntent) -> Unit, modifie
                                 Text(tree?.name ?: if(plot.isUnlocked) "Ô trống" else "Ô trống (Đang khóa)",
                                     fontWeight = FontWeight.Bold, fontSize = 13.sp, color = Deep)
                                 if(tree != null) {
-                                    MintProgress(tree.status.stageProgress, Modifier.fillMaxWidth())
-                                    Text("${tree.status.stageLabel} · ${tree.status.stateLabel}", fontSize = 12.sp, color = Deep)
-                                    Text("${tree.status.percentage}% · ${tree.status.waterLabel}", fontSize = 12.sp, color = Muted)
+                                    Box(Modifier.fillMaxWidth().height(16.dp).clip(RoundedCornerShape(8.dp))
+                                        .background(Color(0xFFD8E9DE)), contentAlignment = Alignment.Center) {
+                                        Box(Modifier.fillMaxHeight().fillMaxWidth((tree.status.percentage / 100f).coerceIn(0f,1f))
+                                            .align(Alignment.CenterStart).background(Color(0xFF95D847)))
+                                        Text("${tree.status.percentage}%", color = Deep,
+                                            fontSize = 10.sp, lineHeight = 12.sp, fontWeight = FontWeight.Bold)
+                                    }
+                                    Text("${tree.status.stateLabel} · ${tree.status.waterLabel}",
+                                        fontSize = 11.sp, lineHeight = 14.sp, color = Muted)
                                     if(tree.status.fertilizerLabel.isNotBlank()) Text(tree.status.fertilizerLabel,fontSize=11.sp,color=Green)
                                 } else {
-                                    MintDialogAction(if(plot.isUnlocked) "Gieo cây" else "Mở ô · ${com.mamxanh.shared.model.Balance.plot(garden.plots.count { it.isUnlocked })} xu",
-                                        {
-                                            if(plot.isUnlocked) onOpenInventory(plot.id)
-                                            else unlockingPlotId = plot.id
-                                        }, Modifier.fillMaxWidth(), primary = plot.isUnlocked)
+                                    Surface(shape = RoundedCornerShape(8.dp), color = Green.copy(alpha = .1f)) {
+                                        Text(if(plot.isUnlocked) "＋ Gieo cây" else "Mở ô · ${com.mamxanh.shared.model.Balance.plot(garden.plots.count { it.isUnlocked })} xu",
+                                            Modifier.padding(horizontal = 8.dp, vertical = 3.dp),
+                                            color = Green, fontSize = 11.sp, lineHeight = 14.sp)
+                                    }
                                 }
                             }
                             Text("›", fontSize = 18.sp, color = Deep)
                         }
                     }
-                }
-                item(key = "inventory-shortcut") {
-                    MintDialogAction("Túi đồ · Vật phẩm và hạt giống", { onOpenInventory(null) },
-                        Modifier.fillMaxWidth(), primary = false)
                 }
             }
         }
