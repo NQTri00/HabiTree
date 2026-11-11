@@ -21,6 +21,8 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
+import com.mamxanh.app.presentation.ui.components.mintScrollEdges
 import androidx.compose.foundation.lazy.items
 import com.mamxanh.app.presentation.ui.components.MintDepth
 import com.mamxanh.app.presentation.ui.components.mintDepth
@@ -60,6 +62,7 @@ import com.mamxanh.app.presentation.ui.components.GardenJournalPage
 
 @Composable
 fun TasksScreen(state: TasksUiState, onIntent: (TasksIntent) -> Unit, modifier: Modifier = Modifier, coins: Int = 0) {
+    val listState = rememberLazyListState()
     var pendingDeleteId by rememberSaveable { mutableStateOf<Long?>(null) }
     val filtered = state.tasks.filter { task ->
         when(state.filter) {
@@ -88,7 +91,8 @@ fun TasksScreen(state: TasksUiState, onIntent: (TasksIntent) -> Unit, modifier: 
                     }
                 }
             }
-            LazyColumn(Modifier.weight(1f), contentPadding = PaddingValues(16.dp),
+            LazyColumn(Modifier.weight(1f).mintScrollEdges(listState.canScrollBackward, listState.canScrollForward),
+                state = listState, contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 if(state.isLoading && state.tasks.isEmpty()) item { LinearProgressIndicator(Modifier.fillMaxWidth()) }
                 if(!state.isLoading && filtered.isEmpty()) item {

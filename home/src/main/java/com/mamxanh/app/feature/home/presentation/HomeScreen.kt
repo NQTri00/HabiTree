@@ -30,10 +30,12 @@ fun HomeScreen(
     val d = state.dashboard
     val tree = d.trees.firstOrNull()
     val heroHeight = mintTreeHeroHeight()
+    val scroll = rememberScrollState()
     MintBackdrop(modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
             MintCompactHeader(d.coins)
-            Column(Modifier.weight(1f).verticalScroll(rememberScrollState())
+            Column(Modifier.weight(1f).mintScrollEdges(scroll.canScrollBackward, scroll.canScrollForward)
+                .verticalScroll(scroll)
                 .padding(horizontal = 12.dp).padding(bottom = 8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(6.dp)) {

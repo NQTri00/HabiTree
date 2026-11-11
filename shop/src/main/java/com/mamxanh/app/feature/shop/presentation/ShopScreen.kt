@@ -30,6 +30,7 @@ fun ShopScreen(state: ShopUiState, onIntent: (ShopIntent) -> Unit, modifier: Mod
     val products = shopCatalog.sortedBy { featured.indexOf(it.id).let { n -> if(n < 0) 100 + shopCatalog.indexOf(it) else n } }
     val seedGrid = rememberLazyGridState()
     val itemGrid = rememberLazyGridState()
+    val activeGrid = if (state.filter == ShopFilter.ITEMS) itemGrid else seedGrid
     MintBackdrop(modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
             MintHeader("Tiệm hạt", state.wallet.coins)
@@ -37,8 +38,9 @@ fun ShopScreen(state: ShopUiState, onIntent: (ShopIntent) -> Unit, modifier: Mod
                 { onIntent(ShopIntent.SetFilter(if (it == 0) ShopFilter.ITEMS else ShopFilter.SEEDS)) },
                 Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
             if (state.isLoading) LinearProgressIndicator(Modifier.fillMaxWidth())
-            LazyVerticalGrid(GridCells.Fixed(3), Modifier.weight(1f),
-                state = if (state.filter == ShopFilter.ITEMS) itemGrid else seedGrid,
+            LazyVerticalGrid(GridCells.Fixed(3), Modifier.weight(1f)
+                .mintScrollEdges(activeGrid.canScrollBackward, activeGrid.canScrollForward),
+                state = activeGrid,
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 contentPadding = PaddingValues(16.dp)) {

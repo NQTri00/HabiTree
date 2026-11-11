@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Refresh
@@ -30,6 +31,7 @@ import java.util.Calendar
 @Composable
 fun StatsScreen(state: StatsUiState, onIntent: (StatsIntent) -> Unit, modifier: Modifier = Modifier) {
     val s = state.statistics
+    val listState = rememberLazyListState()
     val firstUse = s.total == 0 && s.treeCount == 0
     val recent = s.recentDailyCompletions.takeLast(7).let { if (it.size == 7) it else List(7 - it.size) { 0 } + it }
     val days = (6 downTo 0).map { offset ->
@@ -39,7 +41,8 @@ fun StatsScreen(state: StatsUiState, onIntent: (StatsIntent) -> Unit, modifier: 
     MintBackdrop(modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
             MintHeader("Nhật ký", s.coins)
-            LazyColumn(Modifier.weight(1f), contentPadding = PaddingValues(16.dp),
+            LazyColumn(Modifier.weight(1f).mintScrollEdges(listState.canScrollBackward, listState.canScrollForward),
+                state = listState, contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(14.dp)) {
                 item {
                     GardenBotanicalFrame(Modifier.fillMaxWidth()) {

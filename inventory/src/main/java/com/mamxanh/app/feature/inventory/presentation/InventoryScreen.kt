@@ -51,6 +51,7 @@ fun InventoryScreen(
     }
     val itemsGrid = rememberLazyGridState()
     val seedsGrid = rememberLazyGridState()
+    val activeGrid = if (tab == InventoryTab.ITEMS) itemsGrid else seedsGrid
     val ownedSeeds = state.seeds.filter { it.count > 0 }
     MintBackdrop(modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
@@ -77,8 +78,8 @@ fun InventoryScreen(
             if (state.isLoading) LinearProgressIndicator(Modifier.fillMaxWidth())
             LazyVerticalGrid(
                 columns = GridCells.Fixed(3),
-                state = if (tab == InventoryTab.ITEMS) itemsGrid else seedsGrid,
-                modifier = Modifier.weight(1f),
+                state = activeGrid,
+                modifier = Modifier.weight(1f).mintScrollEdges(activeGrid.canScrollBackward, activeGrid.canScrollForward),
                 contentPadding = PaddingValues(16.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)

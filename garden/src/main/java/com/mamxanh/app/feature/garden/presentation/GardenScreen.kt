@@ -2,6 +2,7 @@ package com.mamxanh.app.feature.garden.presentation
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -52,6 +53,7 @@ fun GardenScreen(state: GardenUiState, onIntent: (GardenIntent) -> Unit, modifie
     plantingSeedId: String? = null, plantingPlotId: Int? = null,
     onDismissPlanting: () -> Unit = {}) {
     val garden = state.garden
+    val listState = rememberLazyListState()
     var selectedPlotId by rememberSaveable(plantingSeedId, plantingPlotId) { mutableStateOf(plantingPlotId) }
     var unlockingPlotId by rememberSaveable { mutableStateOf<Int?>(null) }
     val selectedSeed = seedCatalog.firstOrNull { it.id == plantingSeedId }
@@ -94,7 +96,8 @@ fun GardenScreen(state: GardenUiState, onIntent: (GardenIntent) -> Unit, modifie
                     Text("${garden.trees.size} cây · ${plots.count { it.isUnlocked }} ô mở", color = Deep, fontSize = 12.sp, fontWeight = FontWeight.Bold)
                 }
             }
-            LazyColumn(Modifier.weight(1f), contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 16.dp),
+            LazyColumn(Modifier.weight(1f).mintScrollEdges(listState.canScrollBackward, listState.canScrollForward),
+                state = listState, contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 items(plots, key = { it.id }) { plot ->
                     val tree = garden.trees.firstOrNull { it.id == plot.treeId }

@@ -28,12 +28,14 @@ fun TreeInteractionScreen(
     coins: Int = 0, onPrevious: (() -> Unit)? = null, onNext: (() -> Unit)? = null,
     onOpenGarden: () -> Unit = { onIntent(TreeIntent.Back) }
 ) {
+    val scroll = rememberScrollState()
     var tab by rememberSaveable(tree.id) { mutableIntStateOf(0) }
     MintBackdrop(modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
             MintCompactHeader(coins)
             val heroHeight = mintTreeHeroHeight()
-            Column(Modifier.weight(1f).verticalScroll(rememberScrollState())
+            Column(Modifier.weight(1f).mintScrollEdges(scroll.canScrollBackward, scroll.canScrollForward)
+                .verticalScroll(scroll)
                 .padding(horizontal = 12.dp).padding(bottom = 8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(6.dp)) {

@@ -123,6 +123,12 @@ No complete demo screenshot is used as a runtime background.
 - Existing palette, shadows, native radial background glows and layout sizes remain unchanged. ShaderBrush caches the shader by draw size; no bitmap rendering was added.
 - Both APK variants passed (24 seconds). Installed APK inspected in Shop: diagonal cards, selected tab, header and navigation render correctly with clear labels.
 
+## Scroll-edge softness — latest follow-up
+- Verified IDE write access with a temporary file, then removed it. Added shared MintScrollEdges to Shop, Inventory, Garden, Tasks, Journal, Home and tree-detail scrolling content.
+- A subtle16dp edge band uses2dp native blur on Android31+ only where more content exists; older Android versions and IDE previews use a light fade. Short lists add no effect. Headers, tabs, navigation and central content stay sharp.
+- Reuses graphics display lists with small blurred edge strips; no bitmap snapshots or extra preview rendering. The effect does not change layout or touch targets.
+- Debug and verification APK builds passed (48 seconds). Installed and inspected Shop at top, middle and bottom, including the complete footer and the short Items tab at360dp. No purchases or game-data mutations were performed. git diff --check passed.
+
 ## Acceptance still open
 Exact plant/icon silhouettes and illustration style differ from the new sheets; reused/generated art is not lossless source extraction. Do not describe this checkpoint as 100% visually identical.
 The full 393/412dp, landscape/IME, long-name, process-death, reward-claim, transaction-race and every annotated outcome matrix has not been re-executed for this redesign. Existing historical evidence does not automatically close those checks.
