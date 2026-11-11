@@ -28,7 +28,7 @@ private val cherryGrowthFrames = intArrayOf(
 
 /** A persisted growth value selects a supplied frame; entering a screen never replays growth. */
 @Composable
-internal fun CherryGrowthArtwork(growth: Int, modifier: Modifier = Modifier) {
+internal fun CherryGrowthArtwork(growth: Int, modifier: Modifier = Modifier, fitVisibleArtwork: Boolean = false) {
     val resource = cherryGrowthFrames[growth.coerceIn(0, 120) * cherryGrowthFrames.lastIndex / 120]
     val resources = LocalContext.current.resources
     val configuration = LocalConfiguration.current
@@ -41,16 +41,21 @@ internal fun CherryGrowthArtwork(growth: Int, modifier: Modifier = Modifier) {
             value = withContext(Dispatchers.IO) { ImageBitmap.imageResource(resources, resource) }
         }.value
     }
+    val visibleBounds = remember(resources, configuration, fitVisibleArtwork) {
+        if (fitVisibleArtwork) resources.getIntArray(R.array.cherry_growth_bounds) else null
+    }
     Canvas(modifier) {
         val frame = bitmap ?: return@Canvas
-        val scale = minOf(size.width / frame.width, size.height / frame.height)
+        val bounds = visibleBounds
+        val sourceOffset = IntOffset(bounds?.get(0) ?: 0, bounds?.get(1) ?: 0)
+        val sourceSize = IntSize(bounds?.get(2) ?: frame.width, bounds?.get(3) ?: frame.height)
+        val scale = minOf(size.width / sourceSize.width, size.height / sourceSize.height)
         val target = IntSize(
-            (frame.width * scale).roundToInt().coerceAtLeast(1),
-            (frame.height * scale).roundToInt().coerceAtLeast(1)
+            (sourceSize.width * scale).roundToInt().coerceAtLeast(1),
+            (sourceSize.height * scale).roundToInt().coerceAtLeast(1)
         )
-        // Full, equal-sized source canvases are essential: per-frame alpha cropping
-        // would enlarge a seed and move the soil as branches appear.
-        drawImage(frame,
+        // Home uses the shared union bounds; every stage still has the same scale and root.
+        drawImage(frame, srcOffset = sourceOffset, srcSize = sourceSize,
             dstOffset = IntOffset(((size.width - target.width) / 2).roundToInt(),
                 (size.height - target.height).roundToInt()),
             dstSize = target)

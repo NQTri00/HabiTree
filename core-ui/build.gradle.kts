@@ -32,6 +32,7 @@ val generateCherryGrowthArtwork = tasks.register("generateCherryGrowthArtwork") 
                 var previousBounds = Rectangle()
                 var previousCanvas: BufferedImage? = null
                 var background = Color.WHITE
+                var artworkBounds: Rectangle? = null
                 repeat(count) { index ->
                     val graphics = canvas.createGraphics()
                     try {
@@ -93,10 +94,22 @@ val generateCherryGrowthArtwork = tasks.register("generateCherryGrowthArtwork") 
                         if (y > 0) enqueue(position - width)
                         if (y + 1 < height) enqueue(position + width)
                     }
+                    pixels.forEachIndexed { position, color ->
+                        if (color ushr 24 != 0) {
+                            val pixel = Rectangle(position % width, position / width, 1, 1)
+                            artworkBounds = artworkBounds?.union(pixel) ?: pixel
+                        }
+                    }
                     val sprite = BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)
                     sprite.setRGB(0, 0, width, height, pixels, 0, width)
                     javax.imageio.ImageIO.write(sprite, "png", output.resolve("cherry_growth_" + index.toString().padStart(2, '0') + ".png"))
                 }
+                // One union for every stage removes export whitespace without changing growth scale/root.
+                val bounds = requireNotNull(artworkBounds)
+                val values = output.parentFile.resolve("values").apply { mkdirs() }
+                values.resolve("cherry_growth_bounds.xml").writeText(
+                    """<resources><integer-array name="cherry_growth_bounds"><item>${bounds.x}</item><item>${bounds.y}</item><item>${bounds.width}</item><item>${bounds.height}</item></integer-array></resources>"""
+                )
             } finally { reader.dispose() }
         }
     }

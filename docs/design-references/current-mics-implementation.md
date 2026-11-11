@@ -68,6 +68,17 @@ No complete demo screenshot is used as a runtime background.
 - Explicit discard prompted confirmation; reopening showed an empty title and default fields.
 - Both assembleDebug and assembleVerification passed after the fix (26 seconds, 250 tasks). The IDE build request had timed out; the successful result came from the Studio terminal using the configured JBR and offline cached dependencies.
 
+## Home tree enlargement — approved follow-up
+- The user's follow-up overrides the original Home proportions: reserve at least half the usable app-window height for the tree area (minimum240dp); permit scrolling instead of shrinking it.
+- Compact Home-only header, 8dp summary/link padding, explicit smaller text leading, 24dp card icons and 6dp spacing. Wallet/navigation stay fixed.
+- Four care controls moved into a 52dp right rail: 28dp artwork, minimum48dp targets, accessible action names, checked watering, disabled fertilizer and wrapping water volume.
+- GardenPlantPortrait adds optional fitVisibleArtwork=false. Home opts in; other screens retain their default framing. Cherry generation emits one union alpha bound across all12 frames; no per-frame enlargement or runtime decoding of all stages.
+- Decorations share the fitted artwork bounds rather than the oversized Home area. Growth mapping and saved state are unchanged.
+- Runtime inspected at360dp/1×,320dp/2×,393dp/1.3×,412dp/1× and landscape. Complete lower cards and water label verified through scrolling on narrow/landscape windows.
+- A sequential320dp/1.3× long-name preview confirmed wrapping. Layoutlib retained an old nested decoration render; final artwork positioning was verified in the installed APK.
+- Final assembleDebug and assembleVerification passed (18 seconds). git diff --check passed. Installed main APK with-r;145 coins and saved tree/water persisted. Restored physical720×1280, font1× and automatic rotation.
+- Half-height refers to the tree presentation area; visible artwork preserves its aspect ratio and growth scale, so its silhouette can occupy less height on tall narrow phones.
+
 ## Acceptance still open
 Exact plant/icon silhouettes and illustration style differ from the new sheets; reused/generated art is not lossless source extraction. Do not describe this checkpoint as 100% visually identical.
 The full 393/412dp, landscape/IME, long-name, process-death, reward-claim, transaction-race and every annotated outcome matrix has not been re-executed for this redesign. Existing historical evidence does not automatically close those checks.

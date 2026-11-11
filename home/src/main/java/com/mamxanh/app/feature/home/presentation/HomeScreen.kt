@@ -8,9 +8,13 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalWindowInfo
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -28,53 +32,68 @@ fun HomeScreen(
 ) {
     val d = state.dashboard
     val tree = d.trees.firstOrNull()
+    val density = LocalDensity.current
+    val windowHeight = with(density) { LocalWindowInfo.current.containerSize.height.toDp() }
+    val bars = WindowInsets.systemBars.asPaddingValues()
+    val usableHeight = windowHeight - bars.calculateTopPadding() - bars.calculateBottomPadding()
+    // Include the space occupied by Home's header and the app navigation in the baseline.
+    val heroHeight = (usableHeight * .5f).coerceAtLeast(240.dp)
     MintBackdrop(modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
-            MintHeader("Mầm Xanh", d.coins)
-            BoxWithConstraints(Modifier.weight(1f)) {
-                val heroHeight = (maxHeight - 410.dp).coerceIn(110.dp, 300.dp)
-                Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState())
-                    .padding(horizontal = 16.dp).padding(bottom = 12.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                    if (tree == null) {
-                        Spacer(Modifier.height(20.dp))
-                        MintEmptySprout(Modifier.size(150.dp))
-                        Text("Chưa có cây trong vườn", fontWeight = FontWeight.Bold, fontSize = 21.sp, color = Deep)
-                        Text("Hãy gieo mầm đầu tiên để bắt đầu\nhành trình chăm sóc cây cùng Mầm Xanh!",
-                            color = Deep, textAlign = TextAlign.Center)
-                        GardenPaintedButton("🌱 Gieo mầm đầu tiên", { onIntent(HomeIntent.OpenGarden) }, Modifier.fillMaxWidth())
-                    } else {
-                        GardenBotanicalFrame(Modifier.fillMaxWidth(.9f).clickable { onIntent(HomeIntent.OpenTree(tree.id)) },
-                            contentPadding = PaddingValues(horizontal = 14.dp, vertical = 10.dp), cornerSize = 40.dp) {
-                            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                                GardenArtwork(GardenArt.SPROUT, Modifier.size(32.dp))
-                                Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                                    Text(tree.name, color = Deep, fontWeight = FontWeight.Bold)
-                                    MintProgress(tree.growth / 120f, Modifier.fillMaxWidth())
-                                    Text("${d.completedTasks} / ${d.totalTasks} việc hôm nay", fontSize = 13.sp, color = Deep)
-                                }
-                                Text("›", color = Deep, fontSize = 28.sp)
+            HomeHeader(d.coins)
+            Column(Modifier.weight(1f).verticalScroll(rememberScrollState())
+                .padding(horizontal = 12.dp).padding(bottom = 8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                if (tree == null) {
+                    Spacer(Modifier.height(20.dp))
+                    MintEmptySprout(Modifier.size(150.dp))
+                    Text("Chưa có cây trong vườn", fontWeight = FontWeight.Bold, fontSize = 21.sp, color = Deep)
+                    Text("Hãy gieo mầm đầu tiên để bắt đầu\nhành trình chăm sóc cây cùng Mầm Xanh!",
+                        color = Deep, textAlign = TextAlign.Center)
+                    GardenPaintedButton("🌱 Gieo mầm đầu tiên", { onIntent(HomeIntent.OpenGarden) }, Modifier.fillMaxWidth())
+                } else {
+                    GardenBotanicalFrame(Modifier.fillMaxWidth().clickable(role = Role.Button) {
+                        onIntent(HomeIntent.OpenTree(tree.id))
+                    }, contentPadding = PaddingValues(8.dp), cornerSize = 24.dp) {
+                        Row(verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            GardenArtwork(GardenArt.SPROUT, Modifier.size(24.dp))
+                            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
+                                Text(tree.name, color = Deep, fontWeight = FontWeight.Bold, fontSize = 14.sp, lineHeight = 17.sp)
+                                MintProgress(tree.growth / 120f, Modifier.fillMaxWidth())
+                                Text("${d.completedTasks} / ${d.totalTasks} việc hôm nay", fontSize = 11.sp, lineHeight = 14.sp, color = Deep)
                             }
+                            Text("›", color = Deep, fontSize = 24.sp)
                         }
-                        GardenPlantPortrait(tree.speciesId, tree.decoration,
-                            sharedTreeModifier.fillMaxWidth().height(heroHeight)
-                                .clickable { onIntent(HomeIntent.OpenTree(tree.id)) }.semantics { contentDescription = "Chăm sóc " + tree.name }, growth = tree.growth)
-                        Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            HomeCareTile(GardenArt.WATERING_CAN, if(tree.wateredToday) "✓ Đã tưới" else "Tưới",
-                                !tree.wateredToday && d.wateringCanMl >= 50, { onIntent(HomeIntent.WaterTree(tree.id)) }, Modifier.weight(1f).fillMaxHeight())
-                            HomeCareTile(GardenArt.FERTILIZER, "Bón", fertilizerCount > 0,
-                                { onIntent(HomeIntent.FertilizeTree(tree.id)) }, Modifier.weight(1f).fillMaxHeight())
-                            HomeCareTile(GardenArt.PUMP, "Bơm", true, { onIntent(HomeIntent.RefillWater) }, Modifier.weight(1f).fillMaxHeight())
-                            HomeCareTile(GardenArt.DROP, "Nước\n${d.wateringCanMl} ml", true,
-                                { onIntent(HomeIntent.RefillWater) }, Modifier.weight(1f).fillMaxHeight())
-                        }
-                        HomeLink(GardenArt.CHECKLIST, "Việc nhỏ", taskTitle, { onIntent(HomeIntent.OpenTasks) })
-                        val claimed = d.dailyRewardDate.isNotBlank()
-                        HomeLink(if(claimed) GardenArt.CHECKED_TASK else GardenArt.COIN,
-                            if(claimed) "Đã nhận thưởng hôm nay" else "Thưởng hôm nay",
-                            if(claimed) "" else "+${d.dailyRewardCoins} xu",
-                            if(claimed) ({}) else onClaimBonus, enabled = !claimed && canClaimBonus)
                     }
+                    Row(Modifier.fillMaxWidth().heightIn(min = heroHeight),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                        GardenPlantPortrait(tree.speciesId, tree.decoration,
+                            sharedTreeModifier.weight(1f).height(heroHeight)
+                                .clickable(role = Role.Button) { onIntent(HomeIntent.OpenTree(tree.id)) }
+                                .semantics { contentDescription = "Chăm sóc " + tree.name },
+                            growth = tree.growth, fitVisibleArtwork = true)
+                        Column(Modifier.width(52.dp), horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                            HomeCareIcon(GardenArt.WATERING_CAN,
+                                if (tree.wateredToday) "Đã tưới hôm nay" else "Tưới",
+                                !tree.wateredToday && d.wateringCanMl >= 50,
+                                { onIntent(HomeIntent.WaterTree(tree.id)) }, checked = tree.wateredToday)
+                            HomeCareIcon(GardenArt.FERTILIZER, "Bón · $fertilizerCount phân bón",
+                                fertilizerCount > 0, { onIntent(HomeIntent.FertilizeTree(tree.id)) })
+                            HomeCareIcon(GardenArt.PUMP, "Bơm nước", true, { onIntent(HomeIntent.RefillWater) })
+                            HomeCareIcon(GardenArt.DROP, "Nước ${d.wateringCanMl} ml", true,
+                                { onIntent(HomeIntent.RefillWater) }, caption = "${d.wateringCanMl}\nml")
+                        }
+                    }
+                    HomeLink(GardenArt.CHECKLIST, "Việc nhỏ", taskTitle, { onIntent(HomeIntent.OpenTasks) })
+                    val claimed = d.dailyRewardDate.isNotBlank()
+                    HomeLink(if (claimed) GardenArt.CHECKED_TASK else GardenArt.COIN,
+                        if (claimed) "Đã nhận thưởng hôm nay" else "Thưởng hôm nay",
+                        if (claimed) "" else "+${d.dailyRewardCoins} xu",
+                        if (claimed) ({}) else onClaimBonus, enabled = !claimed && canClaimBonus)
                 }
             }
         }
@@ -88,29 +107,51 @@ fun HomeScreen(
 }
 
 @Composable
-private fun HomeCareTile(art: GardenArt, label: String, enabled: Boolean, onClick: () -> Unit, modifier: Modifier) {
-    GardenBotanicalFrame(modifier.clickable(enabled = enabled, onClick = onClick),
-        contentPadding = PaddingValues(horizontal = 4.dp, vertical = 8.dp), cornerSize = 22.dp,
-        skin = if(label.startsWith("✓")) GardenPanelSkin.HINT else GardenPanelSkin.BADGE) {
-        Column(Modifier.fillMaxWidth().heightIn(min = 64.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-            GardenArtwork(art, Modifier.size(36.dp))
-            Text(label, color = if(label.startsWith("✓")) Green else if(enabled) Deep else Muted, fontSize = 12.sp, lineHeight = 15.sp,
-                fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
+private fun HomeHeader(coins: Int) {
+    Row(Modifier.fillMaxWidth().heightIn(min = 48.dp).padding(horizontal = 12.dp, vertical = 4.dp),
+        verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        GardenArtwork(GardenArt.SPROUT, Modifier.size(24.dp))
+        Text("Mầm Xanh", Modifier.weight(1f), fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Deep)
+        GardenBotanicalFrame(contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp), cornerSize = 24.dp) {
+            GardenRichText("🪙 $coins xu", color = Deep, fontSize = 13.sp, fontWeight = FontWeight.Bold)
+        }
+    }
+}
+
+@Composable
+private fun HomeCareIcon(
+    art: GardenArt, label: String, enabled: Boolean, onClick: () -> Unit,
+    checked: Boolean = false, caption: String? = null
+) {
+    GardenBotanicalFrame(Modifier.fillMaxWidth().heightIn(min = 48.dp)
+        .clickable(enabled = enabled, role = Role.Button, onClick = onClick)
+        .semantics(mergeDescendants = true) { contentDescription = label },
+        contentPadding = PaddingValues(4.dp), cornerSize = 18.dp,
+        skin = if (checked) GardenPanelSkin.HINT else GardenPanelSkin.BADGE) {
+        Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+            Box(Modifier.size(32.dp), contentAlignment = Alignment.Center) {
+                GardenArtwork(art, Modifier.size(28.dp).alpha(if (enabled || checked) 1f else .4f))
+                if (checked) Text("✓", Modifier.align(Alignment.BottomEnd),
+                    color = Green, fontSize = 13.sp, fontWeight = FontWeight.Bold)
+            }
+            if (caption != null) Text(caption, color = Deep, fontSize = 10.sp,
+                lineHeight = 12.sp, textAlign = TextAlign.Center)
         }
     }
 }
 
 @Composable
 private fun HomeLink(art: GardenArt, title: String, subtitle: String, onClick: () -> Unit, enabled: Boolean = true) {
-    GardenBotanicalFrame(Modifier.fillMaxWidth().clickable(enabled = enabled, onClick = onClick),
-        contentPadding = PaddingValues(12.dp), cornerSize = 18.dp) {
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            GardenArtwork(art, Modifier.size(36.dp))
+    GardenBotanicalFrame(Modifier.fillMaxWidth().heightIn(min = 48.dp)
+        .clickable(enabled = enabled, role = Role.Button, onClick = onClick),
+        contentPadding = PaddingValues(8.dp), cornerSize = 16.dp) {
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            GardenArtwork(art, Modifier.size(24.dp))
             Column(Modifier.weight(1f)) {
-                Text(title, color = Deep, fontWeight = FontWeight.Bold)
-                if(subtitle.isNotEmpty()) Text(subtitle, color = Deep, fontSize = 13.sp)
+                Text(title, color = Deep, fontWeight = FontWeight.Bold, fontSize = 13.sp, lineHeight = 16.sp)
+                if (subtitle.isNotEmpty()) Text(subtitle, color = Deep, fontSize = 11.sp, lineHeight = 14.sp)
             }
-            if(enabled) Text("›", color = Green, fontSize = 28.sp)
+            if (enabled) Text("›", color = Green, fontSize = 22.sp)
         }
     }
 }
