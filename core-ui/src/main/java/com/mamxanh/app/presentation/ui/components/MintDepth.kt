@@ -7,6 +7,11 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.Shader
+import androidx.compose.ui.graphics.ShaderBrush
+import androidx.compose.ui.graphics.LinearGradientShader
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
@@ -19,6 +24,16 @@ object MintDepth {
     val secondary = listOf(Color.White, Color(0xFFEDF8F1), Color(0xFFD8EDE1))
     val bar = listOf(Color(0xFFFEFFFE), Color(0xFFF1FAF5), Color(0xFFDCEEE3))
     val shadow = Color(0xFF1E543D)
+
+    /** A true 45° light direction, independent of a card or button's aspect ratio. */
+    fun diagonal(colors: List<Color>): Brush = object : ShaderBrush() {
+        override fun createShader(size: Size): Shader {
+            val center = Offset(size.width / 2f, size.height / 2f)
+            val reach = (size.width + size.height) / 4f
+            val axis = Offset(reach, reach)
+            return LinearGradientShader(center - axis, center + axis, colors)
+        }
+    }
 }
 
 /** Opaque, content-sized gradient with a lit rim; elevation never changes layout size. */
@@ -30,6 +45,6 @@ fun Modifier.mintDepth(
     elevation = elevation, shape = shape, clip = false,
     ambientColor = MintDepth.shadow.copy(alpha = .45f),
     spotColor = MintDepth.shadow.copy(alpha = .70f)
-).background(Brush.verticalGradient(colors), shape)
-    .border(1.dp, Brush.verticalGradient(listOf(Color.White.copy(alpha = .96f),
+).background(MintDepth.diagonal(colors), shape)
+    .border(1.dp, MintDepth.diagonal(listOf(Color.White.copy(alpha = .96f),
         Color(0xFFAACDBA).copy(alpha = .65f))), shape)

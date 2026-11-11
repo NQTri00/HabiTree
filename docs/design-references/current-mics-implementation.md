@@ -118,6 +118,11 @@ No complete demo screenshot is used as a runtime background.
 - Both APK variants passed (final16 seconds). Installed and inspected Home, Shop, Tasks and an untouched task form at360dp. Checked320dp/1.3× Shop cards/tabs, complete lower catalog/footer, button shadow and navigation labels. Closed the form without saving; restored physical resolution/font1×.
 - This is a visual styling checkpoint; no claim of exhaustive performance profiling or exact concept-art identity.
 
+## Angled gradient preference — latest follow-up
+- Shared surface fills, highlighted rims, form fields and background base now use a45° upper-left→lower-right gradient. Shader endpoints are calculated from each surface's dimensions so the angle stays consistent on wide buttons, tall cards and resized windows.
+- Existing palette, shadows, native radial background glows and layout sizes remain unchanged. ShaderBrush caches the shader by draw size; no bitmap rendering was added.
+- Both APK variants passed (24 seconds). Installed APK inspected in Shop: diagonal cards, selected tab, header and navigation render correctly with clear labels.
+
 ## Acceptance still open
 Exact plant/icon silhouettes and illustration style differ from the new sheets; reused/generated art is not lossless source extraction. Do not describe this checkpoint as 100% visually identical.
 The full 393/412dp, landscape/IME, long-name, process-death, reward-claim, transaction-race and every annotated outcome matrix has not been re-executed for this redesign. Existing historical evidence does not automatically close those checks.

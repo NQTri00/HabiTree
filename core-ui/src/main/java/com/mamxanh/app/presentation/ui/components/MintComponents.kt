@@ -23,7 +23,7 @@ import com.mamxanh.app.presentation.ui.*
 @Composable
 fun MintBackdrop(modifier: Modifier = Modifier, content: @Composable BoxScope.() -> Unit) {
     Box(modifier.drawWithCache {
-        val base = Brush.verticalGradient(listOf(Color(0xFFF0FBF5), Color(0xFFC9E7D7), Color(0xFFE6F3DF)))
+        val base = MintDepth.diagonal(listOf(Color(0xFFF0FBF5), Color(0xFFC9E7D7), Color(0xFFE6F3DF)))
         val daylight = Brush.radialGradient(listOf(Color.White.copy(alpha = .72f), Color.Transparent),
             center = Offset(size.width * .12f, size.height * .08f), radius = size.maxDimension * .65f)
         val warmth = Brush.radialGradient(listOf(Color(0xFFFFF1CE).copy(alpha = .38f), Color.Transparent),

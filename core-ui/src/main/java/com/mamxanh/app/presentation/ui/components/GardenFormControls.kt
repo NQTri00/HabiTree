@@ -40,7 +40,7 @@ fun GardenTextField(
 ) {
     Box(modifier.heightIn(min = 44.dp), contentAlignment = Alignment.Center) {
         Box(Modifier.matchParentSize().background(
-            Brush.verticalGradient(if (errorMessage == null) listOf(Color(0xFFE5F2EA), Color.White)
+            MintDepth.diagonal(if (errorMessage == null) listOf(Color(0xFFE5F2EA), Color.White)
                 else listOf(Color(0xFFFFE1DB), Color(0xFFFFF5F2))), RoundedCornerShape(14.dp))
             .border(1.5.dp, if (errorMessage == null) Color(0xFFBED6CB) else Color(0xFFB73D32), RoundedCornerShape(14.dp)))
         BasicTextField(value, onValueChange,
