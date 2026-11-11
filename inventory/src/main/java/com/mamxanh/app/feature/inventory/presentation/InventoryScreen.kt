@@ -67,26 +67,9 @@ fun InventoryScreen(
                     GardenRichText("🪙 ${state.coins}", color = Deep, fontSize = 13.sp)
                 }
             }
-            Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp)
-                .height(IntrinsicSize.Min).selectableGroup(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                InventoryTab.entries.forEach { option ->
-                    Surface(Modifier.weight(1f).fillMaxHeight()
-                        .selectable(tab == option, role = Role.Tab, onClick = { tab = option }),
-                        shape = RoundedCornerShape(24.dp),
-                        color = if (tab == option) Green else Color(0xFFF8FCFA)) {
-                        Row(Modifier.heightIn(min = 48.dp).padding(8.dp),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
-                            verticalAlignment = Alignment.CenterVertically) {
-                            GardenArtwork(if (option == InventoryTab.ITEMS) GardenArt.FERTILIZER else GardenArt.SEED,
-                                Modifier.size(28.dp))
-                            Text(if (option == InventoryTab.ITEMS) "Vật phẩm" else "Hạt giống",
-                                color = if (tab == option) Color.White else Deep,
-                                fontWeight = FontWeight.Bold, fontSize = 14.sp)
-                        }
-                    }
-                }
-            }
+            MintCatalogTabs(if (tab == InventoryTab.ITEMS) 0 else 1,
+                { tab = if (it == 0) InventoryTab.ITEMS else InventoryTab.SEEDS },
+                Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
             if (targetPlotId != null && tab == InventoryTab.SEEDS) Text(
                 "Chọn hạt để gieo tại ô " + targetPlotId.toString().padStart(2, '0'),
                 Modifier.padding(horizontal = 16.dp, vertical = 4.dp),

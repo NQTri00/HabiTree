@@ -102,6 +102,14 @@ No complete demo screenshot is used as a runtime background.
 - Runtime verified plot05→Inventory Seeds→succulent selection→planting target05; cancelled without planting. Stock remained1 and wallet115 coins.
 - Confirmed process recreation: PID27313 disappeared; cold relaunch PID27578 restored Inventory with Seeds selected and the same quantities. Device size/font overrides restored. New screen left open on emulator.
 
+## Shop and centered Home navigation — latest follow-up
+- Shop now shares MintCatalogTabs with Inventory: illustrated Vật phẩm/Hạt giống tabs. ShopFilter is ITEMS/SEEDS; Seeds is the default. The previous All/Plants categories were UI-only state, so no persisted-data migration is needed.
+- Seed catalog uses a lazy three-column grid with64dp artwork, wrapping names, existing prices and actual owned counts. Items shows the existing25-coin fertilizer offer; permanent tools are described as available rather than assigned invented prices. Existing purchase/detail/outcome behavior remains.
+- Each shop category retains its own lazy-grid scroll state. Removed the duplicated tab implementation from Inventory.
+- Navigation order is Tasks, Garden, Home, Shop, Journal. Home occupies the exact middle with a56dp circular surface,30dp icon and raised shadow; other icons are24dp. The bubble has measured layout/touch space and a separate label.
+- Both APK variants passed (final18 seconds). Inspected all11 products and complete footer at360dp, both tabs at320dp/1.3×, restored category scroll, and the centered Home button navigating successfully. No purchases/game-data mutations were used.
+- Restored physical720×1280/font1×. git diff --check is part of the checkpoint verification.
+
 ## Acceptance still open
 Exact plant/icon silhouettes and illustration style differ from the new sheets; reused/generated art is not lossless source extraction. Do not describe this checkpoint as 100% visually identical.
 The full 393/412dp, landscape/IME, long-name, process-death, reward-claim, transaction-race and every annotated outcome matrix has not been re-executed for this redesign. Existing historical evidence does not automatically close those checks.
