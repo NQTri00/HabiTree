@@ -69,7 +69,7 @@ Rewards are permanent cosmetic entitlements recorded once, not repeatable coin f
 
 ## 9. Garden history and personal expression
 
-Garden details page: garden nickname, creation date, species count, flourishing count, decoration count and chosen season. A “Garden Moments” timeline captures first plant, first bloom, plot expansion and collection milestones, linking to Phase 3 memory timeline.
+Garden details page: garden nickname, creation date, species count, mature living tree count, decoration count and chosen environment theme. A “Garden Moments” timeline captures first plant, first bloom, plot expansion and collection milestones, linking to Phase 3 memory timeline.
 
 Optional **local screenshot** export can be offered after permission/OS share-sheet integration, but no online profile or public gallery. The scene should hide interactive controls during screenshot capture and respect image ownership/license.
 
