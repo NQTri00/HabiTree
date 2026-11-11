@@ -43,67 +43,32 @@ fun PurchaseConfirmation(id: String, state: ShopUiState, onDismiss: () -> Unit, 
     val total = if(owned) 0 else price * quantity
     val remaining = state.wallet.coins - total
     val enabled = !state.isPurchasing && !state.isLoading
-    Dialog(onDismissRequest = { if (!state.isPurchasing) onDismiss() },
-        properties = DialogProperties(usePlatformDefaultWidth = false, decorFitsSystemWindows = false)) {
-        Box(Modifier.fillMaxSize().safeDrawingPadding().padding(16.dp), contentAlignment = Alignment.Center) {
-            GardenBotanicalFrame(Modifier.widthIn(max = 440.dp).fillMaxWidth().heightIn(max = 680.dp),
-                contentPadding = PaddingValues(16.dp), cornerSize = 28.dp, skin = GardenPanelSkin.DIALOG) {
-                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                        Text(if(permanent) "Dụng cụ chăm sóc" else "Chọn số lượng", Modifier.weight(1f), color = Deep, fontSize = 18.sp, fontWeight = FontWeight.Bold)
-                        IconButton(onClick = onDismiss, enabled = !state.isPurchasing, modifier = Modifier.size(48.dp)) {
-                            Icon(Icons.Rounded.Close, "Đóng", tint = Deep, modifier = Modifier.size(22.dp))
-                        }
-                    }
-                    Column(Modifier.weight(1f, fill = false).verticalScroll(rememberScrollState()),
-                        horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                        if (seed != null) PaintedGardenPlant(id, Modifier.size(104.dp))
-                        else GardenArtwork(if(permanent)GardenArt.WATERING_CAN else GardenArt.FERTILIZER, Modifier.size(88.dp))
-                        Text(seed?.name ?: product?.name.orEmpty(), color = Deep, fontSize = 22.sp,
-                            fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
-                        Text(seed?.description ?: product?.description.orEmpty(),
-                            color = Muted, fontSize = 13.sp, lineHeight = 18.sp, textAlign = TextAlign.Center)
-                        FlowRow(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
-                            verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                            GardenBotanicalFrame(contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp),
-                                cornerSize = 18.dp, skin = GardenPanelSkin.PRICE) {
-                                Text("🪙 $price xu / món", color = Deep, fontSize = 13.sp, fontWeight = FontWeight.Bold)
-                            }
-                            GardenBotanicalFrame(contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp), cornerSize = 18.dp) {
-                                Text("Trong túi: ${state.wallet.inventory[id] ?: 0}", color = Green, fontSize = 13.sp)
-                            }
-                        }
-                        if(seed != null) {
-                            val profile=com.mamxanh.shared.model.lifecycleProfile(id)
-                            Text("${profile.tier} · ${profile.stageCount} dáng",
-                                color=Green,fontSize=12.sp,textAlign=TextAlign.Center)
-                        }
-                        if(!permanent) QuantitySelector(quantity, enabled, { quantity-- }, { quantity++ })
-                        Column(Modifier.fillMaxWidth().mintDepth(RoundedCornerShape(18.dp), MintDepth.secondary, 2.dp).padding(12.dp),
-                            verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                                Text(if(owned) "Trang bị miễn phí" else "Tổng cộng", color = Deep, fontSize = 14.sp)
-                                Text("🪙 $total xu", color = Green, fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                            }
-                            Text("Ví: ${state.wallet.coins} xu · " +
-                                if (remaining >= 0) "Còn $remaining xu" else "Thiếu ${-remaining} xu",
-                                color = if (remaining >= 0) Muted else Color(0xFFAC3F37), fontSize = 12.sp, lineHeight = 17.sp)
-                            if (remaining < 0) {
-                                val days = kotlin.math.ceil((-remaining).toDouble() / state.averageEarnings.coerceAtLeast(1)).toInt()
-                                Text("Khoảng $days ngày tích xu · Ước tính ${state.averageEarnings} xu/ngày",
-                                    color = Muted, fontSize = 11.sp, lineHeight = 16.sp)
-                            }
-                        }
-                    }
-                    Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        GardenPaintedButton("Để sau", onDismiss, Modifier.weight(1f).fillMaxHeight(),
-                            primary = false, enabled = !state.isPurchasing)
-                        GardenPaintedButton(if(owned) if(state.wallet.equippedCan==id) "Đang dùng" else "Trang bị" else if(state.isPurchasing) "Đang mua…" else "Mua · $total xu",
-                            {if(owned) onEquip() else onBuy(if(permanent)1 else quantity,key)},Modifier.weight(1.5f).fillMaxHeight(),
-                            enabled=enabled && if(owned)state.wallet.equippedCan!=id else remaining>=0)
-                    }
-                }
+    MintDialog(if(permanent)"Dụng cụ chăm sóc" else "Thêm vào túi",
+        onDismiss={if(!state.isPurchasing)onDismiss()},
+        confirmLabel=if(owned)if(state.wallet.equippedCan==id)"Đang dùng" else "Trang bị" else if(state.isPurchasing)"Đang mua…" else "Mua",
+        onConfirm={if(owned)onEquip() else onBuy(if(permanent)1 else quantity,key)},
+        confirmEnabled=enabled && if(owned)state.wallet.equippedCan!=id else remaining>=0,
+        dismissEnabled=!state.isPurchasing) {
+        Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(12.dp)) {
+            if(seed!=null)PaintedGardenPlant(id,Modifier.size(72.dp))
+            else GardenArtwork(if(permanent)GardenArt.WATERING_CAN else GardenArt.FERTILIZER,Modifier.size(64.dp))
+            Column(Modifier.weight(1f),verticalArrangement=Arrangement.spacedBy(5.dp)) {
+                Text(seed?.name ?: product?.name.orEmpty(),color=Deep,fontSize=16.sp,lineHeight=20.sp,fontWeight=FontWeight.Bold)
+                Text("$price xu / món",color=Green,fontSize=12.sp,fontWeight=FontWeight.SemiBold)
+                Text("Trong túi: ${state.wallet.inventory[id] ?: 0}",color=Muted,fontSize=11.sp)
             }
+        }
+        Text(seed?.description ?: product?.description.orEmpty(),color=Muted,fontSize=12.sp,lineHeight=17.sp)
+        if(seed!=null) {
+            val profile=com.mamxanh.shared.model.lifecycleProfile(id)
+            MintStatusPill("${profile.tier} · ${profile.stageCount} dáng")
+        }
+        if(!permanent)QuantitySelector(quantity,enabled,{quantity--},{quantity++})
+        MintMetricStrip(listOf("Tổng" to "$total xu","Ví" to "${state.wallet.coins} xu",
+            (if(remaining>=0)"Còn lại" else "Cần thêm") to "${kotlin.math.abs(remaining)} xu"))
+        if(remaining<0) {
+            val days=kotlin.math.ceil((-remaining).toDouble()/state.averageEarnings.coerceAtLeast(1)).toInt()
+            Text("Khoảng $days ngày tích xu · Ước tính ${state.averageEarnings} xu/ngày",color=Muted,fontSize=11.sp,lineHeight=15.sp)
         }
     }
 }

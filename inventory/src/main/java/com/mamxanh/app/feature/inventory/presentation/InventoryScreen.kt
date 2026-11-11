@@ -132,21 +132,7 @@ private fun InventoryCard(
     name: String, quantity: String, onClick: (() -> Unit)? = null,
     artwork: @Composable (Modifier) -> Unit
 ) {
-    GardenBotanicalFrame(
-        Modifier.fillMaxWidth().then(if (onClick != null)
-            Modifier.clickable(role = Role.Button, onClickLabel = "Chọn $name", onClick = onClick)
-        else Modifier),
-        contentPadding = PaddingValues(8.dp), cornerSize = 20.dp
-    ) {
-        Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(2.dp)) {
-            artwork(Modifier.fillMaxWidth().height(56.dp).semantics { contentDescription = name })
-            Text(name, color = Deep, fontSize = 12.sp, lineHeight = 15.sp,
-                fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
-            Text(quantity, color = Green, fontWeight = FontWeight.Bold,
-                fontSize = 12.sp, lineHeight = 15.sp, textAlign = TextAlign.Center)
-        }
-    }
+    MintCatalogCard(name,quantity,onClick,artwork)
 }
 
 @Preview(widthDp = 360, heightDp = 640)

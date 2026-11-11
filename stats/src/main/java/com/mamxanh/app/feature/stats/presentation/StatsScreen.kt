@@ -41,10 +41,10 @@ fun StatsScreen(state: StatsUiState, onIntent: (StatsIntent) -> Unit, modifier: 
     }
     MintBackdrop(modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
-            MintHeader("Nhật ký", s.coins)
+            MintCompactHeader(s.coins, title="Nhật ký", titleSize=18.sp)
             LazyColumn(Modifier.weight(1f).mintScrollEdges(listState.canScrollBackward, listState.canScrollForward),
                 state = listState, contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(14.dp)) {
+                verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 item {
                     GardenBotanicalFrame(Modifier.fillMaxWidth()) {
                         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
@@ -58,7 +58,7 @@ fun StatsScreen(state: StatsUiState, onIntent: (StatsIntent) -> Unit, modifier: 
                     GardenBotanicalFrame(Modifier.fillMaxWidth(), contentPadding = PaddingValues(14.dp)) {
                         Column {
                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                Text("Nhịp xanh 7 ngày", Modifier.weight(1f), color = Deep, fontSize = 21.sp, fontWeight = FontWeight.Bold)
+                                Text("Nhịp xanh 7 ngày", Modifier.weight(1f), color = Deep, fontSize = 16.sp, fontWeight = FontWeight.Bold)
                                 IconButton(onClick = { onIntent(StatsIntent.Refresh) }, modifier = Modifier.semantics {
                                     stateDescription = if(state.isLoading) "Đang làm mới thống kê" else "Sẵn sàng làm mới"
                                     liveRegion = LiveRegionMode.Polite
@@ -74,12 +74,12 @@ fun StatsScreen(state: StatsUiState, onIntent: (StatsIntent) -> Unit, modifier: 
                 if(!firstUse) item {
                     GardenBotanicalFrame(Modifier.fillMaxWidth(), contentPadding = PaddingValues(14.dp)) {
                         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                            Text("Tuần này", color = Deep, fontSize = 22.sp, fontWeight = FontWeight.Bold)
+                            Text("Tuần này", color = Deep, fontSize = 16.sp, fontWeight = FontWeight.Bold)
                             listOf("☑ ${s.week} việc hoàn thành", "🌱 ${s.today} việc hôm nay",
                                 "📅 ${s.streak} ngày đều đặn", "🪙 ${s.coins} xu trong túi").forEachIndexed { index, text ->
                                 if(index > 0) HorizontalDivider(color = Color(0xFFE0EAE5))
                                 Row(Modifier.fillMaxWidth().heightIn(min = 36.dp), verticalAlignment = Alignment.CenterVertically) {
-                                    Text(text, Modifier.weight(1f), color = Deep, fontSize = 16.sp)
+                                    Text(text, Modifier.weight(1f), color = Deep, fontSize = 13.sp)
                                 }
                             }
                         }
@@ -100,9 +100,9 @@ fun StatsScreen(state: StatsUiState, onIntent: (StatsIntent) -> Unit, modifier: 
 @Composable
 private fun JourneyCard(emoji: String, title: String, value: String, caption: String, modifier: Modifier = Modifier) {
     Column(modifier, horizontalAlignment = Alignment.CenterHorizontally) {
-        Text("$emoji $value", Modifier.fillMaxWidth(), color = Green, fontSize = 40.sp, fontWeight = FontWeight.Bold,
+        Text("$emoji $value", Modifier.fillMaxWidth(), color = Green, fontSize = 25.sp, fontWeight = FontWeight.Bold,
             textAlign = androidx.compose.ui.text.style.TextAlign.Center)
-        Text(title, color = Deep, fontSize = 15.sp, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
+        Text(title, color = Deep, fontSize = 12.sp, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
         if (caption.isNotBlank()) Text(caption, color = Muted, fontSize = 11.sp)
     }
 }

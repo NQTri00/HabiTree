@@ -82,14 +82,7 @@ fun ShopScreen(state: ShopUiState, onIntent: (ShopIntent) -> Unit, modifier: Mod
 
 @Composable
 private fun ShopProductCard(name:String,price:String,onClick:()->Unit,art: @Composable (Modifier) -> Unit) {
-    GardenBotanicalFrame(Modifier.fillMaxWidth().clickable(role=androidx.compose.ui.semantics.Role.Button,onClick=onClick),
-        contentPadding=PaddingValues(8.dp),cornerSize=20.dp) {
-        Column(Modifier.fillMaxWidth(),horizontalAlignment=Alignment.CenterHorizontally,verticalArrangement=Arrangement.spacedBy(2.dp)) {
-            art(Modifier.fillMaxWidth().height(56.dp))
-            Text(name,color=Deep,fontSize=12.sp,lineHeight=15.sp,fontWeight=FontWeight.Bold,textAlign=TextAlign.Center)
-            Text(price,color=Green,fontSize=12.sp,fontWeight=FontWeight.Bold,textAlign=TextAlign.Center)
-        }
-    }
+    MintCatalogCard(name,price,onClick,art)
 }
 @Preview(widthDp=360,heightDp=640)
 @Composable

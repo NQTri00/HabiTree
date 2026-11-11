@@ -151,48 +151,26 @@ fun GardenScreen(state: GardenUiState, onIntent: (GardenIntent) -> Unit, modifie
         }
     }
     waterAllKey?.let { key ->
-        AlertDialog(onDismissRequest={waterAllKey=null},title={Text("Tưới tất cả?")},text={
-            Text("Tưới miễn phí\nSẽ tưới: ${garden.waterAll.eligible}\nĐã được tưới: ${garden.waterAll.active}\nĐã khô héo: ${garden.waterAll.dead}\nCây trưởng thành được tưới để duy trì sức sống.")
-        },confirmButton={TextButton(onClick={onIntent(GardenIntent.WaterAll(key));waterAllKey=null},
-            enabled=!state.isLoading && garden.waterAll.eligible>0){Text("Tưới cây")}},
-            dismissButton={TextButton(onClick={waterAllKey=null}){Text("Để sau")}})
+        MintDialog("Tưới cả vườn",{waterAllKey=null},"Tưới cây",
+            {onIntent(GardenIntent.WaterAll(key));waterAllKey=null},
+            confirmEnabled=!state.isLoading && garden.waterAll.eligible>0) {
+            MintStatusPill("Miễn phí")
+            MintMetricStrip(listOf("Cần tưới" to garden.waterAll.eligible.toString(),
+                "Đã tưới" to garden.waterAll.active.toString(),"Khô héo" to garden.waterAll.dead.toString()))
+            Text("Chỉ tưới cây còn sống đang cần nước. Thời gian tưới không cộng dồn.",color=Muted,fontSize=12.sp,lineHeight=17.sp)
+        }
     }
     unlockingPlotId?.let { id ->
-        val price = com.mamxanh.shared.model.Balance.plot(garden.plots.count { it.isUnlocked })
-        Dialog(onDismissRequest = { unlockingPlotId = null },
-            properties = DialogProperties(usePlatformDefaultWidth = false, decorFitsSystemWindows = false)) {
-            Box(Modifier.fillMaxSize().safeDrawingPadding(), contentAlignment = Alignment.Center) {
-                GardenBotanicalFrame(Modifier.widthIn(max = 440.dp).fillMaxWidth(.92f).heightIn(max = 520.dp),
-                    contentPadding = PaddingValues(22.dp), cornerSize = 32.dp, skin = GardenPanelSkin.DIALOG) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                            GardenArtwork(GardenArt.SPROUT, Modifier.size(32.dp))
-                            Text("Mở thêm ô trồng", Modifier.weight(1f), color = Deep,
-                                fontSize = 22.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
-                            TextButton(onClick = { unlockingPlotId = null }) { Text("×", fontSize = 24.sp) }
-                        }
-                        Column(Modifier.weight(1f, fill = false).verticalScroll(rememberScrollState()),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                        Text("Ô " + id.toString().padStart(2, '0'), color = Deep, fontWeight = FontWeight.Bold)
-                        GardenBotanicalFrame(contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)) {
-                            Text("🪙 Số xu hiện có: ${garden.coins}", color = Deep)
-                        }
-                        GardenBotanicalFrame(contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)) {
-                            Text("Giá: $price xu", color = Deep, fontSize = 20.sp, fontWeight = FontWeight.Bold)
-                        }
-                        if (garden.coins < price) Text("Chưa đủ xu để mở ô trồng.", color = Deep)
-                        }
-                        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            GardenPaintedButton("Để sau", { unlockingPlotId = null }, Modifier.weight(1f), primary = false)
-                            GardenPaintedButton("Mở ô", {
-                                onIntent(GardenIntent.UnlockPlot(id)); unlockingPlotId = null
-                            }, Modifier.weight(1f), enabled = garden.coins >= price && !state.isLoading)
-                        }
-                    }
-                }
+        val price=com.mamxanh.shared.model.Balance.plot(garden.plots.count{it.isUnlocked})
+        MintDialog("Mở ô trồng",{unlockingPlotId=null},"Mở ô",
+            {onIntent(GardenIntent.UnlockPlot(id));unlockingPlotId=null},
+            confirmEnabled=garden.coins>=price && !state.isLoading) {
+            Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(12.dp)) {
+                GardenArtwork(GardenArt.SPROUT,Modifier.size(56.dp))
+                Text("Ô ${id.toString().padStart(2,'0')}",color=Deep,fontSize=17.sp,fontWeight=FontWeight.Bold)
             }
+            MintMetricStrip(listOf("Giá mở ô" to "$price xu","Ví của bạn" to "${garden.coins} xu"))
+            if(garden.coins<price)Text("Cần thêm ${price-garden.coins} xu.",color=Muted,fontSize=12.sp)
         }
     }
     selectedSeed?.let { seed ->
@@ -206,14 +184,11 @@ fun GardenScreen(state: GardenUiState, onIntent: (GardenIntent) -> Unit, modifie
             onPlant = { name ->
                 onIntent(GardenIntent.Plant(seed.id, name, selectedPlotId)); onDismissPlanting()
             })
-        else AlertDialog(onDismissRequest = { onDismissPlanting() },
-            title = { Text("Chưa có ô trống") },
-            text = { Text("Hạt vẫn ở trong túi. Mở thêm ô trồng để gieo cây.") },
-            confirmButton = { TextButton(onClick = {
-                onDismissPlanting()
-                unlockingPlotId = plots.firstOrNull { !it.isUnlocked }?.id
-            }) { Text("Xem ô bị khóa") } },
-            dismissButton = { TextButton(onClick = { onDismissPlanting() }) { Text("Để sau") } })
+        else MintDialog("Chưa có ô trống",onDismissPlanting,"Xem ô khóa",{
+            onDismissPlanting();unlockingPlotId=plots.firstOrNull{!it.isUnlocked}?.id
+        }) {
+            Text("Hạt vẫn ở trong túi. Mở thêm ô trồng để gieo cây.",color=Muted,fontSize=12.sp,lineHeight=17.sp)
+        }
     }
     state.message?.let { message ->
         MintFeedback(message, { onIntent(GardenIntent.DismissMessage) })
@@ -265,98 +240,42 @@ private fun GardenTreeIsland(tree: Tree, onClick: () -> Unit, modifier: Modifier
 private val PlantingDialogBounds = Modifier.widthIn(max = 440.dp).fillMaxWidth(.92f).heightIn(max = 700.dp)
 
 @Composable
-private fun PlantingDialog(seed: Species, count: Int, targetPlotId: Int?, availablePlotIds: List<Int>, onSelectPlot: (Int) -> Unit, onDismiss: () -> Unit, onPlant: (String) -> Unit) {
-    Dialog(onDismissRequest = onDismiss,
-        properties = DialogProperties(usePlatformDefaultWidth = false, decorFitsSystemWindows = false)) {
-        Box(Modifier.fillMaxSize().safeDrawingPadding(), contentAlignment = Alignment.Center) {
-            Box(PlantingDialogBounds) { PlantingParchment(seed, count, onDismiss, onPlant, targetPlotId, availablePlotIds, onSelectPlot) }
-        }
-    }
-}
-
-@Composable
-private fun PlantingParchment(seed: Species, count: Int, onDismiss: () -> Unit, onPlant: (String) -> Unit,
-    targetPlotId: Int? = 4, availablePlotIds: List<Int> = listOf(4), onSelectPlot: (Int) -> Unit = {}) {
+private fun PlantingDialog(seed: Species,count: Int,targetPlotId: Int?,availablePlotIds: List<Int>,
+    onSelectPlot:(Int)->Unit,onDismiss:()->Unit,onPlant:(String)->Unit) {
+    var name by rememberSaveable(seed.id){mutableStateOf("")}
     var plotMenu by remember { mutableStateOf(false) }
-    var name by rememberSaveable(seed.id) { mutableStateOf("") }
-    val density = androidx.compose.ui.platform.LocalDensity.current
-    val fontScale = density.fontScale
-    val nameBringIntoView = remember { BringIntoViewRequester() }
-    var nameFocused by remember { mutableStateOf(false) }
-    val imeBottom = WindowInsets.ime.getBottom(density)
-    LaunchedEffect(nameFocused, imeBottom) {
-        if (nameFocused && imeBottom > 0) {
-            withFrameNanos { }
-            nameBringIntoView.bringIntoView()
-        }
-    }
-    BoxWithConstraints {
-        val compact = maxHeight < 360.dp * fontScale
-        val veryShort = maxHeight < 160.dp * fontScale
-        GardenBotanicalFrame(Modifier.fillMaxWidth(), contentPadding = PaddingValues(
-            horizontal = if (veryShort) 12.dp else 26.dp,
-            vertical = if (veryShort) 0.dp else if (compact) 4.dp else 30.dp),
-            cornerSize = 42.dp, skin = GardenPanelSkin.PLANTING_DIALOG) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(if (veryShort) 0.dp else if (compact) 4.dp else 12.dp)) {
-                if (!veryShort) Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                    Text("Gieo cây", Modifier.weight(1f), fontSize = if (compact) 18.sp else 22.sp, fontWeight = FontWeight.Bold, color = Deep)
-                    PlantingCloseButton(onDismiss)
-                }
-                Box(Modifier.weight(1f, fill = false).fillMaxWidth()) {
-                Column(Modifier.fillMaxWidth().padding(end = if (veryShort) 56.dp else 0.dp)
-                    .verticalScroll(rememberScrollState()),
-                    horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    if (veryShort) Text("Gieo cây", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Deep)
-                    GardenArtwork(GardenArt.SEED, Modifier.size(150.dp, 100.dp))
-                    GardenBotanicalFrame(contentPadding = PaddingValues(horizontal = 18.dp, vertical = 8.dp), cornerSize = 18.dp) {
-                        Text("${seed.name} · Còn $count", color = Deep, fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
-                    }
-                    Text("✏️ Tên cây · tùy chọn", color = Deep, fontSize = 17.sp, fontWeight = FontWeight.Bold, modifier = Modifier.fillMaxWidth())
-                    GardenTextField(name, { name = it }, "Tên cây tùy chọn", Modifier.fillMaxWidth()
-                        .bringIntoViewRequester(nameBringIntoView)
-                        .onFocusChanged { nameFocused = it.hasFocus }, placeholder = "Mầm bình yên")
-                    Text("Bỏ trống để dùng tên loài cây.", color = Muted, fontSize = 13.sp, textAlign = TextAlign.Center)
-                    Box(Modifier.fillMaxWidth()) {
-                        GardenFieldButton("Ô đất mục tiêu · Ô số " + (targetPlotId?.toString()?.padStart(2, '0') ?: "—") + " (trống)",
-                            { plotMenu = true }, Modifier.fillMaxWidth())
-                        DropdownMenu(expanded = plotMenu, onDismissRequest = { plotMenu = false }) {
-                            availablePlotIds.forEach { id ->
-                                DropdownMenuItem(text = { Text("Ô số " + id.toString().padStart(2, '0')) },
-                                    onClick = { onSelectPlot(id); plotMenu = false })
-                            }
-                        }
-                    }
-                    GardenBotanicalFrame(contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-                        cornerSize = 18.dp, skin = GardenPanelSkin.HINT) {
-                        Text("Gieo cây sẽ dùng 1 hạt trong túi.", color = Deep, fontSize = 15.sp,
-                            fontStyle = FontStyle.Italic, textAlign = TextAlign.Center)
-                    }
-                }
-                if (veryShort) PlantingCloseButton(onDismiss, Modifier.align(Alignment.TopEnd))
-                }
-                Row(Modifier.height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    GardenPaintedButton("Để sau", onDismiss, Modifier.weight(1f).fillMaxHeight(), primary = false)
-                    GardenPaintedButton("Gieo cây", { onPlant(name) }, Modifier.weight(1.2f).fillMaxHeight(), enabled = count > 0)
-                }
+    val requester=remember{BringIntoViewRequester()}
+    val density=androidx.compose.ui.platform.LocalDensity.current
+    var focused by remember{mutableStateOf(false)}
+    val ime=WindowInsets.ime.getBottom(density)
+    LaunchedEffect(focused,ime){if(focused && ime>0){withFrameNanos{};requester.bringIntoView()}}
+    MintDialog("Gieo cây",onDismiss,"Gieo hạt",{onPlant(name)},confirmEnabled=count>0) {
+        Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(12.dp)) {
+            PaintedGardenPlant(seed.id,Modifier.size(64.dp))
+            Column(verticalArrangement=Arrangement.spacedBy(4.dp)) {
+                Text(seed.name,color=Deep,fontSize=16.sp,fontWeight=FontWeight.Bold)
+                MintStatusPill("Trong túi: $count hạt")
             }
         }
-
+        GardenTextField(name,{name=it},"Tên cây tùy chọn",Modifier.fillMaxWidth()
+            .bringIntoViewRequester(requester).onFocusChanged{focused=it.hasFocus},placeholder="Mầm bình yên")
+        Text("Bỏ trống để dùng tên loài cây.",color=Muted,fontSize=11.sp)
+        Box(Modifier.fillMaxWidth()) {
+            GardenFieldButton("Ô trồng · ${targetPlotId?.toString()?.padStart(2,'0') ?: "—"}",{plotMenu=true},Modifier.fillMaxWidth())
+            DropdownMenu(expanded=plotMenu,onDismissRequest={plotMenu=false}) {
+                availablePlotIds.forEach{id->DropdownMenuItem(text={Text("Ô ${id.toString().padStart(2,'0')}")},
+                    onClick={onSelectPlot(id);plotMenu=false})}
+            }
+        }
+        Text("Dùng 1 hạt trong túi để bắt đầu trồng.",color=Muted,fontSize=12.sp)
     }
 }
 
+// Compatibility for isolated reference previews; runtime and previews use the same dialog.
 @Composable
-private fun PlantingCloseButton(onDismiss: () -> Unit, modifier: Modifier = Modifier) {
-    IconButton(onClick = onDismiss, modifier = modifier.size(48.dp)
-        .background(Color(0xFFF5FCF8), CircleShape)
-        .drawBehind {
-            drawCircle(Color(0xFFC9DDD2),
-                style = androidx.compose.ui.graphics.drawscope.Stroke(1.5.dp.toPx()))
-        }
-        .semantics { contentDescription = "Đóng gieo cây" }) {
-        Text("×", color = Deep, fontSize = 24.sp, fontWeight = FontWeight.Bold)
-    }
+private fun PlantingParchment(seed: Species,count:Int,onDismiss:()->Unit,onPlant:(String)->Unit,
+    targetPlotId:Int?=4,availablePlotIds:List<Int> = listOf(4),onSelectPlot:(Int)->Unit={}) {
+    PlantingDialog(seed,count,targetPlotId,availablePlotIds,onSelectPlot,onDismiss,onPlant)
 }
 
 private fun sampleGarden() = Garden(

@@ -62,21 +62,27 @@ fun TreeInteractionScreen(
                                 {tab=0;onIntent(TreeIntent.SetPanelExpanded(false))})
                         }
                     }
-                    Column(Modifier.weight(1f).mintScrollEdges(scroll.canScrollBackward,scroll.canScrollForward)
-                        .verticalScroll(scroll).padding(bottom=6.dp),verticalArrangement=Arrangement.spacedBy(4.dp)) {
-                        Text("${status.stageLabel} · ${status.stateLabel} · ${status.cue.label}",color=Deep,fontSize=11.sp)
+                    GardenBotanicalFrame(Modifier.weight(1f).fillMaxWidth(),contentPadding=PaddingValues(10.dp),cornerSize=20.dp) {
+                    Column(Modifier.fillMaxSize().mintScrollEdges(scroll.canScrollBackward,scroll.canScrollForward)
+                        .verticalScroll(scroll).padding(bottom=4.dp),verticalArrangement=Arrangement.spacedBy(8.dp)) {
+                        MintTreeStatus("${status.stageIndex+1}/${status.stageCount}",status.stateLabel,status.cue.label)
                         if(status.alive) {
-                            Row(Modifier.fillMaxWidth()) {
+                            Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.spacedBy(4.dp)) {
                                 listOf("Chăm sóc","Trang trí","Thông tin").forEachIndexed { index,label ->
-                                    TextButton(onClick={tab=index;onIntent(TreeIntent.SetPanelExpanded(false))},modifier=Modifier.weight(1f),
-                                        contentPadding=PaddingValues(4.dp)) {
-                                        Text(label,color=if(tab==index)Green else Muted,fontWeight=if(tab==index)FontWeight.Bold else FontWeight.Normal,fontSize=12.sp)
+                                    Surface(Modifier.weight(1f),shape=androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
+                                        color=if(tab==index)Green else androidx.compose.ui.graphics.Color(0xFFF0F6F2)) {
+                                        TextButton(onClick={tab=index;onIntent(TreeIntent.SetPanelExpanded(false))},
+                                            contentPadding=PaddingValues(4.dp)) {
+                                            Text(label,color=if(tab==index)androidx.compose.ui.graphics.Color.White else Muted,
+                                                fontWeight=FontWeight.SemiBold,fontSize=11.sp)
+                                        }
                                     }
                                 }
                             }
                             when(tab) {
                                 0 -> {
-                                    Text(status.waterLabel + if(status.fertilizerLabel.isNotBlank()) " · ${status.fertilizerLabel}" else "",color=Muted,fontSize=11.sp)
+                                    MintStatusPill(status.waterLabel)
+                                    if(status.fertilizerLabel.isNotBlank())Text(status.fertilizerLabel,color=Muted,fontSize=11.sp)
                                     if(status.state==TreeGrowthState.GROWING) FertilizerTier.entries.forEach { tier ->
                                         val count=inventory[tier.itemId] ?: 0
                                         OutlinedButton(onClick={onIntent(TreeIntent.Fertilize(tree.id,tier.itemId))},
@@ -89,7 +95,7 @@ fun TreeInteractionScreen(
                                     }
                                     if(!status.canFertilize && status.state==TreeGrowthState.GROWING)
                                         Text(if(!status.waterActive)"Hãy tưới cây trước." else "Cây chưa cần thêm phân bón.",color=Muted,fontSize=11.sp)
-                                    TextButton(onClick={onIntent(TreeIntent.OpenFertilizerShop)}){Text("Ghé Tiệm hạt",color=Green,fontSize=12.sp)}
+                                    if(status.state==TreeGrowthState.GROWING)MintDialogAction("Chọn vật phẩm",{onIntent(TreeIntent.OpenFertilizerShop)},Modifier.fillMaxWidth(),primary=false)
                                 }
                                 1 -> DecorationPicker(tree.decoration,{onIntent(TreeIntent.Decorate(tree.id,it))})
                                 else -> {
@@ -107,22 +113,28 @@ fun TreeInteractionScreen(
                             Text("Dọn cây",color=Muted,fontSize=12.sp)
                         }
                     }
+                    }
                 }
             }
         }
-        if(state.dispositionId==tree.id)AlertDialog(
-            onDismissRequest={if(!state.isLoading)onIntent(TreeIntent.DismissDisposition)},
-            title={Text(if(state.selling)"Bán ${tree.name}?" else "Dọn ${tree.name}?")},
-            text={Column(verticalArrangement=Arrangement.spacedBy(8.dp)) {
-                Text("Cây sẽ rời ô trồng vĩnh viễn. Không hoàn lại hạt hoặc tiến trình.")
-                if(state.selling) {
-                    val quote=state.quote
-                    Text("Giá ${quote?.nominal ?: 0} xu · Nhận hôm nay ${quote?.granted ?: 0} xu.")
-                    if((quote?.granted ?: 0)<(quote?.nominal ?: 0))
-                        Text("Giới hạn ${Balance.DAILY_CAP} xu/ngày: phần còn lại mất vĩnh viễn, không để dành.",color=MaterialTheme.colorScheme.error)
-                } else Text("Không nhận xu khi dọn cây.")
-            }},
-            confirmButton={TextButton(onClick={onIntent(TreeIntent.ConfirmDisposition)},enabled=!state.isLoading){Text(if(state.selling)"Bán cây" else "Dọn cây")}},
-            dismissButton={TextButton(onClick={onIntent(TreeIntent.DismissDisposition)},enabled=!state.isLoading){Text("Giữ lại")}})
+        if(state.dispositionId==tree.id)MintDialog(
+            if(state.selling)"Bán cây" else "Dọn cây",
+            {if(!state.isLoading)onIntent(TreeIntent.DismissDisposition)},
+            if(state.selling)"Bán cây" else "Dọn cây",
+            {onIntent(TreeIntent.ConfirmDisposition)},cancelLabel="Giữ lại",
+            confirmEnabled=!state.isLoading,dismissEnabled=!state.isLoading,destructive=true) {
+            Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(12.dp)) {
+                GardenPlantPortrait(tree.speciesId,tree.decoration,Modifier.size(64.dp),withered=!status.alive)
+                Text(tree.name,color=Deep,fontSize=16.sp,fontWeight=FontWeight.Bold)
+            }
+            Text("Cây sẽ rời ô trồng vĩnh viễn. Không hoàn lại hạt hoặc tiến trình.",color=Muted,fontSize=12.sp,lineHeight=17.sp)
+            if(state.selling) {
+                val quote=state.quote
+                MintMetricStrip(listOf("Giá bán" to "${quote?.nominal ?: 0} xu","Nhận hôm nay" to "${quote?.granted ?: 0} xu"))
+                if((quote?.granted ?: 0)<(quote?.nominal ?: 0))
+                    Text("Phần vượt giới hạn ${Balance.DAILY_CAP} xu/ngày sẽ mất, không để dành.",
+                        color=MaterialTheme.colorScheme.error,fontSize=12.sp,lineHeight=17.sp)
+            } else MintStatusPill("Không nhận xu hoặc hạt")
+        }
     }
 }

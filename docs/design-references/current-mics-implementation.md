@@ -169,6 +169,16 @@ No complete demo screenshot is used as a runtime background.
 - Inspected compact Shop/Inventory cards, Home's complete scroll range and tree detail care footer at360dp; the tree stays in place while lower content scrolls. Checked320dp/font1.3, including inline fertilizer controls and two-column catalogs. No preview atlas or mass rendering used.
 - Latest preference supersedes earlier evidence describing visible countdowns, care-day counts and modal success outcomes.
 
+## Status panels, uniform catalog and dialog redesign — follow-up
+
+- IDE write access verified by successful source and documentation edits.
+- Added shared status badges, metric strips and catalog cards. Catalog name slots bottom-align up to two lines so prices remain close and card heights match.
+- Home groups stage/care badges and three daily metrics in one panel; tree detail groups status, selected tabs and care content in a single surface.
+- Reduced Journal headings, summary numbers and body labels. Replaced runtime native confirmations and the previous planting/purchase/task forms with the compact shared dialog shell.
+- Debug and verification APK builds passed (39s). Runtime checks confirmed the pine and mandarin cards share top/bottom edges and price baselines. Checked grouped Home/tree panels, reduced Journal summary/chart/weekly text, and the new purchase popup at360dp and320dp/font1.3.
+- Task form Save/Cancel remain visible with the keyboard open; an untouched form was cancelled without adding a task. Main-profile purchase and care actions were not used for QA.
+- Final debug/verification builds passed (44s), including the single compact Journal header and matching metric tile heights. Fresh com.mamxanh.app.verification.dialogs profile verified the planting form, planting callback, Water All count tiles and confirmation callback: one eligible tree became watered and the eligible count became zero. No extra preview renders were used.
+
 ## Acceptance still open
 Exact plant/icon silhouettes and illustration style differ from the new sheets; reused/generated art is not lossless source extraction. Do not describe this checkpoint as 100% visually identical.
 The full 393/412dp, landscape/IME, long-name, process-death, reward-claim, transaction-race and every annotated outcome matrix has not been re-executed for this redesign. Existing historical evidence does not automatically close those checks.

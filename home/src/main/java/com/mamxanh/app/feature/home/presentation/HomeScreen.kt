@@ -70,15 +70,14 @@ fun HomeScreen(
                             MintEmptySprout(Modifier.size(110.dp))
                             Text("Chưa có cây trong vườn",fontWeight=FontWeight.Bold,fontSize=17.sp,color=Deep)
                             GardenPaintedButton("Gieo mầm đầu tiên",{onIntent(HomeIntent.OpenGarden)},Modifier.fillMaxWidth())
-                        } else {
-                            Text("${tree.status.stageLabel} · ${tree.status.stateLabel} · ${tree.status.waterLabel}",
-                                color=Deep,fontSize=11.sp,textAlign=TextAlign.Center)
-                            if(tree.status.fertilizerLabel.isNotBlank())Text(tree.status.fertilizerLabel,color=Green,fontSize=11.sp)
                         }
-                        GardenBotanicalFrame(Modifier.fillMaxWidth(),contentPadding=PaddingValues(6.dp)) {
-                            Column(verticalArrangement=Arrangement.spacedBy(2.dp)) {
-                                Text("Thu hôm nay ${d.phase.earnedToday}/${com.mamxanh.shared.model.Balance.DAILY_CAP} xu · Kế hoạch ${d.completedTasks}/${d.totalTasks}",color=Deep,fontSize=11.sp)
-                                Text("Chuỗi ${d.phase.streak} ngày",color=Muted,fontSize=10.sp)
+                        GardenBotanicalFrame(Modifier.fillMaxWidth(),contentPadding=PaddingValues(10.dp),cornerSize=18.dp) {
+                            Column(verticalArrangement=Arrangement.spacedBy(8.dp)) {
+                                if(tree!=null)MintTreeStatus("${tree.status.stageIndex+1}/${tree.status.stageCount}",
+                                    tree.status.stateLabel,tree.status.waterLabel)
+                                MintMetricStrip(listOf("Hôm nay" to "${d.phase.earnedToday}/${com.mamxanh.shared.model.Balance.DAILY_CAP}",
+                                    "Kế hoạch" to "${d.completedTasks}/${d.totalTasks}","Chuỗi ngày" to d.phase.streak.toString()))
+                                if(tree?.status?.fertilizerLabel?.isNotBlank()==true)MintStatusPill(tree.status.fertilizerLabel)
                             }
                         }
                         val claimed=d.dailyRewardDate.isNotBlank()

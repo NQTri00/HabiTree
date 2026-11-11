@@ -31,11 +31,14 @@ fun AddTaskDialog(onDismiss: ()->Unit,onSave: (TaskConfig)->Unit,
         val p=value.split(':').map{it.toIntOrNull() ?: return -2}
         return if(p.size==2 && p[0] in 0..23 && p[1] in 0..59)p[0]*60+p[1] else -2
     }
-    Dialog(onDismissRequest=::dismiss,properties=DialogProperties(usePlatformDefaultWidth=false,decorFitsSystemWindows=false)) {
-        MintBackdrop(Modifier.fillMaxSize().safeDrawingPadding().imePadding()) {
-            Column(Modifier.fillMaxSize().padding(16.dp),verticalArrangement=Arrangement.spacedBy(8.dp)) {
-                MintHeader(if(initial.title.isBlank())"Thêm việc" else "Sửa việc",0)
-                Column(Modifier.weight(1f).verticalScroll(rememberScrollState()),verticalArrangement=Arrangement.spacedBy(12.dp)) {
+    MintDialog(if(initial.title.isBlank())"Thêm việc" else "Sửa việc",::dismiss,"Lưu",{
+                        val c=TaskConfig(values[0],values[1],values[2],values[3],
+                            if(values[1]=="TODO")"ONCE" else values[4],values[5],values[6],values[7],
+                            values[8].toIntOrNull() ?: 0,minute(values[9]),minute(values[10]),minute(values[11]))
+                        error=c.error().orEmpty()
+                        if(error.isEmpty())onSave(c)
+
+    },cancelLabel="Hủy") {
                     Text("Việc mới là tùy chọn hôm nay. Thay đổi lịch áp dụng từ ngày mai; lịch sử được giữ lại.")
                     TaskInput(values[0],{update(0,it.take(100))},"Tên việc (1–100)",Modifier.fillMaxWidth())
                     TaskInput(values[3],{update(3,it.take(500))},"Mô tả (tối đa 500)",Modifier.fillMaxWidth())
@@ -63,23 +66,11 @@ fun AddTaskDialog(onDismiss: ()->Unit,onSave: (TaskConfig)->Unit,
                     Text("Thông báo cần quyền hệ thống; từ chối quyền vẫn lưu được việc.")
                     Text("Thưởng: ${Balance.reward(values[7],values[8].toIntOrNull() ?: 5)} xu · Tổng tối đa ${Balance.DAILY_CAP} xu/ngày")
                     if(error.isNotEmpty())Text(error,color=MaterialTheme.colorScheme.error)
-                }
-                Row(horizontalArrangement=Arrangement.spacedBy(8.dp)) {
-                    GardenPaintedButton("Hủy",::dismiss,Modifier.weight(1f),primary=false)
-                    GardenPaintedButton("Lưu",{
-                        val c=TaskConfig(values[0],values[1],values[2],values[3],
-                            if(values[1]=="TODO")"ONCE" else values[4],values[5],values[6],values[7],
-                            values[8].toIntOrNull() ?: 0,minute(values[9]),minute(values[10]),minute(values[11]))
-                        error=c.error().orEmpty()
-                        if(error.isEmpty())onSave(c)
-                    },Modifier.weight(1f))
-                }
-            }
-        }
     }
-    if(discard)AlertDialog(onDismissRequest={discard=false},title={Text("Bỏ thay đổi?")},
-        confirmButton={TextButton(onClick=onDismiss){Text("Bỏ thay đổi")}},
-        dismissButton={TextButton(onClick={discard=false}){Text("Tiếp tục sửa")}})
+    if(discard)MintDialog("Bỏ thay đổi?",{discard=false},"Bỏ thay đổi",onDismiss,
+        cancelLabel="Tiếp tục sửa",destructive=true) {
+        Text("Nội dung chưa lưu sẽ bị mất.")
+    }
 }
 @Composable
 private fun TaskInput(value:String,onValueChange:(String)->Unit,label:String,modifier:Modifier) {
