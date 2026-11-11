@@ -6,7 +6,7 @@
 
 - A **free starter seed** is given once to a new player. With daily watering, its tree reaches its final stage **no earlier than 14 elapsed calendar days after planting** and requires **14 separate successful growth days**. It has four stages.
 - The **premium 12-stage seed** costs **4,500 coins**. Starting from zero, without historical wealth, gifts, exploits or sales, even a player who earns the maximum **50 coins/day** needs **90 earning days** to purchase it. At 40 coins/day, it takes 113 earning days (rounded up).
-- After premium planting, the tree itself takes **at least 90 elapsed calendar days and 90 separate growth days** to mature. Buying it and growing it are separate journeys: a new zero-balance player cannot buy and fully mature it within three months.
+- After Legendary planting, the tree itself takes **at least 90 elapsed calendar days and 90 separate growth days** to mature. Buying it and growing it are separate journeys: a new zero-balance player cannot buy and fully mature it within three months.
 - A casual but consistent player should normally earn **35–45 coins/day** through 3–5 reasonable tasks; 50/day is a hard maximum, not a mandatory target.
 - The player can experience tree growth immediately with the free seed and basic watering can. No paywall, account, ads, microtransactions or forced grind.
 - Each species has a finite 4–12 stage count; no infinite height, no season mechanics.
@@ -42,20 +42,22 @@ Rewards are **not repeatable by restarting a task**, pausing/resuming timers or 
 
 **Time-window tasks:** a morning task (e.g. 06:00–09:00) cannot be completed outside its local daily window. A timer task must have sufficient time to meet its minimum before the window closes; revalidate at completion. A missed time window cannot be recovered by rapidly clicking later.
 
-## 3. Seed catalog: price, growth stages and minimum age
+## 3. Four-tier tree catalog (replaces the six-tier scheme)
 
-| Tier | Example species | Seed cost | Stages | Min calendar age | Required distinct growth days | Max-earn purchase days from 0 |
+The tree catalog has **exactly four tiers**, not six. Tier 4 is **reserved for a potential future real-money unlock** and must not be purchasable until a separately approved monetization implementation is shipped. No paid functionality is implemented by this specification.
+
+| Tier | Name | Price | Stages | Minimum calendar age | Required growth days | Minimum earning days from zero at 50/day |
 |---|---|---:|---:|---:|---:|---:|
-| Free starter | Small succulent | 0, first seed only | 4 | 14 days | 14 | 0 |
-| Common | Small flowering shrub | 200 | 5 | 21 days | 21 | 4 |
-| Uncommon | Mandarin dwarf | 500 | 6–7 | 35 days | 35 | 10 |
-| Rare | Sakura bonsai | 1,200 | 8–9 | 60 days | 60 | 24 |
-| Epic | Ornamental maple | 2,400 | 10 | 75 days | 75 | 48 |
-| Premium | Showcase pine bonsai | 4,500 | 12 | 90 days | 90 | 90 |
+| 1 | Common | First seed free; repeat seed 200 coins | 4 | 14 | 14 | 0 first / 4 repeat |
+| 2 | Rare | 900 coins | 7–8 | 35 | 35 | 18 |
+| 3 | Legendary | 4,500 coins | 12 | 90 | 90 | 90 |
+| 4 | Exclusive | Future paid entitlement, currently unavailable | 12 | 90 | 90 | Not applicable |
 
-**Important:** “free starter” is a one-time entitlement, not an infinitely free seed shop item. Subsequent copies of the starter species should have a normal price (suggested 150 coins) or be unavailable; never permit free-seed sale farming. The exact species names are examples, not a requirement to overwrite existing art. Map the current catalog into tiers deliberately and migrate existing purchases without retroactive charges.
+All numbers are proposed. Tier 4 should have **cosmetic exclusivity only**: distinctive art, animations or a collectible display. No higher earning rate, accelerated growth, easier neglect, stronger fertilizer, extra task rewards, unique functional watering-can power, or economic resale advantage. Until payment support is approved, mark it **Coming soon** (or hide it); do not invent a coin price, real-money price or payment flow.
 
-Price does not automatically generate stage count: `SpeciesBalanceProfile` explicitly defines price, stage count, stage artwork, minimum age, required distinct growth days, growth units per stage and mature resale price. The 90-day premium requirement is a **hard floor**. Do not accelerate past it with fertilizer, expensive watering cans, app restarts or clock manipulation.
+The free starter seed is a **one-time entitlement**, not an infinitely claimable free shop SKU. The starter can is also free. Repeat Common seeds cost 200 coins, with no free-seed sale farming. Species can vary within a tier but must honor the tier's minimum growth age and stage count. Species data explicitly stores `tier`, `stageCount`, `minCalendarAgeDays`, `requiredGrowthDays`, `seedPriceCoins` (nullable for Tier 4), and `unlockType`. Do not derive stages directly from price.
+
+**Important:** the 90-day premium-coin goal belongs to **Tier 3 Legendary**, the most expensive coin-purchasable tier. Tier 4 is an optional future cosmetic entitlement, not a prerequisite for collecting or completing Tier 1–3 trees.
 
 ## 4. Time-based growth without making the player babysit timers
 
@@ -84,7 +86,7 @@ All four conditions must hold. Growth is clamped at the final threshold. Interme
 | Silver | 900 | 18 h | More flexible care |
 | Golden | 2,000 | 24 h | Once-daily convenience |
 
-One equipped can at a time; purchases permanently unlock a tier, not consumable uses. **Water All is available even with Basic**, and uses the equipped can on all eligible living trees in one action. Repeated watering cannot extend an active window indefinitely. Mature trees still need survival watering. Upgrade prices are deliberately lower than premium seed cost but represent a meaningful trade-off: convenience versus new species.
+One equipped can at a time; purchases permanently unlock a tier, not consumable uses. **Water All is available even with Basic**, and uses the equipped can on all eligible living trees in one action. Repeated watering cannot extend an active window indefinitely. Mature trees still need survival watering. Upgrade prices are deliberately lower than Legendary seed cost but represent a meaningful trade-off: convenience versus new species.
 
 ### 5.2 Consumable fertilizer
 
@@ -92,7 +94,7 @@ One equipped can at a time; purchases permanently unlock a tier, not consumable 
 |---|---:|---:|---|---|
 | Basic | 35 | 1.1× | 4 h | Short session boost |
 | Rich | 75 | 1.2× | 6 h | More forgiving daily credit |
-| Premium | 140 | 1.35× | 8 h | Maximum convenience |
+| Legendary | 140 | 1.35× | 8 h | Maximum convenience |
 
 At most one active fertilizer effect per tree; one application per tree per rolling 24 hours; no tier stacking, additive bonuses or queued effects. Fertilizer cannot activate growth when dry, bypass distinct-day credits, reduce the minimum calendar age, prevent death, or exceed final-stage growth. Never consume fertilizer on a mature/dead tree or when watering is inactive. Because fertilizer costs coins and cannot shorten the hard day floor, it is **optional convenience**, not mandatory progression.
 
@@ -119,9 +121,9 @@ Because a 90-day tree represents substantial effort, the UI should warn qualitat
 
 ## 8. Mature-tree sale and anti-inflation
 
-Mature **living** trees may be sold once; dead trees cannot. A sale removes the active tree from its plot, records a historical disposition and grants coins **subject to the same 50/day positive-income cap**. Suggested resale prices (nominal before cap): free starter = 0; Common = 40; Uncommon = 100; Rare = 240; Epic = 480; Premium = 900. This is **20% of seed price**, except the free starter, and is intentionally not a profitable loop. Selling before maturity is not allowed. Any tree may be removed for zero coins at any stage.
+Mature **living** trees may be sold once; dead trees cannot. A sale removes the active tree from its plot, records a historical disposition and grants coins **subject to the same 50/day positive-income cap**. Suggested resale prices (nominal before cap): free starter = 0; Common = 40; Rare = 180; Legendary = 900; Exclusive = 0 (non-sellable while paid entitlement is unimplemented). This is **20% of seed price**, except the free starter, and is intentionally not a profitable loop. Selling before maturity is not allowed. Any tree may be removed for zero coins at any stage.
 
-**Cap behavior:** show both nominal sale value and actual coins receivable today before confirmation. If the daily cap leaves only 10 coins available, selling a 900-coin premium tree yields **10 coins** and forfeits the remainder; no deferred claim. Provide a clear warning and let the user cancel. This rule prevents mature sales from breaking the premium 90-day earning floor, but makes sales economically weak. If playtesting shows this feels unfair, redesign with a separately capped, non-transferable cosmetic reward—not an uncapped coin loophole.
+**Cap behavior:** show both nominal sale value and actual coins receivable today before confirmation. If the daily cap leaves only 10 coins available, selling a 900-coin Legendary tree yields **10 coins** and forfeits the remainder; no deferred claim. Provide a clear warning and let the user cancel. This rule prevents mature sales from breaking the Legendary 90-day earning floor, but makes sales economically weak. If playtesting shows this feels unfair, redesign with a separately capped, non-transferable cosmetic reward—not an uncapped coin loophole.
 
 Purchases, refunds and sales must be atomic and idempotent. No positive coin source, including onboarding, achievement or referral bonuses, may bypass the 50/day cap without an explicit separately approved design.
 
@@ -157,3 +159,7 @@ Purchases, refunds and sales must be atomic and idempotent. No positive coin sou
 ## 11. Balancing caveats and rollout
 
 The proposed 50/day cap and 4,500 premium price establish the 90-day *coin* floor only for a new zero-balance player without legacy wealth. Existing players may already have coins or seeds; do not confiscate them to enforce new pacing. Previously purchased seeds remain owned. When changing prices, never retroactively charge for purchases. Expose catalog/reward balance version in data and tests. Gameplay tuning should follow actual playtests; adjust intermediate tiers before undermining the 14-day and 90-day hard floors.
+
+## 12. Four-tier consolidation note (2026-11-11)
+
+Any reference to **Uncommon, Epic or a coin-priced Premium seed** in earlier phase documents is obsolete. The only supported tree tiers are **Common, Rare, Legendary and Exclusive**. The fourth tier is reserved for a possible future real-money cosmetic unlock; no payments or premium purchase UI should be built yet. Existing owned seeds and planted trees must remain usable when catalog entries are remapped to these four tiers. No existing user assets should be removed or retroactively charged.
