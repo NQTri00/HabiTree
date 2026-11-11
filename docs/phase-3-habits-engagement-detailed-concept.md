@@ -10,7 +10,7 @@ Plan tomorrow → receive an optional gentle reminder → begin a task or focus 
 
 First launch (or accessible later): welcome → choose one of three starter trees → select personal focus (Study, Health, Lifestyle, Housework) → choose 2–5 suggested tasks → confirm schedule/reminder preferences → enter Home. Every step has Back; skip is allowed; never require notification permission or account registration.
 
-Template cards show title, category, frequency, estimated effort, verification method and suggested reward. Templates are **copied into user tasks**, not live-linked to future template edits. Offer at least 12 curated templates drawn from `MamXanh-Tasks-And-Trees.md`, including studying, reading, walking, brushing teeth, hydration, stretching and household chores. Prevent accidental duplicate task creation when tapping rapidly.
+Template cards show title, category, frequency, estimated effort, verification method (CLICK or TIMER only), optional allowed time-of-day window and suggested reward. Templates are **copied into user tasks**, not live-linked to future template edits. Offer at least 12 curated templates drawn from `MamXanh-Tasks-And-Trees.md`, including studying, reading, walking, brushing teeth (CLICK with morning/evening time window), hydration, stretching and household chores. Prevent accidental duplicate task creation when tapping rapidly.
 
 ## 3. Focus sessions
 
@@ -27,7 +27,7 @@ A dedicated timer experience built on Phase 1 persisted verification sessions:
 
 ## 4. Reminder system
 
-Task reminders support: Off, at scheduled time, before a time window, and one gentle follow-up if unfinished. Notification text includes task title and a direct route to the task/timer. The player can set quiet hours, per-task reminders, and global pause. Default to no notifications until user opts in.
+Task reminders support: Off, at scheduled time, before a time window, and one gentle follow-up if unfinished. Notification text includes task title and a direct route to the task/timer. The player can set quiet hours, per-task reminders, and global pause. Task reminders must honor the task's allowed completion window; a notification outside the window must not offer a working Complete action. Default to no notifications until user opts in.
 
 Offline local scheduling: Android notification permission requested only after explanation; handle denial gracefully. Recompute alarms when schedule changes, timezone changes, device reboots and the app is updated. No cloud push. Avoid duplicate alerts for completed tasks and do not alert on paused/archived tasks. Use platform-appropriate scheduling that does not promise exact minute delivery under battery restrictions.
 
@@ -100,3 +100,11 @@ Store `FocusSession`, `FocusInterval`, `ReminderPreference`, `AchievementUnlock`
 13. No network access is required for any feature.
 
 **Done when:** a new user can onboard, build a manageable routine, complete focus sessions, receive optional reminders and review authentic progress without punitive engagement mechanics.
+
+## 13. Approved task and tree compatibility rules (2026-11-11)
+
+- **No hold verification:** All onboarding templates, task edit screens and focus integrations use CLICK or TIMER only. Migrate any historic HOLD configuration to CLICK while preserving occurrences.
+- **Specific daily time frames:** Templates may set 06:00–09:00 for morning brushing or 18:00–23:00 for evening study; players can change these. CLICK is disabled outside its window. TIMER must have sufficient remaining active time to finish inside the window; completion checks the window again. Overnight windows are anchored to a scheduled day.
+- **No seasonal reminders, season settings or seasonal achievements.** Do not reintroduce seasons through engagement features.
+- **Tree reminders:** optionally remind when a watering window expires; never imply that watering is a milliliter-based resource. A critical-wilting warning may be shown qualitatively, but the hidden death counter and exact death threshold are never shown.
+- **Achievement definitions:** “First Bloom” means reaching a species' final stage when that species' final artwork is blooming; for nonflowering species use a generic “First Mature Tree” achievement. Trees have species-specific 4–12 stages, finite final growth, and can die permanently. Sold/removed trees remain recorded in the memory timeline.
