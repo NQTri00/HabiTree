@@ -1,10 +1,10 @@
 # Phase 4 — Living Garden & Collection: Detailed Gameplay & Product Concept
 
-**Status:** Proposed; not implemented. **Prerequisites:** stable Phase 2 tree identities, stages, seasons and transactional inventory. **Goal:** Make the garden feel personal and collectible while remaining offline, peaceful and manageable.
+**Status:** Proposed; not implemented. **Prerequisites:** stable Phase 2 tree identities, species-specific finite stages, watering timers, death/sale/removal rules and transactional inventory. **Goal:** Make the garden feel personal and collectible while remaining offline, peaceful and manageable.
 
 ## 1. Core experience
 
-The garden becomes a customizable place rather than only a list of planted trees. The player unlocks plots, arranges owned decorations, chooses a seasonal atmosphere, inspects individual trees, and gradually completes a botanical collection. Progress is primarily cosmetic and expressive, not competitive.
+The garden becomes a customizable place rather than only a list of planted trees. The player unlocks plots, arranges owned decorations, inspects individual trees, and gradually completes a botanical collection. Progress is primarily cosmetic and expressive, not competitive.
 
 Loop: earn coins → choose between seed, decoration or plot unlock → preview placement → confirm → enjoy a changed garden → visit encyclopedia for collection goals.
 
@@ -40,25 +40,15 @@ A species catalog distinct from Inventory. Each species has:
 - Stable species ID, display name, botanical-inspired description (avoid false scientific claims), silhouette preview and rarity.
 - Collection status: Undiscovered, Discovered (seen in shop), Owned seed, Planted, Matured, Flourished.
 - Stage gallery with locked silhouettes for unseen stages; reveal art only after the player's tree reaches that stage.
-- Species-specific season gallery and growth preferences.
+- Species-specific stage gallery, watering duration and fertilizer compatibility.
 - Personal records: first planted date, first matured date, tallest owned individual, total planted.
 - Link to Shop for purchasable species and Garden for owned individuals.
 
 Collection percentage must define its denominator (e.g. discoverable species in the currently shipped catalog). Removing a tree does not erase its historical encyclopedia milestones. Species added in updates change the denominator predictably; never silently lose previous discoveries.
 
-## 6. Seasonal environments
+## 6. Garden environment themes (nonseasonal)
 
-Season mode: Auto / Spring / Summer / Autumn / Winter / Off, carried forward from Phase 2. Seasonal **environment** includes ground palette, ambient particles, lighting and optional background props. Tree seasonal layers remain species-specific. Changing season is a visual preference, never a way to speed growth or change inventory.
-
-Avoid forcing northern-hemisphere four-season dates on all users. In Auto mode use a documented region/hemisphere rule or explicitly user-selected region; allow Off. No external weather API required.
-
-Season treatments:
-- Spring: soft blossoms and fresh greens.
-- Summer: deeper foliage, warm daylight.
-- Autumn: amber accents, restrained falling leaves.
-- Winter: pale light, optional snow where appropriate to the chosen visual region.
-
-All seasons need static fallbacks for reduced motion and low-memory devices.
+**No season system.** Do not offer Auto/Spring/Summer/Autumn/Winter modes, hemisphere settings, seasonal sprites, weather-driven appearance or season-based growth. The environment may offer purely cosmetic, manually selected static themes such as Meadow, Stone Courtyard or Night Garden, independent of calendar date. These themes never change growth, neglect, fertilizer, inventory or sale values. Theme unlocks are permanent cosmetic entitlements and use the normal shop/ledger rules.
 
 ## 7. Garden ambience and accessibility
 
@@ -100,9 +90,18 @@ Preserve old plot IDs and tree assignments. New section layout must not shift tr
 7. Buying decoration updates Inventory immediately.
 8. Encyclopedia stage unlock matches actual saved tree milestone.
 9. Removing a tree does not erase discovery history.
-10. Seasonal mode changes appearance only.
+10. Nongarden environment theme changes appearance only.
 11. Reduced Motion disables particles without losing content.
 12. Garden remains responsive with many trees and decorations on target Android hardware.
 13. Offline use and app restart preserve exact layout.
 
-**Done when:** the player can design and save a distinctive garden, browse a reliable species encyclopedia and experience accessible seasonal ambience without affecting progression integrity.
+**Done when:** the player can design and save a distinctive garden, browse a reliable species encyclopedia and experience accessible nongarden ambience without affecting progression integrity.
+
+## 12. Approved lifecycle integration (2026-11-11)
+
+- **Variable species stages:** Encyclopedia and collection milestones read each species' `stageCount` (4–12), not a fixed six-stage array. Final-stage completion is `MATURE`, with no further height/progress.
+- **Water All:** Garden/Plant List toolbar includes a prominent Water All action, which uses the equipped durable watering can and starts water windows for all eligible living trees. Show eligible/already-watered/dead counts; do not use ml balances. The tree cards display time remaining in the growth window.
+- **Tree dispositions:** Fully grown living trees have Sell and Remove. Growing trees have Remove. Dead trees have Remove only. Sell is a wallet-credit transaction; Remove grants no coins/seed refund. Both free the plot and preserve historical encyclopedia achievements.
+- **Death:** A dead tree remains visible as a withered plot occupant until removed; cannot be watered, fertilized, sold or revived. No numeric death counter is exposed. Existing Garden Moments may record death and sale.
+- **Shop additions:** durable, nonstacking watering-can tiers (8/12/18/24 h proposed) and consumable, nonstacking fertilizer tiers (1.1×/1.2×/1.35× proposed) are part of the shop/inventory catalog. Only one watering can is equipped; at most one fertilizer effect per tree with cooldown.
+- **No seasons:** no seasonal gallery, environment, art, collection requirement or date-based season preference.
