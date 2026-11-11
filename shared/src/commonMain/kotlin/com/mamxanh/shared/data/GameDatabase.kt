@@ -4,6 +4,12 @@ import com.mamxanh.shared.model.*
 
 /** Blocking platform persistence. Call from a worker dispatcher, never from composition. */
 interface GameDatabase {
+    fun phaseSnapshot(): PhaseSnapshot
+    fun saveTask(id: Long?, config: TaskConfig): ActionResult
+    fun taskLifecycle(id: Long, state: String): ActionResult
+    fun taskTimer(id: Long, action: String): ActionResult
+    fun completeTask(id: Long): ActionResult
+    fun purchase(id: String, quantity: Int, key: String): ActionResult
     fun tasks(): List<Task>
     fun garden(): Garden
     fun statistics(): Statistics

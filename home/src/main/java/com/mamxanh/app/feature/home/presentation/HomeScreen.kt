@@ -25,6 +25,7 @@ fun HomeScreen(
     state: HomeUiState, onIntent: (HomeIntent) -> Unit, fertilizerCount: Int = 0,
     modifier: Modifier = Modifier, sharedTreeModifier: Modifier = Modifier,
     taskTitle: String = "Mỗi việc nhỏ, một bước lớn lên",
+    onTaskAction: (Long,Boolean)->Unit = {_,_->onIntent(HomeIntent.OpenTasks)},
     canClaimBonus: Boolean = false, onClaimBonus: () -> Unit = { onIntent(HomeIntent.OpenTasks) }
 ) {
     val d = state.dashboard
@@ -74,7 +75,7 @@ fun HomeScreen(
                                 !tree.wateredToday && d.wateringCanMl >= 50,
                                 { onIntent(HomeIntent.WaterTree(tree.id)) }, checked = tree.wateredToday)
                             MintCareIcon(GardenArt.FERTILIZER, "Bón · $fertilizerCount phân bón",
-                                fertilizerCount > 0, { onIntent(HomeIntent.FertilizeTree(tree.id)) })
+                                fertilizerCount > 0 && tree.growth < 120, { onIntent(HomeIntent.FertilizeTree(tree.id)) })
                             MintCareIcon(GardenArt.PUMP, "Bơm nước", true, { onIntent(HomeIntent.RefillWater) })
                             MintCareIcon(GardenArt.DROP, "Nước ${d.wateringCanMl} ml", true,
                                 { onIntent(HomeIntent.RefillWater) }, caption = "${d.wateringCanMl}\nml")
@@ -87,6 +88,20 @@ fun HomeScreen(
                         if (claimed) "" else "+${d.dailyRewardCoins} xu",
                         if (claimed) ({}) else onClaimBonus, enabled = !claimed && canClaimBonus)
                 }
+                GardenBotanicalFrame(Modifier.fillMaxWidth(),contentPadding=PaddingValues(8.dp)) {
+                    Column(verticalArrangement=Arrangement.spacedBy(4.dp)) {
+                        Text("Thu hôm nay ${d.phase.earnedToday}/50 xu · Còn ${(50-d.phase.earnedToday).coerceAtLeast(0)} xu",color=Deep,fontSize=12.sp)
+                        MintProgress(d.phase.earnedToday.coerceAtMost(50)/50f,Modifier.fillMaxWidth())
+                        Text("Kế hoạch ${d.completedTasks}/${d.totalTasks} · Chuỗi ${d.phase.streak} ngày",color=Deep,fontSize=12.sp)
+                        val next=listOf(7,14,30).firstOrNull{it>d.phase.streak}
+                        if(next!=null)Text("Cột mốc tiếp theo: $next ngày",color=Muted,fontSize=11.sp)
+                    }
+                }
+                if(d.nextTasks.isEmpty())HomeLink(GardenArt.CHECKLIST,"Thêm thói quen","Chọn việc nhỏ cho ngày mới",{onIntent(HomeIntent.OpenTasks)})
+                d.nextTasks.forEach { task ->
+                    HomeLink(GardenArt.CHECKLIST,task.title,task.availability.ifBlank{"+${task.reward} xu"},{onTaskAction(task.id,task.config.verification=="TIMER")},enabled=task.available)
+                }
+                if(d.seedCount==0)HomeLink(GardenArt.SEED,"Chọn hạt giống","Ghé Tiệm hạt",{onIntent(HomeIntent.OpenShop)})
             }
         }
         if (state.isDailyClearVisible) {

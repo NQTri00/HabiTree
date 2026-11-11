@@ -22,11 +22,14 @@ class SqlGameDatabase(private val connection: GameSqlConnection) : GameDatabase 
         rows("SELECT date(?,?)", 1, date, "$days days").first().string(0)
     private fun weekday(date: String): Int = count("SELECT CAST(strftime('%w',?) AS INTEGER)", date)
 
-    override fun tasks(): List<Task> =
-        rows("SELECT id,title,kind,category,reward,frequency,due,completed,streak,last_done FROM tasks ORDER BY CASE kind WHEN 'HABIT' THEN 0 WHEN 'DAILY' THEN 1 ELSE 2 END,id DESC", 10).map {
-            Task(it.long(0), it.string(1), it.string(2), it.string(3), it.int(4), it.string(5),
-                it.string(6), it.string(7), it.int(8), it.string(9))
-        }
+    private val phase = PhaseOneEngine(connection)
+    override fun phaseSnapshot() = phase.snapshot()
+    override fun saveTask(id: Long?, config: TaskConfig) = phase.save(id,config)
+    override fun taskLifecycle(id: Long,state: String) = phase.lifecycle(id,state)
+    override fun taskTimer(id: Long,action: String) = phase.timer(id,action)
+    override fun completeTask(id: Long) = phase.complete(id)
+    override fun purchase(id: String,quantity: Int,key: String) = phase.purchase(id,quantity,key)
+    override fun tasks() = phase.tasks()
 
     override fun garden(): Garden {
         val trees = rows("SELECT id,species_id,name,growth,planted,COALESCE((SELECT v FROM meta WHERE k='decoration_' || trees.id),'NONE'),CASE WHEN COALESCE((SELECT v FROM meta WHERE k='watered_' || trees.id),'')=? THEN 1 ELSE 0 END FROM trees ORDER BY id",
@@ -57,72 +60,21 @@ class SqlGameDatabase(private val connection: GameSqlConnection) : GameDatabase 
             total = count("SELECT COUNT(*) FROM logs"),
             today = count("SELECT COUNT(*) FROM logs WHERE date=?", today),
             week = count("SELECT COUNT(*) FROM logs WHERE date>=?", weekStart),
-            streak = streak,
+            streak = phase.snapshot().streak,
             treeCount = count("SELECT COUNT(*) FROM trees"),
             recentDailyCompletions = recent
         )
     }
 
-    override fun addTask(title: String, kind: String, category: String, reward: Int, frequency: String, due: String) {
-        execute("INSERT INTO tasks(title,kind,category,reward,frequency,due) VALUES(?,?,?,?,?,?)",
-            title.trim(), kind, category, reward.coerceIn(1, 100), frequency, due.trim())
+    override fun addTask(title: String,kind: String,category: String,reward: Int,frequency: String,due: String) {
+        phase.save(null,TaskConfig(title,kind,category,frequency=frequency,due=due))
     }
-
-    override fun deleteTask(id: Long) { execute("DELETE FROM tasks WHERE id=?", id) }
-
-    override fun complete(id: Long): Boolean = connection.transaction {
-        val row = rows("SELECT title,kind,reward,completed,last_done,streak FROM tasks WHERE id=?", 6, id)
-            .firstOrNull() ?: return@transaction false
-        val today = currentDateKey()
-        val title = row.string(0)
-        val kind = row.string(1)
-        val reward = row.int(2)
-        val completed = row.string(3)
-        if (completed == today || (kind == "TODO" && completed.isNotBlank())) return@transaction false
-        val oldStreak = row.int(5)
-        val nextStreak = if (row.string(4) == offset(today, -1)) oldStreak + 1 else 1
-        execute("UPDATE tasks SET completed=?,last_done=?,streak=? WHERE id=?",
-            today, today, if (kind == "TODO") oldStreak else nextStreak, id)
-        execute("INSERT INTO logs(date,task_id,title,coins) VALUES(?,?,?,?)", today, id, title, reward)
-        putMeta("coins", (meta("coins").toIntOrNull() ?: 0) + reward)
-        execute("UPDATE trees SET growth=MIN(120,growth+?)", reward * 2)
-        true
-    }
-
-    override fun isDailyBonusClaimed(): Boolean = meta("daily_bonus", "") == currentDateKey()
-
-    override fun canClaimDailyBonus(): Boolean = canClaimDailyBonus(currentDateKey())
-
-    private fun canClaimDailyBonus(today: String): Boolean {
-        if (meta("daily_bonus", "") == today) return false
-        val daily = tasks().filter { it.kind == "DAILY" && scheduled(it, today) }
-        return daily.isNotEmpty() && daily.all { it.completed == today }
-    }
-
-    override fun dailyBonus(): Boolean = connection.transaction {
-        val today = currentDateKey()
-        if (!canClaimDailyBonus(today)) return@transaction false
-        putMeta("coins", (meta("coins").toIntOrNull() ?: 0) + 20)
-        putMeta("daily_bonus", today)
-        true
-    }
-
-    private fun scheduled(task: Task, date: String): Boolean = when (task.frequency) {
-        "WEEKDAYS" -> weekday(date) in 1..5
-        "WEEKENDS" -> weekday(date) == 0 || weekday(date) == 6
-        else -> true
-    }
-
-    override fun buySeed(id: String): Boolean {
-        val item = catalog.firstOrNull { it.id == id } ?: return false
-        return connection.transaction {
-            val coins = meta("coins").toIntOrNull() ?: 0
-            if (coins < item.price) return@transaction false
-            putMeta("coins", coins - item.price)
-            seed(id, quantity(id) + 1)
-            true
-        }
-    }
+    override fun deleteTask(id: Long) { phase.lifecycle(id,"ARCHIVED") }
+    override fun complete(id: Long) = phase.complete(id).success
+    override fun isDailyBonusClaimed() = phase.claimed()
+    override fun canClaimDailyBonus() = phase.canClear()
+    override fun dailyBonus() = phase.clear().success
+    override fun buySeed(id: String) = phase.purchase(id,1,"buy:$id:${com.mamxanh.shared.time.SystemGameClock().now()}").success
 
     override fun plant(id: String, name: String, plotId: Int?): Boolean = connection.transaction {
         val count = quantity(id)
@@ -144,27 +96,25 @@ class SqlGameDatabase(private val connection: GameSqlConnection) : GameDatabase 
     override fun unlockPlot(plotId: Int): Boolean = connection.transaction {
         if (count("SELECT COUNT(*) FROM garden_plots WHERE id=? AND unlocked=0", plotId) != 1) return@transaction false
         val coins = meta("coins").toIntOrNull() ?: 0
-        if (coins < GardenPlotPolicy.UNLOCK_PRICE) return@transaction false
-        putMeta("coins", coins - GardenPlotPolicy.UNLOCK_PRICE)
+        val price = Balance.plot(count("SELECT COUNT(*) FROM garden_plots WHERE unlocked=1"))
+        if (coins < price || !phase.spend("plot:$plotId","PLOT",plotId.toString(),price)) return@transaction false
         execute("UPDATE garden_plots SET unlocked=1 WHERE id=?", plotId)
         val next = count("SELECT COALESCE(MAX(id),0)+1 FROM garden_plots")
         execute("INSERT INTO garden_plots(id,unlocked) VALUES(?,0)", next)
         true
     }
 
-    override fun buyFertilizer(): Boolean = connection.transaction {
-        val coins = meta("coins").toIntOrNull() ?: 0
-        if (coins < 25) return@transaction false
-        putMeta("coins", coins - 25)
-        seed("fertilizer", quantity("fertilizer") + 1)
-        true
-    }
+    override fun buyFertilizer() = phase.purchase("fertilizer",1,"fertilizer:${com.mamxanh.shared.time.SystemGameClock().now()}").success
 
     override fun fertilize(treeId: Long): Boolean = connection.transaction {
         val count = quantity("fertilizer")
-        if (count <= 0) return@transaction false
-        execute("UPDATE trees SET growth=MIN(120,growth+25) WHERE id=?", treeId)
-        seed("fertilizer", count - 1)
+        val growth = rows("SELECT growth FROM trees WHERE id=?",1,treeId).firstOrNull()?.int(0)
+            ?: return@transaction false
+        if (count <= 0 || growth >= 120) return@transaction false
+        val change = minOf(25,120-growth)
+        execute("UPDATE trees SET growth=growth+? WHERE id=?",change,treeId)
+        seed("fertilizer",count-1)
+        phase.care(treeId,"FERTILIZE",-1,change)
         true
     }
 
@@ -174,7 +124,9 @@ class SqlGameDatabase(private val connection: GameSqlConnection) : GameDatabase 
         if (meta("watered_$treeId", "") == today) return@transaction TreeWateringResult.ALREADY_WATERED
         val water = waterMl()
         if (water < 50) return@transaction TreeWateringResult.NOT_ENOUGH_WATER
+        val before = count("SELECT growth FROM trees WHERE id=?",treeId)
         execute("UPDATE trees SET growth=MIN(120,growth+8) WHERE id=?", treeId)
+        phase.care(treeId,"WATER",-50,minOf(8,(120-before).coerceAtLeast(0)))
         putMeta("watered_$treeId", today)
         putMeta("water_ml", water - 50)
         TreeWateringResult.WATERED
@@ -190,6 +142,11 @@ class SqlGameDatabase(private val connection: GameSqlConnection) : GameDatabase 
 
     override fun decorate(treeId: Long, decoration: String) {
         require(decoration in setOf("NONE", "FLOWERS", "LANTERNS", "RIBBON"))
-        if (count("SELECT 1 FROM trees WHERE id=?", treeId) != 0) putMeta("decoration_$treeId", decoration)
+        connection.transaction {
+            if (count("SELECT 1 FROM trees WHERE id=?", treeId) != 0) {
+                putMeta("decoration_$treeId", decoration)
+                phase.care(treeId,"DECORATE:$decoration",0,0)
+            }
+        }
     }
 }

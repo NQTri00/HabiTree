@@ -52,12 +52,12 @@ fun ShopScreen(state: ShopUiState, onIntent: (ShopIntent) -> Unit, modifier: Mod
                                 GardenArtwork(GardenArt.FERTILIZER, Modifier.fillMaxWidth().height(64.dp))
                                 Text("Phân hữu cơ", color = Deep, fontSize = 12.sp, lineHeight = 15.sp,
                                     minLines = 2, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
-                                GardenRichText("🪙 25 xu", color = Deep, fontSize = 12.sp, lineHeight = 15.sp)
+                                GardenRichText("🪙 ${com.mamxanh.shared.model.Balance.FERTILIZER} xu", color = Deep, fontSize = 12.sp, lineHeight = 15.sp)
                                 Text("Có ${state.wallet.inventory["fertilizer"] ?: 0}", color = Green,
                                     fontSize = 11.sp, lineHeight = 14.sp)
-                                GardenPaintedButton("Mua", { onIntent(ShopIntent.BuyFertilizer) },
+                                GardenPaintedButton("Chi tiết", { selectedId = "fertilizer" },
                                     Modifier.fillMaxWidth(),
-                                    enabled = state.wallet.coins >= 25 && !state.isPurchasing && !state.isLoading)
+                                    enabled = !state.isPurchasing && !state.isLoading)
                             }
                         }
                     }
@@ -89,16 +89,9 @@ fun ShopScreen(state: ShopUiState, onIntent: (ShopIntent) -> Unit, modifier: Mod
             }
         }
     }
-    val seed = shopCatalog.firstOrNull { it.id == selectedId }
-    if(seed != null && state.outcome == null) {
-        Dialog(onDismissRequest = { selectedId = null }, properties = DialogProperties(usePlatformDefaultWidth = false, decorFitsSystemWindows = false)) {
-            Box(Modifier.fillMaxSize().safeDrawingPadding().padding(16.dp), contentAlignment = Alignment.Center) {
-                Box(Modifier.widthIn(max = 440.dp).fillMaxWidth().heightIn(max = 680.dp)) {
-                    ShopSeedDetailCard(seed, state.wallet.inventory[seed.id] ?: 0,
-                        state.wallet.coins >= seed.price && !state.isPurchasing, { selectedId = null },
-                        { onIntent(ShopIntent.BuySeed(seed.id)) }, (seed.price - state.wallet.coins).coerceAtLeast(0))
-                }
-            }
+    selectedId?.let { id ->
+        if(state.outcome==null) PurchaseConfirmation(id,state,{selectedId=null}) { quantity,key ->
+            onIntent(ShopIntent.Purchase(id,quantity,key))
         }
     }
     state.outcome?.let { outcome ->
@@ -106,8 +99,9 @@ fun ShopScreen(state: ShopUiState, onIntent: (ShopIntent) -> Unit, modifier: Mod
             GardenBotanicalFrame(skin = GardenPanelSkin.DIALOG) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(16.dp)) {
                     Text(if(outcome.success) "✓" else "!", fontSize = 48.sp, color = if(outcome.success) Green else Color(0xFFCB3434))
-                    Text(if(outcome.success) "Đã thêm 1 vào túi" else "Chưa đủ xu", fontWeight = FontWeight.Bold, fontSize = 22.sp, textAlign = TextAlign.Center)
+                    Text(if(outcome.success) "Đã thêm vào túi" else "Chưa thể mua", fontWeight = FontWeight.Bold, fontSize = 22.sp, textAlign = TextAlign.Center)
                     Text(outcome.name, textAlign = TextAlign.Center)
+                    Text(outcome.message, textAlign = TextAlign.Center)
                     if(outcome.success) {
                         GardenRichText("🪙 Số xu: ${outcome.beforeCoins} → ${outcome.afterCoins}")
                         GardenRichText("🌱 Đang có: ${outcome.beforeOwned} → ${outcome.afterOwned}")

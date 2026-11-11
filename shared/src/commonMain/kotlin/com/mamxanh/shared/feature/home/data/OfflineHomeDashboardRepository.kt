@@ -10,10 +10,13 @@ class OfflineHomeDashboardRepository(private val game: GameStorage) : HomeDashbo
         val tasks = game.tasks()
         val garden = game.garden()
         val statistics = game.statistics()
+        val phase = game.phaseSnapshot()
         return HomeDashboard(
+            phase = phase,
+            nextTasks = tasks.filter{it.lifecycle=="ACTIVE" && it.scheduledToday && !it.doneToday && !it.finished}.take(3),
             trees = garden.trees.map { HomeTree(it.id, it.speciesId, it.name, it.growth, it.decoration, it.wateredToday) },
-            completedTasks = tasks.count { it.doneToday },
-            totalTasks = tasks.size,
+            completedTasks = phase.completed,
+            totalTasks = phase.required,
             seedCount = garden.inventory.filterKeys { it != "fertilizer" }.values.sum(),
             coins = statistics.coins,
             wateringCanMl = game.waterMl(),

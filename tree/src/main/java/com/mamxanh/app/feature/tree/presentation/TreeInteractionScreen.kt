@@ -61,7 +61,7 @@ fun TreeInteractionScreen(
                             !tree.wateredToday && wateringCanMl >= 50,
                             { onIntent(TreeIntent.Water(tree.id)) }, checked = tree.wateredToday)
                         MintCareIcon(GardenArt.FERTILIZER, "Bón · $fertilizerCount phân bón",
-                            fertilizerCount > 0, { onIntent(TreeIntent.Fertilize(tree.id)) })
+                            fertilizerCount > 0 && tree.growth < 120, { onIntent(TreeIntent.Fertilize(tree.id)) })
                         MintCareIcon(GardenArt.PUMP, "Bơm nước", true,
                             { onIntent(TreeIntent.OpenWaterSupply) })
                         MintCareIcon(GardenArt.DROP, "Nước $wateringCanMl ml", true,

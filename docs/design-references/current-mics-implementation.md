@@ -129,6 +129,13 @@ No complete demo screenshot is used as a runtime background.
 - Reuses graphics display lists with small blurred edge strips; no bitmap snapshots or extra preview rendering. The effect does not change layout or touch targets.
 - Debug and verification APK builds passed (48 seconds). Installed and inspected Shop at top, middle and bottom, including the complete footer and the short Items tab at360dp. No purchases or game-data mutations were performed. git diff --check passed.
 
+## Phase 1 gameplay implementation — 2026-11-11
+- See [execution plan and acceptance evidence](../superpowers/plans/2026-11-11-phase-1-execution.md). Added additive schema v4, immutable task occurrences, capped and audited rewards, persistent timers, daily snapshots/streaks, atomic quantity purchases and care history.
+- Existing mint styling, centered tree, five primary destinations and secondary Inventory are retained. New Home details follow the featured tree; long Journal histories use lazy rows.
+- Task form supports creation/editing, schedules/custom weekdays, Click/Timer, optional overnight windows, due dates, descriptions and local reminders. Pause/archive retain history. New profile gets one starter seed and no uncapped coin gift; existing wealth is retained.
+- Shared storage revision streams refresh all module snapshots on mutations and foreground entry. Android-only notification scheduling remains outside shared rules.
+- 32 SQLite tests and Android/common/iOS-target compilation passed. iOS runtime and Phase 2 growth/death/can upgrades remain outside this Phase 1 checkpoint.
+
 ## Acceptance still open
 Exact plant/icon silhouettes and illustration style differ from the new sheets; reused/generated art is not lossless source extraction. Do not describe this checkpoint as 100% visually identical.
 The full 393/412dp, landscape/IME, long-name, process-death, reward-claim, transaction-race and every annotated outcome matrix has not been re-executed for this redesign. Existing historical evidence does not automatically close those checks.

@@ -7,5 +7,6 @@ data class GardenStatistics(
     val week: Int = 0,
     val streak: Int = 0,
     val treeCount: Int = 0,
-    val recentDailyCompletions: List<Int> = emptyList()
+    val recentDailyCompletions: List<Int> = emptyList(),
+    val phase: com.mamxanh.shared.model.PhaseSnapshot = com.mamxanh.shared.model.PhaseSnapshot()
 )

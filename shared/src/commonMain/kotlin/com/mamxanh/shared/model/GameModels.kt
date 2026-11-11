@@ -5,9 +5,15 @@ import com.mamxanh.shared.time.currentDateKey
 data class Task(
     val id: Long, val title: String, val kind: String, val category: String,
     val reward: Int, val frequency: String, val due: String, val completed: String,
-    val streak: Int, val lastDone: String
+    val streak: Int, val lastDone: String,
+    val config: TaskConfig = TaskConfig(title, kind, category, frequency = frequency, due = due),
+    val lifecycle: String = "ACTIVE", val scheduledToday: Boolean = true,
+    val available: Boolean = true, val availability: String = "",
+    val history: List<TaskOccurrence> = emptyList(),
+    val requiredToday: Boolean = false, val occurrenceDone: Boolean = false
 ) {
-    val doneToday: Boolean get() = completed == currentDateKey()
+    val doneToday: Boolean get() = completed == currentDateKey() || occurrenceDone
+    val finished: Boolean get() = kind == "TODO" && completed.isNotBlank()
 }
 data class Species(val id: String, val name: String, val emoji: String, val description: String, val price: Int)
 data class Tree(
@@ -31,15 +37,15 @@ data class Statistics(
 
 enum class TreeWateringResult { WATERED, ALREADY_WATERED, NOT_ENOUGH_WATER, TREE_NOT_FOUND }
 val catalog = listOf(
-    Species("succulent", "Sen đá ngọc", "🪴", "Mọng nước, cánh lá xếp tầng xinh xắn", 25),
-    Species("monstera", "Trầu bà lá xẻ", "🌿", "Lá xanh mướt mang không khí trong lành", 25),
-    Species("ficus", "Cây bàng búp", "🌳", "Tán lá tròn trịa đón ánh mặt trời", 25),
-    Species("snake", "Lưỡi hổ xanh", "🎋", "Vươn thẳng mạnh mẽ và kiên cường", 25),
-    Species("cactus", "Xương rồng hoa", "🌵", "Nụ hoa hồng bé xíu nở trên đỉnh", 25),
-    Species("aloe", "Nha đam mọng", "🌱", "Mềm mại, tươi mát suốt bốn mùa", 25),
-    Species("lavender", "Oải hương tím", "🪻", "Hương thơm dịu dàng giúp thư giãn", 25),
-    Species("pilea", "Cỏ đồng tiền", "🪙", "Lá tròn như đồng xu may mắn", 25),
-    Species("cherry", "Đào hồng xuân", "🌸", "Cánh hoa đào rực rỡ ngày xuân", 25),
-    Species("pine", "Thông xanh biếc", "🌲", "Bền bỉ, xanh ngát quanh năm", 25),
-    Species("mandarin", "Quýt nắng", "🍊", "Trái ngọt nhỏ mang nắng ấm đến khu vườn", 60)
+    Species("succulent", "Sen đá ngọc", "🪴", "Mọng nước, cánh lá xếp tầng xinh xắn", 150),
+    Species("monstera", "Trầu bà lá xẻ", "🌿", "Lá xanh mướt mang không khí trong lành", 200),
+    Species("ficus", "Cây bàng búp", "🌳", "Tán lá tròn trịa đón ánh mặt trời", 500),
+    Species("snake", "Lưỡi hổ xanh", "🎋", "Vươn thẳng mạnh mẽ và kiên cường", 200),
+    Species("cactus", "Xương rồng hoa", "🌵", "Nụ hoa hồng bé xíu nở trên đỉnh", 200),
+    Species("aloe", "Nha đam mọng", "🌱", "Mềm mại, tươi mát suốt bốn mùa", 200),
+    Species("lavender", "Oải hương tím", "🪻", "Hương thơm dịu dàng giúp thư giãn", 200),
+    Species("pilea", "Cỏ đồng tiền", "🪙", "Lá tròn như đồng xu may mắn", 500),
+    Species("cherry", "Đào hồng xuân", "🌸", "Cánh hoa đào rực rỡ ngày xuân", 1200),
+    Species("pine", "Thông xanh biếc", "🌲", "Bền bỉ, xanh ngát quanh năm", 4500),
+    Species("mandarin", "Quýt nắng", "🍊", "Trái ngọt nhỏ mang nắng ấm đến khu vườn", 500)
 )

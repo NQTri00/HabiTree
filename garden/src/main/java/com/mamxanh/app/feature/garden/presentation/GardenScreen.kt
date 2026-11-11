@@ -124,7 +124,7 @@ fun GardenScreen(state: GardenUiState, onIntent: (GardenIntent) -> Unit, modifie
                                     MintProgress(tree.growth / 120f, Modifier.fillMaxWidth())
                                     Text("${tree.growth.coerceIn(0,120)} / 120", fontSize = 13.sp, color = Deep)
                                 } else {
-                                    GardenPaintedButton(if(plot.isUnlocked) "Gieo cây" else "Mở ô · ${com.mamxanh.shared.model.GardenPlotPolicy.UNLOCK_PRICE} xu",
+                                    GardenPaintedButton(if(plot.isUnlocked) "Gieo cây" else "Mở ô · ${com.mamxanh.shared.model.Balance.plot(garden.plots.count { it.isUnlocked })} xu",
                                         {
                                             if(plot.isUnlocked) onOpenInventory(plot.id)
                                             else unlockingPlotId = plot.id
@@ -143,7 +143,7 @@ fun GardenScreen(state: GardenUiState, onIntent: (GardenIntent) -> Unit, modifie
         }
     }
     unlockingPlotId?.let { id ->
-        val price = com.mamxanh.shared.model.GardenPlotPolicy.UNLOCK_PRICE
+        val price = com.mamxanh.shared.model.Balance.plot(garden.plots.count { it.isUnlocked })
         Dialog(onDismissRequest = { unlockingPlotId = null },
             properties = DialogProperties(usePlatformDefaultWidth = false, decorFitsSystemWindows = false)) {
             Box(Modifier.fillMaxSize().safeDrawingPadding(), contentAlignment = Alignment.Center) {

@@ -27,28 +27,29 @@ class ShopViewModel(private val repository: ShopRepository) : ViewModel() {
             ShopIntent.Refresh -> viewModelScope.launch {
                 _uiState.value = _uiState.value.copy(isLoading = true)
                 val wallet = withContext(Dispatchers.IO) { LoadShopWallet(repository)() }
-                _uiState.value = _uiState.value.copy(wallet = wallet, isLoading = false)
+                _uiState.value = _uiState.value.copy(wallet = wallet, averageEarnings = withContext(Dispatchers.IO){repository.averageEarnings()}, isLoading = false)
             }
+            is ShopIntent.Purchase -> purchase(intent.id,intent.quantity,intent.key)
             is ShopIntent.BuySeed -> purchase(intent.id)
             ShopIntent.BuyFertilizer -> purchase("fertilizer")
         }
     }
 
-    private fun purchase(id: String) {
+    private fun purchase(id: String,quantity: Int = 1,key: String = java.util.UUID.randomUUID().toString()) {
         if (_uiState.value.isPurchasing) return
         _uiState.value = _uiState.value.copy(isPurchasing = true)
         viewModelScope.launch {
             try {
                 val (before, success, after) = withContext(Dispatchers.IO) {
                     val before = LoadShopWallet(repository)()
-                    val success = if(id == "fertilizer") BuyFertilizer(repository)() else BuySeed(repository)(id)
+                    val success = repository.purchase(id,quantity,key)
                     Triple(before, success, LoadShopWallet(repository)())
                 }
                 _uiState.value = _uiState.value.copy(wallet = after, isLoading = false,
-                    outcome = PurchaseOutcome(success,
+                    outcome = PurchaseOutcome(success.success,
                         shopCatalog.firstOrNull { it.id == id }?.name ?: "Phân hữu cơ",
-                        before.coins, after.coins, before.inventory[id] ?: 0, after.inventory[id] ?: 0))
-                if(success) effectChannel.send(ShopEffect.InventoryChanged)
+                        before.coins, after.coins, before.inventory[id] ?: 0, after.inventory[id] ?: 0,success.message))
+                if(success.success) effectChannel.send(ShopEffect.InventoryChanged)
             } finally {
                 _uiState.value = _uiState.value.copy(isPurchasing = false)
             }

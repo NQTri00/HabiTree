@@ -8,6 +8,7 @@ class OfflineStatisticsRepository(private val game: GameStorage) : StatisticsRep
     override fun load(): GardenStatistics {
         val value = game.statistics()
         return GardenStatistics(
+            phase = game.phaseSnapshot(),
             coins = value.coins,
             total = value.total,
             today = value.today,

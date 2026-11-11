@@ -140,7 +140,13 @@ fun MamXanhAppContent(
                                 sharedTreeModifier = treeSharedModifier,
                                 taskTitle = tasks.tasks.firstOrNull { !it.doneToday && !it.finished }?.title ?: "Mọi việc đã xong hôm nay",
                                 canClaimBonus = tasks.canClaimDailyBonus && !tasks.isDailyBonusClaimed,
-                                onClaimBonus = { onTasksIntent(TasksIntent.ClaimBonus) })
+                                onTaskAction = { id,timer ->
+                            if(timer) {
+                                onAppIntent(AppIntent.Navigate(AppDestination.TASKS))
+                                onTasksIntent(TasksIntent.Detail(id))
+                            } else onTasksIntent(TasksIntent.Complete(id))
+                        },
+                        onClaimBonus = { onTasksIntent(TasksIntent.ClaimBonus) })
                             AppDestination.TASKS -> TasksScreen(tasks, onTasksIntent, Modifier, coins = wallet.coins)
                             AppDestination.GARDEN -> GardenScreen(gardenState, onGardenIntent, Modifier,
                                 onOpenInventory = { onAppIntent(AppIntent.OpenInventory(it)) },

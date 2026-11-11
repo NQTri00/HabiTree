@@ -4,83 +4,95 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mamxanh.app.feature.tasks.domain.*
-import kotlinx.coroutines.Dispatchers
+import com.mamxanh.shared.model.*
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.flow.*
 
-class TasksViewModel(private val repository: TaskRepository, private val savedState: SavedStateHandle) : ViewModel() {
-    private val _uiState = MutableStateFlow(TasksUiState(
-        isAddingTask = savedState["isAddingTask"] ?: false,
-        draft = savedState.get<ArrayList<String>>("draft").orEmpty(),
-        filter = TaskFilter.entries.firstOrNull { it.name == savedState.get<String>("filter") } ?: TaskFilter.ALL
-    ))
-    val uiState = _uiState.asStateFlow()
-    private val effectChannel = Channel<TasksEffect>(Channel.BUFFERED)
-    val effects = effectChannel.receiveAsFlow()
-
-    init { dispatch(TasksIntent.Refresh) }
-
-    private fun setAddingTask(adding: Boolean) {
-        savedState["isAddingTask"] = adding
-        if (!adding) savedState["draft"] = arrayListOf<String>()
-        _uiState.value = _uiState.value.copy(isAddingTask = adding,
-            draft = if (adding) _uiState.value.draft else emptyList())
-    }
-
-    fun dispatch(intent: TasksIntent) {
-        when (intent) {
-            is TasksIntent.UpdateDraft -> if (_uiState.value.isAddingTask) {
-                savedState["draft"] = ArrayList(intent.values)
-                _uiState.value = _uiState.value.copy(draft = intent.values)
-            }
-            TasksIntent.ShowAddDialog -> setAddingTask(true)
-            TasksIntent.DismissAddDialog -> setAddingTask(false)
-            TasksIntent.Refresh -> viewModelScope.launch {
-                _uiState.value = _uiState.value.copy(isLoading = true)
-                val (tasks, claimed, eligible) = withContext(Dispatchers.IO) {
-                    Triple(LoadTasks(repository)(), repository.isDailyBonusClaimed(), repository.canClaimDailyBonus())
+class TasksViewModel(private val repository: TaskRepository,private val savedState: SavedStateHandle): ViewModel() {
+    private val _uiState=MutableStateFlow(TasksUiState(
+        isAddingTask=savedState["isAddingTask"] ?: false,
+        editingId=savedState["editingId"],
+        draft=savedState.get<ArrayList<String>>("draft").orEmpty()))
+    val uiState=_uiState.asStateFlow()
+    private val effectsChannel=Channel<TasksEffect>(Channel.BUFFERED)
+    val effects=effectsChannel.receiveAsFlow()
+    private var foreground=false
+    init {
+        viewModelScope.launch { repository.changes.collect { refresh() } }
+        viewModelScope.launch {
+            // Persisted sessions recover paused, never accrue time while the process was absent.
+            withContext(Dispatchers.IO) { repository.snapshot().sessions.filter { it.running }.forEach { repository.timer(it.taskId,"PAUSE") } }
+            while(isActive) {
+                delay(1000)
+                if(foreground) {
+                    withContext(Dispatchers.IO) { repository.snapshot().sessions.filter{it.running}.forEach{repository.timer(it.taskId,"TICK")} }
+                    refresh()
                 }
-                _uiState.value = _uiState.value.copy(tasks = tasks, isDailyBonusClaimed = claimed,
-                    canClaimDailyBonus = eligible, isLoading = false)
             }
-            is TasksIntent.SetFilter -> {
-                savedState["filter"] = intent.filter.name
-                _uiState.value = _uiState.value.copy(filter = intent.filter)
+        }
+    }
+    private suspend fun refresh() {
+        val value=withContext(Dispatchers.IO) { Triple(repository.observeSnapshot(),repository.snapshot(),repository.isDailyBonusClaimed()) }
+        val eligible=withContext(Dispatchers.IO) { repository.canClaimDailyBonus() }
+        _uiState.value=_uiState.value.copy(tasks=value.first,phase=value.second,isDailyBonusClaimed=value.third,
+            canClaimDailyBonus=eligible,isLoading=false)
+    }
+    private fun close() {
+        savedState["isAddingTask"]=false; savedState["editingId"]=null; savedState["draft"]=arrayListOf<String>()
+        _uiState.value=_uiState.value.copy(isAddingTask=false,editingId=null,draft=emptyList())
+    }
+    private fun mutate(showSuccess: Boolean = true,block: ()->ActionResult) {
+        if(_uiState.value.busy)return
+        _uiState.value=_uiState.value.copy(busy=true)
+        viewModelScope.launch {
+            try {
+                val result=withContext(Dispatchers.IO){block()}
+                refresh()
+                if(showSuccess || !result.success)effectsChannel.send(TasksEffect.Feedback(result.message))
+                if(result.success)effectsChannel.send(TasksEffect.DataChanged)
+            } finally { _uiState.value=_uiState.value.copy(busy=false) }
+        }
+    }
+    fun dispatch(intent: TasksIntent) {
+        when(intent) {
+            TasksIntent.Refresh -> viewModelScope.launch{refresh()}
+            is TasksIntent.Foreground -> {
+                foreground=intent.active
+                if(!foreground)viewModelScope.launch { withContext(Dispatchers.IO) {
+                    repository.snapshot().sessions.filter{it.running}.forEach{repository.timer(it.taskId,"PAUSE")}
+                };refresh() }
             }
-            is TasksIntent.Add -> viewModelScope.launch {
-                if (!_uiState.value.isAddingTask || intent.title.isBlank() || intent.reward !in 1..100) return@launch
-                // Consume this dialog submission before suspending so repeated taps cannot insert twice.
-                setAddingTask(false)
-                withContext(Dispatchers.IO) { AddTask(repository)(intent.title.trim(), intent.kind, intent.category, intent.reward, intent.frequency, intent.due) }
-                dispatch(TasksIntent.Refresh)
-                effectChannel.send(TasksEffect.DataChanged)
-                effectChannel.send(TasksEffect.Feedback("Đã thêm nhiệm vụ"))
+            is TasksIntent.UpdateDraft -> {
+                savedState["draft"]=ArrayList(intent.values)
+                _uiState.value=_uiState.value.copy(draft=intent.values)
             }
-            is TasksIntent.Delete -> viewModelScope.launch {
-                withContext(Dispatchers.IO) { DeleteTask(repository)(intent.id) }
-                dispatch(TasksIntent.Refresh)
-                effectChannel.send(TasksEffect.DataChanged)
-                effectChannel.send(TasksEffect.Feedback("Đã xóa nhiệm vụ"))
+            TasksIntent.ShowAddDialog -> {
+                savedState["isAddingTask"]=true
+                _uiState.value=_uiState.value.copy(isAddingTask=true,editingId=null)
             }
-            is TasksIntent.Complete -> viewModelScope.launch {
-                val reward = _uiState.value.tasks.firstOrNull { it.id == intent.id }?.reward
-                val done = withContext(Dispatchers.IO) { CompleteTask(repository)(intent.id) }
-                dispatch(TasksIntent.Refresh)
-                if (done) effectChannel.send(TasksEffect.DataChanged)
-                effectChannel.send(TasksEffect.Feedback(if (done) {
-                    if (reward != null) "+$reward xu · Tất cả cây đã lớn thêm!"
-                    else "Bạn nhận xu và tất cả cây đã lớn thêm!"
-                } else "Nhiệm vụ này đã hoàn thành hôm nay"))
+            TasksIntent.DismissAddDialog -> close()
+            is TasksIntent.Detail -> _uiState.value=_uiState.value.copy(detailId=intent.id)
+            is TasksIntent.Edit -> {
+                savedState["isAddingTask"]=true; savedState["editingId"]=intent.id
+                _uiState.value=_uiState.value.copy(isAddingTask=true,editingId=intent.id,detailId=null,draft=emptyList())
             }
-            TasksIntent.ClaimBonus -> viewModelScope.launch {
-                val claimed = withContext(Dispatchers.IO) { ClaimDailyBonus(repository)() }
-                dispatch(TasksIntent.Refresh)
-                effectChannel.send(TasksEffect.DataChanged)
-                effectChannel.send(TasksEffect.Feedback(if (claimed) "Tuyệt vời! Bạn nhận thêm 20 xu." else "Hoàn thành mọi nhiệm vụ hằng ngày để nhận thưởng."))
+            is TasksIntent.Save -> {
+                val id=_uiState.value.editingId
+                if(intent.config.error()!=null)return
+                mutate { repository.save(id,intent.config) };close()
+            }
+            is TasksIntent.Lifecycle -> mutate{repository.lifecycle(intent.id,intent.state)}
+            is TasksIntent.Timer -> mutate(showSuccess=false){repository.timer(intent.id,intent.action)}
+            is TasksIntent.Complete -> mutate{repository.completeResult(intent.id)}
+            is TasksIntent.Delete -> mutate{repository.lifecycle(intent.id,"ARCHIVED")}
+            is TasksIntent.SetFilter -> _uiState.value=_uiState.value.copy(filter=intent.filter)
+            is TasksIntent.Add -> mutate{repository.save(null,TaskConfig(intent.title,intent.kind,intent.category,frequency=intent.frequency,due=intent.due))}
+            TasksIntent.ClaimBonus -> mutate {
+                val before=repository.snapshot().earnedToday
+                val success=repository.claimDailyBonus()
+                val after=repository.snapshot().earnedToday
+                ActionResult(success,if(success)"Daily Clear +${after-before} xu · Giới hạn 50 xu/ngày" else "Hoàn thành kế hoạch bắt buộc")
             }
         }
     }

@@ -2,10 +2,14 @@ package com.mamxanh.app.feature.tasks.presentation
 
 import com.mamxanh.app.feature.tasks.domain.model.Task
 
-enum class TaskFilter { ALL, HABIT, DAILY, ONCE, COMPLETED }
+enum class TaskFilter { ALL, HABIT, DAILY, ONCE, COMPLETED, INACTIVE }
 
 data class TasksUiState(
     val tasks: List<Task> = emptyList(),
+    val phase: com.mamxanh.shared.model.PhaseSnapshot = com.mamxanh.shared.model.PhaseSnapshot(),
+    val editingId: Long? = null,
+    val detailId: Long? = null,
+    val busy: Boolean = false,
     val isLoading: Boolean = true,
     val filter: TaskFilter = TaskFilter.ALL,
     val isAddingTask: Boolean = false,
@@ -16,6 +20,12 @@ data class TasksUiState(
 
 sealed interface TasksIntent {
     data object Refresh : TasksIntent
+    data class Edit(val id: Long) : TasksIntent
+    data class Detail(val id: Long?) : TasksIntent
+    data class Save(val config: com.mamxanh.shared.model.TaskConfig) : TasksIntent
+    data class Lifecycle(val id: Long,val state: String) : TasksIntent
+    data class Timer(val id: Long,val action: String) : TasksIntent
+    data class Foreground(val active: Boolean) : TasksIntent
     data object ShowAddDialog : TasksIntent
     data object DismissAddDialog : TasksIntent
     data class UpdateDraft(val values: List<String>) : TasksIntent

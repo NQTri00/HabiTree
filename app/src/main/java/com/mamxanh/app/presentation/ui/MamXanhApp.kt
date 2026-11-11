@@ -58,18 +58,56 @@ fun MamXanhApp(
     val treeState by treeVm.uiState.collectAsStateWithLifecycle()
     val app by appVm.uiState.collectAsStateWithLifecycle()
     val lifecycleOwner = LocalLifecycleOwner.current
+    val storage = org.koin.compose.koinInject<com.mamxanh.shared.data.GameStorage>()
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val permission = androidx.activity.compose.rememberLauncherForActivityResult(
+        androidx.activity.result.contract.ActivityResultContracts.RequestPermission()) {}
+    LaunchedEffect(tasks.tasks) {
+        kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
+            com.mamxanh.app.data.TaskReminders.schedule(context,tasks.tasks)
+        }
+        if(android.os.Build.VERSION.SDK_INT>=33 && tasks.tasks.any{it.config.reminderMinute>=0}) {
+            val prefs=context.getSharedPreferences("reminder_permission",android.content.Context.MODE_PRIVATE)
+            if(!prefs.getBoolean("requested",false)) {
+                prefs.edit().putBoolean("requested",true).apply()
+                permission.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
+    }
+    LaunchedEffect(storage,lifecycleOwner) {
+        lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            storage.changes.collect {
+                tasksVm.dispatch(TasksIntent.Refresh)
+                gardenVm.dispatch(GardenIntent.Refresh)
+                shopVm.dispatch(ShopIntent.Refresh)
+                statsVm.dispatch(StatsIntent.Refresh)
+                homeVm.dispatch(HomeIntent.Refresh)
+            }
+        }
+    }
+    LaunchedEffect(tasks.phase.days.firstOrNull()?.date) {
+        homeVm.dispatch(HomeIntent.Refresh)
+        statsVm.dispatch(StatsIntent.Refresh)
+    }
+    DisposableEffect(lifecycleOwner) {
+        val observer = androidx.lifecycle.LifecycleEventObserver { _,event ->
+            if(event==Lifecycle.Event.ON_START)tasksVm.dispatch(TasksIntent.Foreground(true))
+            if(event==Lifecycle.Event.ON_STOP)tasksVm.dispatch(TasksIntent.Foreground(false))
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        tasksVm.dispatch(TasksIntent.Foreground(lifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)))
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+            tasksVm.dispatch(TasksIntent.Foreground(false))
+        }
+    }
 
     LaunchedEffect(tasksVm, lifecycleOwner) {
         lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
             tasksVm.effects.collect { effect ->
                 when (effect) {
                     is TasksEffect.Feedback -> appVm.dispatch(AppIntent.ShowMessage(effect.message))
-                    TasksEffect.DataChanged -> {
-                        gardenVm.dispatch(GardenIntent.Refresh)
-                        statsVm.dispatch(StatsIntent.Refresh)
-                        shopVm.dispatch(ShopIntent.Refresh)
-                        homeVm.dispatch(HomeIntent.Refresh)
-                    }
+                    TasksEffect.DataChanged -> Unit // Shared storage revisions drive every snapshot.
                 }
             }
         }
@@ -93,11 +131,7 @@ fun MamXanhApp(
         lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
             gardenVm.effects.collect { effect ->
                 when (effect) {
-                    GardenEffect.DataChanged -> {
-                        shopVm.dispatch(ShopIntent.Refresh)
-                        statsVm.dispatch(StatsIntent.Refresh)
-                        homeVm.dispatch(HomeIntent.Refresh)
-                    }
+                    GardenEffect.DataChanged -> Unit
                     is GardenEffect.OpenTree -> appVm.dispatch(AppIntent.OpenTree(effect.id))
                     GardenEffect.OpenShop -> appVm.dispatch(AppIntent.Navigate(AppDestination.SHOP))
                 }
@@ -109,11 +143,7 @@ fun MamXanhApp(
             shopVm.effects.collect { effect ->
                 when (effect) {
                     is ShopEffect.Feedback -> appVm.dispatch(AppIntent.ShowMessage(effect.message))
-                    ShopEffect.InventoryChanged -> {
-                        gardenVm.dispatch(GardenIntent.Refresh)
-                        homeVm.dispatch(HomeIntent.Refresh)
-                        statsVm.dispatch(StatsIntent.Refresh)
-                    }
+                    ShopEffect.InventoryChanged -> Unit
                     ShopEffect.OpenGarden -> appVm.dispatch(AppIntent.Navigate(AppDestination.GARDEN))
                 }
             }
@@ -133,12 +163,7 @@ fun MamXanhApp(
                         appVm.dispatch(AppIntent.Back)
                         appVm.dispatch(AppIntent.Navigate(AppDestination.SHOP))
                     }
-                    TreeEffect.TreeChanged -> {
-                        gardenVm.dispatch(GardenIntent.Refresh)
-                        homeVm.dispatch(HomeIntent.Refresh)
-                        statsVm.dispatch(StatsIntent.Refresh)
-                        shopVm.dispatch(ShopIntent.Refresh)
-                    }
+                    TreeEffect.TreeChanged -> Unit
                 }
             }
         }

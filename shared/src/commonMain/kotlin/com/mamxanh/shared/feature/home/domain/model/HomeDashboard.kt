@@ -12,5 +12,7 @@ data class HomeDashboard(
     val coins: Int = 0,
     val wateringCanMl: Int = 542,
     val dailyRewardDate: String = "",
-    val dailyRewardCoins: Int = 20
+    val dailyRewardCoins: Int = com.mamxanh.shared.model.Balance.DAILY_CLEAR,
+    val phase: com.mamxanh.shared.model.PhaseSnapshot = com.mamxanh.shared.model.PhaseSnapshot(),
+    val nextTasks: List<com.mamxanh.shared.model.Task> = emptyList()
 )

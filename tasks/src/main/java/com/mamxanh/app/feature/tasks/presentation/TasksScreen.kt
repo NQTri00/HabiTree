@@ -65,29 +65,41 @@ fun TasksScreen(state: TasksUiState, onIntent: (TasksIntent) -> Unit, modifier: 
     val listState = rememberLazyListState()
     var pendingDeleteId by rememberSaveable { mutableStateOf<Long?>(null) }
     val filtered = state.tasks.filter { task ->
+        (state.filter in setOf(TaskFilter.COMPLETED,TaskFilter.INACTIVE) || task.lifecycle == "ACTIVE") &&
+        (state.filter != TaskFilter.ALL || task.scheduledToday || task.doneToday || task.finished) &&
         when(state.filter) {
             TaskFilter.ALL -> true
             TaskFilter.HABIT -> task.kind == "HABIT"
             TaskFilter.DAILY -> task.kind == "DAILY"
             TaskFilter.ONCE -> task.kind == "TODO"
             TaskFilter.COMPLETED -> task.doneToday || task.finished
+            TaskFilter.INACTIVE -> task.lifecycle != "ACTIVE"
         }
     }
-    val done = filtered.count { it.doneToday || it.finished }
+        .sortedWith(compareBy<Task> {
+            when {
+                state.phase.sessions.any{s->s.taskId==it.id && s.running}->0
+                it.doneToday || it.finished->4
+                it.config.endMinute>=0->1
+                it.kind=="TODO" && it.due.isNotEmpty() && it.due<today()->2
+                else->3
+            }
+        }.thenBy{it.config.endMinute}.thenBy{it.id})
+    val done = state.phase.completed
     MintBackdrop(modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
             MintHeader("Việc nhỏ", coins)
-            MintSegments(listOf("Hôm nay", "Thói quen", "Đã xong"),
-                when(state.filter) { TaskFilter.HABIT -> 1; TaskFilter.COMPLETED -> 2; else -> 0 },
-                { onIntent(TasksIntent.SetFilter(listOf(TaskFilter.ALL, TaskFilter.HABIT, TaskFilter.COMPLETED)[it])) },
+            MintSegments(listOf("Hôm nay", "Thói quen", "Đã xong", "Tạm dừng"),
+                when(state.filter) { TaskFilter.HABIT -> 1; TaskFilter.COMPLETED -> 2; TaskFilter.INACTIVE -> 3; else -> 0 },
+                { onIntent(TasksIntent.SetFilter(listOf(TaskFilter.ALL, TaskFilter.HABIT, TaskFilter.COMPLETED,TaskFilter.INACTIVE)[it])) },
                 Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
             GardenBotanicalFrame(Modifier.padding(horizontal = 16.dp).fillMaxWidth(),
                 contentPadding = PaddingValues(12.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                     GardenArtwork(GardenArt.SPROUT, Modifier.size(30.dp))
                     Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                        Text("Đã hoàn thành $done / ${filtered.size} việc", color = Deep, fontWeight = FontWeight.Bold, fontSize = 14.sp)
-                        MintProgress(done.toFloat() / filtered.size.coerceAtLeast(1), Modifier.fillMaxWidth())
+                        Text("Đã hoàn thành $done / ${state.phase.required} việc bắt buộc", color = Deep, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                        MintProgress(done.toFloat() / state.phase.required.coerceAtLeast(1), Modifier.fillMaxWidth())
                     }
                 }
             }
@@ -109,9 +121,20 @@ fun TasksScreen(state: TasksUiState, onIntent: (TasksIntent) -> Unit, modifier: 
                     }
                 }
                 items(filtered, key = { it.id }) { task ->
-                    TaskCard(task, { onIntent(TasksIntent.Complete(task.id)) }, { pendingDeleteId = task.id }, task.finished)
+                    Text(when {
+                        state.phase.sessions.any{it.taskId==task.id && it.running} -> "Đang thực hiện"
+                        task.doneToday || task.finished -> "Đã hoàn thành"
+                        task.requiredToday -> "Kế hoạch hôm nay"
+                        else -> "Tùy chọn"
+                    },color=Muted,fontSize=12.sp)
+                    TaskCard(task, {
+                        if(task.config.verification=="TIMER") onIntent(TasksIntent.Detail(task.id))
+                        else onIntent(TasksIntent.Complete(task.id))
+                    }, { onIntent(TasksIntent.Detail(task.id)) }, task.finished || state.busy)
+                    if(task.availability.isNotEmpty())Text(task.availability,color=Muted,fontSize=12.sp)
+                    TextButton(onClick={onIntent(TasksIntent.Detail(task.id))}){Text("Chi tiết · Sửa / Tạm dừng",fontSize=12.sp)}
                 }
-                if(state.tasks.any { it.kind == "DAILY" } && state.filter in setOf(TaskFilter.ALL, TaskFilter.DAILY)) item {
+                if(state.phase.required > 0 && state.filter in setOf(TaskFilter.ALL, TaskFilter.DAILY)) item {
                     DailyRewardCard(state.canClaimDailyBonus && !state.isLoading, { onIntent(TasksIntent.ClaimBonus) }, state.isDailyBonusClaimed)
                 }
             }
@@ -122,25 +145,26 @@ fun TasksScreen(state: TasksUiState, onIntent: (TasksIntent) -> Unit, modifier: 
     state.tasks.firstOrNull { it.id == pendingDeleteId }?.let { task ->
         AlertDialog(
             onDismissRequest = { pendingDeleteId = null },
-            title = { Text("Xóa nhiệm vụ?") },
-            text = { Text("“" + task.title + "” sẽ bị xóa khỏi danh sách.") },
+            title = { Text("Lưu trữ nhiệm vụ?") },
+            text = { Text("Lịch sử và giao dịch của “" + task.title + "” được giữ lại.") },
             confirmButton = {
                 TextButton(onClick = {
                     pendingDeleteId = null
                     onIntent(TasksIntent.Delete(task.id))
-                }) { Text("Xóa") }
+                }) { Text("Lưu trữ") }
             },
             dismissButton = { TextButton(onClick = { pendingDeleteId = null }) { Text("Giữ lại") } }
         )
+    }
+    state.tasks.firstOrNull{it.id==state.detailId}?.let { task ->
+        TaskDetails(task,state,onIntent)
     }
     if (state.isAddingTask) AddTaskDialog(
         draft = state.draft,
         onDraftChange = { onIntent(TasksIntent.UpdateDraft(it)) },
         onDismiss = { onIntent(TasksIntent.DismissAddDialog) },
-        onSave = { title, kind, category, reward, frequency, due ->
-            onIntent(TasksIntent.Add(title, kind, category, reward, frequency, due))
-            onIntent(TasksIntent.DismissAddDialog)
-        }
+        initial = state.tasks.firstOrNull{it.id==state.editingId}?.config ?: com.mamxanh.shared.model.TaskConfig(),
+        onSave = { onIntent(TasksIntent.Save(it)) }
     )
 }
 
@@ -181,7 +205,7 @@ private fun DailyRewardCard(canClaim: Boolean, onClaim: () -> Unit, claimed: Boo
                 Icon(Icons.Rounded.CardGiftcard, null, Modifier.size(32.dp), tint = Green)
                 Text("Thưởng hôm nay", Modifier.weight(1f),
                     color = Deep, fontSize = 15.sp, lineHeight = 18.sp, fontWeight = FontWeight.Bold)
-                Text("+20 xu", color = Deep, fontSize = 17.sp, lineHeight = 20.sp, fontWeight = FontWeight.Bold)
+                Text("+${com.mamxanh.shared.model.Balance.DAILY_CLEAR} xu", color = Deep, fontSize = 17.sp, lineHeight = 20.sp, fontWeight = FontWeight.Bold)
             }
         }
     }
@@ -210,7 +234,7 @@ private fun TaskCard(task: Task, onComplete: () -> Unit, onDelete: () -> Unit, r
     Column {
         Row(Modifier.fillMaxWidth().heightIn(min = if (readOnly) 56.dp else 64.dp)
             .mintDepth(RoundedCornerShape(18.dp), if (done) MintDepth.hint else MintDepth.card, 4.dp)
-            .combinedClickable(onClick = { if (!done) onComplete() }, onLongClickLabel = "Xóa nhiệm vụ", onLongClick = onDelete)
+            .combinedClickable(onClick = { if (!done && task.available) onComplete() }, onLongClickLabel = "Xóa nhiệm vụ", onLongClick = onDelete)
             .semantics { customActions = listOf(CustomAccessibilityAction("Xóa nhiệm vụ") { onDelete(); true }) }
             .padding(horizontal = 8.dp, vertical = 6.dp), verticalAlignment = Alignment.CenterVertically) {
             GardenArtwork(when {
@@ -232,7 +256,7 @@ private fun TaskCard(task: Task, onComplete: () -> Unit, onDelete: () -> Unit, r
                 cornerSize = 9.dp, skin = com.mamxanh.app.presentation.ui.components.GardenPanelSkin.PRICE) {
                 Text("🪙+${task.reward} xu", color = Deep, fontSize = 11.sp, lineHeight = 14.sp, fontWeight = FontWeight.Bold)
             }
-            IconButton(onClick = onComplete, enabled = !done, modifier = Modifier.size(48.dp).semantics { contentDescription = if (done) "Đã hoàn thành" else "Hoàn thành nhiệm vụ" }) {
+            IconButton(onClick = onComplete, enabled = !done && task.available, modifier = Modifier.size(48.dp).semantics { contentDescription = if (done) "Đã hoàn thành" else "Hoàn thành nhiệm vụ" }) {
                 Surface(shape = CircleShape, color = if (done) Color(0xFF7B9D3D) else Color.Transparent,
                     border = if (done) null else BorderStroke(1.5.dp,Color(0xFF9B7854)), modifier = Modifier.size(24.dp)) {
                     if (done) Icon(Icons.Rounded.Check, null, tint = Color(0xFFFFF5DC), modifier = Modifier.padding(3.dp))

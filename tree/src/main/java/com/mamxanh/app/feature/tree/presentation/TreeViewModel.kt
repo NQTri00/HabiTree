@@ -40,8 +40,8 @@ class TreeViewModel(private val repository: TreeRepository) : ViewModel() {
             return
         }
         if (_uiState.value.isLoading) return
+        _uiState.value = _uiState.value.copy(isLoading = true)
         viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isLoading = true)
             try {
                 when (intent) {
                     TreeIntent.Back, TreeIntent.OpenWaterSupply, TreeIntent.OpenFertilizerShop,
@@ -60,7 +60,7 @@ class TreeViewModel(private val repository: TreeRepository) : ViewModel() {
                     is TreeIntent.Fertilize -> {
                         val changed = withContext(Dispatchers.IO) { FertilizeTree(repository)(intent.id) }
                         if (changed) effectChannel.send(TreeEffect.TreeChanged)
-                        effectChannel.send(TreeEffect.Feedback(if (changed) "Cây đã lớn thêm 25 điểm." else "Bạn chưa có phân bón."))
+                        effectChannel.send(TreeEffect.Feedback(if (changed) "Cây đã lớn thêm 25 điểm." else "Không thể bón: hết phân, cây đã đầy tăng trưởng hoặc không còn tồn tại."))
                     }
                     is TreeIntent.Decorate -> {
                         withContext(Dispatchers.IO) { DecorateTree(repository)(intent.id, intent.decoration) }

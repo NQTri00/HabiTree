@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -68,6 +69,43 @@ fun StatsScreen(state: StatsUiState, onIntent: (StatsIntent) -> Unit, modifier: 
                                 if(state.isLoading) LinearProgressIndicator(Modifier.fillMaxWidth().height(3.dp).clearAndSetSemantics {})
                             }
                         }
+                    }
+                }
+                item {
+                    GardenBotanicalFrame(Modifier.fillMaxWidth()) {
+                        Column(verticalArrangement=Arrangement.spacedBy(8.dp)) {
+                            val eligible=s.phase.days.sumOf{it.eligible}
+                            val completed=s.phase.days.sumOf{it.completed}
+                            Text("Kế hoạch 7 ngày: $completed / $eligible")
+                            Text(if(eligible==0)"Chưa có ngày theo lịch" else "Tỷ lệ hoàn thành: ${completed*100/eligible}%")
+                            Text("Thu hôm nay: ${s.phase.earnedToday}/50 xu")
+                            s.phase.days.forEach{Text("${it.date} · ${it.completed}/${it.eligible} · ${if(it.cleared)"✓" else "—"} · ${it.earned} xu")}
+                            Text("Theo nhóm")
+                            s.phase.categories.forEach{(name,count)->Text("$name: $count")}
+                        }
+                    }
+                }
+                item { Text("Lịch sử hoàn thành",color=Deep,fontWeight=FontWeight.Bold) }
+                items(s.phase.occurrences) { event ->
+                    GardenBotanicalFrame(Modifier.fillMaxWidth()) {
+                        Text("${event.date} · ${event.title} · ${event.granted}/${event.nominal} xu",color=Deep)
+                    }
+                }
+                item { Text("Sổ ví · 100 giao dịch gần nhất",color=Deep,fontWeight=FontWeight.Bold) }
+                items(s.phase.ledger,key={it.id}) { event ->
+                    val label=when(event.type) {
+                        "TASK"->"Hoàn thành việc";"DAILY_CLEAR"->"Kế hoạch hoàn thành"
+                        "MILESTONE"->"Cột mốc";"PURCHASE"->"Mua hàng";"PLOT"->"Mở ô trồng";else->"Lịch sử trước cập nhật"
+                    }
+                    GardenBotanicalFrame(Modifier.fillMaxWidth()) {
+                        Text("${event.date} · $label · ${event.amount}/${event.nominal} xu" +
+                            if(event.type=="LEGACY_REWARD")" · Số dư lịch sử không có dữ liệu" else " · Dư ${event.balance}",color=Deep)
+                    }
+                }
+                item { Text("Chăm cây · 50 sự kiện gần nhất",color=Deep,fontWeight=FontWeight.Bold) }
+                items(s.phase.care) { event ->
+                    GardenBotanicalFrame(Modifier.fillMaxWidth()) {
+                        Text("Cây #${event.treeId} · ${when(event.type){"WATER"->"Tưới";"FERTILIZE"->"Bón phân";else->"Trang trí"}} · Tài nguyên ${event.resource} · +${event.growth}",color=Deep)
                     }
                 }
                 if(!firstUse) item {

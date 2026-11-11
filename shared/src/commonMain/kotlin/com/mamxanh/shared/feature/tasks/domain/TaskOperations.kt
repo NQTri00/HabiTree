@@ -3,6 +3,12 @@ package com.mamxanh.shared.feature.tasks.domain
 import com.mamxanh.shared.feature.tasks.domain.model.Task
 
 interface TaskRepository {
+    val changes: kotlinx.coroutines.flow.StateFlow<Long>
+    fun snapshot(): com.mamxanh.shared.model.PhaseSnapshot
+    fun save(id: Long?,config: com.mamxanh.shared.model.TaskConfig): com.mamxanh.shared.model.ActionResult
+    fun lifecycle(id: Long,state: String): com.mamxanh.shared.model.ActionResult
+    fun timer(id: Long,action: String): com.mamxanh.shared.model.ActionResult
+    fun completeResult(id: Long): com.mamxanh.shared.model.ActionResult
     fun observeSnapshot(): List<Task>
     fun add(title: String, kind: String, category: String, reward: Int, frequency: String, due: String)
     fun delete(id: Long)

@@ -79,9 +79,8 @@ fun ReferenceTaskDialogPreview() {
 @Composable
 fun ReferenceAddTaskCompositionPreview() {
     MamXanhPreviewTheme {
-        com.mamxanh.app.feature.tasks.presentation.dialog.AddTaskDialogPreviewContent(background = {
-            ReferenceWorld(AppUiState(destination = AppDestination.TASKS))
-        })
+        com.mamxanh.app.feature.tasks.presentation.dialog.AddTaskDialog(
+            onDismiss = {}, onSave = {}, initial = com.mamxanh.shared.model.TaskConfig(title = "Đọc 10 trang sách"))
     }
 }
 
