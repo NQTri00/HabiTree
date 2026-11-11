@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.mamxanh.app.feature.garden.presentation.*
+import com.mamxanh.app.feature.inventory.presentation.*
 import com.mamxanh.app.feature.home.presentation.*
 import com.mamxanh.app.feature.home.domain.model.HomeDashboard
 import com.mamxanh.app.feature.home.domain.model.HomeTree
@@ -56,7 +57,24 @@ fun MamXanhAppContent(
                 })
             }
         ) { padding ->
-            SharedTransitionLayout(Modifier.fillMaxSize().padding(padding)) {
+            if (app.inventoryOpen) {
+                InventoryScreen(
+                    state = InventoryUiState(
+                        seeds = com.mamxanh.app.feature.garden.domain.model.seedCatalog.map {
+                            InventorySeed(it.id, it.name, wallet.inventory[it.id] ?: 0)
+                        },
+                        fertilizerCount = wallet.inventory["fertilizer"] ?: 0,
+                        wateringCanMl = dashboard.dashboard.wateringCanMl,
+                        coins = wallet.coins,
+                        isLoading = shop.isLoading || garden.isLoading
+                    ),
+                    onBack = { onAppIntent(AppIntent.Back) },
+                    onSelectSeed = { onAppIntent(AppIntent.SelectInventorySeed(it)) },
+                    onOpenShop = { onAppIntent(AppIntent.Navigate(AppDestination.SHOP)) },
+                    targetPlotId = app.inventoryPlotId,
+                    modifier = Modifier.padding(padding)
+                )
+            } else SharedTransitionLayout(Modifier.fillMaxSize().padding(padding)) {
                 val selectedTreeId = app.selectedTreeId
                 val homeTreeId = dashboard.dashboard.trees.firstOrNull()?.id
                 AnimatedContent(
@@ -125,6 +143,10 @@ fun MamXanhAppContent(
                                 onClaimBonus = { onTasksIntent(TasksIntent.ClaimBonus) })
                             AppDestination.TASKS -> TasksScreen(tasks, onTasksIntent, Modifier, coins = wallet.coins)
                             AppDestination.GARDEN -> GardenScreen(gardenState, onGardenIntent, Modifier,
+                                onOpenInventory = { onAppIntent(AppIntent.OpenInventory(it)) },
+                                plantingSeedId = app.plantingSeedId,
+                                plantingPlotId = app.inventoryPlotId,
+                                onDismissPlanting = { onAppIntent(AppIntent.DismissPlanting) },
                                 treeTransitionModifier = { id ->
                                     Modifier.sharedElement(
                                         rememberSharedContentState(key = "tree-$id"),
@@ -165,6 +187,9 @@ fun MamXanhAppContentHomePreview() {
                 ) else route
             is AppIntent.ShowMessage -> route.copy(message = intent.message)
             AppIntent.DismissMessage -> route.copy(message = "")
+            is AppIntent.OpenInventory -> route.copy(inventoryOpen = true, inventoryPlotId = intent.plotId)
+            is AppIntent.SelectInventorySeed -> route.copy(inventoryOpen = false, destination = AppDestination.GARDEN, plantingSeedId = intent.seedId)
+            AppIntent.DismissPlanting -> route.copy(plantingSeedId = null, inventoryPlotId = null)
         }
     }
     MamXanhPreviewTheme {

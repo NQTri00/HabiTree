@@ -92,6 +92,16 @@ No complete demo screenshot is used as a runtime background.
 - GardenPlantPortrait adds optional artworkAlignment; these two screens use Center, while other callers retain BottomCenter.
 - Both APK variants passed (21 seconds). Installed APK inspected on both Home and Tree Detail at360dp: centered tree, round controls, complete cards/tabs and saved145-coin wallet retained.
 
+## Inventory screen — replaces seed-selection popup
+- Added Android library module :inventory with InventoryUiState, InventorySeed and a full-screen InventoryScreen. The host supplies existing wallet/seed quantities; the module does not duplicate persistence or create new inventory stock.
+- Two illustrated tabs: Vật phẩm (fertilizer, permanent watering can/pump) and Hạt giống (owned seeds with species artwork and quantities). Both use a lazy three-column grid, wrapping labels, separate saved scroll positions and a shop shortcut.
+- Garden's bag button and footer open Inventory. Empty plot actions open Seeds directly with the target plot. Removed the old choose-seed AlertDialog and redundant inline SeedBasket/preview.
+- Selecting a seed returns to the existing planting form with the exact target plot. Cancellation consumes nothing. Existing planting transactions and optional name form are unchanged.
+- Inventory visibility, target plot and pending seed are SavedStateHandle navigation primitives. Tab/grid state use Compose savers; Back returns to Garden and bottom navigation still switches destinations.
+- Both APK variants passed (final20 seconds,270 tasks); Gradle sync succeeded. Inspected Items and Seeds at360dp, and the three-column Items grid at320dp/1.3×; adjusted label/body leading after the narrow check.
+- Runtime verified plot05→Inventory Seeds→succulent selection→planting target05; cancelled without planting. Stock remained1 and wallet115 coins.
+- Confirmed process recreation: PID27313 disappeared; cold relaunch PID27578 restored Inventory with Seeds selected and the same quantities. Device size/font overrides restored. New screen left open on emulator.
+
 ## Acceptance still open
 Exact plant/icon silhouettes and illustration style differ from the new sheets; reused/generated art is not lossless source extraction. Do not describe this checkpoint as 100% visually identical.
 The full 393/412dp, landscape/IME, long-name, process-death, reward-claim, transaction-race and every annotated outcome matrix has not been re-executed for this redesign. Existing historical evidence does not automatically close those checks.

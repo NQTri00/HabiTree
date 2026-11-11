@@ -144,9 +144,10 @@ fun MamXanhApp(
         }
     }
 
-    val canGoBack = app.selectedTreeId != null || app.backStack.isNotEmpty()
+    val canGoBack = app.inventoryOpen || app.selectedTreeId != null || app.backStack.isNotEmpty()
     BackHandler(enabled = canGoBack) {
-        if (app.selectedTreeId != null) treeVm.dispatch(TreeIntent.Back) else appVm.dispatch(AppIntent.Back)
+        if (app.inventoryOpen) appVm.dispatch(AppIntent.Back)
+        else if (app.selectedTreeId != null) treeVm.dispatch(TreeIntent.Back) else appVm.dispatch(AppIntent.Back)
     }
     MamXanhAppContent(
         state = app,

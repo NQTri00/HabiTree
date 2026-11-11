@@ -1,0 +1,180 @@
+package com.mamxanh.app.feature.inventory.presentation
+
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.grid.*
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.Inventory2
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.mamxanh.app.presentation.ui.*
+import com.mamxanh.app.presentation.ui.components.*
+
+data class InventorySeed(val id: String, val name: String, val count: Int)
+data class InventoryUiState(
+    val seeds: List<InventorySeed> = emptyList(),
+    val fertilizerCount: Int = 0,
+    val wateringCanMl: Int = 0,
+    val coins: Int = 0,
+    val isLoading: Boolean = false
+)
+enum class InventoryTab { ITEMS, SEEDS }
+
+/** Reads existing inventory; only the host owns planting and purchase mutations. */
+@Composable
+fun InventoryScreen(
+    state: InventoryUiState,
+    onBack: () -> Unit,
+    onSelectSeed: (String) -> Unit,
+    onOpenShop: () -> Unit,
+    modifier: Modifier = Modifier,
+    targetPlotId: Int? = null
+) {
+    var tab by rememberSaveable(targetPlotId) {
+        mutableStateOf(if (targetPlotId != null) InventoryTab.SEEDS else InventoryTab.ITEMS)
+    }
+    val itemsGrid = rememberLazyGridState()
+    val seedsGrid = rememberLazyGridState()
+    val ownedSeeds = state.seeds.filter { it.count > 0 }
+    MintBackdrop(modifier.fillMaxSize()) {
+        Column(Modifier.fillMaxSize()) {
+            Row(Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 4.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                IconButton(onClick = onBack) {
+                    Icon(Icons.AutoMirrored.Rounded.ArrowBack, "Quay lại", tint = Deep)
+                }
+                Icon(Icons.Rounded.Inventory2, null, tint = Green, modifier = Modifier.size(24.dp))
+                Text("Túi đồ", Modifier.weight(1f), color = Deep,
+                    fontSize = 22.sp, fontWeight = FontWeight.Bold)
+                GardenBotanicalFrame(contentPadding = PaddingValues(8.dp)) {
+                    GardenRichText("🪙 ${state.coins}", color = Deep, fontSize = 13.sp)
+                }
+            }
+            Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp)
+                .height(IntrinsicSize.Min).selectableGroup(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                InventoryTab.entries.forEach { option ->
+                    Surface(Modifier.weight(1f).fillMaxHeight()
+                        .selectable(tab == option, role = Role.Tab, onClick = { tab = option }),
+                        shape = RoundedCornerShape(24.dp),
+                        color = if (tab == option) Green else Color(0xFFF8FCFA)) {
+                        Row(Modifier.heightIn(min = 48.dp).padding(8.dp),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
+                            verticalAlignment = Alignment.CenterVertically) {
+                            GardenArtwork(if (option == InventoryTab.ITEMS) GardenArt.FERTILIZER else GardenArt.SEED,
+                                Modifier.size(28.dp))
+                            Text(if (option == InventoryTab.ITEMS) "Vật phẩm" else "Hạt giống",
+                                color = if (tab == option) Color.White else Deep,
+                                fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                        }
+                    }
+                }
+            }
+            if (targetPlotId != null && tab == InventoryTab.SEEDS) Text(
+                "Chọn hạt để gieo tại ô " + targetPlotId.toString().padStart(2, '0'),
+                Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+                color = Deep, fontSize = 13.sp)
+            if (state.isLoading) LinearProgressIndicator(Modifier.fillMaxWidth())
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(3),
+                state = if (tab == InventoryTab.ITEMS) itemsGrid else seedsGrid,
+                modifier = Modifier.weight(1f),
+                contentPadding = PaddingValues(16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                if (tab == InventoryTab.ITEMS) {
+                    item(key = "fertilizer") {
+                        InventoryCard("Phân bón", "×${state.fertilizerCount}") {
+                            GardenArtwork(GardenArt.FERTILIZER, it)
+                        }
+                    }
+                    item(key = "watering-can") {
+                        InventoryCard("Bình tưới", "${state.wateringCanMl} ml") {
+                            GardenArtwork(GardenArt.WATERING_CAN, it)
+                        }
+                    }
+                    item(key = "pump") {
+                        InventoryCard("Bơm nước", "Dụng cụ") {
+                            GardenArtwork(GardenArt.PUMP, it)
+                        }
+                    }
+                    item(span = { GridItemSpan(maxLineSpan) }) {
+                        Text("Dụng cụ chăm sóc luôn có sẵn. Dùng phân bón và bình tưới tại màn hình cây.",
+                            Modifier.padding(top = 8.dp), color = Muted, fontSize = 13.sp, lineHeight = 18.sp)
+                    }
+                } else {
+                    items(ownedSeeds, key = { it.id }) { seed ->
+                        InventoryCard(seed.name, "×${seed.count}", onClick = {
+                            if (!state.isLoading) onSelectSeed(seed.id)
+                        }) { PaintedGardenPlant(seed.id, it) }
+                    }
+                    if (ownedSeeds.isEmpty() && !state.isLoading) item(span = { GridItemSpan(maxLineSpan) }) {
+                        Column(Modifier.fillMaxWidth().padding(vertical = 32.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                            GardenArtwork(GardenArt.SEED, Modifier.size(96.dp))
+                            Text("Chưa có hạt trong túi", color = Deep, fontWeight = FontWeight.Bold)
+                            Text("Ghé tiệm để chọn hạt đầu tiên.", color = Muted)
+                        }
+                    }
+                }
+                item(span = { GridItemSpan(maxLineSpan) }) {
+                    GardenPaintedButton("Ghé tiệm", onOpenShop,
+                        Modifier.fillMaxWidth().padding(top = 12.dp), primary = false)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun InventoryCard(
+    name: String, quantity: String, onClick: (() -> Unit)? = null,
+    artwork: @Composable (Modifier) -> Unit
+) {
+    GardenBotanicalFrame(
+        Modifier.fillMaxWidth().then(if (onClick != null)
+            Modifier.clickable(role = Role.Button, onClickLabel = "Gieo $name", onClick = onClick)
+        else Modifier),
+        contentPadding = PaddingValues(8.dp), cornerSize = 20.dp
+    ) {
+        Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            artwork(Modifier.fillMaxWidth().height(64.dp).semantics { contentDescription = name })
+            Text(name, color = Deep, fontSize = 12.sp, lineHeight = 15.sp,
+                fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, minLines = 2)
+            Text(quantity, color = Green, fontWeight = FontWeight.Bold,
+                fontSize = 12.sp, lineHeight = 15.sp, textAlign = TextAlign.Center)
+        }
+    }
+}
+
+@Preview(widthDp = 360, heightDp = 640)
+@Composable
+fun InventoryScreenPreview() {
+    MamXanhPreviewTheme {
+        InventoryScreen(InventoryUiState(
+            seeds = listOf(InventorySeed("cherry", "Đào hồng xuân", 3),
+                InventorySeed("pine", "Thông xanh", 2), InventorySeed("succulent", "Sen đá ngọc", 1)),
+            fertilizerCount = 2, wateringCanMl = 500, coins = 120),
+            {}, {}, {}, targetPlotId = 5)
+    }
+}

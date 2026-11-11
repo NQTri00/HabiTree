@@ -52,6 +52,7 @@ dependencies {
     implementation(project(":shop"))
     implementation(project(":tree"))
     implementation(project(":stats"))
+    implementation(project(":inventory"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.lifecycle.runtime.ktx)
