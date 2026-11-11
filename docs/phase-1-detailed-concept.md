@@ -3,7 +3,7 @@
 **Status:** Proposed design, not implemented.  
 **Target:** `y-tuong/quangtri` (Kotlin Multiplatform + Android Compose).  
 **Purpose:** Make the existing offline-first tasks → coins → shop → inventory → garden → tree care loop complete, balanced, reactive and reliable.  
-**Out of scope:** Phase 2 height-based growth engine, new species art, seasonal variants, garden furniture, multiplayer, player avatars.
+**Out of scope:** Phase 2 species-specific finite growth and timed watering, new species art, garden furniture, multiplayer, player avatars. Seasons are excluded from the entire roadmap.
 
 > This specification builds on `MamXanh-Proposal.md`, `MamXanh-Tasks-And-Trees.md`, and `docs/design-references/current-mics-implementation.md`. Numerical values below are proposed balancing defaults, not measurements of existing behavior. Preserve the approved mint/white Mics visuals and centered featured tree. Do not interpret this document as a claim that features are already implemented.
 
@@ -35,7 +35,7 @@ Fields and validation:
 - Recurrence for Habit/Daily: every day, weekdays, weekends, or selected days of week. A custom schedule must contain at least one weekday.
 - To-do: optional due date; no recurring schedule.
 - Optional completion window: local start/end time; validation must define overnight windows explicitly rather than silently misinterpreting them.
-- Verification: Manual, Hold (continuous two seconds), Timer (required active minutes; valid positive bound).
+- Verification: Click (single deliberate confirmation), Timer (required active minutes; valid positive bound). Hold-to-complete is not supported.
 - Optional local reminder time; permission denial must not prevent task creation.
 - Reward calculated by the game; not an unrestricted user-entered amount.
 - Save and Cancel. Editing retains prior occurrences, rewards and completion history.
@@ -48,8 +48,7 @@ Show title, description, category, schedule, verification method, current comple
 
 ### 2.4 Completion and verification
 
-**Manual:** One tap followed by persisted completion; disable while the transaction is in flight.  
-**Hold:** Fill a progress ring over an uninterrupted two-second press; releasing early cancels. This is friction, not objective proof of completion.  
+**Click:** One tap followed by persisted completion; disable while the transaction is in flight.  
 **Timer:** Start/Pause/Resume/Finish; store session ID and active intervals; only active elapsed time counts. Recover after process death; do not count paused or unverified background time. A completion window is checked before acceptance. Prevent double claims for the same task and scheduled date.
 
 For recurring tasks, define a unique completion key `(taskId, scheduledLocalDate)`. One-time tasks have a unique terminal completion record. Changes to system clock/timezone cannot reissue an existing reward.
@@ -65,7 +64,6 @@ Sections: In Progress (active timer), Required Today, Optional, Completed Today.
 | Action | Coins |
 |---|---:|
 | Manual completion | 5 |
-| Hold completion | 5 |
 | Timer 5–19 active minutes | 5 |
 | Timer 20–44 active minutes | 10 |
 | Timer 45+ active minutes | 20 |
@@ -103,7 +101,7 @@ Keep the current prominent centered tree and mint/white UI. Add below/around it:
 1. Compact wallet badge and daily earning meter.
 2. Today's task completion count and progress bar.
 3. Streak chip and next milestone hint.
-4. Up to three actionable next tasks; manual completion inline, hold verification inline, timer navigates to session.
+4. Up to three actionable next tasks; click completion inline, timer navigates to session.
 5. Tree-care shortcut(s) with available water/fertilizer counts.
 6. Empty-state guidance: no tasks → choose a template; no planted trees → plant a seed; no seeds → visit Shop.
 
@@ -133,8 +131,8 @@ Plant confirmation shows species, selected plot and owned seed count. A successf
 
 ### 7.2 Care states using existing growth model
 
-**Water:** require at least 50 ml and not watered today; deduct 50 ml, add +8 growth subject to existing cap, persist watering date.  
-**Fertilize:** require fertilizer inventory; deduct one, add +25 growth subject to cap. If at maximum growth, explain no benefit and do not consume an item.  
+**Water (Phase 1 compatibility):** use the existing implementation until Phase 2 migration; do not add any new ml reservoir or refill mechanic. Phase 2 replaces watering with tiered, time-limited growth windows and Water All.  
+**Fertilize (Phase 1 compatibility):** preserve existing stock and transaction correctness; Phase 2 replaces instant +25 growth with bounded, nonstacking 1.1×/1.2× tiered growth boosts.  
 **Decorate:** preview owned decoration, apply and persist; do not charge again for owned items.
 
 Care buttons show available, unavailable and in-progress states, with reason text (already watered, insufficient water, no fertilizer, full growth). Keep circular care controls from current Mics implementation. Add a minimal care event history (type, tree ID, timestamp, resource change, growth change). The advanced unlimited-height model is deliberately deferred.
@@ -185,8 +183,8 @@ Migration requirements: additive schema migration, preserve existing task IDs, w
 | Buy with insufficient coins | No balance or inventory mutation |
 | Plant selected seed | Exactly one consumed; exact selected plot occupied |
 | Cancel planting | No seed/plot mutation |
-| Water same tree twice today | First succeeds; second rejected |
-| Fertilize at growth cap | No item consumed for zero effect |
+| Repeated watering | Cannot duplicate one watering transaction; Phase 2 determines timer-based eligibility |
+| Fertilize at growth cap | No item consumed for zero effect; Phase 2 applies timed multipliers instead |
 | Navigate back from Inventory | Return to invoking context without stale plot selection |
 | Kill/restart app | All confirmed task, wallet, inventory and tree data retained |
 | Set clock backward | No duplicate task/day reward |
@@ -204,3 +202,22 @@ Migration requirements: additive schema migration, preserve existing task IDs, w
 7. **QA:** Android and KMP compilation, existing-user migration, process-death, offline and double-tap tests.
 
 **Phase 1 is done only when the acceptance matrix passes and the current app's primary navigation, tree art and saved game state are preserved.** No Phase 2 growth engine or unapproved visual redesign should be bundled into this work.
+
+## 12. Approved design changes and cross-phase rules (2026-11-11)
+
+This section is normative wherever older Phase 1 examples disagree:
+
+1. **Task verification has exactly two modes: Click and Timer.** Remove Hold from creation, editing, templates, rewards, task cards, tests and saved enum options. Migrate legacy HOLD tasks to CLICK without deleting their history.
+2. **Time-window eligibility:** any task may optionally require completion during a specific local daily time frame (e.g. brushing teeth 06:00–09:00, evening study 18:00–23:00). The task card shows “Available 18:00–23:00,” disables Click outside the window, and prevents starting a Timer that cannot satisfy the minimum active duration before the window ends. Revalidate the window at completion; crossing the end while timing cannot produce a reward. Explicitly define overnight windows (e.g. 22:00–02:00) by anchored scheduled date. Store the window with the task schedule snapshot and test DST/timezone changes. Time restrictions are optional, not universal.
+3. **Do not expand ml watering in Phase 1.** The existing legacy watering code may remain temporarily for compatibility, but the final user-facing model in Phase 2 has no water-volume units or refill. Do not add new water tanks, ml purchases or UI.
+4. **Finite tree stages and irreversible death** belong to Phase 2. Phase 1 should keep atomic transactions and species IDs ready for species-specific 4–12-stage profiles, hidden neglect, mature sale, removal and Water All. Avoid assuming a universal 120-point cap or a universal stage count in new shared contracts.
+5. **No seasons anywhere in the roadmap.** Do not add season settings, season art or seasonal growth modifiers.
+
+### Updated task verification example
+
+- “Đánh răng buổi sáng”: CLICK, available 06:00–09:00, 5 coins.
+- “Đọc sách 20 phút”: TIMER, minimum 20 active minutes, available 18:00–23:00 if configured, 10 coins.
+- “Đi bộ 20 phút”: TIMER, minimum 20 active minutes, unrestricted or a player-selected window.
+- “Uống đủ nước”: CLICK, unrestricted.
+
+A task completed outside its configured time window remains incomplete and grants no coins. The UI must explain when the task becomes available rather than silently failing.
