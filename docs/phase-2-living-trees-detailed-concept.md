@@ -1,5 +1,8 @@
 # Phase 2 — Finite-Lifecycle Living Trees: Detailed Gameplay & Product Concept
 
+> **Four-tier update:** Tree tiers are now **Common (4 stages, 14 days, first seed free), Rare (7–8 stages, 35 days, 900 coins), Legendary (12 stages, 90 days, 4,500 coins), and Exclusive (12 stages, 90 days, reserved for a possible future paid cosmetic entitlement; not purchasable now)**. Older 5–6-tier tables, 4–12 stage ranges for intermediate tiers, and coin-priced Premium examples are superseded by [Economy & Growth Balancing v2](economy-and-growth-balancing.md). Do not implement payments yet.
+
+
 > **Economy and progression update (2026-11-11):** [Economy & Growth Balancing v2](economy-and-growth-balancing.md) is authoritative for ALL coin rewards/caps, seed/shop prices, watering-can/fertilizer prices, mature sale payouts, and growth durations. Any older example below (150/day, 25-coin seeds, 3–50-day maturity, +25 instant fertilizer, etc.) is superseded. Free starter: minimum 14 elapsed days **and** 14 growth days. Premium: 4,500-coin seed (90 maximum-earning days from zero), minimum 90 elapsed days **and** 90 growth days to mature. Growth credits capped at one per day; upgrades/fertilizer cannot bypass the floor. Existing player wealth is grandfathered.
 
 
