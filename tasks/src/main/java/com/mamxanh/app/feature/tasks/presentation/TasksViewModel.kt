@@ -26,7 +26,19 @@ class TasksViewModel(private val repository: TaskRepository,private val savedSta
             while(isActive) {
                 delay(1000)
                 if(foreground) {
-                    withContext(Dispatchers.IO) { repository.snapshot().sessions.filter{it.running}.forEach{repository.timer(it.taskId,"TICK")} }
+                    val completed = withContext(Dispatchers.IO) {
+                        repository.snapshot().sessions.filter { it.running }.mapNotNull { session ->
+                            repository.timer(session.taskId,"TICK")
+                            val updated = repository.snapshot().sessions.firstOrNull { it.id == session.id }
+                            if (updated?.running == true && updated.activeSeconds >= updated.requiredSeconds)
+                                repository.completeResult(session.taskId).takeIf { it.success }
+                            else null
+                        }
+                    }
+                    completed.forEach {
+                        effectsChannel.send(TasksEffect.Feedback(it.message))
+                        effectsChannel.send(TasksEffect.DataChanged)
+                    }
                     refresh()
                 }
             }

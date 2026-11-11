@@ -36,7 +36,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.CardGiftcard
-import androidx.compose.material.icons.rounded.MoreVert
+import androidx.compose.material.icons.rounded.Pause
+import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -63,36 +64,12 @@ import com.mamxanh.app.presentation.ui.components.GardenJournalPage
 @Composable
 fun TasksScreen(state: TasksUiState, onIntent: (TasksIntent) -> Unit, modifier: Modifier = Modifier, coins: Int = 0) {
     val listState = rememberLazyListState()
-    var pendingDeleteId by rememberSaveable { mutableStateOf<Long?>(null) }
-    val filtered = state.tasks.filter { task ->
-        (state.filter in setOf(TaskFilter.COMPLETED,TaskFilter.INACTIVE) || task.lifecycle == "ACTIVE") &&
-        (state.filter != TaskFilter.ALL || task.scheduledToday || task.doneToday || task.finished) &&
-        when(state.filter) {
-            TaskFilter.ALL -> true
-            TaskFilter.HABIT -> task.kind == "HABIT"
-            TaskFilter.DAILY -> task.kind == "DAILY"
-            TaskFilter.ONCE -> task.kind == "TODO"
-            TaskFilter.COMPLETED -> task.doneToday || task.finished
-            TaskFilter.INACTIVE -> task.lifecycle != "ACTIVE"
-        }
-    }
-        .sortedWith(compareBy<Task> {
-            when {
-                state.phase.sessions.any{s->s.taskId==it.id && s.running}->0
-                it.doneToday || it.finished->4
-                it.config.endMinute>=0->1
-                it.kind=="TODO" && it.due.isNotEmpty() && it.due<today()->2
-                else->3
-            }
-        }.thenBy{it.config.endMinute}.thenBy{it.id})
+    val filtered = state.tasks.filter { it.lifecycle == "ACTIVE" && (it.scheduledToday || it.doneToday || it.finished) }
+        .sortedWith(compareBy<Task> { it.doneToday || it.finished }.thenBy { it.id })
     val done = state.phase.completed
     MintBackdrop(modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
             MintHeader("Việc nhỏ", coins)
-            MintSegments(listOf("Hôm nay", "Thói quen", "Đã xong", "Tạm dừng"),
-                when(state.filter) { TaskFilter.HABIT -> 1; TaskFilter.COMPLETED -> 2; TaskFilter.INACTIVE -> 3; else -> 0 },
-                { onIntent(TasksIntent.SetFilter(listOf(TaskFilter.ALL, TaskFilter.HABIT, TaskFilter.COMPLETED,TaskFilter.INACTIVE)[it])) },
-                Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
             GardenBotanicalFrame(Modifier.padding(horizontal = 16.dp).fillMaxWidth(),
                 contentPadding = PaddingValues(12.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -111,53 +88,28 @@ fun TasksScreen(state: TasksUiState, onIntent: (TasksIntent) -> Unit, modifier: 
                     Column(Modifier.fillMaxWidth().padding(vertical = 24.dp), horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(12.dp)) {
                         com.mamxanh.app.presentation.ui.components.MintEmptySprout(Modifier.size(110.dp))
-                        Text(if(state.filter == TaskFilter.HABIT) "Chưa có việc thói quen" else "Chưa có việc nào",
+                        Text("Chưa có việc nào",
                             color = Deep, fontSize = 21.sp, fontWeight = FontWeight.Bold,
                             textAlign = androidx.compose.ui.text.style.TextAlign.Center)
                         Text("Hãy thêm việc nhỏ để xây dựng thói quen mỗi ngày.", color = Deep,
                             textAlign = androidx.compose.ui.text.style.TextAlign.Center)
-                        if(state.tasks.isNotEmpty()) GardenPaintedButton("Xem tất cả",
-                            { onIntent(TasksIntent.SetFilter(TaskFilter.ALL)) }, primary = false)
                     }
                 }
                 items(filtered, key = { it.id }) { task ->
-                    Text(when {
-                        state.phase.sessions.any{it.taskId==task.id && it.running} -> "Đang thực hiện"
-                        task.doneToday || task.finished -> "Đã hoàn thành"
-                        task.requiredToday -> "Kế hoạch hôm nay"
-                        else -> "Tùy chọn"
-                    },color=Muted,fontSize=12.sp)
-                    TaskCard(task, {
-                        if(task.config.verification=="TIMER") onIntent(TasksIntent.Detail(task.id))
-                        else onIntent(TasksIntent.Complete(task.id))
-                    }, { onIntent(TasksIntent.Detail(task.id)) }, task.finished || state.busy)
-                    if(task.availability.isNotEmpty())Text(task.availability,color=Muted,fontSize=12.sp)
-                    TextButton(onClick={onIntent(TasksIntent.Detail(task.id))}){Text("Chi tiết · Sửa / Tạm dừng",fontSize=12.sp)}
+                    val session = state.phase.sessions.firstOrNull { it.taskId == task.id }
+                    TaskCard(task, { onIntent(TasksIntent.Complete(task.id)) },
+                        { onIntent(TasksIntent.Timer(task.id, if (session?.running == true) "PAUSE" else "START")) },
+                        readOnly = task.finished, session = session, busy = state.busy)
+                    if(task.availability.isNotEmpty()) Text(task.availability,color=Muted,fontSize=12.sp)
                 }
-                if(state.phase.required > 0 && state.filter in setOf(TaskFilter.ALL, TaskFilter.DAILY)) item {
-                    DailyRewardCard(state.canClaimDailyBonus && !state.isLoading, { onIntent(TasksIntent.ClaimBonus) }, state.isDailyBonusClaimed)
+                if(state.phase.required > 0) item {
+                    DailyRewardCard(state.canClaimDailyBonus && !state.isLoading && !state.busy,
+                        { onIntent(TasksIntent.ClaimBonus) }, state.isDailyBonusClaimed)
                 }
             }
             GardenPaintedButton("+ Thêm việc", { onIntent(TasksIntent.ShowAddDialog) },
                 Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 8.dp))
         }
-    }
-    state.tasks.firstOrNull { it.id == pendingDeleteId }?.let { task ->
-        AlertDialog(
-            onDismissRequest = { pendingDeleteId = null },
-            title = { Text("Lưu trữ nhiệm vụ?") },
-            text = { Text("Lịch sử và giao dịch của “" + task.title + "” được giữ lại.") },
-            confirmButton = {
-                TextButton(onClick = {
-                    pendingDeleteId = null
-                    onIntent(TasksIntent.Delete(task.id))
-                }) { Text("Lưu trữ") }
-            },
-            dismissButton = { TextButton(onClick = { pendingDeleteId = null }) { Text("Giữ lại") } }
-        )
-    }
-    state.tasks.firstOrNull{it.id==state.detailId}?.let { task ->
-        TaskDetails(task,state,onIntent)
     }
     if (state.isAddingTask) AddTaskDialog(
         draft = state.draft,
@@ -229,13 +181,14 @@ private fun TaskFilterSearchArtwork() {
 }
 
 @Composable
-private fun TaskCard(task: Task, onComplete: () -> Unit, onDelete: () -> Unit, readOnly: Boolean = false) {
+private fun TaskCard(task: Task, onComplete: () -> Unit, onTimer: () -> Unit, readOnly: Boolean = false,
+    session: com.mamxanh.shared.model.TimerSession? = null, busy: Boolean = false) {
     val done = task.doneToday || readOnly
+    val timer = task.config.verification == "TIMER"
     Column {
         Row(Modifier.fillMaxWidth().heightIn(min = if (readOnly) 56.dp else 64.dp)
             .mintDepth(RoundedCornerShape(18.dp), if (done) MintDepth.hint else MintDepth.card, 4.dp)
-            .combinedClickable(onClick = { if (!done && task.available) onComplete() }, onLongClickLabel = "Xóa nhiệm vụ", onLongClick = onDelete)
-            .semantics { customActions = listOf(CustomAccessibilityAction("Xóa nhiệm vụ") { onDelete(); true }) }
+            .clickable(enabled = !timer && !done && !busy && task.available, onClick = onComplete)
             .padding(horizontal = 8.dp, vertical = 6.dp), verticalAlignment = Alignment.CenterVertically) {
             GardenArtwork(when {
                 task.title.contains("bộ", ignoreCase = true) -> GardenArt.BOOTS
@@ -251,15 +204,26 @@ private fun TaskCard(task: Task, onComplete: () -> Unit, onDelete: () -> Unit, r
                 if (!done) Text(task.category, color = Color(0xFF80562C), fontSize = 12.sp)
                 if (task.kind == "TODO" && task.due.isNotBlank()) Text("Hạn: " + task.due, color = Muted, fontSize = 11.sp)
                 if (done) Text("Đã xong", color = Green, fontSize = 12.sp)
+                else if (timer) {
+                    val seconds = session?.activeSeconds ?: 0L
+                    Text("${seconds / 60}:${(seconds % 60).toString().padStart(2,'0')} / ${task.config.minutes} phút",
+                        color = Green, fontSize = 12.sp)
+                }
             }
             if (!readOnly) GardenBotanicalFrame(contentPadding = PaddingValues(horizontal = 5.dp, vertical = 3.dp),
                 cornerSize = 9.dp, skin = com.mamxanh.app.presentation.ui.components.GardenPanelSkin.PRICE) {
                 Text("🪙+${task.reward} xu", color = Deep, fontSize = 11.sp, lineHeight = 14.sp, fontWeight = FontWeight.Bold)
             }
-            IconButton(onClick = onComplete, enabled = !done && task.available, modifier = Modifier.size(48.dp).semantics { contentDescription = if (done) "Đã hoàn thành" else "Hoàn thành nhiệm vụ" }) {
+            IconButton(onClick = if (timer) onTimer else onComplete,
+                enabled = !done && !busy && (task.available || session?.running == true),
+                modifier = Modifier.size(48.dp).semantics {
+                    contentDescription = when { done -> "Đã hoàn thành"; timer && session?.running == true -> "Tạm dừng bộ đếm"; timer -> "Bắt đầu bộ đếm"; else -> "Hoàn thành nhiệm vụ" }
+                }) {
                 Surface(shape = CircleShape, color = if (done) Color(0xFF7B9D3D) else Color.Transparent,
                     border = if (done) null else BorderStroke(1.5.dp,Color(0xFF9B7854)), modifier = Modifier.size(24.dp)) {
                     if (done) Icon(Icons.Rounded.Check, null, tint = Color(0xFFFFF5DC), modifier = Modifier.padding(3.dp))
+                    else if (timer) Icon(if (session?.running == true) Icons.Rounded.Pause else Icons.Rounded.PlayArrow,
+                        null, tint = Green, modifier = Modifier.padding(2.dp))
                 }
             }
 

@@ -136,6 +136,12 @@ No complete demo screenshot is used as a runtime background.
 - Shared storage revision streams refresh all module snapshots on mutations and foreground entry. Android-only notification scheduling remains outside shared rules.
 - 35 SQLite tests and Android/common/iOS-target compilation passed. iOS runtime and Phase 2 growth/death/can upgrades remain outside this Phase 1 checkpoint.
 
+## Simplified tasks and Journal — latest user preference
+- Removed task filter tabs, section labels, detail/edit/pause-task links and long-press management actions from the task screen. Click tasks retain direct completion.
+- Timer tasks use inline elapsed time and play/pause controls. Reaching the required active duration submits completion through the existing atomic transaction; no separate completion checkbox is used for an unfinished Timer.
+- Removed visible completion, wallet and care event logs and the detailed daily-record panel from Journal. The summary/chart remain; persisted records continue supporting correct rewards and statistics.
+- Debug and verification APK builds passed (21 seconds). Device verification covers the compact list, Timer controls and Journal's complete scroll range.
+
 ## Acceptance still open
 Exact plant/icon silhouettes and illustration style differ from the new sheets; reused/generated art is not lossless source extraction. Do not describe this checkpoint as 100% visually identical.
 The full 393/412dp, landscape/IME, long-name, process-death, reward-claim, transaction-race and every annotated outcome matrix has not been re-executed for this redesign. Existing historical evidence does not automatically close those checks.
