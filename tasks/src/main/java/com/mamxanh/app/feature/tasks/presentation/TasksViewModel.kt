@@ -92,7 +92,7 @@ class TasksViewModel(private val repository: TaskRepository,private val savedSta
                 val before=repository.snapshot().earnedToday
                 val success=repository.claimDailyBonus()
                 val after=repository.snapshot().earnedToday
-                ActionResult(success,if(success)"Daily Clear +${after-before} xu · Giới hạn 50 xu/ngày" else "Hoàn thành kế hoạch bắt buộc")
+                ActionResult(success,if(success)"Daily Clear +${after-before} xu · Giới hạn ${Balance.DAILY_CAP} xu/ngày" else "Hoàn thành kế hoạch bắt buộc")
             }
         }
     }

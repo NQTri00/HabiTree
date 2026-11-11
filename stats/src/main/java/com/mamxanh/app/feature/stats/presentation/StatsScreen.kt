@@ -78,7 +78,7 @@ fun StatsScreen(state: StatsUiState, onIntent: (StatsIntent) -> Unit, modifier: 
                             val completed=s.phase.days.sumOf{it.completed}
                             Text("Kế hoạch 7 ngày: $completed / $eligible")
                             Text(if(eligible==0)"Chưa có ngày theo lịch" else "Tỷ lệ hoàn thành: ${completed*100/eligible}%")
-                            Text("Thu hôm nay: ${s.phase.earnedToday}/50 xu")
+                            Text("Thu hôm nay: ${s.phase.earnedToday}/${com.mamxanh.shared.model.Balance.DAILY_CAP} xu")
                             s.phase.days.forEach{Text("${it.date} · ${it.completed}/${it.eligible} · ${if(it.cleared)"✓" else "—"} · ${it.earned} xu")}
                             Text("Theo nhóm")
                             s.phase.categories.forEach{(name,count)->Text("$name: $count")}

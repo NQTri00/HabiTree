@@ -3,7 +3,7 @@
 > **Economy and progression update (2026-11-11):** [Economy & Growth Balancing v2](economy-and-growth-balancing.md) is authoritative for ALL coin rewards/caps, seed/shop prices, watering-can/fertilizer prices, mature sale payouts, and growth durations. Any older example below (150/day, 25-coin seeds, 3–50-day maturity, +25 instant fertilizer, etc.) is superseded. Free starter: minimum 14 elapsed days **and** 14 growth days. Premium: 4,500-coin seed (90 maximum-earning days from zero), minimum 90 elapsed days **and** 90 growth days to mature. Growth credits capped at one per day; upgrades/fertilizer cannot bypass the floor. Existing player wealth is grandfathered.
 
 
-**Status:** Proposed design, not implemented.  
+**Status:** Android Phase1 implementation verified; [acceptance evidence and scope](superpowers/plans/2026-11-11-phase-1-execution.md). Shared/iOS-target Kotlin compilation passed; iOS runtime remains unverified.
 **Target:** `y-tuong/quangtri` (Kotlin Multiplatform + Android Compose).  
 **Purpose:** Make the existing offline-first tasks → coins → shop → inventory → garden → tree care loop complete, balanced, reactive and reliable.  
 **Out of scope:** Phase 2 species-specific finite growth and timed watering, new species art, garden furniture, multiplayer, player avatars. Seasons are excluded from the entire roadmap.
@@ -79,7 +79,7 @@ Values are initial balancing proposals. A completion's eligible reward is snapsh
 
 ### 3.2 Daily cap
 
-Maximum **50 positive gameplay coins per local day, including all bonuses and mature-tree sales** (per original project proposal). Spending does not reduce earned-today accounting. If 46 have been earned and the next nominal reward is 20, grant only 4; record nominal 20, granted 5, cap reduction 15. Task completion and streak progress still count after reaching the cap.
+Maximum **50 positive gameplay coins per local day, including all bonuses and mature-tree sales** (per original project proposal). Spending does not reduce earned-today accounting. If 46 have been earned and the next nominal reward is 20, grant only 4; record nominal 20, granted 4, cap reduction 16. Task completion and streak progress still count after reaching the cap.
 
 UI: coin balance, `earnedToday/50` meter, remaining earning capacity, and reward receipt with cap explanation.
 

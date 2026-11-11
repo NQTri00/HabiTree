@@ -36,8 +36,11 @@ class PhaseOneEngine(private val db: GameSqlConnection, private val clock: GameC
         val previous=offset(clock.date(),-1)
         if(id!=null) {
             val prior=rows("SELECT start_minute,end_minute FROM obligations WHERE date=? AND task_id=?",2,previous,id).firstOrNull()
-            if(prior!=null && prior.int(0)>=0 && prior.int(1)<prior.int(0) &&
-                clock.now()<clock.localMinute(clock.date(),prior.int(1)))return previous
+            val saved=meta("schedule:$id:$previous").split('|')
+            val start=prior?.int(0) ?: saved.getOrNull(2)?.toIntOrNull()
+            val end=prior?.int(1) ?: saved.getOrNull(3)?.toIntOrNull()
+            if(start!=null && end!=null && start>=0 && end<start &&
+                clock.now()<clock.localMinute(clock.date(),end))return previous
         }
         val today = clock.date()
         if (c.startMinute >= 0 && c.endMinute < c.startMinute &&
@@ -48,9 +51,15 @@ class PhaseOneEngine(private val db: GameSqlConnection, private val clock: GameC
         r.string(5),r.string(11),r.string(6),r.string(12),r.int(13),r.int(14),r.int(15),r.int(16))
     private val select = "SELECT id,title,kind,category,reward,frequency,due,completed,streak,last_done,description,days,verification,minutes,start_minute,end_minute,reminder,lifecycle FROM tasks"
     private fun task(id: Long) = rows("$select WHERE id=?",18,id).firstOrNull()
+    private fun freezeSchedule(id: Long,date: String,c: TaskConfig) {
+        exec("INSERT OR IGNORE INTO meta(k,v) VALUES(?,?)","schedule:$id:$date",
+            listOf(c.frequency,c.days,c.startMinute.toString(),c.endMinute.toString()).joinToString("|"))
+    }
     private fun effective(c: TaskConfig, id: Long, date: String): TaskConfig {
         val p = rows("SELECT frequency,days,start_minute,end_minute FROM obligations WHERE date=? AND task_id=?",4,date,id).firstOrNull()
-        return if (p == null) c else c.copy(frequency=p.string(0),days=p.string(1),startMinute=p.int(2),endMinute=p.int(3))
+        if(p!=null)return c.copy(frequency=p.string(0),days=p.string(1),startMinute=p.int(2),endMinute=p.int(3))
+        val saved=meta("schedule:$id:$date").split('|')
+        return if(saved.size!=4)c else c.copy(frequency=saved[0],days=saved[1],startMinute=saved[2].toInt(),endMinute=saved[3].toInt())
     }
     private fun materialize() {
         val today = clock.date()
@@ -61,9 +70,10 @@ class PhaseOneEngine(private val db: GameSqlConnection, private val clock: GameC
         var guard = 0
         while (date <= today && guard++ < 3660) {
             exec("INSERT OR IGNORE INTO plans(date) VALUES(?)",date)
-            rows("$select WHERE lifecycle='ACTIVE' AND kind<>'TODO'",18).forEach { row ->
+            rows("$select WHERE lifecycle='ACTIVE'",18).forEach { row ->
                 val c = config(row)
-                if (scheduled(c,date)) exec("INSERT OR IGNORE INTO obligations(date,task_id,title,category,frequency,days,start_minute,end_minute) VALUES(?,?,?,?,?,?,?,?)",
+                freezeSchedule(row.long(0),date,c)
+                if (c.kind!="TODO" && scheduled(c,date)) exec("INSERT OR IGNORE INTO obligations(date,task_id,title,category,frequency,days,start_minute,end_minute) VALUES(?,?,?,?,?,?,?,?)",
                     date,row.long(0),c.title,c.category,c.frequency,c.days,c.startMinute,c.endMinute)
             }
             if (date == today) break
@@ -75,6 +85,7 @@ class PhaseOneEngine(private val db: GameSqlConnection, private val clock: GameC
         materialize()
         rows("$select ORDER BY id DESC",18).map { r ->
             val c = config(r)
+            freezeSchedule(r.long(0),clock.date(),c)
             val date = anchor(c,r.long(0))
             val snap = effective(c,r.long(0),date)
             val b = bounds(snap,date)
@@ -96,11 +107,14 @@ class PhaseOneEngine(private val db: GameSqlConnection, private val clock: GameC
     fun save(id: Long?, c: TaskConfig): ActionResult = db.transaction {
         c.error()?.let { return@transaction ActionResult(false,it) }
         materialize()
-        if(id == null) exec("INSERT INTO tasks(title,kind,category,reward,frequency,due,description,days,verification,minutes,start_minute,end_minute,reminder,created,updated) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        if(id == null) {
+            exec("INSERT INTO tasks(title,kind,category,reward,frequency,due,description,days,verification,minutes,start_minute,end_minute,reminder,created,updated) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             c.title.trim(),c.kind,c.category,c.reward,c.frequency,c.due,c.description,c.days,c.verification,c.minutes,c.startMinute,c.endMinute,c.reminderMinute,clock.now(),clock.now())
-        else {
+            freezeSchedule(number("SELECT last_insert_rowid()"),clock.date(),c)
+        } else {
             val old=task(id) ?: return@transaction ActionResult(false,"Không tìm thấy việc")
             val existing=config(old)
+            freezeSchedule(id,clock.date(),existing)
             if(number("SELECT COUNT(*) FROM sessions WHERE task_id=? AND date=?",id,clock.date())>0 &&
                 (c.verification!=existing.verification || c.minutes!=existing.minutes || c.kind!=existing.kind))
                 return@transaction ActionResult(false,"Giữ kiểu xác nhận và thời lượng của phiên hôm nay; có thể sửa lại ngày mai")
@@ -167,7 +181,7 @@ class PhaseOneEngine(private val db: GameSqlConnection, private val clock: GameC
         exec("UPDATE sessions SET running=0,tick=0 WHERE task_id=?",id)
         // Legacy tree side effect remains part of this same transaction until Phase 2.
         exec("UPDATE trees SET growth=MIN(120,growth+?)",nominal*2)
-        ActionResult(true,"+${granted} xu / ${nominal} xu" + if(granted<nominal)" · Giới hạn 50 xu/ngày" else "",nominal,granted)
+        ActionResult(true,"+${granted} xu / ${nominal} xu" + if(granted<nominal)" · Giới hạn ${Balance.DAILY_CAP} xu/ngày" else "",nominal,granted)
     }
     fun timer(id: Long,action: String): ActionResult = db.transaction {
         materialize()
@@ -208,16 +222,20 @@ class PhaseOneEngine(private val db: GameSqlConnection, private val clock: GameC
         number("SELECT cleared FROM plans WHERE date=?",date)==0L &&
         number("SELECT COUNT(*) FROM obligations WHERE date=? AND waived=0",date)>0 &&
         number("SELECT COUNT(*) FROM obligations o WHERE date=? AND waived=0 AND NOT EXISTS(SELECT 1 FROM occurrences x WHERE x.task_id=o.task_id AND x.date=o.date)",date)==0L
-    fun canClear(): Boolean = db.transaction { materialize(); clearEligible(clock.date()) }
+    private fun clearDate(): String? =
+        listOf(clock.date(),offset(clock.date(),-1)).firstOrNull { clearEligible(it) }
+    fun canClear(): Boolean = db.transaction { materialize(); clearDate()!=null }
     fun claimed(): Boolean = number("SELECT cleared FROM plans WHERE date=?",clock.date())>0
     fun clear(): ActionResult = db.transaction {
         materialize()
-        if(!clockSafe() || !clearEligible(clock.date())) return@transaction ActionResult(false,"Hoàn thành kế hoạch bắt buộc để nhận thưởng")
-        val amount=award("clear:${clock.date()}","DAILY_CLEAR",clock.date(),Balance.DAILY_CLEAR,clock.date())
-        exec("UPDATE plans SET cleared=1 WHERE date=?",clock.date())
-        put("daily_bonus",clock.date())
+        val date=clearDate()
+        if(!clockSafe() || date==null) return@transaction ActionResult(false,"Hoàn thành kế hoạch bắt buộc để nhận thưởng")
+        // An overnight occurrence belongs to yesterday; its income still uses today's cap.
+        val amount=award("clear:$date","DAILY_CLEAR",date,Balance.DAILY_CLEAR,clock.date())
+        exec("UPDATE plans SET cleared=1 WHERE date=?",date)
+        put("daily_bonus",date)
         val streak=streak()
-        val milestone=when(streak){7->10;14->15;30->20;else->0}
+        val milestone=Balance.milestones[streak] ?: 0
         val extra=if(milestone>0)award("milestone:$streak","MILESTONE",streak.toString(),milestone,clock.date()) else 0
         ActionResult(true,"Daily Clear +$amount xu" + if(extra>0)" · Cột mốc +$extra xu" else "",Balance.DAILY_CLEAR+milestone,amount+extra)
     }

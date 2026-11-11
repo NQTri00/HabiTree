@@ -134,9 +134,9 @@ No complete demo screenshot is used as a runtime background.
 - Existing mint styling, centered tree, five primary destinations and secondary Inventory are retained. New Home details follow the featured tree; long Journal histories use lazy rows.
 - Task form supports creation/editing, schedules/custom weekdays, Click/Timer, optional overnight windows, due dates, descriptions and local reminders. Pause/archive retain history. New profile gets one starter seed and no uncapped coin gift; existing wealth is retained.
 - Shared storage revision streams refresh all module snapshots on mutations and foreground entry. Android-only notification scheduling remains outside shared rules.
-- 32 SQLite tests and Android/common/iOS-target compilation passed. iOS runtime and Phase 2 growth/death/can upgrades remain outside this Phase 1 checkpoint.
+- 35 SQLite tests and Android/common/iOS-target compilation passed. iOS runtime and Phase 2 growth/death/can upgrades remain outside this Phase 1 checkpoint.
 
 ## Acceptance still open
 Exact plant/icon silhouettes and illustration style differ from the new sheets; reused/generated art is not lossless source extraction. Do not describe this checkpoint as 100% visually identical.
 The full 393/412dp, landscape/IME, long-name, process-death, reward-claim, transaction-race and every annotated outcome matrix has not been re-executed for this redesign. Existing historical evidence does not automatically close those checks.
-Native frameworks were not rebuilt because shared/native code did not change. Native runtime is not claimed.
+Shared metadata and iOS ARM64 Kotlin compilation passed for Phase1. Native framework runtime is not claimed on this Windows host.

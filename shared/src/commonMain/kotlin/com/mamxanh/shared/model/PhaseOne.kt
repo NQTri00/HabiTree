@@ -5,6 +5,7 @@ object Balance {
     const val DAILY_CAP = 50
     const val DAILY_CLEAR = 8
     const val FERTILIZER = 35
+    val milestones = mapOf(7 to 10,14 to 15,30 to 20)
     fun reward(mode: String, minutes: Int) = if (mode != "TIMER") 8 else when {
         minutes >= 45 -> 20
         minutes >= 20 -> 15

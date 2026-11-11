@@ -90,8 +90,8 @@ fun HomeScreen(
                 }
                 GardenBotanicalFrame(Modifier.fillMaxWidth(),contentPadding=PaddingValues(8.dp)) {
                     Column(verticalArrangement=Arrangement.spacedBy(4.dp)) {
-                        Text("Thu hôm nay ${d.phase.earnedToday}/50 xu · Còn ${(50-d.phase.earnedToday).coerceAtLeast(0)} xu",color=Deep,fontSize=12.sp)
-                        MintProgress(d.phase.earnedToday.coerceAtMost(50)/50f,Modifier.fillMaxWidth())
+                        Text("Thu hôm nay ${d.phase.earnedToday}/${com.mamxanh.shared.model.Balance.DAILY_CAP} xu · Còn ${(com.mamxanh.shared.model.Balance.DAILY_CAP-d.phase.earnedToday).coerceAtLeast(0)} xu",color=Deep,fontSize=12.sp)
+                        MintProgress(d.phase.earnedToday.coerceAtMost(com.mamxanh.shared.model.Balance.DAILY_CAP)/com.mamxanh.shared.model.Balance.DAILY_CAP.toFloat(),Modifier.fillMaxWidth())
                         Text("Kế hoạch ${d.completedTasks}/${d.totalTasks} · Chuỗi ${d.phase.streak} ngày",color=Deep,fontSize=12.sp)
                         val next=listOf(7,14,30).firstOrNull{it>d.phase.streak}
                         if(next!=null)Text("Cột mốc tiếp theo: $next ngày",color=Muted,fontSize=11.sp)

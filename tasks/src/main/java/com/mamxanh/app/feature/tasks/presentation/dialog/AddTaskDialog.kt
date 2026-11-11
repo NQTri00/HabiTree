@@ -36,6 +36,7 @@ fun AddTaskDialog(onDismiss: ()->Unit,onSave: (TaskConfig)->Unit,
             Column(Modifier.fillMaxSize().padding(16.dp),verticalArrangement=Arrangement.spacedBy(8.dp)) {
                 MintHeader(if(initial.title.isBlank())"Thêm việc" else "Sửa việc",0)
                 Column(Modifier.weight(1f).verticalScroll(rememberScrollState()),verticalArrangement=Arrangement.spacedBy(12.dp)) {
+                    Text("Việc mới là tùy chọn hôm nay. Thay đổi lịch áp dụng từ ngày mai; lịch sử được giữ lại.")
                     TaskInput(values[0],{update(0,it.take(100))},"Tên việc (1–100)",Modifier.fillMaxWidth())
                     TaskInput(values[3],{update(3,it.take(500))},"Mô tả (tối đa 500)",Modifier.fillMaxWidth())
                     TaskChoices("Loại",listOf("HABIT" to "Thói quen","DAILY" to "Hằng ngày","TODO" to "Một lần"),values[1]){update(1,it)}
@@ -60,7 +61,7 @@ fun AddTaskDialog(onDismiss: ()->Unit,onSave: (TaskConfig)->Unit,
                     TaskInput(values[10],{update(10,it)},"Kết thúc (HH:mm)",Modifier.fillMaxWidth())
                     TaskInput(values[11],{update(11,it)},"Nhắc việc (HH:mm, tùy chọn)",Modifier.fillMaxWidth())
                     Text("Thông báo cần quyền hệ thống; từ chối quyền vẫn lưu được việc.")
-                    Text("Thưởng: ${Balance.reward(values[7],values[8].toIntOrNull() ?: 5)} xu · Tổng tối đa 50 xu/ngày")
+                    Text("Thưởng: ${Balance.reward(values[7],values[8].toIntOrNull() ?: 5)} xu · Tổng tối đa ${Balance.DAILY_CAP} xu/ngày")
                     if(error.isNotEmpty())Text(error,color=MaterialTheme.colorScheme.error)
                 }
                 Row(horizontalArrangement=Arrangement.spacedBy(8.dp)) {

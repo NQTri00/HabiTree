@@ -343,6 +343,38 @@ class PhaseOneTransactionsTest {
         }
         assertEquals(catalog.size,game.garden().trees.size)
     }
+    @Test fun middayOptionalScheduleEditsApplyTomorrow() {
+        val id=add(TaskConfig(title="Optional morning",startMinute=360,endMinute=540))
+        assertFalse(engine.complete(id).success)
+        assertTrue(engine.save(id,TaskConfig(title="Now unrestricted")).success)
+        assertFalse(engine.complete(id).success)
+        clock.advanceDay()
+        assertTrue(engine.complete(id).success)
+    }
+    @Test fun seventhScheduledDayMilestoneCreditsOnlyOnce() {
+        val id=add()
+        repeat(7) {
+            clock.advanceDay()
+            assertTrue(engine.complete(id).success)
+            assertTrue(engine.clear().success)
+        }
+        val milestones=engine.snapshot().ledger.filter{it.type=="MILESTONE"}
+        assertEquals(1,milestones.size)
+        assertEquals(10,milestones.single().amount)
+        assertFalse(engine.clear().success)
+        assertEquals(1,engine.snapshot().ledger.count{it.type=="MILESTONE"})
+    }
+    @Test fun overnightCompletionClearsAnchoredPreviousPlanOnce() {
+        val id=add(TaskConfig(title="Night",startMinute=1320,endMinute=120))
+        clock.advanceDay();engine.snapshot()
+        clock.set("2026-11-11 01:00")
+        assertTrue(engine.complete(id).success)
+        assertTrue(engine.canClear())
+        assertTrue(engine.clear().success)
+        assertFalse(engine.clear().success)
+        assertTrue(engine.snapshot().days.first{it.date=="2026-11-10"}.cleared)
+        assertEquals(16,engine.snapshot().earnedToday)
+    }
     private class FakeClock:GameClock {
         var zoneId="UTC"
         var millis=0L

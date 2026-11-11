@@ -23,7 +23,6 @@ data class Tree(
 data class GardenPlot(val id: Int, val isUnlocked: Boolean, val treeId: Long? = null)
 object GardenPlotPolicy {
     const val INITIAL_PLOTS = 5
-    const val UNLOCK_PRICE = 50
 }
 data class Garden(
     val trees: List<Tree> = emptyList(), val inventory: Map<String, Int> = emptyMap(),
