@@ -50,7 +50,7 @@ Backup and restore must be idempotent at the snapshot level; restoring the same 
 ## 6. Settings and privacy
 
 Settings groups:
-- Gameplay: daily reset/timezone policy, reminder preferences, quiet hours, season mode, animation and sound.
+- Gameplay: daily reset/timezone policy, reminder preferences, quiet hours, equipped watering can, growth timer display preferences, animation and sound (no season setting).
 - Accessibility: text scaling, reduced motion, contrast and touch target options.
 - Data: export, restore, local data size, clear data (double confirmation).
 - About: version/build, open-source licenses, privacy explanation and troubleshooting.
@@ -114,3 +114,14 @@ After common domain and SQL compile on native targets, audit platform dependenci
 14. Store copy and privacy claims match actual app behavior.
 
 **Done when:** the Android app can be reliably upgraded, backed up, restored, tested and released; shared KMP rules are portable and module ownership is enforceable.
+
+## 13. Approved gameplay invariants for migration and release (2026-11-11)
+
+- **Tasks:** only CLICK and TIMER; historic HOLD settings migrate to CLICK without losing completion history. Optional local daily completion windows are persisted and enforced on both start and finish; test overnight windows, timezone shifts and process death.
+- **Trees:** per-species 4–12 finite stages, final-stage cap, no infinite height and no seasonal system. Preserve old 0–120 growth via a versioned species-relative conversion; do not silently regress trees.
+- **Water:** no milliliter wallet, reservoir, refill or per-action ml charge. Backups include durable watering-can ownership/equipment and per-tree `wateredUntil` timestamps. Water All must be idempotent and atomic.
+- **Fertilizer:** backups include tier, remaining inventory, active effect start/end, last application and cooldown. One active effect per tree, never stack multipliers; growth accrues only inside a water window.
+- **Neglect/death:** hidden neglect state is stored for offline simulation but never displayed as a number. At 30 unwatered day-equivalents a tree dies permanently; valid watering reduces hidden neglect by 3 units. Restoring a backup must not resurrect a tree already marked dead unless the entire backup snapshot predates its death and the user explicitly chooses full replacement.
+- **Selling/removing:** mature living trees can be sold once; any tree can be removed without refund; dead trees cannot be sold. The wallet ledger, plot state and historical records commit atomically. Verify anti-farming sale-income limits and no duplicate credits.
+- **Backups and privacy:** hidden death progress is private gameplay state, not a secret security credential; it must be included in backup for correct restore but excluded from user-facing UI/diagnostics. Never reset neglect to zero on app restart or ordinary data migration.
+- **CI tests:** add timed growth interval integration, watering expiry, Water All, fertilizer anti-stacking, neglect recovery, irreversible death, mature sale, remove, and migration from legacy ml/fixed-growth state.
