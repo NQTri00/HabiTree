@@ -110,6 +110,14 @@ No complete demo screenshot is used as a runtime background.
 - Both APK variants passed (final18 seconds). Inspected all11 products and complete footer at360dp, both tabs at320dp/1.3×, restored category scroll, and the centered Home button navigating successfully. No purchases/game-data mutations were used.
 - Restored physical720×1280/font1×. git diff --check is part of the checkpoint verification.
 
+## Gradient and shadow depth — latest follow-up
+- Added shared MintDepth palettes and modifier: opaque white-to-mint cards, green primary actions, soft secondary surfaces, gold prices and pale-green hints. A consistent lit upper rim and green-tinted native elevation separate surfaces.
+- Standard cards use6dp lift, primary buttons7dp, secondary buttons4dp, headers3dp, modal panels16dp and navigation12dp. Disabled buttons remove elevation. No layout dimensions, actions or saved game data changed.
+- MintBackdrop now draws cached native vertical/radial gradients for soft daylight and a warm lower glow; no full-screen bitmap, blur layer, animation or preview atlas was introduced.
+- Applied shared styling to panels, buttons, catalog tabs, segmented choices, dropdown fields, task rows, compact headers, circular care controls, navigation and the Home bubble. Text fields use a subtle inset gradient and retain red validation styling.
+- Both APK variants passed (final16 seconds). Installed and inspected Home, Shop, Tasks and an untouched task form at360dp. Checked320dp/1.3× Shop cards/tabs, complete lower catalog/footer, button shadow and navigation labels. Closed the form without saving; restored physical resolution/font1×.
+- This is a visual styling checkpoint; no claim of exhaustive performance profiling or exact concept-art identity.
+
 ## Acceptance still open
 Exact plant/icon silhouettes and illustration style differ from the new sheets; reused/generated art is not lossless source extraction. Do not describe this checkpoint as 100% visually identical.
 The full 393/412dp, landscape/IME, long-name, process-death, reward-claim, transaction-race and every annotated outcome matrix has not been re-executed for this redesign. Existing historical evidence does not automatically close those checks.

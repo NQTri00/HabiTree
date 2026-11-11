@@ -40,7 +40,8 @@ fun GardenTextField(
 ) {
     Box(modifier.heightIn(min = 44.dp), contentAlignment = Alignment.Center) {
         Box(Modifier.matchParentSize().background(
-            if (errorMessage == null) Color(0xFFF8FCFA) else Color(0xFFFFE9E2), RoundedCornerShape(14.dp))
+            Brush.verticalGradient(if (errorMessage == null) listOf(Color(0xFFE5F2EA), Color.White)
+                else listOf(Color(0xFFFFE1DB), Color(0xFFFFF5F2))), RoundedCornerShape(14.dp))
             .border(1.5.dp, if (errorMessage == null) Color(0xFFBED6CB) else Color(0xFFB73D32), RoundedCornerShape(14.dp)))
         BasicTextField(value, onValueChange,
             modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 11.dp).semantics {
@@ -65,8 +66,7 @@ fun GardenTextField(
 @Composable
 fun GardenFieldButton(text: String, onClick: () -> Unit, modifier: Modifier = Modifier) {
     Box(modifier.heightIn(min = 44.dp).clickable(role = Role.Button, onClick = onClick), contentAlignment = Alignment.Center) {
-        Box(Modifier.matchParentSize().background(Color(0xFFF8FCFA), RoundedCornerShape(14.dp))
-            .border(1.5.dp, Color(0xFFBED6CB), RoundedCornerShape(14.dp)))
+        Box(Modifier.matchParentSize().mintDepth(RoundedCornerShape(14.dp), MintDepth.secondary, 2.dp))
         Row(Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 10.dp), verticalAlignment = Alignment.CenterVertically) {
             GardenRichText(text, Modifier.weight(1f), color = Deep, fontSize = 15.sp, fontWeight = FontWeight.Bold)
             GardenRichText("▾", color = Deep, fontSize = 16.sp)
@@ -77,10 +77,8 @@ fun GardenFieldButton(text: String, onClick: () -> Unit, modifier: Modifier = Mo
 @Composable
 fun GardenChoiceChip(text: String, selected: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
     Box(modifier.heightIn(min = 44.dp).selectable(selected, role = Role.RadioButton, onClick = onClick), contentAlignment = Alignment.Center) {
-        Box(Modifier.matchParentSize().background(
-            Brush.verticalGradient(if (selected) listOf(Color(0xFF43A65E), Color(0xFF08733E))
-                else listOf(Color(0xFFFAFDFB), Color(0xFFEEF7F0))), RoundedCornerShape(50))
-            .border(1.2.dp, if (selected) Color(0xFF429D60) else Color(0xFFD7E6DD), RoundedCornerShape(50)))
+        Box(Modifier.matchParentSize().mintDepth(RoundedCornerShape(50),
+            if (selected) MintDepth.primary else MintDepth.secondary, if (selected) 4.dp else 1.dp))
         GardenRichText(text, color = if (selected) Color(0xFFFFFFFF) else Deep, fontSize = 13.sp, lineHeight = 16.sp,
             fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, modifier = Modifier.padding(horizontal = 10.dp, vertical = 10.dp))
     }

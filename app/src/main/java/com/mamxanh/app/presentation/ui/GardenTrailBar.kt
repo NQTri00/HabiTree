@@ -29,6 +29,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.mamxanh.app.presentation.ui.components.MintDepth
+import com.mamxanh.app.presentation.ui.components.mintDepth
 
 @Composable
 fun GardenTrailBar(selected: AppDestination, onNavigate: (AppDestination) -> Unit, modifier: Modifier = Modifier) {
@@ -38,7 +40,7 @@ fun GardenTrailBar(selected: AppDestination, onNavigate: (AppDestination) -> Uni
         AppDestination.HOME, AppDestination.SHOP, AppDestination.STATS)
     Box(modifier.fillMaxWidth()) {
         Box(Modifier.matchParentSize().padding(top = 16.dp)
-            .background(Color(0xFFF9FDFC), shape).border(1.dp, Color(0xFFDFEAE5), shape))
+            .mintDepth(shape, MintDepth.bar, 12.dp))
         Row(Modifier.fillMaxWidth().navigationBarsPadding()
             .padding(start = 4.dp, end = 4.dp, bottom = 4.dp).selectableGroup()) {
             destinations.forEach { destination ->
@@ -61,11 +63,12 @@ fun GardenTrailBar(selected: AppDestination, onNavigate: (AppDestination) -> Uni
                     horizontalAlignment = Alignment.CenterHorizontally) {
                     Box(Modifier.fillMaxWidth().height(56.dp), contentAlignment = Alignment.Center) {
                         if (home) Surface(
-                            modifier = Modifier.align(Alignment.Center).size(56.dp),
+                            modifier = Modifier.align(Alignment.Center).size(56.dp)
+                                .mintDepth(CircleShape, if (active) MintDepth.primary else MintDepth.secondary, 10.dp),
                             shape = CircleShape,
-                            color = if (active) green else Color(0xFFE5F4EB),
+                            color = Color.Transparent,
                             border = androidx.compose.foundation.BorderStroke(3.dp, Color(0xFFF9FDFC)),
-                            shadowElevation = 4.dp
+                            shadowElevation = 0.dp
                         ) {
                             Box(contentAlignment = Alignment.Center) {
                                 Icon(icon, null, Modifier.size(30.dp), tint = if (active) Color.White else green)

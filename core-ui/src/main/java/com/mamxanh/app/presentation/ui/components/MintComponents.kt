@@ -10,6 +10,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -20,12 +22,20 @@ import com.mamxanh.app.presentation.ui.*
 /** Content-sized mint material, independent of document height and bitmap aspect ratio. */
 @Composable
 fun MintBackdrop(modifier: Modifier = Modifier, content: @Composable BoxScope.() -> Unit) {
-    Box(modifier.background(Brush.verticalGradient(listOf(Color(0xFFE9F7F2), Color(0xFFD8F0E5), Color(0xFFF4FAF6)))), content = content)
+    Box(modifier.drawWithCache {
+        val base = Brush.verticalGradient(listOf(Color(0xFFF0FBF5), Color(0xFFC9E7D7), Color(0xFFE6F3DF)))
+        val daylight = Brush.radialGradient(listOf(Color.White.copy(alpha = .72f), Color.Transparent),
+            center = Offset(size.width * .12f, size.height * .08f), radius = size.maxDimension * .65f)
+        val warmth = Brush.radialGradient(listOf(Color(0xFFFFF1CE).copy(alpha = .38f), Color.Transparent),
+            center = Offset(size.width, size.height * .8f), radius = size.maxDimension * .55f)
+        onDrawBehind { drawRect(base); drawRect(daylight); drawRect(warmth) }
+    }, content = content)
 }
 
 @Composable
 fun MintHeader(title: String, coins: Int, modifier: Modifier = Modifier) {
-    Row(modifier.fillMaxWidth().heightIn(min = 56.dp).padding(horizontal = 16.dp, vertical = 8.dp),
+    Row(modifier.fillMaxWidth().mintDepth(RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp), MintDepth.bar, 3.dp)
+        .heightIn(min = 56.dp).padding(horizontal = 16.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
         GardenArtwork(GardenArt.SPROUT, Modifier.size(28.dp))
         Text(title, Modifier.weight(1f), fontSize = 23.sp, lineHeight = 27.sp, fontWeight = FontWeight.Bold, color = Deep)
@@ -44,8 +54,7 @@ fun MintProgress(value: Float, modifier: Modifier = Modifier) {
 
 @Composable
 fun MintSegments(labels: List<String>, selected: Int, onSelect: (Int) -> Unit, modifier: Modifier = Modifier) {
-    Row(modifier.fillMaxWidth().height(IntrinsicSize.Min).background(Color.White.copy(alpha = .7f), RoundedCornerShape(50))
-        .border(1.dp, Color(0xFFD9E9E3), RoundedCornerShape(50))) {
+    Row(modifier.fillMaxWidth().height(IntrinsicSize.Min).mintDepth(RoundedCornerShape(50), MintDepth.secondary, 3.dp)) {
         labels.forEachIndexed { index, label ->
             GardenChoiceChip(label, selected == index, { onSelect(index) }, Modifier.weight(1f).fillMaxHeight())
         }

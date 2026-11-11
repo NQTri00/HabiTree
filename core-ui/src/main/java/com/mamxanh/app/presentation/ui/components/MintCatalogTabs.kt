@@ -25,9 +25,11 @@ fun MintCatalogTabs(selectedIndex: Int, onSelect: (Int) -> Unit, modifier: Modif
         listOf("Vật phẩm" to GardenArt.FERTILIZER, "Hạt giống" to GardenArt.SEED)
             .forEachIndexed { index, (label, art) ->
                 Surface(Modifier.weight(1f).fillMaxHeight()
+                    .mintDepth(RoundedCornerShape(24.dp), if (selectedIndex == index) MintDepth.primary else MintDepth.card,
+                        if (selectedIndex == index) 6.dp else 3.dp)
                     .selectable(selectedIndex == index, role = Role.Tab, onClick = { onSelect(index) }),
                     shape = RoundedCornerShape(24.dp),
-                    color = if (selectedIndex == index) Green else Color(0xFFF8FCFA)) {
+                    color = Color.Transparent) {
                     Row(Modifier.heightIn(min = 48.dp).padding(8.dp),
                         horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
                         verticalAlignment = Alignment.CenterVertically) {

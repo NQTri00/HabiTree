@@ -22,6 +22,8 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import com.mamxanh.app.presentation.ui.components.MintDepth
+import com.mamxanh.app.presentation.ui.components.mintDepth
 import com.mamxanh.app.presentation.ui.components.MintBackdrop
 import com.mamxanh.app.presentation.ui.components.MintHeader
 import com.mamxanh.app.presentation.ui.components.MintProgress
@@ -203,7 +205,7 @@ private fun TaskCard(task: Task, onComplete: () -> Unit, onDelete: () -> Unit, r
     val done = task.doneToday || readOnly
     Column {
         Row(Modifier.fillMaxWidth().heightIn(min = if (readOnly) 56.dp else 64.dp)
-            .background(if (done) Color(0xFFEAF5DF) else Color(0xFFF9FDFC), RoundedCornerShape(18.dp))
+            .mintDepth(RoundedCornerShape(18.dp), if (done) MintDepth.hint else MintDepth.card, 4.dp)
             .combinedClickable(onClick = { if (!done) onComplete() }, onLongClickLabel = "Xóa nhiệm vụ", onLongClick = onDelete)
             .semantics { customActions = listOf(CustomAccessibilityAction("Xóa nhiệm vụ") { onDelete(); true }) }
             .padding(horizontal = 8.dp, vertical = 6.dp), verticalAlignment = Alignment.CenterVertically) {

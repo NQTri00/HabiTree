@@ -25,13 +25,12 @@ fun GardenBotanicalFrame(
 ) {
     val modal = skin in setOf(GardenPanelSkin.DIALOG, GardenPanelSkin.TASK_DIALOG, GardenPanelSkin.PLANTING_DIALOG)
     val shape = RoundedCornerShape(if (modal) 28.dp else cornerSize)
-    val fill = when (skin) {
-        GardenPanelSkin.PRICE -> Color(0xFFFFF4CD)
-        GardenPanelSkin.HINT -> Color(0xFFE8F4DE)
-        else -> Color(0xFFF9FDFB)
+    val colors = when (skin) {
+        GardenPanelSkin.PRICE -> MintDepth.price
+        GardenPanelSkin.HINT -> MintDepth.hint
+        else -> MintDepth.card
     }
-    Box(modifier.shadow(if (modal) 8.dp else 2.dp, shape)
-        .background(fill, shape).border(1.dp, Color.White.copy(alpha = .95f), shape)) {
+    Box(modifier.mintDepth(shape, colors, if (modal) 16.dp else 6.dp)) {
         Box(Modifier.padding(contentPadding), content = content)
     }
 }

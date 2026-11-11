@@ -31,7 +31,8 @@ fun mintTreeHeroHeight(): Dp {
 
 @Composable
 fun MintCompactHeader(coins: Int) {
-    Row(Modifier.fillMaxWidth().heightIn(min = 48.dp).padding(horizontal = 12.dp, vertical = 4.dp),
+    Row(Modifier.fillMaxWidth().mintDepth(androidx.compose.foundation.shape.RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp), MintDepth.bar, 3.dp)
+        .heightIn(min = 48.dp).padding(horizontal = 12.dp, vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         GardenArtwork(GardenArt.SPROUT, Modifier.size(24.dp))
         Text("Mầm Xanh", Modifier.weight(1f), fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Deep)
@@ -52,11 +53,12 @@ fun MintCareIcon(
             .semantics(mergeDescendants = true) { contentDescription = label },
             contentAlignment = Alignment.Center) {
             androidx.compose.material3.Surface(
-                Modifier.size(32.dp), shape = androidx.compose.foundation.shape.CircleShape,
-                color = if (checked) androidx.compose.ui.graphics.Color(0xFFE7F3DC)
-                    else androidx.compose.ui.graphics.Color(0xFFF8FCFA),
+                Modifier.size(32.dp).mintDepth(androidx.compose.foundation.shape.CircleShape,
+                    if (checked) MintDepth.hint else MintDepth.card, if (enabled || checked) 4.dp else 1.dp),
+                shape = androidx.compose.foundation.shape.CircleShape,
+                color = androidx.compose.ui.graphics.Color.Transparent,
                 border = androidx.compose.foundation.BorderStroke(1.dp, androidx.compose.ui.graphics.Color.White),
-                shadowElevation = 2.dp
+                shadowElevation = 0.dp
             ) {
                 Box(contentAlignment = Alignment.Center) {
                     GardenArtwork(art, Modifier.size(20.dp).alpha(if (enabled || checked) 1f else .4f))
