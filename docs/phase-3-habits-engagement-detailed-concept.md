@@ -1,5 +1,8 @@
 # Phase 3 — Habit Engagement: Detailed Gameplay & Product Concept
 
+> **Economy and progression update (2026-11-11):** [Economy & Growth Balancing v2](economy-and-growth-balancing.md) is authoritative for ALL coin rewards/caps, seed/shop prices, watering-can/fertilizer prices, mature sale payouts, and growth durations. Any older example below (150/day, 25-coin seeds, 3–50-day maturity, +25 instant fertilizer, etc.) is superseded. Free starter: minimum 14 elapsed days **and** 14 growth days. Premium: 4,500-coin seed (90 maximum-earning days from zero), minimum 90 elapsed days **and** 90 growth days to mature. Growth credits capped at one per day; upgrades/fertilizer cannot bypass the floor. Existing player wealth is grandfathered.
+
+
 **Status:** Proposed; not implemented. **Prerequisites:** Phase 1 task recurrence, verification, ledger and streaks; Phase 2 tree milestones. **Goal:** Make the app worth returning to daily without coercive streak pressure, notification spam or reward exploits.
 
 ## 1. Player loop
