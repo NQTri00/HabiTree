@@ -1,5 +1,8 @@
 # HabiTree — Phase 1 Detailed Product & Gameplay Specification
 
+> **Economy and progression update (2026-11-11):** [Economy & Growth Balancing v2](economy-and-growth-balancing.md) is authoritative for ALL coin rewards/caps, seed/shop prices, watering-can/fertilizer prices, mature sale payouts, and growth durations. Any older example below (150/day, 25-coin seeds, 3–50-day maturity, +25 instant fertilizer, etc.) is superseded. Free starter: minimum 14 elapsed days **and** 14 growth days. Premium: 4,500-coin seed (90 maximum-earning days from zero), minimum 90 elapsed days **and** 90 growth days to mature. Growth credits capped at one per day; upgrades/fertilizer cannot bypass the floor. Existing player wealth is grandfathered.
+
+
 **Status:** Proposed design, not implemented.  
 **Target:** `y-tuong/quangtri` (Kotlin Multiplatform + Android Compose).  
 **Purpose:** Make the existing offline-first tasks → coins → shop → inventory → garden → tree care loop complete, balanced, reactive and reliable.  
@@ -63,22 +66,22 @@ Sections: In Progress (active timer), Required Today, Optional, Completed Today.
 
 | Action | Coins |
 |---|---:|
-| Manual completion | 5 |
-| Timer 5–19 active minutes | 5 |
-| Timer 20–44 active minutes | 10 |
+| Click completion | 8 |
+| Timer 5–19 active minutes | 10 |
+| Timer 20–44 active minutes | 15 |
 | Timer 45+ active minutes | 20 |
-| Daily Clear | 20 |
-| 3-day streak milestone | 10 |
-| 7-day streak milestone | 30 |
-| 14-day streak milestone | 60 |
+| Daily Clear | 8 |
+| 7-day streak milestone | 10 |
+| 14-day streak milestone | 15 |
+| 30-day streak milestone | 20 |
 
 Values are initial balancing proposals. A completion's eligible reward is snapshotted when verification begins; task edits during an active timer do not increase the reward.
 
 ### 3.2 Daily cap
 
-Maximum **150 earned coins per local day, including all bonuses** (per original project proposal). Spending does not reduce earned-today accounting. If 145 have been earned and the next nominal reward is 20, grant only 5; record nominal 20, granted 5, cap reduction 15. Task completion and streak progress still count after reaching the cap.
+Maximum **50 positive gameplay coins per local day, including all bonuses and mature-tree sales** (per original project proposal). Spending does not reduce earned-today accounting. If 46 have been earned and the next nominal reward is 20, grant only 4; record nominal 20, granted 5, cap reduction 15. Task completion and streak progress still count after reaching the cap.
 
-UI: coin balance, `earnedToday/150` meter, remaining earning capacity, and reward receipt with cap explanation.
+UI: coin balance, `earnedToday/50` meter, remaining earning capacity, and reward receipt with cap explanation.
 
 ### 3.3 Ledger and transactions
 
@@ -175,7 +178,7 @@ Migration requirements: additive schema migration, preserve existing task IDs, w
 | Edit completed habit | Future configuration changes; past records retained |
 | Complete task twice | Exactly one completion and reward |
 | Timer app background/restart | Recover persisted session and active intervals |
-| Reward at 145/150 daily earned | Grant 5, show reduction, preserve task completion |
+| Reward at 46/50 daily earned | Grant 4, show reduction, preserve task completion |
 | Complete all required tasks | Daily Clear once |
 | No required tasks | No automatic Daily Clear |
 | Pause recurring task | Excluded while paused; not marked missed |
