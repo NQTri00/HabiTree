@@ -163,3 +163,24 @@ The proposed 50/day cap and 4,500 premium price establish the 90-day *coin* floo
 ## 12. Four-tier consolidation note (2026-11-11)
 
 Any reference to **Uncommon, Epic or a coin-priced Premium seed** in earlier phase documents is obsolete. The only supported tree tiers are **Common, Rare, Legendary and Exclusive**. The fourth tier is reserved for a possible future real-money cosmetic unlock; no payments or premium purchase UI should be built yet. Existing owned seeds and planted trees must remain usable when catalog entries are remapped to these four tiers. No existing user assets should be removed or retroactively charged.
+
+## 13. Exponential stage-duration progression (2026-11-11)
+
+**Approved progression shape:** every stage-to-stage transition takes **twice the effective growth effort of the previous transition** within that species. A species with `N` distinct visual stages has `N-1` transitions, weighted `1, 2, 4, ..., 2^(N-2)`. Preserve the tier minimum elapsed calendar age and required growth days from section 3.
+
+Define `totalEffectiveGrowthUnits` as the cumulative species-specific growth budget needed for the final stage. For transition `i` (1-based), `transitionUnits[i] = totalEffectiveGrowthUnits * 2^(i-1) / (2^(N-1)-1)`. To prevent floating point drift, use integer/fixed-point cumulative thresholds: `thresholdAfterTransition[i] = round(totalEffectiveGrowthUnits * (2^i - 1) / (2^(N-1)-1))`; enforce strictly increasing thresholds by choosing sufficiently fine units. Do not round each transition independently then sum.
+
+| Tier | Example stage count | Transition weights | Total target | Approximate final transition share |
+|---|---:|---|---:|---:|
+| Common | 4 | 1, 2, 4 | 14 days | 8 / 14 days |
+| Rare | 8 | 1, 2, 4, 8, 16, 32, 64 | 35 days | 17.64 / 35 days |
+| Legendary | 12 | 1 through 1,024 doubling | 90 days | 45.02 / 90 days |
+| Exclusive | 12 | Same as Legendary unless later specified | 90 days | 45.02 / 90 days |
+
+The table expresses **growth effort as full-credit-day equivalents**, not an instruction to force consecutive calendar days. With one credit per calendar day and an elapsed-age floor, reaching the final stage still cannot happen before day 14/35/90 respectively, even with fertilizer. No growth accrues without an active watering window.
+
+**Major UX trade-off:** strict doubling with 12 stages and 90 full-credit-day equivalents means the first transition is only `90/2047 ≈ 0.044` credit-day, while the final transition is about 45 days. Thus several early stages may unlock very quickly, while the final visual stage takes weeks. This is mathematically unavoidable under exact doubling and a fixed 90-day total. Show smooth in-stage progress and milestones during long transitions; do not claim the stage unlocks are evenly spaced. If testing finds the final stretch frustrating, a separate approved revision can use a capped multiplier (e.g. 1.3×–1.5×), but **do not silently replace the requested 2× progression**.
+
+**Eligibility and timers:** active watering/fertilizer affect the rate of earning effective growth units within a day; they do not bypass the daily maximum, minimum distinct credited days or minimum elapsed age. If the final threshold is reached before the age/day floors, hold the tree at the penultimate stage's maximum visible progress until all maturity requirements are satisfied; do not render it as mature early. Persist cumulative growth units and threshold version so an offline app restart cannot award the same transition twice.
+
+**Art:** every transition uses a genuinely distinct species-specific anatomical silhouette, not a zoom or reveal. No infinite height, no seasons.
