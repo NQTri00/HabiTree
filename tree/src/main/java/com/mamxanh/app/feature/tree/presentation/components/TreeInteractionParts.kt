@@ -3,6 +3,7 @@ package com.mamxanh.app.feature.tree.presentation.components
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -51,14 +52,26 @@ private fun CareTile(art: GardenArt, label: String, enabled: Boolean, onClick: (
 
 @Composable
 fun DecorationPicker(selected: String, onSelect: (String) -> Unit) {
-    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        listOf(Triple("NONE", "Tự nhiên", GardenArt.NATURAL), Triple("FLOWERS", "Hoa", GardenArt.FLOWERS),
-            Triple("LANTERNS", "Đèn", GardenArt.LANTERN), Triple("RIBBON", "Nơ", GardenArt.RIBBON)).forEach { (code, label, art) ->
-            GardenBotanicalFrame(Modifier.fillMaxWidth().heightIn(min = 48.dp).selectable(selected == code, role = Role.RadioButton, onClick = { onSelect(code) })) {
-                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    GardenArtwork(art, Modifier.size(20.dp))
-                    Text(label, Modifier.weight(1f), color = Deep, fontSize = 11.sp, fontWeight = FontWeight.Bold)
-                    if(selected == code) Text("✓", color = Green, fontSize = 16.sp)
+    val choices=listOf(Triple("NONE","Tự nhiên",GardenArt.NATURAL),Triple("FLOWERS","Hoa",GardenArt.FLOWERS),
+        Triple("LANTERNS","Đèn",GardenArt.LANTERN),Triple("RIBBON","Nơ",GardenArt.RIBBON))
+    Column(Modifier.selectableGroup(),verticalArrangement=Arrangement.spacedBy(6.dp)) {
+        choices.chunked(2).forEach { row ->
+            Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.spacedBy(6.dp)) {
+                row.forEach { (code,label,art) ->
+                    val active=selected==code
+                    androidx.compose.material3.Surface(Modifier.weight(1f).heightIn(min=48.dp)
+                        .selectable(active,role=Role.RadioButton,onClick={onSelect(code)}),
+                        shape=androidx.compose.foundation.shape.RoundedCornerShape(10.dp),
+                        color=if(active)Color(0xFFE3F2E8) else Color(0xFFF0F6F2),
+                        border=androidx.compose.foundation.BorderStroke(1.dp,if(active)Green else Color(0xFFE0EAE4))) {
+                        Row(Modifier.padding(horizontal=8.dp,vertical=6.dp),verticalAlignment=Alignment.CenterVertically,
+                            horizontalArrangement=Arrangement.spacedBy(6.dp)) {
+                            GardenArtwork(art,Modifier.size(22.dp))
+                            Text(label,Modifier.weight(1f),color=Deep,fontSize=11.sp,lineHeight=14.sp,
+                                fontWeight=if(active)FontWeight.Bold else FontWeight.Medium)
+                            Text(if(active)"●" else "○",color=if(active)Green else Muted,fontSize=12.sp)
+                        }
+                    }
                 }
             }
         }
@@ -70,5 +83,6 @@ fun DecorationPicker(selected: String, onSelect: (String) -> Unit) {
 fun WateredCareActionsPreview() { MamXanhPreviewTheme { TreeCareActions(true, 2, false, {}, {}) } }
 @Composable
 fun TreeCareActionsPreview() { MamXanhPreviewTheme { TreeCareActions(false, 2, true, {}, {}) } }
+@Preview(name = "Decoration choices · complete content", widthDp = 336)
 @Composable
 fun DecorationPickerPreview() { MamXanhPreviewTheme { DecorationPicker("FLOWERS", {}) } }

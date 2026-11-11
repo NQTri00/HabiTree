@@ -1,6 +1,5 @@
 package com.mamxanh.app.feature.tree.presentation
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -14,7 +13,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mamxanh.app.feature.tree.domain.model.Tree
-import com.mamxanh.app.feature.tree.presentation.components.DecorationPicker
 import com.mamxanh.app.presentation.ui.*
 import com.mamxanh.app.presentation.ui.components.*
 import com.mamxanh.shared.model.*
@@ -27,9 +25,9 @@ fun TreeInteractionScreen(
     coins:Int=0,onPrevious:(()->Unit)?=null,onNext:(()->Unit)?=null,
     onOpenGarden:()->Unit={onIntent(TreeIntent.Back)}
 ) {
-    val scroll=rememberScrollState()
     val status=tree.status
     var tab by rememberSaveable(tree.id){mutableIntStateOf(0)}
+    val scroll=key(tree.id,tab){rememberScrollState()}
     MintBackdrop(modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
             BoxWithConstraints(Modifier.weight(1f)) {
@@ -62,60 +60,16 @@ fun TreeInteractionScreen(
                                 {tab=0;onIntent(TreeIntent.SetPanelExpanded(false))})
                         }
                     }
-                    GardenBotanicalFrame(Modifier.weight(1f).fillMaxWidth(),contentPadding=PaddingValues(6.dp),cornerSize=12.dp) {
-                    Column(Modifier.fillMaxSize().mintScrollEdges(scroll.canScrollBackward,scroll.canScrollForward)
-                        .verticalScroll(scroll).padding(bottom=4.dp),verticalArrangement=Arrangement.spacedBy(4.dp)) {
-                        MintTreeStatus("${status.stageIndex+1}/${status.stageCount}",status.stateLabel,status.cue.label)
-                        if(status.alive) {
-                            Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.spacedBy(4.dp)) {
-                                listOf("Chăm sóc","Trang trí","Thông tin").forEachIndexed { index,label ->
-                                    Box(Modifier.weight(1f).heightIn(min=48.dp)
-                                        .clickable(role=androidx.compose.ui.semantics.Role.Tab) {
-                                            tab=index;onIntent(TreeIntent.SetPanelExpanded(false))
-                                        },contentAlignment=Alignment.Center) {
-                                        Surface(Modifier.fillMaxWidth(),shape=androidx.compose.foundation.shape.RoundedCornerShape(9.dp),
-                                            color=if(tab==index)Green else androidx.compose.ui.graphics.Color(0xFFF0F6F2)) {
-                                            Text(label,Modifier.padding(horizontal=4.dp,vertical=6.dp),
-                                                color=if(tab==index)androidx.compose.ui.graphics.Color.White else Muted,
-                                                textAlign=TextAlign.Center,fontWeight=FontWeight.SemiBold,fontSize=11.sp,lineHeight=14.sp)
-                                        }
-                                    }
-                                }
+                    GardenBotanicalFrame(Modifier.weight(1f).fillMaxWidth(),
+                        contentPadding=PaddingValues(8.dp),cornerSize=16.dp) {
+                        Column(Modifier.fillMaxSize(),verticalArrangement=Arrangement.spacedBy(6.dp)) {
+                            TreeDetailTabs(tab,{ index->tab=index;onIntent(TreeIntent.SetPanelExpanded(false)) })
+                            Column(Modifier.weight(1f).fillMaxWidth()
+                                .mintScrollEdges(scroll.canScrollBackward,scroll.canScrollForward)
+                                .verticalScroll(scroll).padding(bottom=4.dp)) {
+                                TreeDetailSectionContent(tree,tab,inventory,state.isLoading,onIntent)
                             }
-                            when(tab) {
-                                0 -> {
-                                    MintStatusPill(status.waterLabel)
-                                    if(status.fertilizerLabel.isNotBlank())Text(status.fertilizerLabel,color=Muted,fontSize=11.sp)
-                                    if(status.state==TreeGrowthState.GROWING) FertilizerTier.entries.forEach { tier ->
-                                        val count=inventory[tier.itemId] ?: 0
-                                        OutlinedButton(onClick={onIntent(TreeIntent.Fertilize(tree.id,tier.itemId))},
-                                            modifier=Modifier.fillMaxWidth().heightIn(min=48.dp),contentPadding=PaddingValues(horizontal=10.dp,vertical=4.dp),
-                                            colors=ButtonDefaults.outlinedButtonColors(contentColor=Green),
-                                            enabled=status.canFertilize && count>0 && !state.isLoading) {
-                                            Text("${tier.label} · $count túi",Modifier.weight(1f),fontSize=12.sp)
-                                            Text("${tier.rate/1000.0}×",fontSize=11.sp)
-                                        }
-                                    }
-                                    if(!status.canFertilize && status.state==TreeGrowthState.GROWING)
-                                        Text(if(!status.waterActive)"Hãy tưới cây trước." else "Cây chưa cần thêm phân bón.",color=Muted,fontSize=11.sp)
-                                    if(status.state==TreeGrowthState.GROWING)MintDialogAction("Chọn vật phẩm",{onIntent(TreeIntent.OpenFertilizerShop)},Modifier.fillMaxWidth(),primary=false)
-                                }
-                                1 -> DecorationPicker(tree.decoration,{onIntent(TreeIntent.Decorate(tree.id,it))})
-                                else -> {
-                                    Text("Loài: ${catalog.first{it.id==tree.speciesId}.name}",color=Deep,fontSize=12.sp)
-                                    Text("${status.stageCount} dáng · Ngày trồng: ${tree.planted}",color=Muted,fontSize=11.sp)
-                                    Text("Tưới cây để tiếp tục phát triển. Chăm sóc đều đặn giúp cây khỏe mạnh.",color=Muted,fontSize=11.sp)
-                                }
-                            }
-                            if(status.state==TreeGrowthState.MATURE) TextButton(
-                                onClick={onIntent(TreeIntent.AskDisposition(tree.id,true))},enabled=!state.isLoading) {
-                                Text("Bán cây trưởng thành",color=Green,fontSize=12.sp)
-                            }
-                        } else Text("Cây đã khô héo vĩnh viễn.",color=Muted,fontSize=12.sp)
-                        TextButton(onClick={onIntent(TreeIntent.AskDisposition(tree.id,false))},enabled=!state.isLoading) {
-                            Text("Dọn cây",color=Muted,fontSize=12.sp)
                         }
-                    }
                     }
                 }
             }

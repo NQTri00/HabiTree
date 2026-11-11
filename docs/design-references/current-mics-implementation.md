@@ -191,6 +191,14 @@ No complete demo screenshot is used as a runtime background.
 - Final text-leading build passed (1m21s); installed with saved data preserved and restored density320/font1.0. Build daemons stopped after verification to release memory.
 - At320dp/font1.3, Shop uses the existing two-column fallback. Purchase description, totals, quantity and both actions fit; Home and Tree Detail retain the pinned centered tree and scrollable lower content. No purchase, task completion, watering, sale or planting was confirmed on the main profile.
 
+## Plant Detail sections — full-content preview review, 2026-11-12
+
+- Extracted the runtime Care/Decoration/Information body into TreeDetailSections. A fixed segmented tab strip remains outside the scrolling content; each section opens at its own top.
+- Care groups water/health, fertilizer stock, multiplier and action state into consistent compact rows. Decoration uses a two-column radio-choice grid. Information uses labeled species, stage, percentage and planted-date rows. Sale/removal stay in a separate footer and retain confirmations.
+- Used studio_render_compose_preview before editing, then rendered complete natural-height Care, Decoration and Information documents plus320dp/font1.3 Care. These previews share the actual runtime body and include bottom actions; no viewport crop is treated as a complete review.
+- Layoutlib initially reused an old DecorationPicker. Rendered its defining component preview first, then re-rendered the full Decoration document and verified all four choices in two columns. Renders were sequential, with no parallel build/render or preview atlas.
+- Debug builds passed after extraction (1m17s), guards/scroll-state update (18s), and the final preview annotation (1m16s). Installed APK verified the mature Care section and pinned tree/tab layout. Complete contents of all three sections were reviewed through the dedicated previews. Availability rules, pending-action guards, growth calculation and saved game data are unchanged.
+
 ## Acceptance still open
 Exact plant/icon silhouettes and illustration style differ from the new sheets; reused/generated art is not lossless source extraction. Do not describe this checkpoint as 100% visually identical.
 The full 393/412dp, landscape/IME, long-name, process-death, reward-claim, transaction-race and every annotated outcome matrix has not been re-executed for this redesign. Existing historical evidence does not automatically close those checks.
