@@ -1,5 +1,8 @@
 # Phase 2 — Finite-Lifecycle Living Trees: Detailed Gameplay & Product Concept
 
+> **Economy and progression update (2026-11-11):** [Economy & Growth Balancing v2](economy-and-growth-balancing.md) is authoritative for ALL coin rewards/caps, seed/shop prices, watering-can/fertilizer prices, mature sale payouts, and growth durations. Any older example below (150/day, 25-coin seeds, 3–50-day maturity, +25 instant fertilizer, etc.) is superseded. Free starter: minimum 14 elapsed days **and** 14 growth days. Premium: 4,500-coin seed (90 maximum-earning days from zero), minimum 90 elapsed days **and** 90 growth days to mature. Growth credits capped at one per day; upgrades/fertilizer cannot bypass the floor. Existing player wealth is grandfathered.
+
+
 **Status:** Proposed, not implemented. **Prerequisite:** Phase 1 task/reward ledger and reactive persistence. **Authority:** This specification supersedes the older infinite-height, fixed-six-stage, milliliter-water, instant-growth, nonlethal-neglect and seasonal ideas in previous documents. No seasonal mechanic is in scope.
 
 ## 1. Player fantasy and loop
