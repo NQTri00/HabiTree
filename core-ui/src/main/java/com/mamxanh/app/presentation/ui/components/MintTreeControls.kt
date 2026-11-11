@@ -46,20 +46,27 @@ fun MintCareIcon(
     art: GardenArt, label: String, enabled: Boolean, onClick: () -> Unit,
     checked: Boolean = false, caption: String? = null
 ) {
-    GardenBotanicalFrame(Modifier.fillMaxWidth().heightIn(min = 48.dp)
-        .clickable(enabled = enabled, role = Role.Button, onClick = onClick)
-        .semantics(mergeDescendants = true) { contentDescription = label },
-        contentPadding = PaddingValues(4.dp), cornerSize = 18.dp,
-        skin = if (checked) GardenPanelSkin.HINT else GardenPanelSkin.BADGE) {
-        Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-            Box(Modifier.size(32.dp), contentAlignment = Alignment.Center) {
-                GardenArtwork(art, Modifier.size(28.dp).alpha(if (enabled || checked) 1f else .4f))
-                if (checked) Text("✓", Modifier.align(Alignment.BottomEnd),
-                    color = Green, fontSize = 13.sp, fontWeight = FontWeight.Bold)
+    Column(Modifier.width(48.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        Box(Modifier.size(48.dp)
+            .clickable(enabled = enabled, role = Role.Button, onClick = onClick)
+            .semantics(mergeDescendants = true) { contentDescription = label },
+            contentAlignment = Alignment.Center) {
+            androidx.compose.material3.Surface(
+                Modifier.size(32.dp), shape = androidx.compose.foundation.shape.CircleShape,
+                color = if (checked) androidx.compose.ui.graphics.Color(0xFFE7F3DC)
+                    else androidx.compose.ui.graphics.Color(0xFFF8FCFA),
+                border = androidx.compose.foundation.BorderStroke(1.dp, androidx.compose.ui.graphics.Color.White),
+                shadowElevation = 2.dp
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    GardenArtwork(art, Modifier.size(20.dp).alpha(if (enabled || checked) 1f else .4f))
+                    if (checked) Text("✓", Modifier.align(Alignment.BottomEnd),
+                        color = Green, fontSize = 10.sp, lineHeight = 12.sp, fontWeight = FontWeight.Bold)
+                }
             }
-            if (caption != null) Text(caption, color = Deep, fontSize = 10.sp,
-                lineHeight = 12.sp, textAlign = TextAlign.Center)
         }
+        if (caption != null) Text(caption.replace('\n', ' '), color = Deep, fontSize = 9.sp,
+            lineHeight = 11.sp, textAlign = TextAlign.Center)
     }
 }
 

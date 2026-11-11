@@ -59,16 +59,14 @@ fun HomeScreen(
                             Text("›", color = Deep, fontSize = 24.sp)
                         }
                     }
-                    Row(Modifier.fillMaxWidth().heightIn(min = heroHeight),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Box(Modifier.fillMaxWidth().heightIn(min = heroHeight), contentAlignment = Alignment.Center) {
                         GardenPlantPortrait(tree.speciesId, tree.decoration,
-                            sharedTreeModifier.weight(1f).height(heroHeight)
+                            sharedTreeModifier.fillMaxWidth().padding(horizontal = 40.dp).height(heroHeight)
                                 .clickable(role = Role.Button) { onIntent(HomeIntent.OpenTree(tree.id)) }
                                 .semantics { contentDescription = "Chăm sóc " + tree.name },
-                            growth = tree.growth, fitVisibleArtwork = true)
-                        Column(Modifier.width(52.dp), horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                            growth = tree.growth, fitVisibleArtwork = true, artworkAlignment = Alignment.Center)
+                        Column(Modifier.align(Alignment.CenterEnd).width(48.dp), horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(0.dp)) {
                             MintCareIcon(GardenArt.WATERING_CAN,
                                 if (tree.wateredToday) "Đã tưới hôm nay" else "Tưới",
                                 !tree.wateredToday && d.wateringCanMl >= 50,

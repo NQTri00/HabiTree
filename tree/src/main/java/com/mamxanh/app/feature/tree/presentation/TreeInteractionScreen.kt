@@ -48,14 +48,12 @@ fun TreeInteractionScreen(
                         Text("›", fontSize = 22.sp, color = Deep)
                     }
                 }
-                Row(Modifier.fillMaxWidth().heightIn(min = heroHeight),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                Box(Modifier.fillMaxWidth().heightIn(min = heroHeight), contentAlignment = Alignment.Center) {
                     GardenPlantPortrait(tree.speciesId, tree.decoration,
-                        sharedTreeModifier.weight(1f).height(heroHeight),
-                        tree.growth, fitVisibleArtwork = true)
-                    Column(Modifier.width(52.dp), horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                        sharedTreeModifier.fillMaxWidth().padding(horizontal = 40.dp).height(heroHeight),
+                        tree.growth, fitVisibleArtwork = true, artworkAlignment = Alignment.Center)
+                    Column(Modifier.align(Alignment.CenterEnd).width(48.dp), horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(0.dp)) {
                         MintCareIcon(GardenArt.WATERING_CAN,
                             if (tree.wateredToday) "Đã tưới hôm nay" else "Tưới · 50 ml",
                             !tree.wateredToday && wateringCanMl >= 50,

@@ -86,6 +86,12 @@ No complete demo screenshot is used as a runtime background.
 - Both APK variants built successfully (37 seconds). Installed main app with-r and inspected360dp detail: full tree, checked watering, disabled fertilizer, growth and all tabs visible. Information panel opened with real species/date/growth.
 - At320dp/1.3× inspected the entire scroll boundary: care rail, water label, growth panel and all three wrapping tabs reachable. No game-data mutations were used for this verification.
 
+## Centered tree and round controls — latest follow-up
+- Home and Tree Detail now center the artwork horizontally and vertically in the half-window presentation area. Symmetric40dp artwork padding keeps the center independent of the right-hand control rail.
+- Shared care controls use32dp circular surfaces and20dp artwork inside48dp touch targets. Water volume sits outside the circle; checked/disabled states and accessible names remain.
+- GardenPlantPortrait adds optional artworkAlignment; these two screens use Center, while other callers retain BottomCenter.
+- Both APK variants passed (21 seconds). Installed APK inspected on both Home and Tree Detail at360dp: centered tree, round controls, complete cards/tabs and saved145-coin wallet retained.
+
 ## Acceptance still open
 Exact plant/icon silhouettes and illustration style differ from the new sheets; reused/generated art is not lossless source extraction. Do not describe this checkpoint as 100% visually identical.
 The full 393/412dp, landscape/IME, long-name, process-death, reward-claim, transaction-race and every annotated outcome matrix has not been re-executed for this redesign. Existing historical evidence does not automatically close those checks.

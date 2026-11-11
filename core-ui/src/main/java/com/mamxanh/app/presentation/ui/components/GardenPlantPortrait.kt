@@ -10,7 +10,8 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun GardenPlantPortrait(
     speciesId: String, decoration: String, modifier: Modifier = Modifier, growth: Int = 120,
-    fitVisibleArtwork: Boolean = false
+    fitVisibleArtwork: Boolean = false,
+    artworkAlignment: androidx.compose.ui.Alignment = androidx.compose.ui.Alignment.BottomCenter
 ) {
     BoxWithConstraints(modifier) {
         val bounds = if (fitVisibleArtwork && speciesId == "cherry") {
@@ -18,7 +19,7 @@ fun GardenPlantPortrait(
         } else null
         val artworkHeight = if (bounds != null) minOf(maxHeight, maxWidth * bounds[3].toFloat() / bounds[2]) else maxHeight
         val artworkWidth = if (bounds != null) minOf(maxWidth, maxHeight * bounds[2].toFloat() / bounds[3]) else maxWidth
-        BoxWithConstraints(Modifier.align(androidx.compose.ui.Alignment.BottomCenter).size(artworkWidth, artworkHeight)) {
+        BoxWithConstraints(Modifier.align(artworkAlignment).size(artworkWidth, artworkHeight)) {
         if (speciesId == "cherry") {
             CherryGrowthArtwork(growth, Modifier.fillMaxSize(), fitVisibleArtwork)
         } else if (growth <= 0) {
