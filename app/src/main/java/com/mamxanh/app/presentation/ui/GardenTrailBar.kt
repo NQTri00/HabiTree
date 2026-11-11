@@ -39,7 +39,7 @@ fun GardenTrailBar(selected: AppDestination, onNavigate: (AppDestination) -> Uni
     val destinations = listOf(AppDestination.TASKS, AppDestination.GARDEN,
         AppDestination.HOME, AppDestination.SHOP, AppDestination.STATS)
     Box(modifier.fillMaxWidth()) {
-        Box(Modifier.matchParentSize().padding(top = 16.dp)
+        Box(Modifier.matchParentSize().padding(top = 10.dp)
             .mintDepth(shape, MintDepth.bar, 12.dp))
         Row(Modifier.fillMaxWidth().navigationBarsPadding()
             .padding(start = 4.dp, end = 4.dp, bottom = 4.dp).selectableGroup()) {
@@ -57,13 +57,13 @@ fun GardenTrailBar(selected: AppDestination, onNavigate: (AppDestination) -> Uni
                     AppDestination.HOME -> "Vườn"; AppDestination.TASKS -> "Việc"
                     AppDestination.GARDEN -> "Cây"; AppDestination.SHOP -> "Tiệm"; AppDestination.STATS -> "Nhật ký"
                 }
-                Column(Modifier.weight(1f).heightIn(min = 64.dp)
+                Column(Modifier.weight(1f).heightIn(min = 48.dp)
                     .selectable(active, role = Role.Tab, onClick = { onNavigate(destination) })
                     .semantics { contentDescription = destination.label },
                     horizontalAlignment = Alignment.CenterHorizontally) {
-                    Box(Modifier.fillMaxWidth().height(56.dp), contentAlignment = Alignment.Center) {
+                    Box(Modifier.fillMaxWidth().height(38.dp), contentAlignment = Alignment.Center) {
                         if (home) Surface(
-                            modifier = Modifier.align(Alignment.Center).size(56.dp)
+                            modifier = Modifier.align(Alignment.Center).size(38.dp)
                                 .mintDepth(CircleShape, if (active) MintDepth.primary else MintDepth.secondary, 10.dp),
                             shape = CircleShape,
                             color = Color.Transparent,
@@ -71,16 +71,16 @@ fun GardenTrailBar(selected: AppDestination, onNavigate: (AppDestination) -> Uni
                             shadowElevation = 0.dp
                         ) {
                             Box(contentAlignment = Alignment.Center) {
-                                Icon(icon, null, Modifier.size(30.dp), tint = if (active) Color.White else green)
+                                Icon(icon, null, Modifier.size(22.dp), tint = if (active) Color.White else green)
                             }
-                        } else Icon(icon, null, Modifier.align(Alignment.BottomCenter).padding(bottom = 8.dp).size(24.dp),
+                        } else Icon(icon, null, Modifier.align(Alignment.BottomCenter).padding(bottom = 5.dp).size(18.dp),
                             tint = if (active) green else Color(0xFF475569))
                     }
                     Text(label, Modifier.fillMaxWidth().padding(top = 2.dp),
                         color = if (active) green else Color(0xFF334155),
-                        fontSize = 11.sp, lineHeight = 14.sp, textAlign = TextAlign.Center,
+                        fontSize = 10.sp, lineHeight = 12.sp, textAlign = TextAlign.Center,
                         fontWeight = if (active || home) FontWeight.Bold else FontWeight.Normal)
-                    Box(Modifier.padding(top = 3.dp).width(32.dp).height(3.dp)
+                    Box(Modifier.padding(top = 2.dp).width(22.dp).height(2.dp)
                         .background(if (active && !home) green else Color.Transparent, RoundedCornerShape(50)))
                 }
             }

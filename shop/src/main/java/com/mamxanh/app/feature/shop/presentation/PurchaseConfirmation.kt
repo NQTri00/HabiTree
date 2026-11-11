@@ -49,11 +49,11 @@ fun PurchaseConfirmation(id: String, state: ShopUiState, onDismiss: () -> Unit, 
         onConfirm={if(owned)onEquip() else onBuy(if(permanent)1 else quantity,key)},
         confirmEnabled=enabled && if(owned)state.wallet.equippedCan!=id else remaining>=0,
         dismissEnabled=!state.isPurchasing) {
-        Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(12.dp)) {
-            if(seed!=null)PaintedGardenPlant(id,Modifier.size(72.dp))
-            else GardenArtwork(if(permanent)GardenArt.WATERING_CAN else GardenArt.FERTILIZER,Modifier.size(64.dp))
+        Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(6.dp)) {
+            if(seed!=null)PaintedGardenPlant(id,Modifier.size(36.dp))
+            else GardenArtwork(if(permanent)GardenArt.WATERING_CAN else GardenArt.FERTILIZER,Modifier.size(32.dp))
             Column(Modifier.weight(1f),verticalArrangement=Arrangement.spacedBy(5.dp)) {
-                Text(seed?.name ?: product?.name.orEmpty(),color=Deep,fontSize=16.sp,lineHeight=20.sp,fontWeight=FontWeight.Bold)
+                Text(seed?.name ?: product?.name.orEmpty(),color=Deep,fontSize=13.sp,lineHeight=17.sp,fontWeight=FontWeight.Bold)
                 Text("$price xu / món",color=Green,fontSize=12.sp,fontWeight=FontWeight.SemiBold)
                 Text("Trong túi: ${state.wallet.inventory[id] ?: 0}",color=Muted,fontSize=11.sp)
             }
@@ -75,11 +75,11 @@ fun PurchaseConfirmation(id: String, state: ShopUiState, onDismiss: () -> Unit, 
 
 @Composable
 private fun QuantitySelector(quantity: Int, enabled: Boolean, onDecrease: () -> Unit, onIncrease: () -> Unit) {
-    Row(Modifier.fillMaxWidth().mintDepth(RoundedCornerShape(28.dp), MintDepth.secondary, 3.dp).padding(6.dp),
+    Row(Modifier.fillMaxWidth().mintDepth(RoundedCornerShape(16.dp), MintDepth.secondary, 3.dp).padding(2.dp),
         verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         QuantityButton(false, enabled && quantity > 1, onDecrease)
         Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(quantity.toString(), color = Deep, fontSize = 26.sp, lineHeight = 30.sp, fontWeight = FontWeight.Bold)
+            Text(quantity.toString(), color = Deep, fontSize = 17.sp, lineHeight = 20.sp, fontWeight = FontWeight.Bold)
             Text("Số lượng", color = Muted, fontSize = 11.sp, lineHeight = 14.sp)
         }
         QuantityButton(true, enabled && quantity < 99, onIncrease)
@@ -89,11 +89,14 @@ private fun QuantitySelector(quantity: Int, enabled: Boolean, onDecrease: () -> 
 @Composable
 private fun QuantityButton(increase: Boolean, enabled: Boolean, onClick: () -> Unit) {
     Box(Modifier.size(48.dp).alpha(if (enabled) 1f else .35f)
-        .mintDepth(CircleShape, if (increase) MintDepth.primary else MintDepth.card, if (enabled) 3.dp else 0.dp)
-        .clip(CircleShape).clickable(enabled = enabled, role = Role.Button, onClick = onClick),
+        .clickable(enabled = enabled, role = Role.Button, onClick = onClick),
         contentAlignment = Alignment.Center) {
-        Icon(if (increase) Icons.Rounded.Add else Icons.Rounded.Remove,
-            if (increase) "Tăng số lượng" else "Giảm số lượng",
-            tint = if (increase) Color.White else Green, modifier = Modifier.size(24.dp))
+        Box(Modifier.size(30.dp)
+            .mintDepth(CircleShape, if(increase) MintDepth.primary else MintDepth.card, if(enabled)3.dp else 0.dp)
+            .clip(CircleShape),contentAlignment=Alignment.Center) {
+            Icon(if(increase)Icons.Rounded.Add else Icons.Rounded.Remove,
+                if(increase)"Tăng số lượng" else "Giảm số lượng",
+                tint=if(increase)Color.White else Green,modifier=Modifier.size(16.dp))
+        }
     }
 }

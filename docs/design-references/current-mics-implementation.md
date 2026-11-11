@@ -179,6 +179,18 @@ No complete demo screenshot is used as a runtime background.
 - Task form Save/Cancel remain visible with the keyboard open; an untouched form was cancelled without adding a task. Main-profile purchase and care actions were not used for QA.
 - Final debug/verification builds passed (44s), including the single compact Journal header and matching metric tile heights. Fresh com.mamxanh.app.verification.dialogs profile verified the planting form, planting callback, Water All count tiles and confirmation callback: one eligible tree became watered and the eligible count became zero. No extra preview renders were used.
 
+## Compact sizing across the app — 2026-11-12
+
+- Applied the Garden sizing preference to Home, Tasks, Shop, Inventory, Tree Detail and Journal. Large secondary artwork is approximately halved; medium headings, badges, padding and spacing are reduced while existing small text stays readable.
+- Shared catalog artwork is 28dp, with unchanged equal-height two-line name slots and aligned prices. Shop/Inventory retain three columns on standard phones and the existing larger-text fallback.
+- Compact headers, metric strips, forms, confirmation dialogs, decoration choices and quantity selectors use smaller visual elements. Primary buttons draw a content-sized pill inside a minimum48dp action area.
+- Bottom navigation is shorter; Home remains in the raised central bubble. Main Home/Tree Detail artwork remains large and centered under the earlier explicit tree-size requirement.
+- Garden retains fixed filters/water control, small planting labels, centered overall progress percentages and no duplicate inventory footer.
+- Initial parallel build failed on native memory allocation. One-worker builds with a1536MiB heap and in-process Kotlin compilation passed, including the final compact visual-button pass (2m4s). No Compose previews were rendered. The emulator activity service also became unavailable; a non-wiping restart recovered Android and saved data.
+- Installed APK checked at360dp: seven task rows are visible, complete task/reward list remains reachable, and the task form keeps Save/Cancel above the keyboard. An untouched form was cancelled without saving. Journal summary/chart/weekly/footer fit together; Inventory items/seeds states, all eleven Shop seed cards and compact purchase controls were inspected.
+- Final text-leading build passed (1m21s); installed with saved data preserved and restored density320/font1.0. Build daemons stopped after verification to release memory.
+- At320dp/font1.3, Shop uses the existing two-column fallback. Purchase description, totals, quantity and both actions fit; Home and Tree Detail retain the pinned centered tree and scrollable lower content. No purchase, task completion, watering, sale or planting was confirmed on the main profile.
+
 ## Acceptance still open
 Exact plant/icon silhouettes and illustration style differ from the new sheets; reused/generated art is not lossless source extraction. Do not describe this checkpoint as 100% visually identical.
 The full 393/412dp, landscape/IME, long-name, process-death, reward-claim, transaction-race and every annotated outcome matrix has not been re-executed for this redesign. Existing historical evidence does not automatically close those checks.

@@ -39,13 +39,13 @@ fun TreeInteractionScreen(
                         Column {
                             Row(verticalAlignment=Alignment.CenterVertically) {
                                 TextButton(onClick=onOpenGarden,modifier=Modifier.width(48.dp)) {Text("‹",fontSize=22.sp,color=Deep)}
-                                Text(tree.name,Modifier.weight(1f),color=Deep,fontWeight=FontWeight.Bold,fontSize=13.sp,textAlign=TextAlign.Center)
+                                Text(tree.name,Modifier.weight(1f),color=Deep,fontWeight=FontWeight.Bold,fontSize=13.sp,lineHeight=16.sp,textAlign=TextAlign.Center)
                                 Text("$coins xu",color=Muted,fontSize=11.sp)
                                 if(onPrevious!=null)IconButton(onClick=onPrevious){Text("‹",fontSize=20.sp,color=Deep)}
                                 if(onNext!=null)IconButton(onClick=onNext){Text("›",fontSize=20.sp,color=Deep)}
                             }
                             Row(Modifier.fillMaxWidth().padding(horizontal=8.dp),verticalAlignment=Alignment.CenterVertically,
-                                horizontalArrangement=Arrangement.spacedBy(8.dp)) {
+                                horizontalArrangement=Arrangement.spacedBy(4.dp)) {
                                 MintProgress(status.stageProgress,Modifier.weight(1f))
                                 Text("${status.percentage}%",color=Green,fontSize=11.sp,fontWeight=FontWeight.Bold)
                             }
@@ -62,19 +62,22 @@ fun TreeInteractionScreen(
                                 {tab=0;onIntent(TreeIntent.SetPanelExpanded(false))})
                         }
                     }
-                    GardenBotanicalFrame(Modifier.weight(1f).fillMaxWidth(),contentPadding=PaddingValues(10.dp),cornerSize=20.dp) {
+                    GardenBotanicalFrame(Modifier.weight(1f).fillMaxWidth(),contentPadding=PaddingValues(6.dp),cornerSize=12.dp) {
                     Column(Modifier.fillMaxSize().mintScrollEdges(scroll.canScrollBackward,scroll.canScrollForward)
-                        .verticalScroll(scroll).padding(bottom=4.dp),verticalArrangement=Arrangement.spacedBy(8.dp)) {
+                        .verticalScroll(scroll).padding(bottom=4.dp),verticalArrangement=Arrangement.spacedBy(4.dp)) {
                         MintTreeStatus("${status.stageIndex+1}/${status.stageCount}",status.stateLabel,status.cue.label)
                         if(status.alive) {
                             Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.spacedBy(4.dp)) {
                                 listOf("Chăm sóc","Trang trí","Thông tin").forEachIndexed { index,label ->
-                                    Surface(Modifier.weight(1f),shape=androidx.compose.foundation.shape.RoundedCornerShape(12.dp),
-                                        color=if(tab==index)Green else androidx.compose.ui.graphics.Color(0xFFF0F6F2)) {
-                                        TextButton(onClick={tab=index;onIntent(TreeIntent.SetPanelExpanded(false))},
-                                            contentPadding=PaddingValues(4.dp)) {
-                                            Text(label,color=if(tab==index)androidx.compose.ui.graphics.Color.White else Muted,
-                                                fontWeight=FontWeight.SemiBold,fontSize=11.sp)
+                                    Box(Modifier.weight(1f).heightIn(min=48.dp)
+                                        .clickable(role=androidx.compose.ui.semantics.Role.Tab) {
+                                            tab=index;onIntent(TreeIntent.SetPanelExpanded(false))
+                                        },contentAlignment=Alignment.Center) {
+                                        Surface(Modifier.fillMaxWidth(),shape=androidx.compose.foundation.shape.RoundedCornerShape(9.dp),
+                                            color=if(tab==index)Green else androidx.compose.ui.graphics.Color(0xFFF0F6F2)) {
+                                            Text(label,Modifier.padding(horizontal=4.dp,vertical=6.dp),
+                                                color=if(tab==index)androidx.compose.ui.graphics.Color.White else Muted,
+                                                textAlign=TextAlign.Center,fontWeight=FontWeight.SemiBold,fontSize=11.sp,lineHeight=14.sp)
                                         }
                                     }
                                 }
@@ -123,9 +126,9 @@ fun TreeInteractionScreen(
             if(state.selling)"Bán cây" else "Dọn cây",
             {onIntent(TreeIntent.ConfirmDisposition)},cancelLabel="Giữ lại",
             confirmEnabled=!state.isLoading,dismissEnabled=!state.isLoading,destructive=true) {
-            Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(12.dp)) {
-                GardenPlantPortrait(tree.speciesId,tree.decoration,Modifier.size(64.dp),withered=!status.alive)
-                Text(tree.name,color=Deep,fontSize=16.sp,fontWeight=FontWeight.Bold)
+            Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(6.dp)) {
+                GardenPlantPortrait(tree.speciesId,tree.decoration,Modifier.size(32.dp),withered=!status.alive)
+                Text(tree.name,color=Deep,fontSize=13.sp,fontWeight=FontWeight.Bold)
             }
             Text("Cây sẽ rời ô trồng vĩnh viễn. Không hoàn lại hạt hoặc tiến trình.",color=Muted,fontSize=12.sp,lineHeight=17.sp)
             if(state.selling) {

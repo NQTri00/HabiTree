@@ -18,8 +18,8 @@ enum class GardenPanelSkin { BADGE, PRICE, DIALOG, TASK_DIALOG, PLANTING_DIALOG,
 @Composable
 fun GardenBotanicalFrame(
     modifier: Modifier = Modifier,
-    contentPadding: PaddingValues = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
-    cornerSize: Dp = 22.dp,
+    contentPadding: PaddingValues = PaddingValues(horizontal = 10.dp, vertical = 6.dp),
+    cornerSize: Dp = 14.dp,
     skin: GardenPanelSkin = GardenPanelSkin.BADGE,
     content: @Composable BoxScope.() -> Unit
 ) {

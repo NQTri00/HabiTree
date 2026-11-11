@@ -51,14 +51,14 @@ private fun CareTile(art: GardenArt, label: String, enabled: Boolean, onClick: (
 
 @Composable
 fun DecorationPicker(selected: String, onSelect: (String) -> Unit) {
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
         listOf(Triple("NONE", "Tự nhiên", GardenArt.NATURAL), Triple("FLOWERS", "Hoa", GardenArt.FLOWERS),
             Triple("LANTERNS", "Đèn", GardenArt.LANTERN), Triple("RIBBON", "Nơ", GardenArt.RIBBON)).forEach { (code, label, art) ->
-            GardenBotanicalFrame(Modifier.fillMaxWidth().selectable(selected == code, role = Role.RadioButton, onClick = { onSelect(code) })) {
+            GardenBotanicalFrame(Modifier.fillMaxWidth().heightIn(min = 48.dp).selectable(selected == code, role = Role.RadioButton, onClick = { onSelect(code) })) {
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    GardenArtwork(art, Modifier.size(40.dp))
-                    Text(label, Modifier.weight(1f), color = Deep, fontWeight = FontWeight.Bold)
-                    if(selected == code) Text("✓", color = Green, fontSize = 24.sp)
+                    GardenArtwork(art, Modifier.size(20.dp))
+                    Text(label, Modifier.weight(1f), color = Deep, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                    if(selected == code) Text("✓", color = Green, fontSize = 16.sp)
                 }
             }
         }

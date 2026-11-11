@@ -27,10 +27,10 @@ fun ShopScreen(state: ShopUiState, onIntent: (ShopIntent) -> Unit, modifier: Mod
     val activeGrid = if(state.filter == ShopFilter.ITEMS) itemGrid else seedGrid
     MintBackdrop(modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
-            MintHeader("Tiệm hạt",state.wallet.coins)
+            MintCompactHeader(state.wallet.coins,title="Tiệm hạt")
             MintCatalogTabs(if(state.filter == ShopFilter.ITEMS) 0 else 1,
                 {onIntent(ShopIntent.SetFilter(if(it==0)ShopFilter.ITEMS else ShopFilter.SEEDS))},
-                Modifier.padding(horizontal=16.dp,vertical=8.dp))
+                Modifier.padding(horizontal=10.dp,vertical=3.dp))
             if(state.isLoading) LinearProgressIndicator(Modifier.fillMaxWidth())
             BoxWithConstraints(Modifier.weight(1f)) {
                 val fontScale=androidx.compose.ui.platform.LocalDensity.current.fontScale
@@ -38,8 +38,8 @@ fun ShopScreen(state: ShopUiState, onIntent: (ShopIntent) -> Unit, modifier: Mod
                 key(state.filter) {
                 LazyVerticalGrid(GridCells.Fixed(columns),Modifier.fillMaxSize()
                     .mintScrollEdges(activeGrid.canScrollBackward,activeGrid.canScrollForward),state=activeGrid,
-                    contentPadding=PaddingValues(16.dp),horizontalArrangement=Arrangement.spacedBy(8.dp),
-                    verticalArrangement=Arrangement.spacedBy(8.dp)) {
+                    contentPadding=PaddingValues(10.dp),horizontalArrangement=Arrangement.spacedBy(6.dp),
+                    verticalArrangement=Arrangement.spacedBy(6.dp)) {
                     if(state.filter == ShopFilter.ITEMS) {
                         items(careProducts,key={it.id}) { product ->
                             val owned=(state.wallet.inventory[product.id] ?: 0)>0
@@ -50,7 +50,7 @@ fun ShopScreen(state: ShopUiState, onIntent: (ShopIntent) -> Unit, modifier: Mod
                             }
                         }
                         item(span={GridItemSpan(maxLineSpan)}) {
-                            Text("Bình tưới kéo dài thời gian chăm sóc; không cần mua nước. Phân bón là tiện ích tùy chọn.",color=Muted,fontSize=13.sp)
+                            Text("Bình tưới kéo dài thời gian chăm sóc; không cần mua nước. Phân bón là tiện ích tùy chọn.",color=Muted,fontSize=11.sp)
                         }
                     } else {
                         items(shopCatalog,key={it.id}) { seed ->
@@ -58,7 +58,7 @@ fun ShopScreen(state: ShopUiState, onIntent: (ShopIntent) -> Unit, modifier: Mod
                                 {selectedId=seed.id}) {PaintedGardenPlant(seed.id,it)}
                         }
                         item(span={GridItemSpan(maxLineSpan)}) {
-                            Text("Exclusive · Sắp ra mắt. Chưa mở bán.",color=Muted,fontSize=13.sp)
+                            Text("Exclusive · Sắp ra mắt. Chưa mở bán.",color=Muted,fontSize=11.sp)
                         }
                     }
                     item(span={GridItemSpan(maxLineSpan)}) {

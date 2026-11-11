@@ -24,18 +24,17 @@ fun MintCatalogTabs(selectedIndex: Int, onSelect: (Int) -> Unit, modifier: Modif
         horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         listOf("Vật phẩm" to GardenArt.FERTILIZER, "Hạt giống" to GardenArt.SEED)
             .forEachIndexed { index, (label, art) ->
-                Surface(Modifier.weight(1f).fillMaxHeight()
-                    .mintDepth(RoundedCornerShape(24.dp), if (selectedIndex == index) MintDepth.primary else MintDepth.card,
-                        if (selectedIndex == index) 6.dp else 3.dp)
+                Box(Modifier.weight(1f).heightIn(min = 48.dp)
                     .selectable(selectedIndex == index, role = Role.Tab, onClick = { onSelect(index) }),
-                    shape = RoundedCornerShape(24.dp),
-                    color = Color.Transparent) {
-                    Row(Modifier.heightIn(min = 48.dp).padding(8.dp),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
+                    contentAlignment = Alignment.Center) {
+                    Row(Modifier.fillMaxWidth()
+                        .mintDepth(RoundedCornerShape(12.dp), if(selectedIndex == index) MintDepth.primary else MintDepth.card, 3.dp)
+                        .padding(horizontal = 8.dp, vertical = 6.dp),
+                        horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterHorizontally),
                         verticalAlignment = Alignment.CenterVertically) {
-                        GardenArtwork(art, Modifier.size(28.dp))
-                        Text(label, color = if (selectedIndex == index) Color.White else Deep,
-                            fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                        GardenArtwork(art, Modifier.size(18.dp))
+                        Text(label, color = if(selectedIndex == index) Color.White else Deep,
+                            fontWeight = FontWeight.Bold, fontSize = 11.sp, lineHeight = 14.sp)
                     }
                 }
             }

@@ -28,15 +28,15 @@ import com.mamxanh.app.presentation.ui.MamXanhPreviewTheme
 import com.mamxanh.app.presentation.ui.components.GardenArt
 import com.mamxanh.app.presentation.ui.components.GardenArtwork
 
-/** Labels may wrap; ticks and bars always share the same 112dp plot and baseline. */
+/** Labels may wrap; ticks and bars always share the same 64dp plot and baseline. */
 @Composable
 internal fun WeekSproutChart(counts: List<Int>, days: List<String>, modifier: Modifier = Modifier) {
     val values = counts.map { it.coerceAtLeast(0) }
     val axisMax = 3
     val density = LocalDensity.current
     val measurer = rememberTextMeasurer(cacheSize = 16)
-    val countStyle = LocalTextStyle.current.copy(fontSize = 13.sp, lineHeight = 16.sp, fontWeight = FontWeight.Bold)
-    val axisStyle = LocalTextStyle.current.copy(fontSize = 12.sp, lineHeight = 16.sp)
+    val countStyle = LocalTextStyle.current.copy(fontSize = 11.sp, lineHeight = 14.sp, fontWeight = FontWeight.Bold)
+    val axisStyle = LocalTextStyle.current.copy(fontSize = 10.sp, lineHeight = 13.sp)
     BoxWithConstraints(modifier.fillMaxWidth()) {
         val ticks = (0..3).map { (it * axisMax / 3).toString() }
         val axisWidth = maxOf(20.dp * density.fontScale, with(density) {
@@ -51,8 +51,8 @@ internal fun WeekSproutChart(counts: List<Int>, days: List<String>, modifier: Mo
                 measurer.measure(if (it > axisMax) "$it↑" else it.toString(), style = countStyle, constraints = labelConstraints).size.height
             } ?: measurer.measure("0", style = countStyle).size.height).toDp()
         }
-        val plotHeight = 112.dp
-        val topSpace = countLabelHeight + 18.dp + 4.dp
+        val plotHeight = 64.dp
+        val topSpace = countLabelHeight + 6.dp + 2.dp
         val chartHeight = topSpace + plotHeight
         Column {
             Row(Modifier.fillMaxWidth().height(chartHeight)) {
@@ -83,7 +83,7 @@ internal fun WeekSproutChart(counts: List<Int>, days: List<String>, modifier: Mo
                                 Text(if (count > axisMax) "$count↑" else count.toString(), Modifier.fillMaxWidth(), color = Deep,
                                     style = countStyle, textAlign = TextAlign.Center)
 
-                                Box(Modifier.width(27.dp).height(if (count == 0) 0.dp else plotHeight * (count.toFloat() / axisMax).coerceAtMost(1f))
+                                Box(Modifier.width(18.dp).height(if (count == 0) 0.dp else plotHeight * (count.toFloat() / axisMax).coerceAtMost(1f))
                                     .clip(RoundedCornerShape(topStart = 5.dp, topEnd = 5.dp))
                                     .background(Brush.horizontalGradient(listOf(Color(0xFF8BD32C), Color(0xFFB5E65A), Color(0xFF94D83B)))))
                             }

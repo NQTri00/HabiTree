@@ -58,23 +58,23 @@ fun InventoryScreen(
         Column(Modifier.fillMaxSize()) {
             Row(Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 4.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 IconButton(onClick = onBack) {
                     Icon(Icons.AutoMirrored.Rounded.ArrowBack, "Quay lại", tint = Deep)
                 }
-                Icon(Icons.Rounded.Inventory2, null, tint = Green, modifier = Modifier.size(24.dp))
+                Icon(Icons.Rounded.Inventory2, null, tint = Green, modifier = Modifier.size(16.dp))
                 Text("Túi đồ", Modifier.weight(1f), color = Deep,
-                    fontSize = 22.sp, fontWeight = FontWeight.Bold)
-                GardenBotanicalFrame(contentPadding = PaddingValues(8.dp)) {
+                    fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                GardenBotanicalFrame(contentPadding = PaddingValues(5.dp)) {
                     GardenRichText("🪙 ${state.coins}", color = Deep, fontSize = 13.sp)
                 }
             }
             MintCatalogTabs(if (tab == InventoryTab.ITEMS) 0 else 1,
                 { tab = if (it == 0) InventoryTab.ITEMS else InventoryTab.SEEDS },
-                Modifier.padding(horizontal = 16.dp, vertical = 8.dp))
+                Modifier.padding(horizontal = 10.dp, vertical = 3.dp))
             if (targetPlotId != null && tab == InventoryTab.SEEDS) Text(
                 "Chọn hạt để gieo tại ô " + targetPlotId.toString().padStart(2, '0'),
-                Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+                Modifier.padding(horizontal = 10.dp, vertical = 3.dp),
                 color = Deep, fontSize = 13.sp)
             if (state.isLoading) LinearProgressIndicator(Modifier.fillMaxWidth())
             BoxWithConstraints(Modifier.weight(1f)) {
@@ -85,9 +85,9 @@ fun InventoryScreen(
                 columns = GridCells.Fixed(columnCount),
                 state = activeGrid,
                 modifier = Modifier.fillMaxSize().mintScrollEdges(activeGrid.canScrollBackward, activeGrid.canScrollForward),
-                contentPadding = PaddingValues(16.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                contentPadding = PaddingValues(10.dp),
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                verticalArrangement = Arrangement.spacedBy(6.dp)
             ) {
                 if (tab == InventoryTab.ITEMS) {
                     items(state.items.filter { it.count > 0 }, key = { it.id }) { product ->
@@ -98,7 +98,7 @@ fun InventoryScreen(
                     }
                     item(span = { GridItemSpan(maxLineSpan) }) {
                         Text("Chạm bình tưới để trang bị. Dùng phân bón tại màn hình cây; bình tưới dùng lâu dài.",
-                            Modifier.padding(top = 8.dp), color = Muted, fontSize = 13.sp, lineHeight = 18.sp)
+                            Modifier.padding(top = 8.dp), color = Muted, fontSize = 11.sp, lineHeight = 15.sp)
                     }
                 } else {
                     items(ownedSeeds, key = { it.id }) { seed ->
@@ -107,10 +107,10 @@ fun InventoryScreen(
                         }) { PaintedGardenPlant(seed.id, it) }
                     }
                     if (ownedSeeds.isEmpty() && !state.isLoading) item(span = { GridItemSpan(maxLineSpan) }) {
-                        Column(Modifier.fillMaxWidth().padding(vertical = 32.dp),
+                        Column(Modifier.fillMaxWidth().padding(vertical = 16.dp),
                             horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                            GardenArtwork(GardenArt.SEED, Modifier.size(96.dp))
+                            verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                            GardenArtwork(GardenArt.SEED, Modifier.size(48.dp))
                             Text("Chưa có hạt trong túi", color = Deep, fontWeight = FontWeight.Bold)
                             Text("Ghé tiệm để chọn hạt đầu tiên.", color = Muted)
                         }

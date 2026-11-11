@@ -27,7 +27,7 @@ import androidx.compose.foundation.lazy.items
 import com.mamxanh.app.presentation.ui.components.MintDepth
 import com.mamxanh.app.presentation.ui.components.mintDepth
 import com.mamxanh.app.presentation.ui.components.MintBackdrop
-import com.mamxanh.app.presentation.ui.components.MintHeader
+import com.mamxanh.app.presentation.ui.components.MintCompactHeader
 import com.mamxanh.app.presentation.ui.components.MintProgress
 import com.mamxanh.app.presentation.ui.components.MintSegments
 import androidx.compose.foundation.rememberScrollState
@@ -69,27 +69,27 @@ fun TasksScreen(state: TasksUiState, onIntent: (TasksIntent) -> Unit, modifier: 
     val done = state.phase.completed
     MintBackdrop(modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
-            MintHeader("Việc nhỏ", coins)
-            GardenBotanicalFrame(Modifier.padding(horizontal = 16.dp).fillMaxWidth(),
-                contentPadding = PaddingValues(12.dp)) {
+            MintCompactHeader(coins, title = "Việc nhỏ")
+            GardenBotanicalFrame(Modifier.padding(horizontal = 12.dp).fillMaxWidth(),
+                contentPadding = PaddingValues(6.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    GardenArtwork(GardenArt.SPROUT, Modifier.size(30.dp))
+                    GardenArtwork(GardenArt.SPROUT, Modifier.size(20.dp))
                     Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                        Text("Đã hoàn thành $done / ${state.phase.required} việc bắt buộc", color = Deep, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                        Text("Đã hoàn thành $done / ${state.phase.required} việc bắt buộc", color = Deep, fontWeight = FontWeight.Bold, fontSize = 12.sp)
                         MintProgress(done.toFloat() / state.phase.required.coerceAtLeast(1), Modifier.fillMaxWidth())
                     }
                 }
             }
             LazyColumn(Modifier.weight(1f).mintScrollEdges(listState.canScrollBackward, listState.canScrollForward),
-                state = listState, contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                state = listState, contentPadding = PaddingValues(10.dp),
+                verticalArrangement = Arrangement.spacedBy(5.dp)) {
                 if(state.isLoading && state.tasks.isEmpty()) item { LinearProgressIndicator(Modifier.fillMaxWidth()) }
                 if(!state.isLoading && filtered.isEmpty()) item {
-                    Column(Modifier.fillMaxWidth().padding(vertical = 24.dp), horizontalAlignment = Alignment.CenterHorizontally,
+                    Column(Modifier.fillMaxWidth().padding(vertical = 12.dp), horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                        com.mamxanh.app.presentation.ui.components.MintEmptySprout(Modifier.size(110.dp))
+                        com.mamxanh.app.presentation.ui.components.MintEmptySprout(Modifier.size(55.dp))
                         Text("Chưa có việc nào",
-                            color = Deep, fontSize = 21.sp, fontWeight = FontWeight.Bold,
+                            color = Deep, fontSize = 14.sp, fontWeight = FontWeight.Bold,
                             textAlign = androidx.compose.ui.text.style.TextAlign.Center)
                         Text("Hãy thêm việc nhỏ để xây dựng thói quen mỗi ngày.", color = Deep,
                             textAlign = androidx.compose.ui.text.style.TextAlign.Center)
@@ -108,7 +108,7 @@ fun TasksScreen(state: TasksUiState, onIntent: (TasksIntent) -> Unit, modifier: 
                 }
             }
             GardenPaintedButton("+ Thêm việc", { onIntent(TasksIntent.ShowAddDialog) },
-                Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 8.dp))
+                Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 2.dp))
         }
     }
     if (state.isAddingTask) AddTaskDialog(
@@ -123,7 +123,7 @@ fun TasksScreen(state: TasksUiState, onIntent: (TasksIntent) -> Unit, modifier: 
 @Composable
 private fun TaskQuestHeader(done: Int, total: Int, progress: Float, allComplete: Boolean, onAddTask: () -> Unit) {
     GardenBotanicalFrame(Modifier.fillMaxWidth()) {
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
             Text("Đã hoàn thành $done / $total việc", fontWeight = FontWeight.Bold, color = Deep)
             MintProgress(progress, Modifier.fillMaxWidth())
         }
@@ -140,12 +140,12 @@ private fun DailyRewardCard(canClaim: Boolean, onClaim: () -> Unit, claimed: Boo
                 border = BorderStroke(1.dp, Color(0xFFC8C7B7))) {
                 Row(Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Surface(shape = CircleShape, color = Color(0xFF939C80), modifier = Modifier.size(30.dp)) {
+                    horizontalArrangement = Arrangement.spacedBy(5.dp)) {
+                    Surface(shape = CircleShape, color = Color(0xFF939C80), modifier = Modifier.size(20.dp)) {
                         Icon(Icons.Rounded.Check, null, tint = Color(0xFFFFF9E9), modifier = Modifier.padding(5.dp))
                     }
                     Text("Đã nhận thưởng", Modifier.weight(1f), color = Color(0xFF626756),
-                        fontSize = 15.sp, lineHeight = 18.sp, fontWeight = FontWeight.Bold)
+                        fontSize = 12.sp, lineHeight = 18.sp, fontWeight = FontWeight.Bold)
                 }
             }
         } else GardenBotanicalFrame(Modifier.fillMaxWidth().clickable(enabled = canClaim,
@@ -154,10 +154,10 @@ private fun DailyRewardCard(canClaim: Boolean, onClaim: () -> Unit, claimed: Boo
             contentPadding = PaddingValues(horizontal = 10.dp, vertical = 8.dp),
             skin = com.mamxanh.app.presentation.ui.components.GardenPanelSkin.HINT) {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                Icon(Icons.Rounded.CardGiftcard, null, Modifier.size(32.dp), tint = Green)
+                Icon(Icons.Rounded.CardGiftcard, null, Modifier.size(20.dp), tint = Green)
                 Text("Thưởng hôm nay", Modifier.weight(1f),
-                    color = Deep, fontSize = 15.sp, lineHeight = 18.sp, fontWeight = FontWeight.Bold)
-                Text("+${com.mamxanh.shared.model.Balance.DAILY_CLEAR} xu", color = Deep, fontSize = 17.sp, lineHeight = 20.sp, fontWeight = FontWeight.Bold)
+                    color = Deep, fontSize = 12.sp, lineHeight = 18.sp, fontWeight = FontWeight.Bold)
+                Text("+${com.mamxanh.shared.model.Balance.DAILY_CLEAR} xu", color = Deep, fontSize = 12.sp, lineHeight = 15.sp, fontWeight = FontWeight.Bold)
             }
         }
     }
@@ -186,10 +186,10 @@ private fun TaskCard(task: Task, onComplete: () -> Unit, onTimer: () -> Unit, re
     val done = task.doneToday || readOnly
     val timer = task.config.verification == "TIMER"
     Column {
-        Row(Modifier.fillMaxWidth().heightIn(min = if (readOnly) 56.dp else 64.dp)
-            .mintDepth(RoundedCornerShape(18.dp), if (done) MintDepth.hint else MintDepth.card, 4.dp)
+        Row(Modifier.fillMaxWidth().heightIn(min = 48.dp)
+            .mintDepth(RoundedCornerShape(12.dp), if (done) MintDepth.hint else MintDepth.card, 4.dp)
             .clickable(enabled = !timer && !done && !busy && task.available, onClick = onComplete)
-            .padding(horizontal = 8.dp, vertical = 6.dp), verticalAlignment = Alignment.CenterVertically) {
+            .padding(horizontal = 6.dp, vertical = 2.dp), verticalAlignment = Alignment.CenterVertically) {
             GardenArtwork(when {
                 task.title.contains("bộ", ignoreCase = true) -> GardenArt.BOOTS
                 task.title.contains("nước", ignoreCase = true) -> GardenArt.GLASS
@@ -198,9 +198,9 @@ private fun TaskCard(task: Task, onComplete: () -> Unit, onTimer: () -> Unit, re
                 task.title.contains("Chuẩn bị", ignoreCase = true) -> GardenArt.CALENDAR
                 task.category.contains("Học", ignoreCase = true) -> GardenArt.BOOK
                 else -> GardenArt.SPROUT
-            }, Modifier.size(36.dp, 48.dp))
+            }, Modifier.size(20.dp, 28.dp))
             Column(Modifier.weight(1f).padding(horizontal = 3.dp)) {
-                Text(task.title, color = Deep, fontSize = 15.sp, fontWeight = FontWeight.Bold)
+                Text(task.title, color = Deep, fontSize = 12.sp, fontWeight = FontWeight.Bold)
                 if (!done) Text(task.category, color = Color(0xFF80562C), fontSize = 12.sp)
                 if (task.kind == "TODO" && task.due.isNotBlank()) Text("Hạn: " + task.due, color = Muted, fontSize = 11.sp)
                 if (done) Text("Đã xong", color = Green, fontSize = 12.sp)

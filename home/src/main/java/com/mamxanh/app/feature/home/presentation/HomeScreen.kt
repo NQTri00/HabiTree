@@ -67,12 +67,12 @@ fun HomeScreen(
                         .verticalScroll(scroll).padding(bottom=6.dp),
                         horizontalAlignment=Alignment.CenterHorizontally,verticalArrangement=Arrangement.spacedBy(4.dp)) {
                         if(tree == null) {
-                            MintEmptySprout(Modifier.size(110.dp))
-                            Text("Chưa có cây trong vườn",fontWeight=FontWeight.Bold,fontSize=17.sp,color=Deep)
+                            MintEmptySprout(Modifier.size(55.dp))
+                            Text("Chưa có cây trong vườn",fontWeight=FontWeight.Bold,fontSize=13.sp,color=Deep)
                             GardenPaintedButton("Gieo mầm đầu tiên",{onIntent(HomeIntent.OpenGarden)},Modifier.fillMaxWidth())
                         }
-                        GardenBotanicalFrame(Modifier.fillMaxWidth(),contentPadding=PaddingValues(10.dp),cornerSize=18.dp) {
-                            Column(verticalArrangement=Arrangement.spacedBy(8.dp)) {
+                        GardenBotanicalFrame(Modifier.fillMaxWidth(),contentPadding=PaddingValues(6.dp),cornerSize=12.dp) {
+                            Column(verticalArrangement=Arrangement.spacedBy(4.dp)) {
                                 if(tree!=null)MintTreeStatus("${tree.status.stageIndex+1}/${tree.status.stageCount}",
                                     tree.status.stateLabel,tree.status.waterLabel)
                                 MintMetricStrip(listOf("Hôm nay" to "${d.phase.earnedToday}/${com.mamxanh.shared.model.Balance.DAILY_CAP}",
@@ -102,13 +102,13 @@ private fun HomeLink(art: GardenArt, title: String, subtitle: String, onClick: (
     GardenBotanicalFrame(Modifier.fillMaxWidth().heightIn(min = 48.dp)
         .clickable(enabled = enabled, role = Role.Button, onClick = onClick),
         contentPadding = PaddingValues(6.dp), cornerSize = 14.dp) {
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            GardenArtwork(art, Modifier.size(24.dp))
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+            GardenArtwork(art, Modifier.size(16.dp))
             Column(Modifier.weight(1f)) {
                 Text(title, color = Deep, fontWeight = FontWeight.Bold, fontSize = 12.sp, lineHeight = 15.sp)
                 if (subtitle.isNotEmpty()) Text(subtitle, color = Deep, fontSize = 11.sp, lineHeight = 14.sp)
             }
-            if (enabled) Text("›", color = Green, fontSize = 22.sp)
+            if (enabled) Text("›", color = Green, fontSize = 16.sp)
         }
     }
 }

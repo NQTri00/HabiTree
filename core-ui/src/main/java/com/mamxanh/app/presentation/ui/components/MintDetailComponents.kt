@@ -20,7 +20,7 @@ import com.mamxanh.app.presentation.ui.*
 @Composable
 fun MintStatusPill(label: String, modifier: Modifier = Modifier) {
     Surface(modifier,shape=RoundedCornerShape(50),color=Color(0xFFE4F2EA),contentColor=Green) {
-        Text(label,Modifier.padding(horizontal=9.dp,vertical=5.dp),fontSize=10.sp,lineHeight=13.sp,fontWeight=FontWeight.Medium)
+        Text(label,Modifier.padding(horizontal=6.dp,vertical=3.dp),fontSize=10.sp,lineHeight=13.sp,fontWeight=FontWeight.Medium)
     }
 }
 
@@ -35,9 +35,9 @@ fun MintTreeStatus(stage: String,state: String,water: String) {
 fun MintMetricStrip(metrics: List<Pair<String,String>>, modifier: Modifier = Modifier) {
     Row(modifier.fillMaxWidth().height(IntrinsicSize.Min),horizontalArrangement=Arrangement.spacedBy(6.dp)) {
         metrics.forEach { (label,value) ->
-            Surface(Modifier.weight(1f).fillMaxHeight(),shape=RoundedCornerShape(14.dp),color=Color(0xFFF0F7F2)) {
-                Column(Modifier.padding(horizontal=8.dp,vertical=9.dp),horizontalAlignment=Alignment.CenterHorizontally) {
-                    Text(value,color=Deep,fontSize=16.sp,lineHeight=20.sp,fontWeight=FontWeight.Bold,textAlign=TextAlign.Center)
+            Surface(Modifier.weight(1f).fillMaxHeight(),shape=RoundedCornerShape(10.dp),color=Color(0xFFF0F7F2)) {
+                Column(Modifier.padding(horizontal=6.dp,vertical=4.dp),horizontalAlignment=Alignment.CenterHorizontally) {
+                    Text(value,color=Deep,fontSize=12.sp,lineHeight=15.sp,fontWeight=FontWeight.Bold,textAlign=TextAlign.Center)
                     Text(label,color=Muted,fontSize=10.sp,lineHeight=13.sp,textAlign=TextAlign.Center)
                 }
             }
@@ -51,9 +51,9 @@ fun MintCatalogCard(name: String,value: String,onClick: (() -> Unit)?=null,artwo
     val nameHeight=with(LocalDensity.current){30.sp.toDp()}
     GardenBotanicalFrame(Modifier.fillMaxWidth().then(if(onClick!=null)
         Modifier.clickable(role=Role.Button,onClickLabel="Chọn $name",onClick=onClick) else Modifier),
-        contentPadding=PaddingValues(8.dp),cornerSize=20.dp) {
+        contentPadding=PaddingValues(5.dp),cornerSize=13.dp) {
         Column(Modifier.fillMaxWidth(),horizontalAlignment=Alignment.CenterHorizontally,verticalArrangement=Arrangement.spacedBy(2.dp)) {
-            artwork(Modifier.fillMaxWidth().height(56.dp))
+            artwork(Modifier.fillMaxWidth().height(28.dp))
             Box(Modifier.fillMaxWidth().height(nameHeight),contentAlignment=Alignment.BottomCenter) {
                 Text(name,color=Deep,fontSize=12.sp,lineHeight=15.sp,fontWeight=FontWeight.Bold,
                     textAlign=TextAlign.Center,maxLines=2,overflow=TextOverflow.Ellipsis)
