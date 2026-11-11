@@ -45,7 +45,6 @@ fun ShopScreen(state: ShopUiState, onIntent: (ShopIntent) -> Unit, modifier: Mod
                             val owned=(state.wallet.inventory[product.id] ?: 0)>0
                             ShopProductCard(product.name,
                                 if(product.permanent && owned) if(state.wallet.equippedCan==product.id) "Đang dùng" else "Đã sở hữu" else "${product.price} xu",
-                                if(product.permanent) "Dùng lâu dài" else "Có ${state.wallet.inventory[product.id] ?: 0}",
                                 {selectedId=product.id}) {
                                 GardenArtwork(if(product.permanent)GardenArt.WATERING_CAN else GardenArt.FERTILIZER,it)
                             }
@@ -55,9 +54,7 @@ fun ShopScreen(state: ShopUiState, onIntent: (ShopIntent) -> Unit, modifier: Mod
                         }
                     } else {
                         items(shopCatalog,key={it.id}) { seed ->
-                            val profile=lifecycleProfile(seed.id)
                             ShopProductCard(seed.name,"${seed.price} xu",
-                                "${profile.tier} · ${profile.stageCount} dáng",
                                 {selectedId=seed.id}) {PaintedGardenPlant(seed.id,it)}
                         }
                         item(span={GridItemSpan(maxLineSpan)}) {
@@ -77,28 +74,20 @@ fun ShopScreen(state: ShopUiState, onIntent: (ShopIntent) -> Unit, modifier: Mod
             onEquip={onIntent(ShopIntent.Equip(id));selectedId=null}) { quantity,key ->onIntent(ShopIntent.Purchase(id,quantity,key))}
     }
     state.outcome?.let { outcome ->
-        AlertDialog(onDismissRequest={selectedId=null;onIntent(ShopIntent.DismissOutcome)},
-            title={Text(if(outcome.success)"Đã thêm vào túi" else "Chưa thể mua")},
-            text={Column(verticalArrangement=Arrangement.spacedBy(8.dp)) {
-                Text(outcome.name);Text(outcome.message)
-                if(outcome.success) {
-                    Text("Số xu: ${outcome.beforeCoins} → ${outcome.afterCoins}")
-                    Text("Trong túi: ${outcome.beforeOwned} → ${outcome.afterOwned}")
-                }
-            }},
-            confirmButton={TextButton(onClick={selectedId=null;onIntent(ShopIntent.DismissOutcome)}){Text("OK")}})
+        LaunchedEffect(outcome) { selectedId = null }
+        MintFeedback(if(outcome.success) "Đã thêm ${outcome.name} vào túi" else outcome.message,
+            {selectedId=null;onIntent(ShopIntent.DismissOutcome)})
     }
 }
 
 @Composable
-private fun ShopProductCard(name:String,price:String,detail:String,onClick:()->Unit,art: @Composable (Modifier) -> Unit) {
+private fun ShopProductCard(name:String,price:String,onClick:()->Unit,art: @Composable (Modifier) -> Unit) {
     GardenBotanicalFrame(Modifier.fillMaxWidth().clickable(role=androidx.compose.ui.semantics.Role.Button,onClick=onClick),
         contentPadding=PaddingValues(8.dp),cornerSize=20.dp) {
-        Column(Modifier.fillMaxWidth(),horizontalAlignment=Alignment.CenterHorizontally,verticalArrangement=Arrangement.spacedBy(6.dp)) {
-            art(Modifier.fillMaxWidth().height(64.dp))
-            Text(name,color=Deep,fontSize=12.sp,lineHeight=15.sp,minLines=2,fontWeight=FontWeight.Bold,textAlign=TextAlign.Center)
+        Column(Modifier.fillMaxWidth(),horizontalAlignment=Alignment.CenterHorizontally,verticalArrangement=Arrangement.spacedBy(2.dp)) {
+            art(Modifier.fillMaxWidth().height(56.dp))
+            Text(name,color=Deep,fontSize=12.sp,lineHeight=15.sp,fontWeight=FontWeight.Bold,textAlign=TextAlign.Center)
             Text(price,color=Green,fontSize=12.sp,fontWeight=FontWeight.Bold,textAlign=TextAlign.Center)
-            Text(detail,color=Muted,fontSize=11.sp,lineHeight=14.sp,textAlign=TextAlign.Center)
         }
     }
 }

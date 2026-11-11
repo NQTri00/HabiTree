@@ -69,11 +69,12 @@ data class TreeStatus(
     val canWater get() = alive && !waterActive
     val canFertilize get() = state == TreeGrowthState.GROWING && waterActive &&
         sampledAt >= fertilizerEndsAt && sampledAt >= fertilizerAvailableAt
+    val percentage get() = (stageProgress.coerceIn(0f, 1f) * 100).toInt()
     val stageLabel get() = "Giai đoạn ${stageIndex+1}/$stageCount"
     val stateLabel get() = when(state) { TreeGrowthState.GROWING -> "Đang lớn"; TreeGrowthState.MATURE -> "Trưởng thành"; TreeGrowthState.DEAD -> "Đã khô héo" }
-    val waterLabel get() = if (!alive) "Không thể tưới" else if (waterActive) "Còn ${remainingTime(wateredUntil,sampledAt)}" else "Cần tưới"
+    val waterLabel get() = if (!alive) "Không thể tưới" else if (waterActive) "Đã tưới" else "Cần tưới"
     val fertilizerLabel get() = if (fertilizerEndsAt > sampledAt)
-        "${FertilizerTier.fromId(fertilizerId)?.label ?: "Phân bón"} · ${remainingTime(fertilizerEndsAt,sampledAt)}" else ""
+        "${FertilizerTier.fromId(fertilizerId)?.label ?: "Phân bón"} đang có tác dụng" else ""
 }
 fun remainingTime(until: Long, now: Long): String {
     val minutes = ((until-now).coerceAtLeast(0)+59_999)/60_000

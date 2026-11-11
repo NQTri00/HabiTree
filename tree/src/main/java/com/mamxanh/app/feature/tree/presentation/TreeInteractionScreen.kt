@@ -32,91 +32,82 @@ fun TreeInteractionScreen(
     var tab by rememberSaveable(tree.id){mutableIntStateOf(0)}
     MintBackdrop(modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
-            MintCompactHeader(coins)
-            Column(Modifier.weight(1f).mintScrollEdges(scroll.canScrollBackward,scroll.canScrollForward)
-                .verticalScroll(scroll).padding(horizontal=12.dp,vertical=8.dp),
-                horizontalAlignment=Alignment.CenterHorizontally,verticalArrangement=Arrangement.spacedBy(8.dp)) {
-                GardenPaintedButton("‹ Vườn ươm",onOpenGarden,Modifier.fillMaxWidth(),primary=false)
-                val hero=mintTreeHeroHeight()
-                Box(Modifier.fillMaxWidth().heightIn(min=hero),contentAlignment=Alignment.Center) {
-                    GardenPlantPortrait(tree.speciesId,tree.decoration,sharedTreeModifier.fillMaxWidth()
-                        .padding(horizontal=40.dp).height(hero),fitVisibleArtwork=true,
-                        artworkAlignment=Alignment.Center,withered=!status.alive)
-                    if(status.alive)Column(Modifier.align(Alignment.CenterEnd).width(48.dp)) {
-                        MintCareIcon(GardenArt.WATERING_CAN,status.waterLabel,status.canWater && !state.isLoading,
-                            {onIntent(TreeIntent.Water(tree.id))},checked=status.waterActive)
-                        MintCareIcon(GardenArt.FERTILIZER,"Bón · $fertilizerCount túi",
-                            status.canFertilize && fertilizerCount>0 && !state.isLoading,
-                            {tab=0;onIntent(TreeIntent.SetPanelExpanded(true))})
-                    }
-                }
-                GardenBotanicalFrame(Modifier.fillMaxWidth(),contentPadding=PaddingValues(8.dp)) {
-                    Row(verticalAlignment=Alignment.CenterVertically) {
-                        IconButton(onClick={onPrevious?.invoke()},enabled=onPrevious!=null){Text("‹",fontSize=24.sp,color=Deep)}
-                        Column(Modifier.weight(1f),horizontalAlignment=Alignment.CenterHorizontally,verticalArrangement=Arrangement.spacedBy(4.dp)) {
-                            Text(tree.name,color=Deep,fontWeight=FontWeight.Bold,fontSize=17.sp,textAlign=TextAlign.Center)
-                            Text("${status.stageLabel} · ${status.stateLabel}",color=Green,fontSize=12.sp)
-                            MintProgress(status.stageProgress,Modifier.fillMaxWidth())
-                        }
-                        IconButton(onClick={onNext?.invoke()},enabled=onNext!=null){Text("›",fontSize=24.sp,color=Deep)}
-                    }
-                }
-                Text("${status.waterLabel} · ${status.cue.label}",color=Deep,fontSize=13.sp)
-                Text("Ngày chăm sóc ${status.growthDays}/${status.requiredDays}",color=Muted,fontSize=12.sp)
-                if(status.nextStageActiveMillis>0) Text("Dáng tiếp theo: khoảng ${remainingTime(status.nextStageActiveMillis,0)} tưới hiệu quả",
-                    color=Muted,fontSize=12.sp,textAlign=TextAlign.Center)
-                if(status.fertilizerLabel.isNotBlank())Text(status.fertilizerLabel,color=Green,fontSize=12.sp)
-                if(status.alive) {
-                    MintSegments(listOf("Chăm sóc","Trang trí","Thông tin"),tab,{tab=it;onIntent(TreeIntent.SetPanelExpanded(true))})
-                    if(status.state==TreeGrowthState.MATURE)GardenPaintedButton("Bán cây trưởng thành",
-                        {onIntent(TreeIntent.AskDisposition(tree.id,true))},Modifier.fillMaxWidth(),enabled=!state.isLoading)
-                } else Text("Cây đã khô héo vĩnh viễn. Dọn cây để dùng lại ô trồng.",color=Muted,textAlign=TextAlign.Center)
-                GardenPaintedButton("Dọn cây",{onIntent(TreeIntent.AskDisposition(tree.id,false))},
-                    Modifier.fillMaxWidth(),primary=false,enabled=!state.isLoading)
-            }
-        }
-        if(state.isPanelExpanded && status.alive)ModalBottomSheet(
-            onDismissRequest={onIntent(TreeIntent.SetPanelExpanded(false))},
-            sheetState=rememberModalBottomSheetState(skipPartiallyExpanded=true),containerColor=androidx.compose.ui.graphics.Color(0xFFF1FAF5)) {
-            Column(Modifier.fillMaxWidth().fillMaxHeight(.75f).navigationBarsPadding().padding(horizontal=16.dp),
-                verticalArrangement=Arrangement.spacedBy(12.dp)) {
-                MintSegments(listOf("Chăm sóc","Trang trí","Thông tin"),tab,{tab=it})
-                Column(Modifier.weight(1f).verticalScroll(rememberScrollState()),verticalArrangement=Arrangement.spacedBy(12.dp)) {
-                    when(tab) {
-                        0 -> {
-                            Text(status.waterLabel,color=Deep,fontWeight=FontWeight.Bold)
-                            GardenPaintedButton("Tưới cây",{onIntent(TreeIntent.Water(tree.id))},Modifier.fillMaxWidth(),
-                                enabled=status.canWater && !state.isLoading)
-                            Text("Phân chỉ tăng tốc khi cây được tưới; không cộng dồn. Mỗi cây dùng một lần trong 24 giờ.",color=Muted)
-                            FertilizerTier.entries.forEach { tier ->
-                                val count=inventory[tier.itemId] ?: 0
-                                GardenPaintedButton("${tier.label} · $count túi · ${tier.rate/1000.0}×",
-                                    {onIntent(TreeIntent.Fertilize(tree.id,tier.itemId))},Modifier.fillMaxWidth(),primary=false,
-                                    enabled=status.canFertilize && count>0 && !state.isLoading)
+            BoxWithConstraints(Modifier.weight(1f)) {
+                val hero=minOf(mintTreeHeroHeight(tree.speciesId,maxWidth),maxHeight*.60f)
+                Column(Modifier.fillMaxSize().padding(horizontal=10.dp)) {
+                    GardenBotanicalFrame(Modifier.fillMaxWidth(),contentPadding=PaddingValues(4.dp),cornerSize=18.dp) {
+                        Column {
+                            Row(verticalAlignment=Alignment.CenterVertically) {
+                                TextButton(onClick=onOpenGarden,modifier=Modifier.width(48.dp)) {Text("‹",fontSize=22.sp,color=Deep)}
+                                Text(tree.name,Modifier.weight(1f),color=Deep,fontWeight=FontWeight.Bold,fontSize=13.sp,textAlign=TextAlign.Center)
+                                Text("$coins xu",color=Muted,fontSize=11.sp)
+                                if(onPrevious!=null)IconButton(onClick=onPrevious){Text("‹",fontSize=20.sp,color=Deep)}
+                                if(onNext!=null)IconButton(onClick=onNext){Text("›",fontSize=20.sp,color=Deep)}
                             }
-                            if(!status.canFertilize)Text(when {
-                                status.state==TreeGrowthState.MATURE -> "Cây đã trưởng thành, không cần phân bón."
-                                !status.waterActive -> "Hãy tưới cây trước."
-                                status.fertilizerEndsAt>status.sampledAt -> "Phân bón đang có tác dụng."
-                                else -> "Có thể bón lại sau ${remainingTime(status.fertilizerAvailableAt,status.sampledAt)}."
-                            },color=Muted)
-                            GardenPaintedButton("Ghé Tiệm hạt",{onIntent(TreeIntent.OpenFertilizerShop)},Modifier.fillMaxWidth(),primary=false)
+                            Row(Modifier.fillMaxWidth().padding(horizontal=8.dp),verticalAlignment=Alignment.CenterVertically,
+                                horizontalArrangement=Arrangement.spacedBy(8.dp)) {
+                                MintProgress(status.stageProgress,Modifier.weight(1f))
+                                Text("${status.percentage}%",color=Green,fontSize=11.sp,fontWeight=FontWeight.Bold)
+                            }
                         }
-                        1 -> DecorationPicker(tree.decoration,{onIntent(TreeIntent.Decorate(tree.id,it))})
-                        else -> {
-                            val profile=lifecycleProfile(tree.speciesId)
-                            Text("Loài: ${catalog.first{it.id==tree.speciesId}.name}",color=Deep)
-                            Text("${profile.stageCount} giai đoạn · Ít nhất ${profile.minimumAgeDays} ngày",color=Deep)
-                            Text("Ngày trồng: ${tree.planted}",color=Deep)
-                            Text("Ngày chăm sóc: ${status.growthDays}/${status.requiredDays}",color=Deep)
-                            Text("Lần tưới gần nhất: " + if(status.lastWateredAt>0)
-                                java.text.DateFormat.getDateTimeInstance().format(java.util.Date(status.lastWateredAt)) else "Chưa tưới",color=Deep)
-                            Text("Mỗi ngày tối đa một ngày tăng trưởng. Cây ngừng lớn khi khô và có thể khô héo nếu bị bỏ quên lâu.",color=Muted)
+                    }
+                    Box(Modifier.fillMaxWidth().height(hero),contentAlignment=Alignment.Center) {
+                        GardenPlantPortrait(tree.speciesId,tree.decoration,sharedTreeModifier.fillMaxWidth()
+                            .padding(horizontal=36.dp).height(hero),fitVisibleArtwork=true,
+                            artworkAlignment=Alignment.Center,withered=!status.alive)
+                        if(status.alive)Column(Modifier.align(Alignment.CenterEnd).width(48.dp)) {
+                            MintCareIcon(GardenArt.WATERING_CAN,status.waterLabel,status.canWater && !state.isLoading,
+                                {onIntent(TreeIntent.Water(tree.id))},checked=status.waterActive)
+                            MintCareIcon(GardenArt.FERTILIZER,"Bón · $fertilizerCount túi",fertilizerCount>0 && status.canFertilize && !state.isLoading,
+                                {tab=0;onIntent(TreeIntent.SetPanelExpanded(false))})
+                        }
+                    }
+                    Column(Modifier.weight(1f).mintScrollEdges(scroll.canScrollBackward,scroll.canScrollForward)
+                        .verticalScroll(scroll).padding(bottom=6.dp),verticalArrangement=Arrangement.spacedBy(4.dp)) {
+                        Text("${status.stageLabel} · ${status.stateLabel} · ${status.cue.label}",color=Deep,fontSize=11.sp)
+                        if(status.alive) {
+                            Row(Modifier.fillMaxWidth()) {
+                                listOf("Chăm sóc","Trang trí","Thông tin").forEachIndexed { index,label ->
+                                    TextButton(onClick={tab=index;onIntent(TreeIntent.SetPanelExpanded(false))},modifier=Modifier.weight(1f),
+                                        contentPadding=PaddingValues(4.dp)) {
+                                        Text(label,color=if(tab==index)Green else Muted,fontWeight=if(tab==index)FontWeight.Bold else FontWeight.Normal,fontSize=12.sp)
+                                    }
+                                }
+                            }
+                            when(tab) {
+                                0 -> {
+                                    Text(status.waterLabel + if(status.fertilizerLabel.isNotBlank()) " · ${status.fertilizerLabel}" else "",color=Muted,fontSize=11.sp)
+                                    if(status.state==TreeGrowthState.GROWING) FertilizerTier.entries.forEach { tier ->
+                                        val count=inventory[tier.itemId] ?: 0
+                                        OutlinedButton(onClick={onIntent(TreeIntent.Fertilize(tree.id,tier.itemId))},
+                                            modifier=Modifier.fillMaxWidth().heightIn(min=48.dp),contentPadding=PaddingValues(horizontal=10.dp,vertical=4.dp),
+                                            colors=ButtonDefaults.outlinedButtonColors(contentColor=Green),
+                                            enabled=status.canFertilize && count>0 && !state.isLoading) {
+                                            Text("${tier.label} · $count túi",Modifier.weight(1f),fontSize=12.sp)
+                                            Text("${tier.rate/1000.0}×",fontSize=11.sp)
+                                        }
+                                    }
+                                    if(!status.canFertilize && status.state==TreeGrowthState.GROWING)
+                                        Text(if(!status.waterActive)"Hãy tưới cây trước." else "Cây chưa cần thêm phân bón.",color=Muted,fontSize=11.sp)
+                                    TextButton(onClick={onIntent(TreeIntent.OpenFertilizerShop)}){Text("Ghé Tiệm hạt",color=Green,fontSize=12.sp)}
+                                }
+                                1 -> DecorationPicker(tree.decoration,{onIntent(TreeIntent.Decorate(tree.id,it))})
+                                else -> {
+                                    Text("Loài: ${catalog.first{it.id==tree.speciesId}.name}",color=Deep,fontSize=12.sp)
+                                    Text("${status.stageCount} dáng · Ngày trồng: ${tree.planted}",color=Muted,fontSize=11.sp)
+                                    Text("Tưới cây để tiếp tục phát triển. Chăm sóc đều đặn giúp cây khỏe mạnh.",color=Muted,fontSize=11.sp)
+                                }
+                            }
+                            if(status.state==TreeGrowthState.MATURE) TextButton(
+                                onClick={onIntent(TreeIntent.AskDisposition(tree.id,true))},enabled=!state.isLoading) {
+                                Text("Bán cây trưởng thành",color=Green,fontSize=12.sp)
+                            }
+                        } else Text("Cây đã khô héo vĩnh viễn.",color=Muted,fontSize=12.sp)
+                        TextButton(onClick={onIntent(TreeIntent.AskDisposition(tree.id,false))},enabled=!state.isLoading) {
+                            Text("Dọn cây",color=Muted,fontSize=12.sp)
                         }
                     }
                 }
-                GardenPaintedButton("Đóng",{onIntent(TreeIntent.SetPanelExpanded(false))},Modifier.fillMaxWidth(),primary=false)
-                Spacer(Modifier.height(8.dp))
             }
         }
         if(state.dispositionId==tree.id)AlertDialog(

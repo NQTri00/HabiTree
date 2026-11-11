@@ -129,7 +129,7 @@ fun GardenScreen(state: GardenUiState, onIntent: (GardenIntent) -> Unit, modifie
                                 if(tree != null) {
                                     MintProgress(tree.status.stageProgress, Modifier.fillMaxWidth())
                                     Text("${tree.status.stageLabel} · ${tree.status.stateLabel}", fontSize = 12.sp, color = Deep)
-                                    Text("${tree.status.waterLabel} · ${tree.status.growthDays}/${tree.status.requiredDays} ngày", fontSize = 12.sp, color = Muted)
+                                    Text("${tree.status.percentage}% · ${tree.status.waterLabel}", fontSize = 12.sp, color = Muted)
                                     if(tree.status.fertilizerLabel.isNotBlank()) Text(tree.status.fertilizerLabel,fontSize=11.sp,color=Green)
                                 } else {
                                     GardenPaintedButton(if(plot.isUnlocked) "Gieo cây" else "Mở ô · ${com.mamxanh.shared.model.Balance.plot(garden.plots.count { it.isUnlocked })} xu",
@@ -152,7 +152,7 @@ fun GardenScreen(state: GardenUiState, onIntent: (GardenIntent) -> Unit, modifie
     }
     waterAllKey?.let { key ->
         AlertDialog(onDismissRequest={waterAllKey=null},title={Text("Tưới tất cả?")},text={
-            Text("Bình ${com.mamxanh.shared.model.WateringCanTier.fromId(garden.equippedCan).hours} giờ · Miễn phí\nSẽ tưới: ${garden.waterAll.eligible}\nĐã được tưới: ${garden.waterAll.active}\nĐã khô héo: ${garden.waterAll.dead}\nCây trưởng thành được tưới để duy trì sức sống.")
+            Text("Tưới miễn phí\nSẽ tưới: ${garden.waterAll.eligible}\nĐã được tưới: ${garden.waterAll.active}\nĐã khô héo: ${garden.waterAll.dead}\nCây trưởng thành được tưới để duy trì sức sống.")
         },confirmButton={TextButton(onClick={onIntent(GardenIntent.WaterAll(key));waterAllKey=null},
             enabled=!state.isLoading && garden.waterAll.eligible>0){Text("Tưới cây")}},
             dismissButton={TextButton(onClick={waterAllKey=null}){Text("Để sau")}})
@@ -216,10 +216,7 @@ fun GardenScreen(state: GardenUiState, onIntent: (GardenIntent) -> Unit, modifie
             dismissButton = { TextButton(onClick = { onDismissPlanting() }) { Text("Để sau") } })
     }
     state.message?.let { message ->
-        AlertDialog(onDismissRequest = { onIntent(GardenIntent.DismissMessage) },
-            title = { Text(if(message.startsWith("Đã gieo")) "✓ Đã gieo cây!" else "Thông báo", fontWeight = FontWeight.Bold) },
-            text = { Text(message.substringAfter("\n", message)) },
-            confirmButton = { TextButton(onClick = { onIntent(GardenIntent.DismissMessage) }) { Text(if(message.startsWith("Đã gieo")) "Về vườn" else "OK") } })
+        MintFeedback(message, { onIntent(GardenIntent.DismissMessage) })
     }
 }
 

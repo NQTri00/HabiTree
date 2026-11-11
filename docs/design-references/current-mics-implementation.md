@@ -159,6 +159,16 @@ No complete demo screenshot is used as a runtime background.
 - Installed over the main app without resetting data. Main profile retained50 coins,4 trees,6 unlocked plots,1 fertilizer and1 succulent seed. Legacy mature trees remained mature; partial succulent progress maps to stage3/6 with5/14 care days. Basic can is granted/equipped and grace starts on update. No main-profile purchase, task completion, care or disposition was used for QA.
 - See [Phase2 execution plan and evidence](../superpowers/plans/2026-11-11-phase-2-execution.md). Earlier sections describe historical checkpoints; this section supersedes their old catalog, water-volume and growth rules.
 
+## Compact cards, percentages and pinned trees — latest preference
+
+- Shop cards now contain artwork, name and price/ownership only. Removed reserved two-line names and secondary descriptions; name/price spacing is2dp. Inventory names and quantities use the same compact spacing and56dp artwork.
+- Home and tree detail keep the static tree and percentage outside the scrolling information area. Compact care tabs are inline; they no longer open a sheet over the tree. The wide succulent scene trims unused canvas space without reducing its visible image size.
+- Growth is shown as a stage percentage. Removed watering/fertilizer countdowns, next-stage time estimates, visible care-day/maturity requirements and Shop growth-duration promises. Internal simulation/deadlines and maturity constraints are unchanged.
+- Replaced planting, purchase, Water All, task/reward and global success dialogs with a small mint feedback bar that dismisses after3.5s. Financial/destructive confirmations remain. Success does not require an OK tap.
+- Debug and isolated verification APK builds passed (final29s). QA used com.mamxanh.app.verification.compact: planted its starter, watered it, completed five Click tasks and bought one fertilizer (wallet40→5). Captured nonmodal task/purchase feedback and verified it expires without blocking navigation.
+- Inspected compact Shop/Inventory cards, Home's complete scroll range and tree detail care footer at360dp; the tree stays in place while lower content scrolls. Checked320dp/font1.3, including inline fertilizer controls and two-column catalogs. No preview atlas or mass rendering used.
+- Latest preference supersedes earlier evidence describing visible countdowns, care-day counts and modal success outcomes.
+
 ## Acceptance still open
 Exact plant/icon silhouettes and illustration style differ from the new sheets; reused/generated art is not lossless source extraction. Do not describe this checkpoint as 100% visually identical.
 The full 393/412dp, landscape/IME, long-name, process-death, reward-claim, transaction-race and every annotated outcome matrix has not been re-executed for this redesign. Existing historical evidence does not automatically close those checks.

@@ -75,9 +75,8 @@ fun PurchaseConfirmation(id: String, state: ShopUiState, onDismiss: () -> Unit, 
                         }
                         if(seed != null) {
                             val profile=com.mamxanh.shared.model.lifecycleProfile(id)
-                            Text("${profile.tier} · ${profile.stageCount} dáng · Ít nhất ${profile.requiredGrowthDays} ngày chăm sóc",
+                            Text("${profile.tier} · ${profile.stageCount} dáng",
                                 color=Green,fontSize=12.sp,textAlign=TextAlign.Center)
-                            Text("Mỗi ngày tối đa một ngày tăng trưởng. Có thể lâu hơn nếu bỏ lỡ chăm sóc.",color=Muted,fontSize=12.sp,textAlign=TextAlign.Center)
                         }
                         if(!permanent) QuantitySelector(quantity, enabled, { quantity-- }, { quantity++ })
                         Column(Modifier.fillMaxWidth().mintDepth(RoundedCornerShape(18.dp), MintDepth.secondary, 2.dp).padding(12.dp),

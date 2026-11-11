@@ -21,12 +21,17 @@ import com.mamxanh.app.presentation.ui.*
 
 /** Half the usable app window, including the space occupied by app navigation. */
 @Composable
-fun mintTreeHeroHeight(): Dp {
+fun mintTreeHeroHeight(speciesId: String = "", availableWidth: Dp? = null): Dp {
     val density = LocalDensity.current
     val windowHeight = with(density) { LocalWindowInfo.current.containerSize.height.toDp() }
     val bars = WindowInsets.systemBars.asPaddingValues()
-    return ((windowHeight - bars.calculateTopPadding() - bars.calculateBottomPadding()) * .5f)
+    val halfWindow = ((windowHeight - bars.calculateTopPadding() - bars.calculateBottomPadding()) * .5f)
         .coerceAtLeast(240.dp)
+    // The temporary succulent sprite is wide. Trim empty scene space, retaining
+    // its full visible width and aspect ratio without another bitmap decode.
+    return if(speciesId == "succulent" && availableWidth != null)
+        minOf(halfWindow, (availableWidth - 92.dp).coerceAtLeast(48.dp) * .62f)
+    else halfWindow
 }
 
 @Composable

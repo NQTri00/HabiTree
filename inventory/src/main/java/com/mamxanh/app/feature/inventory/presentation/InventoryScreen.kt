@@ -139,10 +139,10 @@ private fun InventoryCard(
         contentPadding = PaddingValues(8.dp), cornerSize = 20.dp
     ) {
         Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            artwork(Modifier.fillMaxWidth().height(64.dp).semantics { contentDescription = name })
+            verticalArrangement = Arrangement.spacedBy(2.dp)) {
+            artwork(Modifier.fillMaxWidth().height(56.dp).semantics { contentDescription = name })
             Text(name, color = Deep, fontSize = 12.sp, lineHeight = 15.sp,
-                fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, minLines = 2)
+                fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
             Text(quantity, color = Green, fontWeight = FontWeight.Bold,
                 fontSize = 12.sp, lineHeight = 15.sp, textAlign = TextAlign.Center)
         }
