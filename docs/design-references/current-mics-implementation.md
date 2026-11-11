@@ -142,6 +142,12 @@ No complete demo screenshot is used as a runtime background.
 - Removed visible completion, wallet and care event logs and the detailed daily-record panel from Journal. The summary/chart remain; persisted records continue supporting correct rewards and statistics.
 - Debug and verification APK builds passed (21 seconds). Device verification covers the compact list, Timer controls and Journal's complete scroll range.
 
+## Shop quantity and item-card polish — latest follow-up
+- Quantity selection now uses a shared-style mint pill with48dp circular minus/plus controls, a centered count, angled gradients and soft shadows. The confirmation centers the artwork/name, wraps price/stock badges and groups the total/balance in a compact panel.
+- Purchase/cancel actions stay below the scrollable content. Insufficient funds show the missing amount and earning estimate rather than a negative projected balance.
+- Removed the oversized wrapped action button inside the three-column Items card. Tapping the card opens the same quantity confirmation as seeds.
+- Debug and verification APK builds passed (25 seconds). Inspected360dp and320dp/font1.3×, changed quantity1→2, checked the70-coin total and disabled purchase, and scrolled the complete confirmation. No purchase was made.
+
 ## Acceptance still open
 Exact plant/icon silhouettes and illustration style differ from the new sheets; reused/generated art is not lossless source extraction. Do not describe this checkpoint as 100% visually identical.
 The full 393/412dp, landscape/IME, long-name, process-death, reward-claim, transaction-race and every annotated outcome matrix has not been re-executed for this redesign. Existing historical evidence does not automatically close those checks.

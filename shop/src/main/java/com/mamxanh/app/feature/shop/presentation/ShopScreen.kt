@@ -46,7 +46,11 @@ fun ShopScreen(state: ShopUiState, onIntent: (ShopIntent) -> Unit, modifier: Mod
                 contentPadding = PaddingValues(16.dp)) {
                 if (state.filter == ShopFilter.ITEMS) {
                     item(key = "fertilizer") {
-                        GardenBotanicalFrame(Modifier.fillMaxWidth(), contentPadding = PaddingValues(8.dp), cornerSize = 20.dp) {
+                        GardenBotanicalFrame(Modifier.fillMaxWidth().clickable(
+                            enabled = !state.isPurchasing && !state.isLoading,
+                            role = androidx.compose.ui.semantics.Role.Button,
+                            onClickLabel = "Chọn phân hữu cơ") { selectedId = "fertilizer" },
+                            contentPadding = PaddingValues(8.dp), cornerSize = 20.dp) {
                             Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.spacedBy(6.dp)) {
                                 GardenArtwork(GardenArt.FERTILIZER, Modifier.fillMaxWidth().height(64.dp))
@@ -55,9 +59,6 @@ fun ShopScreen(state: ShopUiState, onIntent: (ShopIntent) -> Unit, modifier: Mod
                                 GardenRichText("🪙 ${com.mamxanh.shared.model.Balance.FERTILIZER} xu", color = Deep, fontSize = 12.sp, lineHeight = 15.sp)
                                 Text("Có ${state.wallet.inventory["fertilizer"] ?: 0}", color = Green,
                                     fontSize = 11.sp, lineHeight = 14.sp)
-                                GardenPaintedButton("Chi tiết", { selectedId = "fertilizer" },
-                                    Modifier.fillMaxWidth(),
-                                    enabled = !state.isPurchasing && !state.isLoading)
                             }
                         }
                     }
