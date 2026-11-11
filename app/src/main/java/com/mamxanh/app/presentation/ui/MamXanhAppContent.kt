@@ -63,8 +63,9 @@ fun MamXanhAppContent(
                         seeds = com.mamxanh.app.feature.garden.domain.model.seedCatalog.map {
                             InventorySeed(it.id, it.name, wallet.inventory[it.id] ?: 0)
                         },
-                        fertilizerCount = wallet.inventory["fertilizer"] ?: 0,
-                        wateringCanMl = dashboard.dashboard.wateringCanMl,
+                        items = com.mamxanh.shared.model.careProducts.map {
+                            InventoryItem(it.id,it.name,wallet.inventory[it.id] ?: 0,it.permanent,it.id==wallet.equippedCan)
+                        },
                         coins = wallet.coins,
                         isLoading = shop.isLoading || garden.isLoading
                     ),
@@ -72,6 +73,7 @@ fun MamXanhAppContent(
                     onSelectSeed = { onAppIntent(AppIntent.SelectInventorySeed(it)) },
                     onOpenShop = { onAppIntent(AppIntent.Navigate(AppDestination.SHOP)) },
                     targetPlotId = app.inventoryPlotId,
+                    onEquip = { onShopIntent(ShopIntent.Equip(it)) },
                     modifier = Modifier.padding(padding)
                 )
             } else SharedTransitionLayout(Modifier.fillMaxSize().padding(padding)) {
@@ -83,11 +85,9 @@ fun MamXanhAppContent(
                         val (fromDestination, fromTreeId) = initialState
                         val (toDestination, toTreeId) = targetState
                         if (fromTreeId == null && toTreeId != null) {
-                            (fadeIn(tween(450)) + scaleIn(initialScale = 0.82f, animationSpec = tween(450))) togetherWith
-                                (fadeOut(tween(300)) + scaleOut(targetScale = 1.04f, animationSpec = tween(450)))
+                            EnterTransition.None togetherWith ExitTransition.None
                         } else if (fromTreeId != null && toTreeId == null) {
-                            (fadeIn(tween(450)) + scaleIn(initialScale = 1.04f, animationSpec = tween(450))) togetherWith
-                                (fadeOut(tween(300)) + scaleOut(targetScale = 0.82f, animationSpec = tween(450)))
+                            EnterTransition.None togetherWith ExitTransition.None
                         } else {
                             val direction = if (AppDestination.entries.indexOf(toDestination) >= AppDestination.entries.indexOf(fromDestination)) 1 else -1
                             (slideInHorizontally(tween(260)) { direction * it / 12 } + fadeIn(tween(220))) togetherWith
@@ -100,23 +100,13 @@ fun MamXanhAppContent(
                     val routeKey = routeTreeId?.let { "tree-$it" } ?: "destination-${destination.name}"
                     routeStates.SaveableStateProvider(routeKey) {
                     val routeTree = garden.garden.trees.firstOrNull { it.id == routeTreeId }
-                    val treeSharedModifier = when {
-                        routeTree != null -> Modifier.sharedElement(
-                            rememberSharedContentState(key = "tree-${routeTree.id}"),
-                            animatedVisibilityScope = this
-                        )
-                        homeTreeId != null -> Modifier.sharedElement(
-                            rememberSharedContentState(key = "tree-$homeTreeId"),
-                            animatedVisibilityScope = this
-                        )
-                        else -> Modifier
-                    }
+                    val treeSharedModifier = Modifier
                     when {
                         routeTree != null -> TreeInteractionScreen(
-                            tree = FeatureTree(routeTree.id, routeTree.speciesId, routeTree.name, routeTree.growth, routeTree.planted, routeTree.decoration, routeTree.wateredToday),
+                            tree = routeTree,
                             state = treeState,
-                            fertilizerCount = wallet.inventory["fertilizer"] ?: 0,
-                            wateringCanMl = dashboard.dashboard.wateringCanMl,
+                            fertilizerCount = com.mamxanh.shared.model.FertilizerTier.entries.sumOf { wallet.inventory[it.itemId] ?: 0 },
+                            inventory = wallet.inventory,
                             onIntent = { onTreeIntent(it) },
                             modifier = Modifier,
                             sharedTreeModifier = treeSharedModifier,
@@ -136,7 +126,7 @@ fun MamXanhAppContent(
                         )
                         else -> when (destination) {
                             AppDestination.HOME -> HomeScreen(state = dashboard, onIntent = onHomeIntent,
-                                fertilizerCount = wallet.inventory["fertilizer"] ?: 0, modifier = Modifier,
+                                fertilizerCount = com.mamxanh.shared.model.FertilizerTier.entries.sumOf { wallet.inventory[it.itemId] ?: 0 }, modifier = Modifier,
                                 sharedTreeModifier = treeSharedModifier,
                                 taskTitle = tasks.tasks.firstOrNull { !it.doneToday && !it.finished }?.title ?: "Mọi việc đã xong hôm nay",
                                 canClaimBonus = tasks.canClaimDailyBonus && !tasks.isDailyBonusClaimed,
@@ -153,12 +143,7 @@ fun MamXanhAppContent(
                                 plantingSeedId = app.plantingSeedId,
                                 plantingPlotId = app.inventoryPlotId,
                                 onDismissPlanting = { onAppIntent(AppIntent.DismissPlanting) },
-                                treeTransitionModifier = { id ->
-                                    Modifier.sharedElement(
-                                        rememberSharedContentState(key = "tree-$id"),
-                                        animatedVisibilityScope = routeAnimationScope
-                                    )
-                                })
+                                treeTransitionModifier = { Modifier })
                             AppDestination.SHOP -> ShopScreen(walletState, onShopIntent, Modifier)
                             AppDestination.STATS -> StatsScreen(statistics, onStatsIntent, Modifier)
                         }
@@ -201,7 +186,7 @@ fun MamXanhAppContentHomePreview() {
     MamXanhPreviewTheme {
         MamXanhAppContent(
             state = route,
-            dashboard = HomeUiState(HomeDashboard(listOf(HomeTree(1L, "cherry", "Đào hồng xuân", 68, "FLOWERS", false)), 2, 4, coins = 120, wateringCanMl = 500), false),
+            dashboard = HomeUiState(HomeDashboard(listOf(HomeTree(1L, "cherry", "Đào hồng xuân", 68, "FLOWERS", false)), 2, 4, coins = 120, equippedCan = "can_basic"), false),
             tasks = TasksUiState(isLoading = false),
             garden = GardenUiState(
                 com.mamxanh.app.feature.garden.domain.model.Garden(

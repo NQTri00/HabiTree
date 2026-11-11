@@ -14,15 +14,15 @@ class OfflineHomeDashboardRepository(private val game: GameStorage) : HomeDashbo
         return HomeDashboard(
             phase = phase,
             nextTasks = tasks.filter{it.lifecycle=="ACTIVE" && it.scheduledToday && !it.doneToday && !it.finished}.take(3),
-            trees = garden.trees.map { HomeTree(it.id, it.speciesId, it.name, it.growth, it.decoration, it.wateredToday) },
+            trees = garden.trees.map { HomeTree(it.id, it.speciesId, it.name, it.growth, it.decoration, it.wateredToday,it.status) },
             completedTasks = phase.completed,
             totalTasks = phase.required,
-            seedCount = garden.inventory.filterKeys { it != "fertilizer" }.values.sum(),
+            seedCount = garden.inventory.filterKeys { id -> com.mamxanh.shared.model.catalog.any{it.id==id} }.values.sum(),
             coins = statistics.coins,
-            wateringCanMl = game.waterMl(),
+            equippedCan = garden.equippedCan,
+            nextGoal = com.mamxanh.shared.model.catalog.minBy { it.price }.let { if(statistics.coins>=it.price) "Có thể chọn hạt: ${it.name}" else "Còn ${it.price-statistics.coins} xu để chọn ${it.name}" },
             dailyRewardDate = if (game.isDailyBonusClaimed()) com.mamxanh.shared.time.currentDateKey() else ""
         )
     }
 
-    override fun refillWater(): Int = game.refillWater(100)
 }

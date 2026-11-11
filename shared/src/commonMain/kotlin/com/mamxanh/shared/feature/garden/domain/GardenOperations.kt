@@ -3,6 +3,7 @@ package com.mamxanh.shared.feature.garden.domain
 import com.mamxanh.shared.feature.garden.domain.model.Garden
 
 interface GardenRepository {
+    fun waterAll(key: String): com.mamxanh.shared.model.ActionResult
     fun loadGarden(): Garden
     fun plant(speciesId: String, name: String, plotId: Int? = null): Boolean
     fun unlockPlot(plotId: Int): Boolean

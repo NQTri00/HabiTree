@@ -30,15 +30,17 @@ import com.mamxanh.app.feature.shop.domain.model.shopCatalog
 import com.mamxanh.app.presentation.ui.*
 import com.mamxanh.app.presentation.ui.components.*
 import com.mamxanh.app.presentation.ui.components.GardenRichText as Text
-import com.mamxanh.shared.model.Balance
 
 @Composable
-fun PurchaseConfirmation(id: String, state: ShopUiState, onDismiss: () -> Unit, onBuy: (Int, String) -> Unit) {
+fun PurchaseConfirmation(id: String, state: ShopUiState, onDismiss: () -> Unit, onEquip: () -> Unit = {}, onBuy: (Int, String) -> Unit) {
     val seed = shopCatalog.firstOrNull { it.id == id }
-    val price = seed?.price ?: Balance.FERTILIZER
+    val product = com.mamxanh.shared.model.careProducts.firstOrNull { it.id == id }
+    val permanent = product?.permanent == true
+    val owned = permanent && (state.wallet.inventory[id] ?: 0) > 0
+    val price = seed?.price ?: product?.price ?: 0
     var quantity by rememberSaveable(id) { mutableIntStateOf(1) }
     val key = rememberSaveable(id) { java.util.UUID.randomUUID().toString() }
-    val total = price * quantity
+    val total = if(owned) 0 else price * quantity
     val remaining = state.wallet.coins - total
     val enabled = !state.isPurchasing && !state.isLoading
     Dialog(onDismissRequest = { if (!state.isPurchasing) onDismiss() },
@@ -48,7 +50,7 @@ fun PurchaseConfirmation(id: String, state: ShopUiState, onDismiss: () -> Unit, 
                 contentPadding = PaddingValues(16.dp), cornerSize = 28.dp, skin = GardenPanelSkin.DIALOG) {
                 Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                        Text("Chọn số lượng", Modifier.weight(1f), color = Deep, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                        Text(if(permanent) "Dụng cụ chăm sóc" else "Chọn số lượng", Modifier.weight(1f), color = Deep, fontSize = 18.sp, fontWeight = FontWeight.Bold)
                         IconButton(onClick = onDismiss, enabled = !state.isPurchasing, modifier = Modifier.size(48.dp)) {
                             Icon(Icons.Rounded.Close, "Đóng", tint = Deep, modifier = Modifier.size(22.dp))
                         }
@@ -56,10 +58,10 @@ fun PurchaseConfirmation(id: String, state: ShopUiState, onDismiss: () -> Unit, 
                     Column(Modifier.weight(1f, fill = false).verticalScroll(rememberScrollState()),
                         horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(12.dp)) {
                         if (seed != null) PaintedGardenPlant(id, Modifier.size(104.dp))
-                        else GardenArtwork(GardenArt.FERTILIZER, Modifier.size(88.dp))
-                        Text(seed?.name ?: "Phân hữu cơ", color = Deep, fontSize = 22.sp,
+                        else GardenArtwork(if(permanent)GardenArt.WATERING_CAN else GardenArt.FERTILIZER, Modifier.size(88.dp))
+                        Text(seed?.name ?: product?.name.orEmpty(), color = Deep, fontSize = 22.sp,
                             fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
-                        Text(seed?.description ?: "Giúp cây lớn thêm khi còn có thể tăng trưởng.",
+                        Text(seed?.description ?: product?.description.orEmpty(),
                             color = Muted, fontSize = 13.sp, lineHeight = 18.sp, textAlign = TextAlign.Center)
                         FlowRow(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
                             verticalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -71,11 +73,17 @@ fun PurchaseConfirmation(id: String, state: ShopUiState, onDismiss: () -> Unit, 
                                 Text("Trong túi: ${state.wallet.inventory[id] ?: 0}", color = Green, fontSize = 13.sp)
                             }
                         }
-                        QuantitySelector(quantity, enabled, { quantity-- }, { quantity++ })
+                        if(seed != null) {
+                            val profile=com.mamxanh.shared.model.lifecycleProfile(id)
+                            Text("${profile.tier} · ${profile.stageCount} dáng · Ít nhất ${profile.requiredGrowthDays} ngày chăm sóc",
+                                color=Green,fontSize=12.sp,textAlign=TextAlign.Center)
+                            Text("Mỗi ngày tối đa một ngày tăng trưởng. Có thể lâu hơn nếu bỏ lỡ chăm sóc.",color=Muted,fontSize=12.sp,textAlign=TextAlign.Center)
+                        }
+                        if(!permanent) QuantitySelector(quantity, enabled, { quantity-- }, { quantity++ })
                         Column(Modifier.fillMaxWidth().mintDepth(RoundedCornerShape(18.dp), MintDepth.secondary, 2.dp).padding(12.dp),
                             verticalArrangement = Arrangement.spacedBy(6.dp)) {
                             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                                Text("Tổng cộng", color = Deep, fontSize = 14.sp)
+                                Text(if(owned) "Trang bị miễn phí" else "Tổng cộng", color = Deep, fontSize = 14.sp)
                                 Text("🪙 $total xu", color = Green, fontSize = 16.sp, fontWeight = FontWeight.Bold)
                             }
                             Text("Ví: ${state.wallet.coins} xu · " +
@@ -91,9 +99,9 @@ fun PurchaseConfirmation(id: String, state: ShopUiState, onDismiss: () -> Unit, 
                     Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         GardenPaintedButton("Để sau", onDismiss, Modifier.weight(1f).fillMaxHeight(),
                             primary = false, enabled = !state.isPurchasing)
-                        GardenPaintedButton(if (state.isPurchasing) "Đang mua…" else "Mua · $total xu",
-                            { onBuy(quantity, key) }, Modifier.weight(1.5f).fillMaxHeight(),
-                            enabled = remaining >= 0 && enabled)
+                        GardenPaintedButton(if(owned) if(state.wallet.equippedCan==id) "Đang dùng" else "Trang bị" else if(state.isPurchasing) "Đang mua…" else "Mua · $total xu",
+                            {if(owned) onEquip() else onBuy(if(permanent)1 else quantity,key)},Modifier.weight(1.5f).fillMaxHeight(),
+                            enabled=enabled && if(owned)state.wallet.equippedCan!=id else remaining>=0)
                     }
                 }
             }

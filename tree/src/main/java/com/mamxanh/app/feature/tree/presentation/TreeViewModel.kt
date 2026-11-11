@@ -2,75 +2,69 @@ package com.mamxanh.app.feature.tree.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mamxanh.app.data.local.model.TreeWateringResult
-import com.mamxanh.app.feature.tree.domain.*
+import com.mamxanh.app.feature.tree.domain.TreeRepository
+import com.mamxanh.shared.model.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class TreeViewModel(private val repository: TreeRepository) : ViewModel() {
-    private val _uiState = MutableStateFlow(TreeUiState())
-    val uiState = _uiState.asStateFlow()
-    private val effectChannel = Channel<TreeEffect>(Channel.BUFFERED)
-    val effects = effectChannel.receiveAsFlow()
-
-    fun dispatch(intent: TreeIntent) {
-        if (intent == TreeIntent.OpenWaterSupply || intent == TreeIntent.OpenFertilizerShop) {
-            _uiState.value = _uiState.value.copy(isPanelExpanded = false)
-            viewModelScope.launch {
-                effectChannel.send(if (intent == TreeIntent.OpenWaterSupply) TreeEffect.OpenWaterSupply
-                    else TreeEffect.OpenFertilizerShop)
+class TreeViewModel(private val repository:TreeRepository):ViewModel() {
+    private val _uiState=MutableStateFlow(TreeUiState())
+    val uiState=_uiState.asStateFlow()
+    private val effectChannel=Channel<TreeEffect>(Channel.BUFFERED)
+    val effects=effectChannel.receiveAsFlow()
+    fun dispatch(intent:TreeIntent) {
+        when(intent) {
+            TreeIntent.Back -> {
+                if(_uiState.value.isPanelExpanded)_uiState.value=_uiState.value.copy(isPanelExpanded=false)
+                else viewModelScope.launch{effectChannel.send(TreeEffect.Back)}
+                return
             }
-            return
+            is TreeIntent.SetPanelExpanded -> {_uiState.value=_uiState.value.copy(isPanelExpanded=intent.expanded);return}
+            TreeIntent.DismissDisposition -> {_uiState.value=_uiState.value.copy(dispositionId=null,quote=null);return}
+            TreeIntent.OpenFertilizerShop -> {viewModelScope.launch{effectChannel.send(TreeEffect.OpenFertilizerShop)};return}
+            else -> Unit
         }
-        if (intent is TreeIntent.SetPanelExpanded) {
-            _uiState.value = _uiState.value.copy(isPanelExpanded = intent.expanded)
-            return
-        }
-        if (intent == TreeIntent.Back) {
-            if (_uiState.value.isPanelExpanded) {
-                _uiState.value = _uiState.value.copy(isPanelExpanded = false)
-            } else {
-                viewModelScope.launch { effectChannel.send(TreeEffect.Back) }
-            }
-            return
-        }
-        if (_uiState.value.isLoading) return
-        _uiState.value = _uiState.value.copy(isLoading = true)
+        if(_uiState.value.isLoading)return
+        val pending=_uiState.value
+        _uiState.value=pending.copy(isLoading=true)
         viewModelScope.launch {
             try {
-                when (intent) {
-                    TreeIntent.Back, TreeIntent.OpenWaterSupply, TreeIntent.OpenFertilizerShop,
-                    is TreeIntent.SetPanelExpanded -> Unit // UI/navigation handled before mutations.
-                    is TreeIntent.Water -> {
-                        val result = withContext(Dispatchers.IO) { WaterTree(repository)(intent.id) }
-                        if (result == TreeWateringResult.WATERED) effectChannel.send(TreeEffect.TreeChanged)
-                        val message = when (result) {
-                            TreeWateringResult.WATERED -> "Đã tưới cây: dùng 50 ml nước và cây lớn thêm 8 điểm."
-                            TreeWateringResult.ALREADY_WATERED -> "Cây này đã được tưới hôm nay."
-                            TreeWateringResult.NOT_ENOUGH_WATER -> "Bình tưới cần ít nhất 50 ml. Hãy bơm thêm nước ở Trang chủ."
-                            TreeWateringResult.TREE_NOT_FOUND -> "Không tìm thấy cây này."
+                if(intent is TreeIntent.AskDisposition) {
+                    val quote=withContext(Dispatchers.IO){if(intent.sell)repository.saleQuote(intent.id) else ActionResult(true,"Dọn cây không hoàn xu hoặc hạt")}
+                    if(quote.success)_uiState.value=_uiState.value.copy(dispositionId=intent.id,selling=intent.sell,
+                        quote=quote,actionKey=java.util.UUID.randomUUID().toString())
+                    else effectChannel.send(TreeEffect.Feedback(quote.message))
+                    return@launch
+                }
+                val result=withContext(Dispatchers.IO) {
+                    when(intent) {
+                        is TreeIntent.Water -> {
+                            val result=repository.water(intent.id)
+                            ActionResult(result==TreeWateringResult.WATERED,when(result) {
+                                TreeWateringResult.WATERED -> "Đã tưới cây · Cửa sổ tăng trưởng đã bắt đầu"
+                                TreeWateringResult.ALREADY_WATERED -> "Cây đang được tưới; thời gian không cộng dồn"
+                                TreeWateringResult.DEAD -> "Cây đã khô héo vĩnh viễn; chỉ có thể dọn cây"
+                                TreeWateringResult.CLOCK_CHANGED -> "Đồng hồ đã lùi; hãy chờ giờ thực bắt kịp"
+                                TreeWateringResult.TREE_NOT_FOUND -> "Cây không còn trong vườn"
+                            })
                         }
-                        effectChannel.send(TreeEffect.Feedback(message))
-                    }
-                    is TreeIntent.Fertilize -> {
-                        val changed = withContext(Dispatchers.IO) { FertilizeTree(repository)(intent.id) }
-                        if (changed) effectChannel.send(TreeEffect.TreeChanged)
-                        effectChannel.send(TreeEffect.Feedback(if (changed) "Cây đã lớn thêm 25 điểm." else "Không thể bón: hết phân, cây đã đầy tăng trưởng hoặc không còn tồn tại."))
-                    }
-                    is TreeIntent.Decorate -> {
-                        withContext(Dispatchers.IO) { DecorateTree(repository)(intent.id, intent.decoration) }
-                        effectChannel.send(TreeEffect.TreeChanged)
-                        effectChannel.send(TreeEffect.Feedback("Đã cập nhật trang trí cho cây."))
+                        is TreeIntent.Fertilize -> repository.applyFertilizer(intent.id,intent.tier)
+                        is TreeIntent.Decorate -> {repository.decorate(intent.id,intent.decoration);ActionResult(true,"Đã cập nhật trang trí")}
+                        TreeIntent.ConfirmDisposition -> pending.dispositionId?.let{repository.dispose(it,pending.selling,pending.actionKey)}
+                            ?: ActionResult(false,"Chọn cây trước")
+                        else -> ActionResult(false,"Không có thao tác")
                     }
                 }
-            } finally {
-                _uiState.value = _uiState.value.copy(isLoading = false)
-            }
+                if(result.success)effectChannel.send(TreeEffect.TreeChanged)
+                if(intent==TreeIntent.ConfirmDisposition && result.success) {
+                    _uiState.value=_uiState.value.copy(dispositionId=null,quote=null,isPanelExpanded=false)
+                    effectChannel.send(TreeEffect.Back)
+                }
+                effectChannel.send(TreeEffect.Feedback(result.message))
+            } finally {_uiState.value=_uiState.value.copy(isLoading=false)}
         }
     }
 }

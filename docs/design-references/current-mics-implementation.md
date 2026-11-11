@@ -148,6 +148,17 @@ No complete demo screenshot is used as a runtime background.
 - Removed the oversized wrapped action button inside the three-column Items card. Tapping the card opens the same quantity confirmation as seeds.
 - Debug and verification APK builds passed (25 seconds). Inspected360dp and320dp/font1.3×, changed quantity1→2, checked the70-coin total and disabled purchase, and scrolled the complete confirmation. No purchase was made.
 
+## Phase 2 living trees — latest implementation
+
+- Synced GitHub plans through78892d5. The authoritative universal1.4× schedule now defines6/9/12 forms, Common/Rare/Legendary prices200/900/4,500 and14/44/127 distinct care-day floors. Fractional growth and precise elapsed floors remain separate. Exclusive is unavailable; no billing.
+- Added shared interval simulation, additive schema v5, fair legacy8h grace, durable cans/equipping, free Water All, three timed fertilizer tiers, hidden neglect/death, capped mature sales and zero-refund removal. Transactions preserve history and prevent duplicate effects. Task rewards no longer add instant tree growth.
+- Home and detail show stage/state, countdown and qualitative care; detail includes fertilizer selection, active-effort estimate, mature sale/removal confirmations and last-watered information. Garden adds lifecycle filters and Water All counts. Shop and Inventory use owned/equipped can state and tiered items, with independent tab scroll positions.
+- Removed reservoir/refill APIs and runtime ml UI. Existing static artwork is temporary: growth artwork, planting reveal and tree transitions are deferred by the user. No new preview atlas or bitmap scene background.
+- 60 real-SQLite tests passed, including migration, file-backed restart, concurrency, DST, clock/cap boundaries and long-term simulations. Android debug/verification APKs, common metadata and iOS ARM64 Kotlin compilation passed. Final UI-only APK build passed in34s.
+- Runtime checked360dp,320dp/font1.3,412dp and640×360dp/font1.3 landscape; complete Home, Garden, care and Shop scroll ranges were inspected. Short dialogs retain close/cancel/purchase controls. Catalogs use three columns normally, two on narrow large-text phones, and more on wide windows.
+- Installed over the main app without resetting data. Main profile retained50 coins,4 trees,6 unlocked plots,1 fertilizer and1 succulent seed. Legacy mature trees remained mature; partial succulent progress maps to stage3/6 with5/14 care days. Basic can is granted/equipped and grace starts on update. No main-profile purchase, task completion, care or disposition was used for QA.
+- See [Phase2 execution plan and evidence](../superpowers/plans/2026-11-11-phase-2-execution.md). Earlier sections describe historical checkpoints; this section supersedes their old catalog, water-volume and growth rules.
+
 ## Acceptance still open
 Exact plant/icon silhouettes and illustration style differ from the new sheets; reused/generated art is not lossless source extraction. Do not describe this checkpoint as 100% visually identical.
 The full 393/412dp, landscape/IME, long-name, process-death, reward-claim, transaction-race and every annotated outcome matrix has not been re-executed for this redesign. Existing historical evidence does not automatically close those checks.

@@ -2,7 +2,7 @@ package com.mamxanh.shared.data.sql
 
 /** Shared schema; migrations preserve existing tree identities and player balances. */
 object GameSchema {
-    const val VERSION = 4
+    const val VERSION = 5
 
     fun create(connection: GameSqlConnection) {
         connection.execute("CREATE TABLE tasks(id INTEGER PRIMARY KEY AUTOINCREMENT,title TEXT NOT NULL,kind TEXT NOT NULL,category TEXT NOT NULL,reward INTEGER NOT NULL,frequency TEXT NOT NULL,due TEXT NOT NULL DEFAULT '',completed TEXT NOT NULL DEFAULT '',streak INTEGER NOT NULL DEFAULT 0,last_done TEXT NOT NULL DEFAULT '')")
@@ -28,6 +28,7 @@ object GameSchema {
         task("Hoàn thành một việc quan trọng", "TODO", "Công việc", 20, "ONCE")
         createPlots(connection)
         phaseOne(connection)
+        phaseTwo(connection)
     }
 
     private fun phaseOne(c: GameSqlConnection) {
@@ -58,6 +59,32 @@ object GameSchema {
         c.execute("INSERT OR IGNORE INTO meta(k,v) VALUES('starter_claimed','1')")
     }
 
+    private fun phaseTwo(c: GameSqlConnection) {
+        listOf(
+            "lifecycle_version INTEGER NOT NULL DEFAULT 0", "birth_at INTEGER NOT NULL DEFAULT 0",
+            "zone TEXT NOT NULL DEFAULT ''", "sim_at INTEGER NOT NULL DEFAULT 0",
+            "growth_units INTEGER NOT NULL DEFAULT 0", "growth_days INTEGER NOT NULL DEFAULT 0",
+            "growth_day TEXT NOT NULL DEFAULT ''", "day_units INTEGER NOT NULL DEFAULT 0",
+            "water_until INTEGER NOT NULL DEFAULT 0", "last_water INTEGER NOT NULL DEFAULT 0",
+            "fertilizer_id TEXT NOT NULL DEFAULT ''", "fertilizer_end INTEGER NOT NULL DEFAULT 0",
+            "last_fertilizer INTEGER NOT NULL DEFAULT 0", "neglect_ms INTEGER NOT NULL DEFAULT 0",
+            "life_state TEXT NOT NULL DEFAULT 'GROWING'", "matured_at INTEGER NOT NULL DEFAULT 0",
+            "death_at INTEGER NOT NULL DEFAULT 0", "disposition TEXT NOT NULL DEFAULT ''",
+            "free_starter INTEGER NOT NULL DEFAULT 0"
+        ).forEach { c.execute("ALTER TABLE trees ADD COLUMN $it") }
+        c.execute("CREATE TABLE tree_growth_days(tree_id INTEGER NOT NULL,date TEXT NOT NULL,units INTEGER NOT NULL,credited INTEGER NOT NULL,PRIMARY KEY(tree_id,date))")
+        c.execute("CREATE TABLE tree_dispositions(tree_id INTEGER PRIMARY KEY,action_id TEXT UNIQUE NOT NULL,kind TEXT NOT NULL,at INTEGER NOT NULL,name TEXT NOT NULL,nominal INTEGER NOT NULL,granted INTEGER NOT NULL)")
+        c.execute("CREATE TABLE tree_actions(id TEXT PRIMARY KEY,kind TEXT NOT NULL,at INTEGER NOT NULL)")
+        c.execute("INSERT OR IGNORE INTO inventory(item,quantity) VALUES('can_basic',1)")
+        c.execute("INSERT OR IGNORE INTO meta(k,v) VALUES('can_equipped','can_basic')")
+        val first=c.query("SELECT id FROM trees WHERE species_id='succulent' ORDER BY id LIMIT 1",1).firstOrNull()
+        if(first!=null)c.execute("UPDATE trees SET free_starter=1 WHERE id=?",listOf(first.long(0)))
+        c.execute("INSERT OR IGNORE INTO meta(k,v) VALUES('free_seed_available',?)",
+            listOf(if(first==null && (c.query("SELECT quantity FROM inventory WHERE item='succulent'",1).firstOrNull()?.int(0) ?: 0)>0)"1" else "0"))
+        // Obsolete reservoir has no conversion value and cannot grant watering advantages.
+        c.execute("DELETE FROM meta WHERE k='water_ml' OR k LIKE 'watered_%'")
+    }
+
     private fun createPlots(connection: GameSqlConnection) {
         connection.execute("CREATE TABLE garden_plots(id INTEGER PRIMARY KEY,unlocked INTEGER NOT NULL CHECK(unlocked IN (0,1)),tree_id INTEGER UNIQUE REFERENCES trees(id))")
         val trees = connection.query("SELECT id FROM trees ORDER BY id", 1)
@@ -79,5 +106,6 @@ object GameSchema {
                 connection.execute("INSERT OR REPLACE INTO meta(k,v) VALUES('water_ml','542')")
             }
         }
+        if (oldVersion < 5) phaseTwo(connection)
     }
 }

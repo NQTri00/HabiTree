@@ -23,27 +23,29 @@ class GardenViewModel(private val repository: GardenRepository) : ViewModel() {
     fun dispatch(intent: GardenIntent) {
         when (intent) {
             GardenIntent.Refresh -> viewModelScope.launch {
-                _uiState.value = _uiState.value.copy(isLoading = true)
                 val garden = withContext(Dispatchers.IO) { LoadGarden(repository)() }
-                _uiState.value = GardenUiState(garden, false)
+                _uiState.value = _uiState.value.copy(garden = garden, isLoading = false)
             }
             GardenIntent.OpenShop -> viewModelScope.launch { effectChannel.send(GardenEffect.OpenShop) }
             is GardenIntent.OpenTree -> viewModelScope.launch { effectChannel.send(GardenEffect.OpenTree(intent.id)) }
             GardenIntent.DismissMessage -> _uiState.value = _uiState.value.copy(message = null)
-            is GardenIntent.Plant, is GardenIntent.UnlockPlot -> {
+            is GardenIntent.Plant, is GardenIntent.UnlockPlot, is GardenIntent.WaterAll -> {
                 if (_uiState.value.isLoading) return
                 _uiState.value = _uiState.value.copy(isLoading = true)
                 viewModelScope.launch {
                     try {
+                        var batchFeedback: String? = null
                         val changed = withContext(Dispatchers.IO) {
                             when (intent) {
                                 is GardenIntent.Plant -> PlantSeed(repository)(intent.speciesId, intent.name, intent.plotId)
                                 is GardenIntent.UnlockPlot -> repository.unlockPlot(intent.plotId)
+                                is GardenIntent.WaterAll -> repository.waterAll(intent.key).also { batchFeedback = it.message }.success
                                 else -> false
                             }
                         }
                         val garden = withContext(Dispatchers.IO) { LoadGarden(repository)() }
                         _uiState.value = GardenUiState(garden, false, when {
+                            intent is GardenIntent.WaterAll -> batchFeedback
                             changed && intent is GardenIntent.Plant -> "Đã gieo cây!\nĐã trồng " + (intent.name.ifBlank { "mầm mới" }) + " tại ô " + (intent.plotId?.toString()?.padStart(2, '0') ?: garden.plots.firstOrNull { it.treeId == garden.trees.maxByOrNull { tree -> tree.id }?.id }?.id ?: "")
                             changed -> null
                             intent is GardenIntent.UnlockPlot -> "Không thể mở ô trồng. Hãy kiểm tra số xu hiện có."

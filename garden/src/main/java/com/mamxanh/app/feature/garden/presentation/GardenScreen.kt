@@ -62,25 +62,16 @@ fun GardenScreen(state: GardenUiState, onIntent: (GardenIntent) -> Unit, modifie
         val count = maxOf(5, garden.trees.size)
         (1..count).map { com.mamxanh.shared.model.GardenPlot(it, true, garden.trees.getOrNull(it - 1)?.id) }
     }
-    var previousAssignments by remember { mutableStateOf<Map<Int, Long?>?>(null) }
-    var revealedTreeId by remember { mutableStateOf<Long?>(null) }
-    val plantingGlow = remember { androidx.compose.animation.core.Animatable(0f) }
-    LaunchedEffect(plots, state.isLoading) {
-        if (!state.isLoading) {
-            val assignments = plots.associate { it.id to it.treeId }
-            previousAssignments?.let { previous ->
-                assignments.entries.firstOrNull { (id, treeId) ->
-                    treeId != null && previous.containsKey(id) && previous[id] == null
-                }?.value?.let { revealedTreeId = it }
-            }
-            previousAssignments = assignments
-        }
-    }
-    LaunchedEffect(revealedTreeId) {
-        if (revealedTreeId != null) {
-            plantingGlow.snapTo(1f)
-            plantingGlow.animateTo(0f, androidx.compose.animation.core.tween(1400))
-            revealedTreeId = null
+    var filter by rememberSaveable { mutableIntStateOf(0) }
+    var waterAllKey by rememberSaveable { mutableStateOf<String?>(null) }
+    val visiblePlots = plots.filter { plot ->
+        val status = garden.trees.firstOrNull { it.id == plot.treeId }?.status
+        when(filter) {
+            1 -> status?.canWater == true
+            2 -> status?.state == com.mamxanh.shared.model.TreeGrowthState.GROWING
+            3 -> status?.state == com.mamxanh.shared.model.TreeGrowthState.MATURE
+            4 -> status?.alive == false
+            else -> true
         }
     }
     MintBackdrop(modifier.fillMaxSize()) {
@@ -99,11 +90,26 @@ fun GardenScreen(state: GardenUiState, onIntent: (GardenIntent) -> Unit, modifie
             LazyColumn(Modifier.weight(1f).mintScrollEdges(listState.canScrollBackward, listState.canScrollForward),
                 state = listState, contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                items(plots, key = { it.id }) { plot ->
+                item(key = "care-toolbar") {
+                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        GardenPaintedButton("Tưới tất cả · ${garden.waterAll.eligible} cây",
+                            { waterAllKey = java.util.UUID.randomUUID().toString() }, Modifier.fillMaxWidth(),
+                            enabled = garden.waterAll.eligible > 0 && !state.isLoading)
+                        Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+                            horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                            listOf("Tất cả","Cần tưới","Đang lớn","Trưởng thành","Khô héo").forEachIndexed { index,label ->
+                                FilterChip(selected = filter == index, onClick = {filter=index}, label = {Text(label)},
+                                    shape=RoundedCornerShape(20.dp),
+                                    colors=FilterChipDefaults.filterChipColors(selectedContainerColor=Green,selectedLabelColor=Color.White,labelColor=Deep))
+                            }
+                        }
+                        if(garden.waterAll.eligible == 0) Text("Không có cây cần tưới lúc này.",color=Muted,fontSize=12.sp)
+                    }
+                }
+                if(visiblePlots.isEmpty()) item { Text("Chưa có cây phù hợp.",color=Muted) }
+                items(visiblePlots, key = { it.id }) { plot ->
                     val tree = garden.trees.firstOrNull { it.id == plot.treeId }
-                    GardenBotanicalFrame(Modifier.fillMaxWidth().border(2.dp,
-                        if(tree != null && tree.id == revealedTreeId) Color(0xFFEAC453).copy(alpha = plantingGlow.value) else Color.Transparent,
-                        RoundedCornerShape(22.dp)).clickable(enabled = !state.isLoading) {
+                    GardenBotanicalFrame(Modifier.fillMaxWidth().clickable(enabled = !state.isLoading) {
                         if(tree != null) onIntent(GardenIntent.OpenTree(tree.id))
                         else if(plot.isUnlocked) onOpenInventory(plot.id)
                         else unlockingPlotId = plot.id
@@ -111,7 +117,7 @@ fun GardenScreen(state: GardenUiState, onIntent: (GardenIntent) -> Unit, modifie
                         Row(Modifier.fillMaxWidth().heightIn(min = 86.dp), verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                             if(tree != null) GardenPlantPortrait(tree.speciesId, tree.decoration,
-                                Modifier.size(84.dp).then(treeTransitionModifier(tree.id)), growth = tree.growth)
+                                Modifier.size(84.dp).then(treeTransitionModifier(tree.id)), growth = tree.growth, withered = !tree.status.alive)
                             else if(plot.isUnlocked) MintEmptySprout(Modifier.size(74.dp))
                             else Text("🔒", Modifier.width(64.dp), fontSize = 32.sp, textAlign = TextAlign.Center)
                             GardenBotanicalFrame(contentPadding = PaddingValues(6.dp), cornerSize = 50.dp) {
@@ -121,8 +127,10 @@ fun GardenScreen(state: GardenUiState, onIntent: (GardenIntent) -> Unit, modifie
                                 Text(tree?.name ?: if(plot.isUnlocked) "Ô trống" else "Ô trống (Đang khóa)",
                                     fontWeight = FontWeight.Bold, fontSize = 17.sp, color = Deep)
                                 if(tree != null) {
-                                    MintProgress(tree.growth / 120f, Modifier.fillMaxWidth())
-                                    Text("${tree.growth.coerceIn(0,120)} / 120", fontSize = 13.sp, color = Deep)
+                                    MintProgress(tree.status.stageProgress, Modifier.fillMaxWidth())
+                                    Text("${tree.status.stageLabel} · ${tree.status.stateLabel}", fontSize = 12.sp, color = Deep)
+                                    Text("${tree.status.waterLabel} · ${tree.status.growthDays}/${tree.status.requiredDays} ngày", fontSize = 12.sp, color = Muted)
+                                    if(tree.status.fertilizerLabel.isNotBlank()) Text(tree.status.fertilizerLabel,fontSize=11.sp,color=Green)
                                 } else {
                                     GardenPaintedButton(if(plot.isUnlocked) "Gieo cây" else "Mở ô · ${com.mamxanh.shared.model.Balance.plot(garden.plots.count { it.isUnlocked })} xu",
                                         {
@@ -141,6 +149,13 @@ fun GardenScreen(state: GardenUiState, onIntent: (GardenIntent) -> Unit, modifie
                 }
             }
         }
+    }
+    waterAllKey?.let { key ->
+        AlertDialog(onDismissRequest={waterAllKey=null},title={Text("Tưới tất cả?")},text={
+            Text("Bình ${com.mamxanh.shared.model.WateringCanTier.fromId(garden.equippedCan).hours} giờ · Miễn phí\nSẽ tưới: ${garden.waterAll.eligible}\nĐã được tưới: ${garden.waterAll.active}\nĐã khô héo: ${garden.waterAll.dead}\nCây trưởng thành được tưới để duy trì sức sống.")
+        },confirmButton={TextButton(onClick={onIntent(GardenIntent.WaterAll(key));waterAllKey=null},
+            enabled=!state.isLoading && garden.waterAll.eligible>0){Text("Tưới cây")}},
+            dismissButton={TextButton(onClick={waterAllKey=null}){Text("Để sau")}})
     }
     unlockingPlotId?.let { id ->
         val price = com.mamxanh.shared.model.Balance.plot(garden.plots.count { it.isUnlocked })

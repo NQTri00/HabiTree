@@ -3,17 +3,19 @@ package com.mamxanh.app.presentation.ui.components
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
-/** Persisted growth presentation, using the supplied cherry sequence at a stable root. */
+/** Temporary static species image. Stage artwork/animation is deferred until models are ready. */
 @Composable
 fun GardenPlantPortrait(
     speciesId: String, decoration: String, modifier: Modifier = Modifier, growth: Int = 120,
     fitVisibleArtwork: Boolean = false,
-    artworkAlignment: androidx.compose.ui.Alignment = androidx.compose.ui.Alignment.BottomCenter
+    artworkAlignment: androidx.compose.ui.Alignment = androidx.compose.ui.Alignment.BottomCenter,
+    withered: Boolean = false
 ) {
-    BoxWithConstraints(modifier) {
+    BoxWithConstraints(modifier.then(if(withered) Modifier.graphicsLayer(alpha=.45f,rotationZ=-6f) else Modifier)) {
         val bounds = if (fitVisibleArtwork && speciesId == "cherry") {
             androidx.compose.ui.platform.LocalContext.current.resources.getIntArray(com.mamxanh.core.ui.R.array.cherry_growth_bounds)
         } else null
@@ -21,10 +23,7 @@ fun GardenPlantPortrait(
         val artworkWidth = if (bounds != null) minOf(maxWidth, maxHeight * bounds[2].toFloat() / bounds[3]) else maxWidth
         BoxWithConstraints(Modifier.align(artworkAlignment).size(artworkWidth, artworkHeight)) {
         if (speciesId == "cherry") {
-            CherryGrowthArtwork(growth, Modifier.fillMaxSize(), fitVisibleArtwork)
-        } else if (growth <= 0) {
-            GardenArtwork(GardenArt.SEED, Modifier.align(androidx.compose.ui.Alignment.BottomCenter)
-                .fillMaxWidth(.65f).height(maxHeight * .45f))
+            CherryGrowthArtwork(120, Modifier.fillMaxSize(), fitVisibleArtwork)
         } else {
             PaintedGardenPlant(speciesId, Modifier.fillMaxSize())
         }

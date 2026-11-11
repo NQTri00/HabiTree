@@ -85,6 +85,15 @@ fun MamXanhApp(
             }
         }
     }
+    LaunchedEffect(lifecycleOwner) {
+        lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            while(true) {
+                gardenVm.dispatch(GardenIntent.Refresh)
+                homeVm.dispatch(HomeIntent.Refresh)
+                kotlinx.coroutines.delay(15_000)
+            }
+        }
+    }
     LaunchedEffect(tasks.phase.days.firstOrNull()?.date) {
         homeVm.dispatch(HomeIntent.Refresh)
         statsVm.dispatch(StatsIntent.Refresh)
@@ -155,11 +164,8 @@ fun MamXanhApp(
                 when (effect) {
                     is TreeEffect.Feedback -> appVm.dispatch(AppIntent.ShowMessage(effect.message))
                     TreeEffect.Back -> appVm.dispatch(AppIntent.Back)
-                    TreeEffect.OpenWaterSupply -> {
-                        appVm.dispatch(AppIntent.Back)
-                        appVm.dispatch(AppIntent.Navigate(AppDestination.HOME))
-                    }
                     TreeEffect.OpenFertilizerShop -> {
+                        shopVm.dispatch(ShopIntent.SetFilter(ShopFilter.ITEMS))
                         appVm.dispatch(AppIntent.Back)
                         appVm.dispatch(AppIntent.Navigate(AppDestination.SHOP))
                     }

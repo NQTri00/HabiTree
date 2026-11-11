@@ -27,10 +27,10 @@ import com.mamxanh.app.presentation.ui.*
 import com.mamxanh.app.presentation.ui.components.*
 
 data class InventorySeed(val id: String, val name: String, val count: Int)
+data class InventoryItem(val id: String, val name: String, val count: Int, val isCan: Boolean, val equipped: Boolean = false)
 data class InventoryUiState(
     val seeds: List<InventorySeed> = emptyList(),
-    val fertilizerCount: Int = 0,
-    val wateringCanMl: Int = 0,
+    val items: List<InventoryItem> = emptyList(),
     val coins: Int = 0,
     val isLoading: Boolean = false
 )
@@ -44,7 +44,8 @@ fun InventoryScreen(
     onSelectSeed: (String) -> Unit,
     onOpenShop: () -> Unit,
     modifier: Modifier = Modifier,
-    targetPlotId: Int? = null
+    targetPlotId: Int? = null,
+    onEquip: (String) -> Unit = {}
 ) {
     var tab by rememberSaveable(targetPlotId) {
         mutableStateOf(if (targetPlotId != null) InventoryTab.SEEDS else InventoryTab.ITEMS)
@@ -76,32 +77,27 @@ fun InventoryScreen(
                 Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
                 color = Deep, fontSize = 13.sp)
             if (state.isLoading) LinearProgressIndicator(Modifier.fillMaxWidth())
+            BoxWithConstraints(Modifier.weight(1f)) {
+            val fontScale=androidx.compose.ui.platform.LocalDensity.current.fontScale
+            val columnCount=if(maxWidth<340.dp && fontScale>1.2f)2 else if(maxWidth>=600.dp)(maxWidth.value/140).toInt() else 3
+            key(tab) {
             LazyVerticalGrid(
-                columns = GridCells.Fixed(3),
+                columns = GridCells.Fixed(columnCount),
                 state = activeGrid,
-                modifier = Modifier.weight(1f).mintScrollEdges(activeGrid.canScrollBackward, activeGrid.canScrollForward),
+                modifier = Modifier.fillMaxSize().mintScrollEdges(activeGrid.canScrollBackward, activeGrid.canScrollForward),
                 contentPadding = PaddingValues(16.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 if (tab == InventoryTab.ITEMS) {
-                    item(key = "fertilizer") {
-                        InventoryCard("Phân bón", "×${state.fertilizerCount}") {
-                            GardenArtwork(GardenArt.FERTILIZER, it)
-                        }
-                    }
-                    item(key = "watering-can") {
-                        InventoryCard("Bình tưới", "${state.wateringCanMl} ml") {
-                            GardenArtwork(GardenArt.WATERING_CAN, it)
-                        }
-                    }
-                    item(key = "pump") {
-                        InventoryCard("Bơm nước", "Dụng cụ") {
-                            GardenArtwork(GardenArt.PUMP, it)
+                    items(state.items.filter { it.count > 0 }, key = { it.id }) { product ->
+                        InventoryCard(product.name, if(product.equipped) "Đang dùng" else if(product.isCan) "Chạm để dùng" else "×${product.count}",
+                            onClick = if(product.isCan && !product.equipped && !state.isLoading) ({ onEquip(product.id) }) else null) {
+                            GardenArtwork(if(product.isCan) GardenArt.WATERING_CAN else GardenArt.FERTILIZER, it)
                         }
                     }
                     item(span = { GridItemSpan(maxLineSpan) }) {
-                        Text("Dụng cụ chăm sóc luôn có sẵn. Dùng phân bón và bình tưới tại màn hình cây.",
+                        Text("Chạm bình tưới để trang bị. Dùng phân bón tại màn hình cây; bình tưới dùng lâu dài.",
                             Modifier.padding(top = 8.dp), color = Muted, fontSize = 13.sp, lineHeight = 18.sp)
                     }
                 } else {
@@ -125,6 +121,8 @@ fun InventoryScreen(
                         Modifier.fillMaxWidth().padding(top = 12.dp), primary = false)
                 }
             }
+            }
+            }
         }
     }
 }
@@ -136,7 +134,7 @@ private fun InventoryCard(
 ) {
     GardenBotanicalFrame(
         Modifier.fillMaxWidth().then(if (onClick != null)
-            Modifier.clickable(role = Role.Button, onClickLabel = "Gieo $name", onClick = onClick)
+            Modifier.clickable(role = Role.Button, onClickLabel = "Chọn $name", onClick = onClick)
         else Modifier),
         contentPadding = PaddingValues(8.dp), cornerSize = 20.dp
     ) {
@@ -158,7 +156,7 @@ fun InventoryScreenPreview() {
         InventoryScreen(InventoryUiState(
             seeds = listOf(InventorySeed("cherry", "Đào hồng xuân", 3),
                 InventorySeed("pine", "Thông xanh", 2), InventorySeed("succulent", "Sen đá ngọc", 1)),
-            fertilizerCount = 2, wateringCanMl = 500, coins = 120),
+            items = listOf(InventoryItem("can_basic","Bình cơ bản",1,true,true)), coins = 120),
             {}, {}, {}, targetPlotId = 5)
     }
 }

@@ -11,7 +11,6 @@ sealed interface HomeIntent {
     data object OpenTasks : HomeIntent
     data object OpenGarden : HomeIntent
     data object OpenShop : HomeIntent
-    data object RefillWater : HomeIntent
     data class WaterTree(val id: Long) : HomeIntent
     data class FertilizeTree(val id: Long) : HomeIntent
 }

@@ -10,6 +10,7 @@ data class ShopUiState(val wallet: ShopWallet = ShopWallet(0, emptyMap()), val i
     val filter: ShopFilter = ShopFilter.SEEDS, val isPurchasing: Boolean = false, val outcome: PurchaseOutcome? = null)
 sealed interface ShopIntent {
     data object Refresh : ShopIntent
+    data class Equip(val id: String) : ShopIntent
     data class SetFilter(val filter: ShopFilter) : ShopIntent
     data object DismissOutcome : ShopIntent
     data class BuySeed(val id: String) : ShopIntent

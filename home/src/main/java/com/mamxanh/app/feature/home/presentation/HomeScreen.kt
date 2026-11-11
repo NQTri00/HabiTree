@@ -56,8 +56,8 @@ fun HomeScreen(
                             GardenArtwork(GardenArt.SPROUT, Modifier.size(24.dp))
                             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
                                 Text(tree.name, color = Deep, fontWeight = FontWeight.Bold, fontSize = 14.sp, lineHeight = 17.sp)
-                                MintProgress(tree.growth / 120f, Modifier.fillMaxWidth())
-                                Text("${d.completedTasks} / ${d.totalTasks} việc hôm nay", fontSize = 11.sp, lineHeight = 14.sp, color = Deep)
+                                MintProgress(tree.status.stageProgress, Modifier.fillMaxWidth())
+                                Text("${tree.status.stageLabel} · ${tree.status.stateLabel}", fontSize = 11.sp, lineHeight = 14.sp, color = Deep)
                             }
                             Text("›", color = Deep, fontSize = 24.sp)
                         }
@@ -67,20 +67,17 @@ fun HomeScreen(
                             sharedTreeModifier.fillMaxWidth().padding(horizontal = 40.dp).height(heroHeight)
                                 .clickable(role = Role.Button) { onIntent(HomeIntent.OpenTree(tree.id)) }
                                 .semantics { contentDescription = "Chăm sóc " + tree.name },
-                            growth = tree.growth, fitVisibleArtwork = true, artworkAlignment = Alignment.Center)
+                            growth = tree.growth, fitVisibleArtwork = true, artworkAlignment = Alignment.Center, withered = !tree.status.alive)
                         Column(Modifier.align(Alignment.CenterEnd).width(48.dp), horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.spacedBy(0.dp)) {
-                            MintCareIcon(GardenArt.WATERING_CAN,
-                                if (tree.wateredToday) "Đã tưới hôm nay" else "Tưới",
-                                !tree.wateredToday && d.wateringCanMl >= 50,
-                                { onIntent(HomeIntent.WaterTree(tree.id)) }, checked = tree.wateredToday)
-                            MintCareIcon(GardenArt.FERTILIZER, "Bón · $fertilizerCount phân bón",
-                                fertilizerCount > 0 && tree.growth < 120, { onIntent(HomeIntent.FertilizeTree(tree.id)) })
-                            MintCareIcon(GardenArt.PUMP, "Bơm nước", true, { onIntent(HomeIntent.RefillWater) })
-                            MintCareIcon(GardenArt.DROP, "Nước ${d.wateringCanMl} ml", true,
-                                { onIntent(HomeIntent.RefillWater) }, caption = "${d.wateringCanMl}\nml")
+                            MintCareIcon(GardenArt.WATERING_CAN, tree.status.waterLabel,
+                                tree.status.canWater, { onIntent(HomeIntent.WaterTree(tree.id)) }, checked = tree.status.waterActive)
+                            MintCareIcon(GardenArt.FERTILIZER, "Bón · $fertilizerCount túi",
+                                fertilizerCount > 0 && tree.status.canFertilize, { onIntent(HomeIntent.FertilizeTree(tree.id)) })
                         }
                     }
+                    HomeLink(GardenArt.DROP,tree.status.waterLabel,tree.status.cue.label,{onIntent(HomeIntent.OpenTree(tree.id))})
+                    if(tree.status.fertilizerLabel.isNotEmpty())Text(tree.status.fertilizerLabel,color=Green,fontSize=12.sp)
                     HomeLink(GardenArt.CHECKLIST, "Việc nhỏ", taskTitle, { onIntent(HomeIntent.OpenTasks) })
                     val claimed = d.dailyRewardDate.isNotBlank()
                     HomeLink(if (claimed) GardenArt.CHECKED_TASK else GardenArt.COIN,
@@ -101,6 +98,7 @@ fun HomeScreen(
                 d.nextTasks.forEach { task ->
                     HomeLink(GardenArt.CHECKLIST,task.title,task.availability.ifBlank{"+${task.reward} xu"},{onTaskAction(task.id,task.config.verification=="TIMER")},enabled=task.available)
                 }
+                if(d.nextGoal.isNotEmpty())HomeLink(GardenArt.COIN,"Mục tiêu tiếp theo",d.nextGoal,{onIntent(HomeIntent.OpenShop)})
                 if(d.seedCount==0)HomeLink(GardenArt.SEED,"Chọn hạt giống","Ghé Tiệm hạt",{onIntent(HomeIntent.OpenShop)})
             }
         }
@@ -131,7 +129,7 @@ private fun HomeLink(art: GardenArt, title: String, subtitle: String, onClick: (
 
 private fun previewHomeState(treeName: String = "Đào hồng xuân") = HomeUiState(HomeDashboard(
     trees = listOf(HomeTree(1L, "cherry", treeName, 120, "FLOWERS", false)),
-    completedTasks = 2, totalTasks = 4, coins = 120, wateringCanMl = 500), false)
+    completedTasks = 2, totalTasks = 4, coins = 120, equippedCan = "can_basic"), false)
 
 @Preview(widthDp = 360, heightDp = 640, device = "spec:width=360dp,height=640dp,dpi=160")
 @Composable

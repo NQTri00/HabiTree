@@ -29,6 +29,12 @@ class ShopViewModel(private val repository: ShopRepository) : ViewModel() {
                 val wallet = withContext(Dispatchers.IO) { LoadShopWallet(repository)() }
                 _uiState.value = _uiState.value.copy(wallet = wallet, averageEarnings = withContext(Dispatchers.IO){repository.averageEarnings()}, isLoading = false)
             }
+            is ShopIntent.Equip -> viewModelScope.launch {
+                val result = withContext(Dispatchers.IO) { repository.equipCan(intent.id) }
+                dispatch(ShopIntent.Refresh)
+                effectChannel.send(ShopEffect.Feedback(result.message))
+                if(result.success) effectChannel.send(ShopEffect.InventoryChanged)
+            }
             is ShopIntent.Purchase -> purchase(intent.id,intent.quantity,intent.key)
             is ShopIntent.BuySeed -> purchase(intent.id)
             ShopIntent.BuyFertilizer -> purchase("fertilizer")
@@ -47,7 +53,7 @@ class ShopViewModel(private val repository: ShopRepository) : ViewModel() {
                 }
                 _uiState.value = _uiState.value.copy(wallet = after, isLoading = false,
                     outcome = PurchaseOutcome(success.success,
-                        shopCatalog.firstOrNull { it.id == id }?.name ?: "Phân hữu cơ",
+                        shopCatalog.firstOrNull { it.id == id }?.name ?: com.mamxanh.shared.model.careProducts.firstOrNull{it.id==id}?.name.orEmpty(),
                         before.coins, after.coins, before.inventory[id] ?: 0, after.inventory[id] ?: 0,success.message))
                 if(success.success) effectChannel.send(ShopEffect.InventoryChanged)
             } finally {

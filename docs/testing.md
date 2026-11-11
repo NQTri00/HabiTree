@@ -1,9 +1,21 @@
-# Phase 1 testing strategy
+# Gameplay verification
 
-The app uses Compose, Koin and platform SQLite behind shared KMP GameSqlConnection. It previously had no test source set. Production DI is retained. Domain transaction tests use an isolated real in-memory Android SQLite database and an injected clock, without mocking SQLite or modifying player profiles.
+The Compose/Koin app uses platform SQLite behind shared KMP GameSqlConnection. Transaction tests use isolated real SQLite and injected clocks. Production DI and player profiles are preserved.
 
-Run `./gradlew :data:connectedDebugAndroidTest` on a connected emulator. Tests live in data/src/androidTest/java/com/mamxanh/app/data/PhaseOneTransactionsTest.kt. Build with `:app:assembleDebug :app:assembleVerification -Pmamxanh.verificationSuffix=.verification.phaseone`. Shared/native compilation is checked separately; iOS simulator runtime requires macOS.
+Run `./gradlew :data:connectedDebugAndroidTest` with a connected emulator. Tests live in:
+- `data/src/androidTest/java/com/mamxanh/app/data/PhaseOneTransactionsTest.kt`
+- `data/src/androidTest/java/com/mamxanh/app/data/PhaseTwoLifecycleTest.kt`
 
-Test priorities: occurrence and receipt uniqueness, daily cap including partial grants, spending, timer active intervals and restart, scheduled/rest days, windows and timezones, edits/pause/archive, snapshot Daily Clear, migrations, planting, care resource invariants. UI is checked on the isolated verification package at phone widths and large font settings, scrolling every long screen to its end. No mass preview or screenshot-test framework is added because the user explicitly requires minimal preview heap use. Device interaction and Gradle tasks run sequentially.
+Build APKs using `:app:assembleDebug :app:assembleVerification -Pmamxanh.verificationSuffix=.verification.phasetwo`. Compile shared targets using `:shared:compileCommonMainKotlinMetadata :shared:compileKotlinIosArm64`. Native simulator runtime requires macOS and is not claimed on this Windows host.
 
-Acceptance evidence is maintained in docs/superpowers/plans/2026-11-11-phase-1-execution.md. Failed or unexecuted checks must remain distinguishable from passed ones.
+Phase 1 covers task occurrence/receipt uniqueness, the shared daily income cap, partial grants, spending, timer intervals/restart, schedules, windows/timezones, prospective edits, Daily Clear, migrations and planting.
+
+Phase 2 covers exact watering expiry, durable-can ownership/future-only upgrades, Water All eligibility and retries, fertilizer overlap/nonstacking/rolling cooldown, precise neglect/recovery and irreversible death, midnight/DST, pinned planting timezone, restart/offline integration, clock rollback, capped/idempotent sales/removal, concurrent care/disposition, legacy migration grace, and universal 1.4× cumulative stage thresholds. Simulations cover 14/30/90/180 days; Legendary requires 127 distinct credited days plus its precise elapsed floor. Fractional growth effort is tested separately from daily credits.
+
+UI verification uses the isolated verification package, phone widths/font scales, and full scroll ranges. Main-profile checks avoid purchases, task completions and tree care/dispositions. Do not add mass preview renders; the user's preview-heap constraint takes precedence over the adaptive skill's suggested screenshot infrastructure. Device actions and Gradle verification run sequentially.
+
+Plans and acceptance evidence:
+- `docs/superpowers/plans/2026-11-11-phase-1-execution.md`
+- `docs/superpowers/plans/2026-11-11-phase-2-execution.md`
+
+Tree stage art, growth animations and tree transitions are explicitly deferred by the user. Existing static art is temporary. Distinguish deferred and unexecuted checks from passing checks.

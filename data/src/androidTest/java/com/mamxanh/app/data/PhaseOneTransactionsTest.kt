@@ -74,7 +74,7 @@ class PhaseOneTransactionsTest {
         coins(1000)
         assertTrue(engine.purchase("succulent",2,"same").success)
         assertFalse(engine.purchase("succulent",2,"same").success)
-        assertEquals(700,sql.rawQuery("SELECT v FROM meta WHERE k='coins'",null).use{it.moveToFirst();it.getInt(0)})
+        assertEquals(600,sql.rawQuery("SELECT v FROM meta WHERE k='coins'",null).use{it.moveToFirst();it.getInt(0)})
         assertEquals(3,sql.rawQuery("SELECT quantity FROM inventory WHERE item='succulent'",null).use{it.moveToFirst();it.getInt(0)})
     }
     @Test fun unaffordableLeavesEverythingUnchanged() {
@@ -195,7 +195,7 @@ class PhaseOneTransactionsTest {
         }}
     }
     @Test fun existingVersionThreeMigratesWithoutLoss() {
-        listOf("occurrences","wallet","plans","obligations","sessions","timer_intervals","care_events","purchase_receipts","garden_plots","tasks","trees","inventory","meta","logs").forEach{sql.execSQL("DROP TABLE $it")}
+        listOf("tree_growth_days","tree_dispositions","tree_actions","occurrences","wallet","plans","obligations","sessions","timer_intervals","care_events","purchase_receipts","garden_plots","tasks","trees","inventory","meta","logs").forEach{sql.execSQL("DROP TABLE $it")}
         sql.execSQL("CREATE TABLE tasks(id INTEGER PRIMARY KEY,title TEXT NOT NULL,kind TEXT NOT NULL,category TEXT NOT NULL,reward INTEGER NOT NULL,frequency TEXT NOT NULL,due TEXT NOT NULL DEFAULT '',completed TEXT NOT NULL DEFAULT '',streak INTEGER NOT NULL DEFAULT 0,last_done TEXT NOT NULL DEFAULT '')")
         sql.execSQL("CREATE TABLE trees(id INTEGER PRIMARY KEY,species_id TEXT,name TEXT,growth INTEGER,planted TEXT)")
         sql.execSQL("CREATE TABLE inventory(item TEXT PRIMARY KEY,quantity INTEGER)")
@@ -210,19 +210,20 @@ class PhaseOneTransactionsTest {
         sql.execSQL("INSERT INTO meta VALUES('coins','12345')")
         sql.execSQL("INSERT INTO meta VALUES('water_ml','692')")
         sql.execSQL("INSERT INTO meta VALUES('daily_bonus','2026-11-08')")
-        GameSchema.migrate(connection,3,4)
-        val game=SqlGameDatabase(connection)
+        GameSchema.migrate(connection,3,GameSchema.VERSION)
+        val game=SqlGameDatabase(connection,clock)
         assertEquals(12345,game.garden().coins)
         assertEquals(3,game.garden().inventory["pine"])
         assertEquals(17L,game.garden().plots.first().treeId)
-        assertEquals(692,game.waterMl())
+        assertEquals(1,game.garden().inventory["can_basic"])
+        assertEquals(0,sql.rawQuery("SELECT COUNT(*) FROM meta WHERE k=\u0027water_ml\u0027",null).use{it.moveToFirst();it.getInt(0)})
         assertEquals(42L,game.tasks().first().id)
         assertEquals("CLICK",game.tasks().first().config.verification)
         assertEquals(99,game.phaseSnapshot().ledger.first().amount)
         assertEquals(1,sql.rawQuery("SELECT COUNT(*) FROM occurrences WHERE task_id=42",null).use{it.moveToFirst();it.getInt(0)})
     }
     @Test fun plantingExactPlotAndConcurrentRetry() {
-        val game=SqlGameDatabase(connection)
+        val game=SqlGameDatabase(connection,clock)
         val before=game.garden()
         assertEquals(1,before.inventory["succulent"])
         // Viewing/canceling the selection performs no mutation.
@@ -234,20 +235,21 @@ class PhaseOneTransactionsTest {
         assertNull(game.garden().plots.first{it.id==1}.treeId)
     }
     @Test fun careAtCapAndWaterRetry() {
-        val game=SqlGameDatabase(connection)
+        val game=SqlGameDatabase(connection,clock)
         game.plant("succulent","Tree",1)
         val id=game.garden().trees.first().id
         sql.execSQL("INSERT OR REPLACE INTO inventory VALUES('fertilizer',2)")
-        sql.execSQL("UPDATE trees SET growth=120")
+        sql.execSQL("UPDATE trees SET life_state='MATURE'")
         assertFalse(game.fertilize(id))
         assertEquals(2,game.garden().inventory["fertilizer"])
-        sql.execSQL("UPDATE trees SET growth=0")
+        sql.execSQL("UPDATE trees SET life_state='GROWING'")
+        assertFalse(game.fertilize(id)) // Dry trees cannot use fertilizer.
+        assertEquals(TreeWateringResult.WATERED,game.water(id))
+        val until=game.garden().trees.first().status.wateredUntil
         assertTrue(game.fertilize(id))
         assertEquals(1,game.garden().inventory["fertilizer"])
-        assertEquals(TreeWateringResult.WATERED,game.water(id))
-        val water=game.waterMl()
         assertEquals(TreeWateringResult.ALREADY_WATERED,game.water(id))
-        assertEquals(water,game.waterMl())
+        assertEquals(until,game.garden().trees.first().status.wateredUntil)
         assertEquals(2,game.phaseSnapshot().care.size)
     }
     @Test fun editCannotReplaceVerificationDuringTimer() {
@@ -275,15 +277,25 @@ class PhaseOneTransactionsTest {
         engine.complete(id)
         coins(1000)
         engine.purchase("succulent",2,"durable-purchase")
-        val game=SqlGameDatabase(connection)
+        val game=SqlGameDatabase(connection,clock)
         assertTrue(game.plant("succulent","Persisted tree",2))
+        val treeId=game.garden().trees.single().id
+        assertEquals(com.mamxanh.shared.model.TreeWateringResult.WATERED,game.water(treeId))
+        sql.execSQL("INSERT OR REPLACE INTO inventory VALUES('fertilizer',2)")
+        assertTrue(game.applyFertilizer(treeId,"fertilizer").success)
         val before=game.garden()
         sql.close()
         sql=SQLiteDatabase.openOrCreateDatabase(file,null)
-        val reopened=SqlGameDatabase(connection)
+        val reopened=SqlGameDatabase(connection,clock)
         assertEquals(before,reopened.garden())
-        assertEquals(1,reopened.phaseSnapshot().occurrences.size)
         assertFalse(PhaseOneEngine(connection,clock).complete(id).success)
+        clock.millis+=12*com.mamxanh.shared.model.HOUR_MS
+        val caughtUp=reopened.garden().trees.single().status
+        assertEquals(1,caughtUp.growthDays)
+        assertFalse(caughtUp.waterActive)
+        assertEquals(com.mamxanh.shared.model.GROWTH_DAY_UNITS,sql.rawQuery("SELECT growth_units FROM trees WHERE id=$treeId",null).use{it.moveToFirst();it.getLong(0)})
+        assertFalse(reopened.applyFertilizer(treeId,"fertilizer").success)
+        assertEquals(1,reopened.phaseSnapshot().occurrences.size)
         file.delete()
     }
     @Test fun concurrentDoubleTapCommitsOnce() {
@@ -331,7 +343,7 @@ class PhaseOneTransactionsTest {
     @Test fun shopCatalogMatchesTransactionCatalogAndEverySeedPlants() {
         val ui=com.mamxanh.shared.feature.shop.domain.model.shopCatalog
         assertEquals(catalog.map{it.id to it.price},ui.map{it.id to it.price})
-        val game=SqlGameDatabase(connection)
+        val game=SqlGameDatabase(connection,clock)
         catalog.forEach { species ->
             sql.execSQL("INSERT OR REPLACE INTO inventory VALUES(?,1)",arrayOf(species.id))
             val plot=game.garden().plots.firstOrNull{it.isUnlocked && it.treeId==null}

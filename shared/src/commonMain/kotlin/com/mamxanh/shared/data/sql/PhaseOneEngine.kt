@@ -143,6 +143,12 @@ class PhaseOneEngine(private val db: GameSqlConnection, private val clock: GameC
         exec("INSERT INTO wallet VALUES(?,?,?,?,?,?,?,?)",key,date,type,entity,clock.now(),nominal,amount,balance)
         return amount
     }
+    fun income(key: String,type: String,entity: String,nominal: Int): ActionResult {
+        if(!clockSafe())return ActionResult(false,"Đồng hồ đã lùi; chưa thể nhận xu")
+        if(number("SELECT COUNT(*) FROM wallet WHERE id=?",key)>0)return ActionResult(false,"Giao dịch đã được xử lý")
+        val amount=award(key,type,entity,nominal,clock.date())
+        return ActionResult(true,"Nhận $amount / $nominal xu",nominal,amount)
+    }
     fun spend(key: String,type: String,entity: String,total: Int): Boolean {
         if(number("SELECT COUNT(*) FROM wallet WHERE id=?",key)>0) return false
         val balance = meta("coins","0").toInt()
@@ -179,8 +185,7 @@ class PhaseOneEngine(private val db: GameSqlConnection, private val clock: GameC
         exec("INSERT INTO logs(date,task_id,title,coins) VALUES(?,?,?,?)",date,id,c.title,granted)
         exec("UPDATE tasks SET completed=?,last_done=?,streak=streak+1 WHERE id=?",date,date,id)
         exec("UPDATE sessions SET running=0,tick=0 WHERE task_id=?",id)
-        // Legacy tree side effect remains part of this same transaction until Phase 2.
-        exec("UPDATE trees SET growth=MIN(120,growth+?)",nominal*2)
+        // Task rewards never bypass the timed, watered growth engine.
         ActionResult(true,"+${granted} xu / ${nominal} xu" + if(granted<nominal)" · Giới hạn ${Balance.DAILY_CAP} xu/ngày" else "",nominal,granted)
     }
     fun timer(id: Long,action: String): ActionResult = db.transaction {
@@ -281,7 +286,10 @@ class PhaseOneEngine(private val db: GameSqlConnection, private val clock: GameC
     fun purchase(id: String,quantity: Int,key: String): ActionResult = db.transaction {
         if(number("SELECT COUNT(*) FROM purchase_receipts WHERE id=?",key)>0) return@transaction ActionResult(false,"Giao dịch này đã được xử lý")
         if(quantity !in 1..99) return@transaction ActionResult(false,"Số lượng từ 1 đến 99")
-        val price=if(id=="fertilizer")Balance.FERTILIZER else catalog.firstOrNull{it.id==id}?.price
+        val product=careProducts.firstOrNull{it.id==id}
+        if(product?.permanent==true && (quantity!=1 || number("SELECT quantity FROM inventory WHERE item=?",id)>0))
+            return@transaction ActionResult(false,"Bình tưới đã sở hữu hoặc số lượng không hợp lệ")
+        val price=product?.price ?: catalog.firstOrNull{it.id==id}?.price
             ?: return@transaction ActionResult(false,"Không tìm thấy sản phẩm")
         val total=price*quantity
         if(!spend(key,"PURCHASE",id,total))return@transaction ActionResult(false,"Không đủ xu; túi đồ không thay đổi")

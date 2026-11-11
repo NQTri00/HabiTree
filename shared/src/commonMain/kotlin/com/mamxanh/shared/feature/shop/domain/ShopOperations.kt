@@ -3,6 +3,7 @@ package com.mamxanh.shared.feature.shop.domain
 import com.mamxanh.shared.feature.shop.domain.model.ShopWallet
 
 interface ShopRepository {
+    fun equipCan(id: String): com.mamxanh.shared.model.ActionResult
     fun purchase(id: String,quantity: Int,key: String): com.mamxanh.shared.model.ActionResult
     fun averageEarnings(): Int
     fun loadWallet(): ShopWallet

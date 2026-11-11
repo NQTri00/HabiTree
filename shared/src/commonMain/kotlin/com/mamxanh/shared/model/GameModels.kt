@@ -15,10 +15,18 @@ data class Task(
     val doneToday: Boolean get() = completed == currentDateKey() || occurrenceDone
     val finished: Boolean get() = kind == "TODO" && completed.isNotBlank()
 }
-data class Species(val id: String, val name: String, val emoji: String, val description: String, val price: Int)
+data class Species(val id: String, val name: String, val emoji: String, val description: String, private val legacyPrice: Int) {
+    val profile get() = lifecycleProfile(id)
+    val price get() = profile.seedPrice
+    val tier get() = profile.tier
+    val formCount get() = profile.stageCount
+    val unlockType get() = "COINS"
+    val growthBalanceVersion get() = profile.balanceVersion
+}
 data class Tree(
     val id: Long, val speciesId: String, val name: String, val growth: Int,
-    val planted: String, val decoration: String = "NONE", val wateredToday: Boolean = false
+    val planted: String, val decoration: String = "NONE", val wateredToday: Boolean = false,
+    val status: TreeStatus = TreeStatus()
 )
 data class GardenPlot(val id: Int, val isUnlocked: Boolean, val treeId: Long? = null)
 object GardenPlotPolicy {
@@ -26,7 +34,8 @@ object GardenPlotPolicy {
 }
 data class Garden(
     val trees: List<Tree> = emptyList(), val inventory: Map<String, Int> = emptyMap(),
-    val plots: List<GardenPlot> = emptyList(), val coins: Int = 0
+    val plots: List<GardenPlot> = emptyList(), val coins: Int = 0,
+    val equippedCan: String = WateringCanTier.BASIC.itemId, val waterAll: WaterAllSummary = WaterAllSummary()
 )
 data class Statistics(
     val coins: Int = 0, val total: Int = 0, val today: Int = 0,
@@ -34,7 +43,7 @@ data class Statistics(
     val recentDailyCompletions: List<Int> = emptyList()
 )
 
-enum class TreeWateringResult { WATERED, ALREADY_WATERED, NOT_ENOUGH_WATER, TREE_NOT_FOUND }
+enum class TreeWateringResult { WATERED, ALREADY_WATERED, DEAD, CLOCK_CHANGED, TREE_NOT_FOUND }
 val catalog = listOf(
     Species("succulent", "Sen đá ngọc", "🪴", "Mọng nước, cánh lá xếp tầng xinh xắn", 150),
     Species("monstera", "Trầu bà lá xẻ", "🌿", "Lá xanh mướt mang không khí trong lành", 200),

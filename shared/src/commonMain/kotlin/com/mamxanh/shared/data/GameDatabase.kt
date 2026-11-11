@@ -4,6 +4,13 @@ import com.mamxanh.shared.model.*
 
 /** Blocking platform persistence. Call from a worker dispatcher, never from composition. */
 interface GameDatabase {
+    fun waterAllQuote(): WaterAllSummary
+    fun waterAll(key: String): ActionResult
+    fun applyFertilizer(treeId: Long,tierId: String): ActionResult
+    fun equipCan(id: String): ActionResult
+    fun treeSaleQuote(id: Long): ActionResult
+    fun disposeTree(id: Long,sell: Boolean,key: String): ActionResult
+    fun treeDispositions(): List<TreeDispositionEvent>
     fun phaseSnapshot(): PhaseSnapshot
     fun saveTask(id: Long?, config: TaskConfig): ActionResult
     fun taskLifecycle(id: Long, state: String): ActionResult
@@ -25,7 +32,5 @@ interface GameDatabase {
     fun buyFertilizer(): Boolean
     fun fertilize(treeId: Long): Boolean
     fun water(treeId: Long): TreeWateringResult
-    fun waterMl(): Int
-    fun refillWater(amountMl: Int): Int
     fun decorate(treeId: Long, decoration: String)
 }

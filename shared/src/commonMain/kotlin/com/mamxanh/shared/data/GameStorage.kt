@@ -4,6 +4,13 @@ package com.mamxanh.shared.data
 class GameStorage(private val database: GameDatabase) {
     val changes = kotlinx.coroutines.flow.MutableStateFlow(0L)
     private fun changed() { while (true) { val old=changes.value; if(changes.compareAndSet(old,old+1))return } }
+    fun waterAllQuote() = database.waterAllQuote()
+    fun waterAll(key: String) = database.waterAll(key).also { changed() }
+    fun applyFertilizer(id: Long,tier: String) = database.applyFertilizer(id,tier).also { changed() }
+    fun equipCan(id: String) = database.equipCan(id).also { changed() }
+    fun treeSaleQuote(id: Long) = database.treeSaleQuote(id)
+    fun disposeTree(id: Long,sell: Boolean,key: String) = database.disposeTree(id,sell,key).also { changed() }
+    fun treeDispositions() = database.treeDispositions()
     fun phaseSnapshot() = database.phaseSnapshot()
     fun saveTask(id: Long?, config: com.mamxanh.shared.model.TaskConfig) = database.saveTask(id,config).also { changed() }
     fun taskLifecycle(id: Long,state: String) = database.taskLifecycle(id,state).also { changed() }
@@ -26,7 +33,5 @@ class GameStorage(private val database: GameDatabase) {
     fun buyFertilizer() = database.buyFertilizer().also { changed() }
     fun fertilize(treeId: Long) = database.fertilize(treeId).also { changed() }
     fun water(treeId: Long) = database.water(treeId).also { changed() }
-    fun waterMl() = database.waterMl()
-    fun refillWater(amountMl: Int = 100) = database.refillWater(amountMl).also { changed() }
     fun decorate(treeId: Long, decoration: String) = database.decorate(treeId, decoration).also { changed() }
 }

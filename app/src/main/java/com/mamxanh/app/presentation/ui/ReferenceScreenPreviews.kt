@@ -117,7 +117,7 @@ private fun ReferenceWorld(route: AppUiState, empty: Boolean = false, careUnavai
             state = route,
             dashboard = HomeUiState(HomeDashboard(
                 trees.map { HomeTree(it.id, it.speciesId, it.name, it.growth, it.decoration, it.wateredToday) },
-                completedTasks = if (empty) 0 else 2, totalTasks = if (empty) 0 else 4, coins = if (empty) 0 else 120, wateringCanMl = if (careUnavailable) 0 else 500
+                completedTasks = if (empty) 0 else 2, totalTasks = if (empty) 0 else 4, coins = if (empty) 0 else 120, equippedCan = "can_basic"
             ), false),
             tasks = TasksUiState(tasks = if (empty) emptyList() else listOf(
                 Task(1, "Đọc 10 trang sách", "HABIT", "Học tập", 10, "EVERY_DAY", "", "", 4, ""),

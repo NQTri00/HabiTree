@@ -25,16 +25,15 @@ fun TreePortrait(tree: Tree, modifier: Modifier = Modifier, sharedTreeModifier: 
 }
 
 @Composable
-fun TreeCareActions(wateredToday: Boolean, fertilizerCount: Int, wateringCanMl: Int,
+fun TreeCareActions(wateredToday: Boolean, fertilizerCount: Int, canWater: Boolean,
     onWater: () -> Unit, onFertilize: () -> Unit,
     onGetWater: (() -> Unit)? = null, onBuyFertilizer: (() -> Unit)? = null, showSupplyLinks: Boolean = true) {
     Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            CareTile(GardenArt.WATERING_CAN, if(wateredToday) "✓ Đã tưới" else "Tưới\n50 ml",
-                !wateredToday && wateringCanMl >= 50, onWater, Modifier.weight(1f).fillMaxHeight())
+            CareTile(GardenArt.WATERING_CAN, if(wateredToday) "✓ Đã tưới" else "Tưới cây",
+                canWater, onWater, Modifier.weight(1f).fillMaxHeight())
             CareTile(GardenArt.FERTILIZER, "Bón\n1 túi", fertilizerCount > 0, onFertilize, Modifier.weight(1f).fillMaxHeight())
         }
-        if(showSupplyLinks && wateringCanMl < 50 && onGetWater != null) GardenPaintedButton("💧 Thiếu nước · Về sân vườn bơm ›", onGetWater, Modifier.fillMaxWidth(), primary = false)
         if(showSupplyLinks && fertilizerCount <= 0 && onBuyFertilizer != null) GardenPaintedButton("Hết phân · Ghé Tiệm hạt ›", onBuyFertilizer, Modifier.fillMaxWidth(), primary = false)
     }
 }
@@ -68,8 +67,8 @@ fun DecorationPicker(selected: String, onSelect: (String) -> Unit) {
 
 @Preview(widthDp = 340, heightDp = 130, device = "spec:width=340dp,height=130dp,dpi=160")
 @Composable
-fun WateredCareActionsPreview() { MamXanhPreviewTheme { TreeCareActions(true, 2, 450, {}, {}) } }
+fun WateredCareActionsPreview() { MamXanhPreviewTheme { TreeCareActions(true, 2, false, {}, {}) } }
 @Composable
-fun TreeCareActionsPreview() { MamXanhPreviewTheme { TreeCareActions(false, 2, 500, {}, {}) } }
+fun TreeCareActionsPreview() { MamXanhPreviewTheme { TreeCareActions(false, 2, true, {}, {}) } }
 @Composable
 fun DecorationPickerPreview() { MamXanhPreviewTheme { DecorationPicker("FLOWERS", {}) } }

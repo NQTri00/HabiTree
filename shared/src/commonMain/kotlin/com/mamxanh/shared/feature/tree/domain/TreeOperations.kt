@@ -3,6 +3,9 @@ package com.mamxanh.shared.feature.tree.domain
 import com.mamxanh.shared.model.TreeWateringResult
 
 interface TreeRepository {
+    fun applyFertilizer(id: Long,tier: String): com.mamxanh.shared.model.ActionResult
+    fun saleQuote(id: Long): com.mamxanh.shared.model.ActionResult
+    fun dispose(id: Long,sell: Boolean,key: String): com.mamxanh.shared.model.ActionResult
     fun water(treeId: Long): TreeWateringResult
     fun fertilize(treeId: Long): Boolean
     fun decorate(treeId: Long, decoration: String)

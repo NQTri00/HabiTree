@@ -3,7 +3,6 @@ package com.mamxanh.app.feature.home.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mamxanh.app.feature.home.domain.LoadHomeDashboard
-import com.mamxanh.app.feature.home.domain.RefillWater
 import com.mamxanh.app.feature.home.domain.HomeDashboardRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -28,23 +27,9 @@ class HomeViewModel(private val repository: HomeDashboardRepository) : ViewModel
                 _uiState.value = _uiState.value.copy(isDailyClearVisible = false)
             }
             HomeIntent.Refresh -> viewModelScope.launch {
-                _uiState.value = _uiState.value.copy(isLoading = true)
                 val dashboard = withContext(Dispatchers.IO) { LoadHomeDashboard(repository)() }
                 _uiState.value = _uiState.value.copy(dashboard = dashboard, isLoading = false,
                     isDailyClearVisible = dashboard.dailyRewardDate.isNotBlank() && dashboard.dailyRewardDate != dismissedRewardDate)
-            }
-            HomeIntent.RefillWater -> viewModelScope.launch {
-                val before = _uiState.value.dashboard.wateringCanMl
-                val amount = withContext(Dispatchers.IO) { RefillWater(repository)() }
-                val dashboard = withContext(Dispatchers.IO) { LoadHomeDashboard(repository)() }
-                _uiState.value = _uiState.value.copy(dashboard = dashboard, isLoading = false,
-                    isDailyClearVisible = dashboard.dailyRewardDate.isNotBlank() && dashboard.dailyRewardDate != dismissedRewardDate)
-                effectChannel.send(
-                    HomeEffect.Feedback(
-                        if (amount > before) "Đã bơm thêm nước vào bình."
-                        else "Bình tưới đã đầy."
-                    )
-                )
             }
             is HomeIntent.OpenTree -> viewModelScope.launch { effectChannel.send(HomeEffect.OpenTree(intent.id)) }
             HomeIntent.OpenTasks -> viewModelScope.launch { effectChannel.send(HomeEffect.OpenTasks) }
