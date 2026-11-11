@@ -31,36 +31,64 @@ fun TreeInteractionScreen(
     var tab by rememberSaveable(tree.id) { mutableIntStateOf(0) }
     MintBackdrop(modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
-            MintHeader("Mầm Xanh", coins)
-            BoxWithConstraints(Modifier.weight(1f)) {
-                val heroHeight = (maxHeight - 350.dp).coerceIn(100.dp, 380.dp)
-                Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 16.dp, vertical = 8.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                    GardenBotanicalFrame(Modifier.fillMaxWidth(.85f).clickable(onClick = onOpenGarden),
-                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp), cornerSize = 50.dp) {
-                        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                            GardenArtwork(GardenArt.SPROUT, Modifier.size(24.dp))
-                            Text("Vườn ươm", Modifier.weight(1f), fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, color = Deep)
-                            Text("›", fontSize = 24.sp, color = Deep)
-                        }
+            MintCompactHeader(coins)
+            val heroHeight = mintTreeHeroHeight()
+            Column(Modifier.weight(1f).verticalScroll(rememberScrollState())
+                .padding(horizontal = 12.dp).padding(bottom = 8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                GardenBotanicalFrame(Modifier.fillMaxWidth().heightIn(min = 48.dp)
+                    .clickable(onClick = onOpenGarden),
+                    contentPadding = PaddingValues(8.dp), cornerSize = 18.dp) {
+                    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        GardenArtwork(GardenArt.SPROUT, Modifier.size(24.dp))
+                        Text("Vườn ươm", Modifier.weight(1f), fontWeight = FontWeight.Bold,
+                            fontSize = 13.sp, lineHeight = 16.sp, color = Deep)
+                        Text("›", fontSize = 22.sp, color = Deep)
                     }
-                    GardenPlantPortrait(tree.speciesId, tree.decoration, sharedTreeModifier.fillMaxWidth().height(heroHeight), tree.growth)
-                    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                        IconButton(onClick = { onPrevious?.invoke() }, enabled = onPrevious != null) { Text("‹", fontSize = 30.sp, color = Deep) }
-                        Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(5.dp)) {
-                            Text(tree.name, color = Deep, fontWeight = FontWeight.Bold, fontSize = 18.sp, textAlign = TextAlign.Center)
-                            MintProgress(tree.growth / 120f, Modifier.fillMaxWidth())
-                            Text("${tree.growth.coerceIn(0,120)} / 120", color = Deep, fontWeight = FontWeight.Bold)
-                        }
-                        IconButton(onClick = { onNext?.invoke() }, enabled = onNext != null) { Text("›", fontSize = 30.sp, color = Deep) }
-                    }
-                    TreeCareActions(tree.wateredToday, fertilizerCount, wateringCanMl,
-                        { onIntent(TreeIntent.Water(tree.id)) }, { onIntent(TreeIntent.Fertilize(tree.id)) },
-                        { onIntent(TreeIntent.OpenWaterSupply) }, { onIntent(TreeIntent.OpenFertilizerShop) }, showSupplyLinks = false)
-                    MintSegments(listOf("Chăm sóc", "Trang trí", "Thông tin"), tab,
-                        { tab = it; onIntent(TreeIntent.SetPanelExpanded(true)) })
                 }
+                Row(Modifier.fillMaxWidth().heightIn(min = heroHeight),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    GardenPlantPortrait(tree.speciesId, tree.decoration,
+                        sharedTreeModifier.weight(1f).height(heroHeight),
+                        tree.growth, fitVisibleArtwork = true)
+                    Column(Modifier.width(52.dp), horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                        MintCareIcon(GardenArt.WATERING_CAN,
+                            if (tree.wateredToday) "Đã tưới hôm nay" else "Tưới · 50 ml",
+                            !tree.wateredToday && wateringCanMl >= 50,
+                            { onIntent(TreeIntent.Water(tree.id)) }, checked = tree.wateredToday)
+                        MintCareIcon(GardenArt.FERTILIZER, "Bón · $fertilizerCount phân bón",
+                            fertilizerCount > 0, { onIntent(TreeIntent.Fertilize(tree.id)) })
+                        MintCareIcon(GardenArt.PUMP, "Bơm nước", true,
+                            { onIntent(TreeIntent.OpenWaterSupply) })
+                        MintCareIcon(GardenArt.DROP, "Nước $wateringCanMl ml", true,
+                            { onIntent(TreeIntent.OpenWaterSupply) }, caption = "$wateringCanMl\nml")
+                    }
+                }
+                GardenBotanicalFrame(Modifier.fillMaxWidth(),
+                    contentPadding = PaddingValues(horizontal = 4.dp, vertical = 8.dp), cornerSize = 18.dp) {
+                    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                        IconButton(onClick = { onPrevious?.invoke() }, enabled = onPrevious != null) {
+                            Text("‹", fontSize = 24.sp, color = if (onPrevious != null) Deep else Muted)
+                        }
+                        Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(3.dp)) {
+                            Text(tree.name, color = Deep, fontWeight = FontWeight.Bold,
+                                fontSize = 14.sp, lineHeight = 17.sp, textAlign = TextAlign.Center)
+                            MintProgress(tree.growth / 120f, Modifier.fillMaxWidth())
+                            Text("${tree.growth.coerceIn(0,120)} / 120", color = Deep,
+                                fontSize = 11.sp, lineHeight = 14.sp, fontWeight = FontWeight.Bold)
+                        }
+                        IconButton(onClick = { onNext?.invoke() }, enabled = onNext != null) {
+                            Text("›", fontSize = 24.sp, color = if (onNext != null) Deep else Muted)
+                        }
+                    }
+                }
+                MintSegments(listOf("Chăm sóc", "Trang trí", "Thông tin"), tab,
+                    { tab = it; onIntent(TreeIntent.SetPanelExpanded(true)) })
             }
         }
         if(state.isPanelExpanded) ModalBottomSheet(

@@ -79,6 +79,13 @@ No complete demo screenshot is used as a runtime background.
 - Final assembleDebug and assembleVerification passed (18 seconds). git diff --check passed. Installed main APK with-r;145 coins and saved tree/water persisted. Restored physical720×1280, font1× and automatic rotation.
 - Half-height refers to the tree presentation area; visible artwork preserves its aspect ratio and growth scale, so its silhouette can occupy less height on tall narrow phones.
 
+## Tree Detail enlargement — same treatment as Home
+- Tree Detail now uses the same half-window tree area, fitted artwork,52dp side rail and compact header as Home. Shared MintTreeControls provides the sizing rule, header and48dp icon controls to both features.
+- Nursery shortcut and name/growth panel use compact padding/text. Previous/next retain48dp targets. Care/Decoration/Information tabs and their expanded panels remain functional.
+- Water/fertilizer intents and shortage behavior are preserved; pump/water icons use the existing water-supply navigation.
+- Both APK variants built successfully (37 seconds). Installed main app with-r and inspected360dp detail: full tree, checked watering, disabled fertilizer, growth and all tabs visible. Information panel opened with real species/date/growth.
+- At320dp/1.3× inspected the entire scroll boundary: care rail, water label, growth panel and all three wrapping tabs reachable. No game-data mutations were used for this verification.
+
 ## Acceptance still open
 Exact plant/icon silhouettes and illustration style differ from the new sheets; reused/generated art is not lossless source extraction. Do not describe this checkpoint as 100% visually identical.
 The full 393/412dp, landscape/IME, long-name, process-death, reward-claim, transaction-race and every annotated outcome matrix has not been re-executed for this redesign. Existing historical evidence does not automatically close those checks.
