@@ -64,8 +64,9 @@ import com.mamxanh.app.presentation.ui.components.GardenJournalPage
 @Composable
 fun TasksScreen(state: TasksUiState, onIntent: (TasksIntent) -> Unit, modifier: Modifier = Modifier, coins: Int = 0) {
     val listState = rememberLazyListState()
+    // Completion updates a row in place; moving the first visible key would move the viewport too.
     val filtered = state.tasks.filter { it.lifecycle == "ACTIVE" && (it.scheduledToday || it.doneToday || it.finished) }
-        .sortedWith(compareBy<Task> { it.doneToday || it.finished }.thenBy { it.id })
+        .sortedBy { it.id }
     val done = state.phase.completed
     MintBackdrop(modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {

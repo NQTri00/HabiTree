@@ -199,6 +199,12 @@ No complete demo screenshot is used as a runtime background.
 - Layoutlib initially reused an old DecorationPicker. Rendered its defining component preview first, then re-rendered the full Decoration document and verified all four choices in two columns. Renders were sequential, with no parallel build/render or preview atlas.
 - Debug builds passed after extraction (1m17s), guards/scroll-state update (18s), and the final preview annotation (1m16s). Installed APK verified the mature Care section and pinned tree/tab layout. Complete contents of all three sections were reviewed through the dedicated previews. Availability rules, pending-action guards, growth calculation and saved game data are unchanged.
 
+## Mission completion preserves position — 2026-11-12
+
+- Removed completion-based sorting from TasksScreen. Rows retain stable ID order and update their checked state in place, so LazyColumn does not follow a moved first-visible key to the list bottom.
+- Debug and isolated verification builds passed (2m37s). In com.mamxanh.app.verification.scroll at320dp/font1.3, completed the first mission at the top, then a second mission from a scrolled position. Before/after captures show each completed row at the same vertical position with the same following rows. Verification wallet0→8→16; main-profile missions were not completed for QA.
+- Restored normal emulator density/font settings after the check. Reward, scheduling and completion validation code is unchanged.
+
 ## Acceptance still open
 Exact plant/icon silhouettes and illustration style differ from the new sheets; reused/generated art is not lossless source extraction. Do not describe this checkpoint as 100% visually identical.
 The full 393/412dp, landscape/IME, long-name, process-death, reward-claim, transaction-race and every annotated outcome matrix has not been re-executed for this redesign. Existing historical evidence does not automatically close those checks.
