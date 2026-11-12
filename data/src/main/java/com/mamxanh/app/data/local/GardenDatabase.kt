@@ -28,7 +28,7 @@ private class GardenSqliteHelper(context: Context) :
     }
 }
 
-private class AndroidGameSqlConnection(private val database: () -> SQLiteDatabase) : GameSqlConnection {
+internal class AndroidGameSqlConnection(private val database: () -> SQLiteDatabase) : GameSqlConnection {
     override fun query(sql: String, columns: Int, args: List<String>): List<GameSqlRow> =
         database().rawQuery(sql, args.toTypedArray()).use { cursor ->
             buildList {

@@ -4,6 +4,8 @@ import com.mamxanh.shared.model.*
 
 /** Blocking platform persistence. Call from a worker dispatcher, never from composition. */
 interface GameDatabase {
+    fun backup(appVersion:String,createdAt:Long): com.mamxanh.shared.data.sql.GameBackup
+    fun restore(backup:com.mamxanh.shared.data.sql.GameBackup)
     fun livingGarden(): LivingGardenSnapshot
     fun designGarden(action: LivingGardenAction): ActionResult
     fun engagementSnapshot(): EngagementSnapshot

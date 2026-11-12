@@ -6,3 +6,8 @@
 /build
 */build
 /.kotlin/
+# Local signing material and personal gameplay exports
+*.jks
+*.keystore
+*.mamxanh
+/signing.properties

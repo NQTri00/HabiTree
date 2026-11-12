@@ -18,6 +18,8 @@ Phase 3 adds 21 real-SQLite cases for onboarding/free starter preservation, copi
 
 Phase 4 adds 24 real-SQLite cases for finite sections, preserved plot/tree IDs and legacy accessory copies, purchase receipts/permanent ownership, local cancellation, versioned atomic saves, locked/off-grid/overlap rejection, slot compatibility, free moving/returning, stage/disposition history, one-time cosmetic milestones, themes/particle suppression, finite expansions and unknown catalog records. Combined suite: 105 tests. Test fixture balances are isolated and never granted to the player profile.
 
+Phase 5 adds portable backup/checksum, nullable Unicode round trips, repeated replacement, corrupt/malformed/unknown archives, rollback, deleted-ID high-water preservation, schema 1–7 fixtures, Android file export/preview/safety recovery/clear, sanitized diagnostics and a 1,000-occurrence/100-care-event scale fixture. See `PhaseFiveBackupTest.kt`, `shared/src/commonTest/kotlin/com/mamxanh/shared/BackupCodecTest.kt`, `docs/phase-5-data-and-release.md` and `docs/phase-5-reference-benchmark.md`. Run `verifyArchitecture` for module boundaries. Native common tests compile on Windows; Apple test execution requires an appropriate macOS simulator host.
+
 UI verification uses the isolated verification package, phone widths/font scales, and full scroll ranges. Main-profile checks avoid purchases, task completions and tree care/dispositions. Do not add mass preview renders; the user's preview-heap constraint takes precedence over the adaptive skill's suggested screenshot infrastructure. Device actions and Gradle verification run sequentially.
 
 Plans and acceptance evidence:

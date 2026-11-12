@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="data_title">Dữ liệu &amp; ứng dụng</string>
+    <string name="data_back">Quay lại tùy chọn</string>
+    <string name="data_backup">Sao lưu</string>
+    <string name="data_export">Xuất bản sao</string>
+    <string name="data_import">Khôi phục từ tệp</string>
+    <string name="data_recover">Bản an toàn gần nhất</string>
+    <string name="data_warning">Bản sao không mã hóa, có thể chứa lịch sử và ghi chú riêng tư. Chỉ chia sẻ với người bạn tin cậy.</string>
+    <string name="data_replace">Thay toàn bộ dữ liệu</string>
+    <string name="data_replace_warning">Dữ liệu hiện tại sẽ được thay thế, không gộp hai khu vườn. Một bản an toàn được lưu trên thiết bị trước khi thay. Cây đã chết có thể trở lại trạng thái cũ nếu bản sao có trước thời điểm đó.</string>
+    <string name="data_confirm">Xác nhận thay thế</string>
+    <string name="data_cancel">Hủy</string>
+    <string name="data_success">Đã hoàn tất</string>
+    <string name="data_error">Không thể xử lý tệp. Dữ liệu hiện tại được giữ nguyên; hãy kiểm tra tệp, dung lượng và quyền truy cập.</string>
+    <string name="data_counts">%1$d việc · %2$d cây · %3$d lượt hoàn thành</string>
+    <string name="data_created">Bản sao: %1$s · ứng dụng %2$s</string>
+    <string name="data_size">Dữ liệu cục bộ: %1$s KB</string>
+    <string name="data_clear">Xóa dữ liệu</string>
+    <string name="data_clear_warning">Xóa toàn bộ khu vườn và bắt đầu lại? Bạn có thể xuất bản sao trước.</string>
+    <string name="data_clear_again">Xác nhận xóa lần cuối</string>
+    <string name="data_about">Ứng dụng &amp; riêng tư</string>
+    <string name="data_privacy">Không cần tài khoản. Dữ liệu chơi chính lưu trên thiết bị; tệp sao lưu do bạn chọn nơi lưu. Thông báo là tùy chọn. Bản an toàn cục bộ có thể chứa lịch sử; gỡ ứng dụng sẽ xóa bản này.</string>
+    <string name="data_policy">Ngày mới tính theo giờ địa phương; cây giữ múi giờ lúc gieo. Tiến độ cây hiển thị phần trăm. Không có âm thanh đang phát; giảm chuyển động trong Tùy chọn.</string>
+    <string name="data_accessibility">Cỡ chữ dùng thiết lập hệ thống. Nút có vùng chạm tối thiểu 48 dp; trạng thái có chữ và biểu tượng.</string>
+    <string name="data_version">Phiên bản %1$s · mã %2$d · lược đồ %3$d</string>
+    <string name="data_licenses">Mã nguồn mở &amp; giấy phép</string>
+    <string name="data_diagnostics">Xuất chẩn đoán</string>
+    <string name="data_diagnostics_note">Chỉ xuất phiên bản, API Android, dung lượng và số dòng; không gồm tên việc, ghi chú, số dư hay trạng thái cây riêng tư.</string>
+    <string name="data_working">Đang xử lý…</string>
+    <string name="data_safety_note">Khôi phục bản an toàn sẽ thay dữ liệu hiện tại. Hãy xuất bản sao hiện tại trước nếu muốn giữ cả hai.</string>
+</resources>

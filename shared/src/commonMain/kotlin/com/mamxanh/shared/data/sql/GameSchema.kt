@@ -99,7 +99,7 @@ object GameSchema {
     }
 
     fun migrate(connection: GameSqlConnection, oldVersion: Int, newVersion: Int) {
-        require(newVersion == VERSION) { "Unsupported schema version: $newVersion" }
+        require(oldVersion in 1..VERSION && newVersion == VERSION && newVersion>=oldVersion) { "Unsupported schema migration: $oldVersion → $newVersion" }
         if (oldVersion < 3) createPlots(connection)
         if (oldVersion < 4) phaseOne(connection)
         if (oldVersion < 2) {

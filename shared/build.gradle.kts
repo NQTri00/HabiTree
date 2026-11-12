@@ -21,6 +21,7 @@ kotlin {
             implementation(libs.koin.core)
             api(libs.ktor.client.core)
         }
+        commonTest.dependencies { implementation(kotlin("test")) }
         androidMain.dependencies { implementation(libs.ktor.client.android) }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)

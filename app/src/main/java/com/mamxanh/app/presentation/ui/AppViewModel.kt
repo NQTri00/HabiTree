@@ -18,6 +18,11 @@ class AppViewModel(private val savedState: SavedStateHandle) : ViewModel() {
     ))
     val uiState = _uiState.asStateFlow()
 
+    fun resetAfterRestore() {
+        _uiState.value=AppUiState()
+        dispatch(AppIntent.Navigate(AppDestination.HOME))
+    }
+
     fun dispatch(intent: AppIntent) {
         val current = _uiState.value
         _uiState.value = when (intent) {

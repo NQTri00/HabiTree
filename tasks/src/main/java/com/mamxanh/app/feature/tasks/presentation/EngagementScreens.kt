@@ -66,7 +66,7 @@ fun EngagementScreen(state:EngagementUiState,onOpen:(String,Long)->Unit,onAct:(E
                             }
                         }
                     }
-                    "SETTINGS"->SettingsContent(state,onAct,onPermission)
+                    "SETTINGS"->SettingsContent(state,onAct,onPermission,onData={onOpen("DATA",0)})
                     "INSIGHTS"->InsightsContent(state,onAct,onAdjust,onOpen)
                     else-> {
                         Text("Một nhịp sống vừa sức, theo cách của bạn.",color=Muted,fontSize=12.sp,lineHeight=17.sp)

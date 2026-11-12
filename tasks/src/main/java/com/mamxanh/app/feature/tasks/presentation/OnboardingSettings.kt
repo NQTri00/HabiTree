@@ -104,7 +104,7 @@ internal fun OnboardingScreen(state:EngagementUiState,onAct:(EngagementAction)->
 }
 
 @Composable
-internal fun SettingsContent(state:EngagementUiState,onAct:(EngagementAction)->Unit,onPermission:()->Unit) {
+internal fun SettingsContent(state:EngagementUiState,onAct:(EngagementAction)->Unit,onPermission:()->Unit,onData:()->Unit={}) {
     val settings=state.snapshot.settings
     var start by rememberSaveable(settings.quietStart){mutableStateOf(clockLabel(settings.quietStart))}
     var end by rememberSaveable(settings.quietEnd){mutableStateOf(clockLabel(settings.quietEnd))}
@@ -124,7 +124,8 @@ internal fun SettingsContent(state:EngagementUiState,onAct:(EngagementAction)->U
     SettingToggle("Gợi ý nghỉ sau 25 phút",settings.breakPrompts,!state.busy){onAct(EngagementAction.Settings(settings.copy(breakPrompts=it)))}
     SettingToggle("Giảm chuyển động",settings.reducedMotion,!state.busy){onAct(EngagementAction.Settings(settings.copy(reducedMotion=it)))}
     Text("Đổi nhắc riêng cho từng việc tại Nhịp từng thói quen. Mặc định mỗi việc đều tắt.",color=Muted,fontSize=11.sp,lineHeight=16.sp)
-    Text("Riêng tư: dữ liệu, ghi chú và kỷ niệm chỉ lưu trên thiết bị. Không tài khoản, phân tích theo dõi, mạng xã hội hay đồng bộ đám mây.",
+    GardenPaintedButton(androidx.compose.ui.res.stringResource(com.mamxanh.feature.tasks.R.string.data_settings_entry),onData,Modifier.fillMaxWidth(),primary=false)
+    Text(androidx.compose.ui.res.stringResource(com.mamxanh.feature.tasks.R.string.data_privacy_hint),
         color=Muted,fontSize=11.sp,lineHeight=17.sp)
 }
 @Composable

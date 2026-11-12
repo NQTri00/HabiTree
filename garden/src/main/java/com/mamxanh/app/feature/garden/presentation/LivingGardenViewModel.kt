@@ -59,6 +59,11 @@ class LivingGardenViewModel(private val storage:GameStorage,private val saved:Sa
             }
         }
     }
+    fun resetAfterRestore() {
+        history.clear();saved.remove<ArrayList<String>>("layout_draft");saved.remove<Long>("layout_version")
+        _state.value=_state.value.copy(draft=null,draftVersion=0,undoAvailable=false,selected="")
+        open("")
+    }
     fun cancel(){history.clear();saved.remove<ArrayList<String>>("layout_draft");_state.value=_state.value.copy(draft=null,undoAvailable=false);back()}
     private fun persist() {
         saved["layout_draft"]=_state.value.draft?.map{listOf(it.id,it.sku,it.plotId,it.treeId).joinToString("|")}?.let{ArrayList(it)}

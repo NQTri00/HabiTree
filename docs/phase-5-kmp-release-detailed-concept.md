@@ -6,7 +6,7 @@
 > **Economy and progression update (2026-11-11):** [Economy & Growth Balancing v2](economy-and-growth-balancing.md) is authoritative for ALL coin rewards/caps, seed/shop prices, watering-can/fertilizer prices, mature sale payouts, and growth durations. Any older example below (150/day, 25-coin seeds, 3–50-day maturity, +25 instant fertilizer, etc.) is superseded. Free starter: minimum 14 elapsed days **and** 14 growth days. Premium: 4,500-coin seed (90 maximum-earning days from zero), minimum 90 elapsed days **and** 90 growth days to mature. Growth credits capped at one per day; upgrades/fertilizer cannot bypass the floor. Existing player wealth is grandfathered.
 
 
-**Status:** Proposed; not implemented. **Prerequisites:** Phase 1–4 gameplay contracts stabilized. **Goal:** Deliver a trustworthy offline-first app with clean KMP ownership, recoverable user data, tested upgrades, accessible UI and repeatable releases. This phase is not a mandate to ship iOS before Android is stable.
+**Status:** Android implementation and local verification completed (2026-11-12); publication checks remain with the release owner. Evidence: [execution plan](superpowers/plans/2026-11-12-phase-5-execution.md), [data/release contract](phase-5-data-and-release.md), [reference measurements](phase-5-reference-benchmark.md). **Prerequisites:** Phase 1–4 gameplay contracts stabilized. **Goal:** Deliver a trustworthy offline-first app with clean KMP ownership, recoverable user data, tested upgrades, accessible UI and repeatable releases. This phase is not a mandate to ship iOS before Android is stable.
 
 ## 1. Product promises
 

@@ -54,7 +54,7 @@ jobs:
           xcrun --sdk iphonesimulator --show-sdk-version
 
       - name: Compile and link both native frameworks
-        run: bash ./gradlew --no-daemon :shared:linkDebugFrameworkIosArm64 :shared:linkDebugFrameworkIosSimulatorArm64 --stacktrace
+        run: bash ./gradlew --no-daemon :shared:linkDebugFrameworkIosArm64 :shared:linkDebugFrameworkIosSimulatorArm64 :shared:compileTestKotlinIosArm64 --stacktrace
 
       - name: Archive frameworks preserving symbolic links
         run: tar -czf mamxanh-ios-frameworks.tar.gz -C shared/build/bin iosArm64/debugFramework/MamXanhShared.framework iosSimulatorArm64/debugFramework/MamXanhShared.framework

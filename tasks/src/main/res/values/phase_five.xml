@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="data_settings_entry">Dữ liệu, sao lưu &amp; ứng dụng</string>
+    <string name="data_privacy_hint">Dữ liệu chơi lưu trên thiết bị; bạn tự chọn nơi lưu bản sao. Xem giải thích riêng tư trong Dữ liệu &amp; ứng dụng.</string>
+</resources>

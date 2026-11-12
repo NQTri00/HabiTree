@@ -205,6 +205,7 @@ fun MamXanhApp(
     BackHandler(enabled = canGoBack) {
         if(living.route=="ARRANGE")livingVm.cancel()
         else if(living.route.isNotBlank())livingVm.back()
+        else if(engagement.route=="DATA")engagementVm.open("SETTINGS")
         else if(engagement.route.isNotBlank())engagementVm.open("")
         else if (app.inventoryOpen) appVm.dispatch(AppIntent.Back)
         else if (app.selectedTreeId != null) treeVm.dispatch(TreeIntent.Back) else appVm.dispatch(AppIntent.Back)
@@ -261,10 +262,14 @@ fun MamXanhApp(
                 active=livingActive,modifier=contentModifier,onBack=livingVm::back,
                 onPlant={plot->livingVm.open("");appVm.dispatch(AppIntent.OpenInventory(plot))})
         },
-        hideNavigation=engagement.route=="ONBOARD",
+        hideNavigation=engagement.route in setOf("ONBOARD","DATA"),
         reducedMotion=engagement.snapshot.settings.reducedMotion,
         engagementContent=if(engagement.route.isBlank())null else { contentModifier ->
-            EngagementScreen(engagement,engagementVm::open,engagementVm::act,engagementVm::adjust,
+            if(engagement.route=="DATA")DataSettingsScreen(storage,
+                onBack={engagementVm.open("SETTINGS")},
+                onReplaced={livingVm.resetAfterRestore();appVm.resetAfterRestore()},
+                modifier=contentModifier)
+            else EngagementScreen(engagement,engagementVm::open,engagementVm::act,engagementVm::adjust,
                 onPermission={permissionExplanation=true},
                 onEntity={event->
                     if(event.type.startsWith("TREE") && gardenState.garden.trees.any{it.id==event.entity}) {

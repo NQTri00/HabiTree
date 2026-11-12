@@ -22,6 +22,8 @@ class SqlGameDatabase(private val connection: GameSqlConnection, private val clo
         rows("SELECT date(?,?)", 1, date, "$days days").first().string(0)
     private fun weekday(date: String): Int = count("SELECT CAST(strftime('%w',?) AS INTEGER)", date)
 
+    override fun backup(appVersion:String,createdAt:Long) = GameBackupEngine(connection).snapshot(appVersion,createdAt)
+    override fun restore(backup:GameBackup) = GameBackupEngine(connection).restore(backup)
     private val living = LivingGardenEngine(connection,clock)
     override fun livingGarden() = living.snapshot()
     override fun designGarden(action: LivingGardenAction) = living.act(action)
