@@ -43,9 +43,14 @@ fun MintCompactHeader(coins: Int, title: String = "Mầm Xanh", titleSize: andro
         GardenArtwork(GardenArt.SPROUT, Modifier.size(16.dp))
         Text(title, Modifier.weight(1f), fontSize = titleSize, lineHeight = titleSize * 1.2f, fontWeight = FontWeight.Bold, color = Deep)
         actions()
-        GardenBotanicalFrame(contentPadding = PaddingValues(horizontal = 6.dp, vertical = 3.dp), cornerSize = 24.dp) {
-            GardenRichText("🪙 $coins xu", color = Deep, fontSize = 11.sp, fontWeight = FontWeight.Bold)
-        }
+        MintCoinBadge(coins)
+    }
+}
+
+@Composable
+fun MintCoinBadge(coins: Int) {
+    GardenBotanicalFrame(contentPadding = PaddingValues(horizontal = 6.dp, vertical = 3.dp), cornerSize = 24.dp) {
+        GardenRichText("🪙 $coins xu", color = Deep, fontSize = 11.sp, fontWeight = FontWeight.Bold)
     }
 }
 

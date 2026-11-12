@@ -204,7 +204,7 @@ fun MamXanhApp(
     val canGoBack = living.route.isNotBlank() || engagement.route.isNotBlank() || app.inventoryOpen || app.selectedTreeId != null || app.backStack.isNotEmpty()
     BackHandler(enabled = canGoBack) {
         if(living.route=="ARRANGE")livingVm.cancel()
-        else if(living.route.isNotBlank())livingVm.open("")
+        else if(living.route.isNotBlank())livingVm.back()
         else if(engagement.route.isNotBlank())engagementVm.open("")
         else if (app.inventoryOpen) appVm.dispatch(AppIntent.Back)
         else if (app.selectedTreeId != null) treeVm.dispatch(TreeIntent.Back) else appVm.dispatch(AppIntent.Back)
@@ -258,7 +258,7 @@ fun MamXanhApp(
                 onMemories={livingVm.open("");engagementVm.open("TIMELINE")},
                 reducedMotion=engagement.snapshot.settings.reducedMotion,
                 onReducedMotion={engagementVm.act(com.mamxanh.shared.model.EngagementAction.Settings(engagement.snapshot.settings.copy(reducedMotion=it)))},
-                active=livingActive,modifier=contentModifier,
+                active=livingActive,modifier=contentModifier,onBack=livingVm::back,
                 onPlant={plot->livingVm.open("");appVm.dispatch(AppIntent.OpenInventory(plot))})
         },
         hideNavigation=engagement.route=="ONBOARD",

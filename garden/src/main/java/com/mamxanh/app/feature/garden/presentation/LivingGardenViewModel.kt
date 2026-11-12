@@ -29,6 +29,22 @@ class LivingGardenViewModel(private val storage:GameStorage,private val saved:Sa
         _state.value=_state.value.copy(garden=pair.first,snapshot=pair.second,loading=false)
     }
     fun open(route:String,selected:String="") {
+        val current=_state.value
+        val stack=saved.get<ArrayList<String>>("living_backstack") ?: arrayListOf()
+        if(route.isBlank())stack.clear()
+        else if(current.route.isNotBlank() && (current.route!=route || current.selected!=selected)) {
+            stack.add(current.route+"|"+current.selected)
+        }
+        saved["living_backstack"]=stack
+        show(route,selected)
+    }
+    fun back() {
+        val stack=saved.get<ArrayList<String>>("living_backstack") ?: arrayListOf()
+        val previous=if(stack.isEmpty())null else stack.removeAt(stack.lastIndex).split("|",limit=2)
+        saved["living_backstack"]=stack
+        show(previous?.get(0) ?: "",previous?.getOrNull(1) ?: "")
+    }
+    private fun show(route:String,selected:String="") {
         saved["living_route"]=route;saved["living_selected"]=selected
         _state.value=_state.value.copy(route=route,selected=selected,message="")
         if(route.isNotBlank()) {
@@ -43,7 +59,7 @@ class LivingGardenViewModel(private val storage:GameStorage,private val saved:Sa
             }
         }
     }
-    fun cancel(){history.clear();saved.remove<ArrayList<String>>("layout_draft");_state.value=_state.value.copy(draft=null,undoAvailable=false);open("STUDIO")}
+    fun cancel(){history.clear();saved.remove<ArrayList<String>>("layout_draft");_state.value=_state.value.copy(draft=null,undoAvailable=false);back()}
     private fun persist() {
         saved["layout_draft"]=_state.value.draft?.map{listOf(it.id,it.sku,it.plotId,it.treeId).joinToString("|")}?.let{ArrayList(it)}
         saved["layout_version"]=_state.value.draftVersion

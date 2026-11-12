@@ -40,14 +40,14 @@ private fun dateLabel(at:Long)=if(at<=0)"Chưa ghi nhận" else java.text.Simple
 fun LivingGardenScreen(state:LivingGardenUiState,onOpen:(String,String)->Unit,onAct:(LivingGardenAction)->Unit,
     onSelect:(String)->Unit,onPlace:(Int,String?)->Unit,onRemove:(String)->Unit,onUndo:()->Unit,onSave:()->Unit,onCancel:()->Unit,
     onTree:(Long)->Unit,onSeedShop:()->Unit,onMemories:()->Unit,reducedMotion:Boolean,onReducedMotion:(Boolean)->Unit,
-    active:Boolean,modifier:Modifier=Modifier,onPlant:(Int)->Unit={}) {
+    active:Boolean,modifier:Modifier=Modifier,onPlant:(Int)->Unit={},onBack:()->Unit={onOpen("","")}) {
     val arranging=state.route=="ARRANGE"
     val title=when(state.route){"SHOP"->"Tiệm trang trí";"INVENTORY"->"Trang trí của bạn";"ARRANGE"->"Sắp xếp";"ENCYCLOPEDIA"->"Bách thảo";"SPECIES"->"Hồ sơ loài";"APPEARANCE"->"Diện mạo";"DETAIL"->"Trang trí";"EXPANSION"->"Mở khu vườn";else->state.snapshot.appearance.nickname}
     MintBackdrop(modifier.fillMaxSize()) {
         ProvideTextStyle(TextStyle(fontSize=11.sp,lineHeight=15.sp,color=Deep)) {
             Column(Modifier.fillMaxSize()) {
                 Row(Modifier.fillMaxWidth().padding(horizontal=4.dp),verticalAlignment=Alignment.CenterVertically) {
-                    IconButton({if(arranging)onCancel() else if(state.route=="STUDIO")onOpen("","") else onOpen("STUDIO","")}) {
+                    IconButton({if(arranging)onCancel() else onBack()}) {
                         Icon(Icons.AutoMirrored.Rounded.ArrowBack,if(arranging)"Hủy bố trí" else "Quay lại",Modifier.size(18.dp),tint=Green)
                     }
                     Text(title,Modifier.weight(1f),color=Deep,fontSize=13.sp,lineHeight=17.sp,fontWeight=FontWeight.Bold,maxLines=1,overflow=TextOverflow.Ellipsis)
@@ -55,9 +55,7 @@ fun LivingGardenScreen(state:LivingGardenUiState,onOpen:(String,String)->Unit,on
                         IconButton(onUndo,enabled=state.undoAvailable && !state.busy){Icon(Icons.AutoMirrored.Rounded.Undo,"Hoàn tác",Modifier.size(18.dp),tint=if(state.undoAvailable)Green else Muted)}
                         GardenCompactAction("Lưu",onSave,primary=true,enabled=!state.busy && !state.loading,icon=Icons.Rounded.Check)
                     } else {
-                        Text("${state.snapshot.coins} xu",Modifier.clip(RoundedCornerShape(9.dp))
-                            .background(Color.White.copy(alpha=.7f)).padding(horizontal=8.dp,vertical=5.dp),
-                            color=Green,fontSize=10.sp,lineHeight=13.sp,fontWeight=FontWeight.Bold)
+                        MintCoinBadge(state.snapshot.coins)
                         Spacer(Modifier.width(6.dp))
                     }
                 }
