@@ -23,7 +23,7 @@ fun TreeInteractionScreen(
     tree:Tree,state:TreeUiState,fertilizerCount:Int,inventory:Map<String,Int>,
     onIntent:(TreeIntent)->Unit,modifier:Modifier=Modifier,sharedTreeModifier:Modifier=Modifier,
     coins:Int=0,onPrevious:(()->Unit)?=null,onNext:(()->Unit)?=null,
-    onOpenGarden:()->Unit={onIntent(TreeIntent.Back)}
+    onOpenGarden:()->Unit={onIntent(TreeIntent.Back)},onOpenDecorations:()->Unit={}
 ) {
     val status=tree.status
     var tab by rememberSaveable(tree.id){mutableIntStateOf(0)}
@@ -67,7 +67,7 @@ fun TreeInteractionScreen(
                             Column(Modifier.weight(1f).fillMaxWidth()
                                 .mintScrollEdges(scroll.canScrollBackward,scroll.canScrollForward)
                                 .verticalScroll(scroll).padding(bottom=4.dp)) {
-                                TreeDetailSectionContent(tree,tab,inventory,state.isLoading,onIntent)
+                                TreeDetailSectionContent(tree,tab,inventory,state.isLoading,onIntent,onOpenDecorations)
                             }
                         }
                     }

@@ -51,7 +51,7 @@ internal fun TreeDetailTabs(selected: Int, onSelect: (Int)->Unit) {
 /** Content has natural height: runtime scrolls it; previews show every row. */
 @Composable
 internal fun TreeDetailSectionContent(tree: Tree, selected: Int, inventory: Map<String,Int>,
-    busy: Boolean, onIntent: (TreeIntent)->Unit) {
+    busy: Boolean, onIntent: (TreeIntent)->Unit, onOpenDecorations:()->Unit={}) {
     val status=tree.status
     Column(Modifier.fillMaxWidth(),verticalArrangement=Arrangement.spacedBy(8.dp)) {
         when(selected) {
@@ -105,8 +105,8 @@ internal fun TreeDetailSectionContent(tree: Tree, selected: Int, inventory: Map<
             }
             1 -> {
                 Text("Điểm tô cho cây",color=Deep,fontSize=12.sp,lineHeight=16.sp,fontWeight=FontWeight.Bold)
-                Text("Chọn một kiểu trang trí.",color=Muted,fontSize=11.sp,lineHeight=15.sp)
-                if(status.alive)DecorationPicker(tree.decoration,{if(!busy)onIntent(TreeIntent.Decorate(tree.id,it))})
+                Text("Phụ kiện thuộc túi đồ; di chuyển hoặc cất lại không mất xu.",color=Muted,fontSize=11.sp,lineHeight=15.sp)
+                if(status.alive)GardenPaintedButton("Sắp xếp phụ kiện",onOpenDecorations,Modifier.fillMaxWidth(),primary=false,enabled=!busy)
                 else Text("Không thể trang trí cây đã khô héo.",color=Muted,fontSize=11.sp,lineHeight=15.sp)
             }
             else -> {

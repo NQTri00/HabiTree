@@ -6,8 +6,9 @@ Run `./gradlew :data:connectedDebugAndroidTest` with a connected emulator. Tests
 - `data/src/androidTest/java/com/mamxanh/app/data/PhaseOneTransactionsTest.kt`
 - `data/src/androidTest/java/com/mamxanh/app/data/PhaseTwoLifecycleTest.kt`
 - `data/src/androidTest/java/com/mamxanh/app/data/PhaseThreeEngagementTest.kt`
+- `data/src/androidTest/java/com/mamxanh/app/data/PhaseFourGardenTest.kt`
 
-Build APKs using `:app:assembleDebug :app:assembleVerification -Pmamxanh.verificationSuffix=.verification.phasethree`. Compile shared targets using `:shared:compileCommonMainKotlinMetadata :shared:compileKotlinIosArm64`. Native simulator runtime requires macOS and is not claimed on this Windows host.
+Build APKs using `:app:assembleDebug :app:assembleVerification -Pmamxanh.verificationSuffix=.verification.phasefour`. Compile shared targets using `:shared:compileCommonMainKotlinMetadata :shared:compileKotlinIosArm64`. Native simulator runtime requires macOS and is not claimed on this Windows host.
 
 Phase 1 covers task occurrence/receipt uniqueness, the shared daily income cap, partial grants, spending, timer intervals/restart, schedules, windows/timezones, prospective edits, Daily Clear, migrations and planting.
 
@@ -15,11 +16,14 @@ Phase 2 covers exact watering expiry, durable-can ownership/future-only upgrades
 
 Phase 3 adds 21 real-SQLite cases for onboarding/free starter preservation, copied template deduplication, durable attached/standalone focus and restart/overnight behavior, no absent-time credit, partial-session badge rules, planned rest/protection receipts, real weekly aggregates/reflections, unique achievements/memories, opt-in quiet/window-aware reminders, rollback and schema5 migration. The combined suite contains 81 tests.
 
+Phase 4 adds 24 real-SQLite cases for finite sections, preserved plot/tree IDs and legacy accessory copies, purchase receipts/permanent ownership, local cancellation, versioned atomic saves, locked/off-grid/overlap rejection, slot compatibility, free moving/returning, stage/disposition history, one-time cosmetic milestones, themes/particle suppression, finite expansions and unknown catalog records. Combined suite: 105 tests. Test fixture balances are isolated and never granted to the player profile.
+
 UI verification uses the isolated verification package, phone widths/font scales, and full scroll ranges. Main-profile checks avoid purchases, task completions and tree care/dispositions. Do not add mass preview renders; the user's preview-heap constraint takes precedence over the adaptive skill's suggested screenshot infrastructure. Device actions and Gradle verification run sequentially.
 
 Plans and acceptance evidence:
 - `docs/superpowers/plans/2026-11-11-phase-1-execution.md`
 - `docs/superpowers/plans/2026-11-11-phase-2-execution.md`
 - `docs/superpowers/plans/2026-11-12-phase-3-execution.md`
+- `docs/superpowers/plans/2026-11-12-phase-4-execution.md`
 
 Tree stage art, growth animations and tree transitions are explicitly deferred by the user. Existing static art is temporary. Distinguish deferred and unexecuted checks from passing checks.

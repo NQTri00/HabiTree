@@ -62,6 +62,15 @@ fun MamXanhApp(
     val app by appVm.uiState.collectAsStateWithLifecycle()
     val lifecycleOwner = LocalLifecycleOwner.current
     val storage = org.koin.compose.koinInject<com.mamxanh.shared.data.GameStorage>()
+    val livingVm:LivingGardenViewModel=org.koin.androidx.compose.koinViewModel()
+    val living by livingVm.state.collectAsStateWithLifecycle()
+    var livingActive by remember { mutableStateOf(lifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) }
+    LaunchedEffect(living.route,livingActive) {
+        if(living.route.isNotBlank() && livingActive)while(true) {
+            kotlinx.coroutines.delay(15_000)
+            livingVm.refreshVisible()
+        }
+    }
     val context = androidx.compose.ui.platform.LocalContext.current
     val engagement by engagementVm.state.collectAsStateWithLifecycle()
     var permissionExplanation by remember { mutableStateOf(false) }
@@ -113,6 +122,8 @@ fun MamXanhApp(
     }
     DisposableEffect(lifecycleOwner) {
         val observer = androidx.lifecycle.LifecycleEventObserver { _,event ->
+            if(event==Lifecycle.Event.ON_START)livingActive=true
+            if(event==Lifecycle.Event.ON_STOP)livingActive=false
             if(event==Lifecycle.Event.ON_START){tasksVm.dispatch(TasksIntent.Foreground(true));engagementVm.foreground(true)}
             if(event==Lifecycle.Event.ON_STOP){tasksVm.dispatch(TasksIntent.Foreground(false));engagementVm.foreground(false)}
         }
@@ -190,9 +201,11 @@ fun MamXanhApp(
         }
     }
 
-    val canGoBack = engagement.route.isNotBlank() || app.inventoryOpen || app.selectedTreeId != null || app.backStack.isNotEmpty()
+    val canGoBack = living.route.isNotBlank() || engagement.route.isNotBlank() || app.inventoryOpen || app.selectedTreeId != null || app.backStack.isNotEmpty()
     BackHandler(enabled = canGoBack) {
-        if(engagement.route.isNotBlank())engagementVm.open("")
+        if(living.route=="ARRANGE")livingVm.cancel()
+        else if(living.route.isNotBlank())livingVm.open("")
+        else if(engagement.route.isNotBlank())engagementVm.open("")
         else if (app.inventoryOpen) appVm.dispatch(AppIntent.Back)
         else if (app.selectedTreeId != null) treeVm.dispatch(TreeIntent.Back) else appVm.dispatch(AppIntent.Back)
     }
@@ -232,6 +245,22 @@ fun MamXanhApp(
         onStatsIntent = statsVm::dispatch,
         onTreeIntent = treeVm::dispatch,
         onEngagement = engagementVm::open,
+        onDiscoveredSpecies=livingVm::discover,
+        onLiving={route,id->
+            if(route.isNotBlank())engagementVm.open("")
+            livingVm.open(route,id)
+        },
+        livingContent=if(living.route.isBlank())null else { contentModifier->
+            LivingGardenScreen(living,livingVm::open,livingVm::act,livingVm::select,livingVm::place,livingVm::remove,
+                livingVm::undo,livingVm::save,livingVm::cancel,
+                onTree={livingVm.open("");appVm.dispatch(AppIntent.OpenTree(it))},
+                onSeedShop={livingVm.open("");shopVm.dispatch(ShopIntent.SetFilter(ShopFilter.SEEDS));appVm.dispatch(AppIntent.Navigate(AppDestination.SHOP))},
+                onMemories={livingVm.open("");engagementVm.open("TIMELINE")},
+                reducedMotion=engagement.snapshot.settings.reducedMotion,
+                onReducedMotion={engagementVm.act(com.mamxanh.shared.model.EngagementAction.Settings(engagement.snapshot.settings.copy(reducedMotion=it)))},
+                active=livingActive,modifier=contentModifier,
+                onPlant={plot->livingVm.open("");appVm.dispatch(AppIntent.OpenInventory(plot))})
+        },
         hideNavigation=engagement.route=="ONBOARD",
         reducedMotion=engagement.snapshot.settings.reducedMotion,
         engagementContent=if(engagement.route.isBlank())null else { contentModifier ->

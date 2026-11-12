@@ -4,6 +4,8 @@ package com.mamxanh.shared.data
 class GameStorage(private val database: GameDatabase) {
     val changes = kotlinx.coroutines.flow.MutableStateFlow(0L)
     private fun changed() { while (true) { val old=changes.value; if(changes.compareAndSet(old,old+1))return } }
+    fun livingGarden() = database.livingGarden()
+    fun designGarden(action: com.mamxanh.shared.model.LivingGardenAction) = database.designGarden(action).also { changed() }
     fun engagementSnapshot() = database.engagementSnapshot()
     fun engage(action: com.mamxanh.shared.model.EngagementAction) = database.engage(action).also { changed() }
     fun reminderCandidates() = database.reminderCandidates()

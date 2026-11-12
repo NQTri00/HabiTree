@@ -45,7 +45,8 @@ fun InventoryScreen(
     onOpenShop: () -> Unit,
     modifier: Modifier = Modifier,
     targetPlotId: Int? = null,
-    onEquip: (String) -> Unit = {}
+    onEquip: (String) -> Unit = {},
+    onLiving: (String,String)->Unit = {_,_->}
 ) {
     var tab by rememberSaveable(targetPlotId) {
         mutableStateOf(if (targetPlotId != null) InventoryTab.SEEDS else InventoryTab.ITEMS)
@@ -76,6 +77,7 @@ fun InventoryScreen(
                 "Chọn hạt để gieo tại ô " + targetPlotId.toString().padStart(2, '0'),
                 Modifier.padding(horizontal = 10.dp, vertical = 3.dp),
                 color = Deep, fontSize = 13.sp)
+            TextButton({onLiving("INVENTORY","")},Modifier.align(Alignment.CenterHorizontally)){Text("Trang trí đã sở hữu",fontSize=11.sp,color=Green)}
             if (state.isLoading) LinearProgressIndicator(Modifier.fillMaxWidth())
             BoxWithConstraints(Modifier.weight(1f)) {
             val fontScale=androidx.compose.ui.platform.LocalDensity.current.fontScale

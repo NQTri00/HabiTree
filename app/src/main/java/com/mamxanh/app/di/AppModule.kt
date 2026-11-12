@@ -2,6 +2,7 @@ package com.mamxanh.app.di
 
 import com.mamxanh.app.data.local.GardenDatabase
 import com.mamxanh.app.feature.garden.presentation.GardenViewModel
+import com.mamxanh.app.feature.garden.presentation.LivingGardenViewModel
 import com.mamxanh.app.feature.home.presentation.HomeViewModel
 import com.mamxanh.app.feature.shop.presentation.ShopViewModel
 import com.mamxanh.app.feature.stats.presentation.StatsViewModel
@@ -23,6 +24,7 @@ fun appModule(networkConfig: NetworkConfig = NetworkConfig()) = module {
     single<GameDatabase> { get<GardenDatabase>() }
 
     viewModelOf(::GardenViewModel)
+    viewModelOf(::LivingGardenViewModel)
     viewModelOf(::HomeViewModel)
     viewModelOf(::ShopViewModel)
     viewModelOf(::StatsViewModel)

@@ -51,7 +51,7 @@ fun GardenScreen(state: GardenUiState, onIntent: (GardenIntent) -> Unit, modifie
     treeTransitionModifier: @Composable (Long) -> Modifier = { Modifier },
     onOpenInventory: (Int?) -> Unit = {},
     plantingSeedId: String? = null, plantingPlotId: Int? = null,
-    onDismissPlanting: () -> Unit = {}) {
+    onDismissPlanting: () -> Unit = {}, onLiving: (String,String)->Unit = {_,_->}) {
     val garden = state.garden
     val listState = rememberLazyListState()
     var selectedPlotId by rememberSaveable(plantingSeedId, plantingPlotId) { mutableStateOf(plantingPlotId) }
@@ -111,6 +111,10 @@ fun GardenScreen(state: GardenUiState, onIntent: (GardenIntent) -> Unit, modifie
                             colors=FilterChipDefaults.filterChipColors(selectedContainerColor=Green,selectedLabelColor=Color.White,labelColor=Deep))
                     }
                 }
+            }
+            Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.Center) {
+                TextButton({onLiving("STUDIO","")}){Text("Vườn của bạn · Sắp xếp",fontSize=11.sp,color=Green)}
+                TextButton({onLiving("ENCYCLOPEDIA","")}){Text("Bách thảo",fontSize=11.sp,color=Green)}
             }
             LazyColumn(Modifier.weight(1f).mintScrollEdges(listState.canScrollBackward, listState.canScrollForward),
                 state = listState, contentPadding = PaddingValues(start = 12.dp, end = 12.dp, top = 4.dp, bottom = 12.dp),

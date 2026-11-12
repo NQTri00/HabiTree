@@ -22,6 +22,9 @@ class SqlGameDatabase(private val connection: GameSqlConnection, private val clo
         rows("SELECT date(?,?)", 1, date, "$days days").first().string(0)
     private fun weekday(date: String): Int = count("SELECT CAST(strftime('%w',?) AS INTEGER)", date)
 
+    private val living = LivingGardenEngine(connection,clock)
+    override fun livingGarden() = living.snapshot()
+    override fun designGarden(action: LivingGardenAction) = living.act(action)
     private val engagement = EngagementEngine(connection,clock)
     override fun engagementSnapshot() = engagement.snapshot()
     override fun engage(action: EngagementAction) = engagement.act(action)
@@ -34,7 +37,10 @@ class SqlGameDatabase(private val connection: GameSqlConnection, private val clo
     override fun applyFertilizer(treeId: Long,tierId: String) = life.fertilize(treeId,tierId)
     override fun equipCan(id: String) = life.equip(id)
     override fun treeSaleQuote(id: Long) = life.saleQuote(id)
-    override fun disposeTree(id: Long,sell: Boolean,key: String) = life.dispose(id,sell,key)
+    override fun disposeTree(id: Long,sell: Boolean,key: String):ActionResult {
+        living.snapshot()
+        return life.dispose(id,sell,key).also { if(it.success){putMeta("garden_layout_version",meta("garden_layout_version","0").toLong()+1);living.snapshot()} }
+    }
     override fun treeDispositions() = life.dispositions()
     override fun phaseSnapshot() = phase.snapshot()
     override fun saveTask(id: Long?, config: TaskConfig) = phase.save(id,config)
@@ -103,17 +109,22 @@ class SqlGameDatabase(private val connection: GameSqlConnection, private val clo
         life.initializeNew(treeId)
         execute("UPDATE garden_plots SET tree_id=? WHERE id=?", treeId, plot)
         seed(id, count - 1)
+        putMeta("garden_layout_version",meta("garden_layout_version","0").toLong()+1)
+        living.snapshot()
         true
     }
 
     override fun unlockPlot(plotId: Int): Boolean = connection.transaction {
         if (count("SELECT COUNT(*) FROM garden_plots WHERE id=? AND unlocked=0", plotId) != 1) return@transaction false
+        if(count("SELECT COUNT(*) FROM garden_sections WHERE id<? AND unlocked=0",(plotId-1)/6+1)>0)return@transaction false
         val coins = meta("coins").toIntOrNull() ?: 0
         val price = Balance.plot(count("SELECT COUNT(*) FROM garden_plots WHERE unlocked=1"))
         if (coins < price || !phase.spend("plot:$plotId","PLOT",plotId.toString(),price)) return@transaction false
         execute("UPDATE garden_plots SET unlocked=1 WHERE id=?", plotId)
-        val next = count("SELECT COALESCE(MAX(id),0)+1 FROM garden_plots")
-        execute("INSERT INTO garden_plots(id,unlocked) VALUES(?,0)", next)
+        val section=(plotId-1)/6+1
+        if(count("SELECT COUNT(*) FROM garden_plots WHERE id BETWEEN ? AND ? AND unlocked=0",(section-1)*6+1,section*6)==0)
+            execute("UPDATE garden_sections SET unlocked=1 WHERE id=?",section)
+        putMeta("garden_layout_version",meta("garden_layout_version","0").toLong()+1)
         true
     }
 
@@ -126,8 +137,11 @@ class SqlGameDatabase(private val connection: GameSqlConnection, private val clo
         require(decoration in setOf("NONE", "FLOWERS", "LANTERNS", "RIBBON"))
         connection.transaction {
             if (life.trees().any { it.id==treeId && it.status.alive }) {
-                putMeta("decoration_$treeId", decoration)
-                phase.care(treeId,"DECORATE:$decoration",0,0)
+                val snapshot=living.snapshot()
+                val sku=when(decoration) {"FLOWERS"->"tree_flowers";"RIBBON"->"tree_ribbon";"LANTERNS"->"tree_lantern";else->""}
+                val plot=rows("SELECT id FROM garden_plots WHERE tree_id=?",1,treeId).firstOrNull()?.int(0) ?: return@transaction
+                val next=snapshot.placements.filterNot{it.treeId==treeId} + if(sku.isBlank())emptyList() else listOf(GardenPlacement("tree:$treeId",sku,plot,treeId))
+                living.act(LivingGardenAction.Layout(snapshot.version,next,"accessory:$treeId:${clock.now()}"))
             }
         }
     }

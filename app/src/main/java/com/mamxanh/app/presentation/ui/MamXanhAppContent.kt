@@ -42,7 +42,10 @@ fun MamXanhAppContent(
     onEngagement: (String,Long) -> Unit = {_,_->},
     engagementContent: (@Composable (Modifier)->Unit)? = null,
     hideNavigation: Boolean = false,
-    reducedMotion: Boolean = false
+    reducedMotion: Boolean = false,
+    onLiving: (String,String)->Unit = {_,_->},
+    livingContent: (@Composable (Modifier)->Unit)? = null,
+    onDiscoveredSpecies:(List<String>)->Unit={}
 ) {
     val routeStates = rememberSaveableStateHolder()
     val app = state
@@ -57,12 +60,14 @@ fun MamXanhAppContent(
             bottomBar = {
                 if(!hideNavigation)GardenTrailBar(app.destination, {
                     onEngagement("",0)
+                    onLiving("","")
                     onTreeIntent(TreeIntent.SetPanelExpanded(false))
                     onAppIntent(AppIntent.Navigate(it))
                 })
             }
         ) { padding ->
             if(engagementContent!=null)engagementContent(Modifier.padding(padding))
+            else if(livingContent!=null)livingContent(Modifier.padding(padding))
             else if (app.inventoryOpen) {
                 InventoryScreen(
                     state = InventoryUiState(
@@ -80,6 +85,7 @@ fun MamXanhAppContent(
                     onOpenShop = { onAppIntent(AppIntent.Navigate(AppDestination.SHOP)) },
                     targetPlotId = app.inventoryPlotId,
                     onEquip = { onShopIntent(ShopIntent.Equip(it)) },
+                    onLiving=onLiving,
                     modifier = Modifier.padding(padding)
                 )
             } else SharedTransitionLayout(Modifier.fillMaxSize().padding(padding)) {
@@ -119,6 +125,7 @@ fun MamXanhAppContent(
                             modifier = Modifier,
                             sharedTreeModifier = treeSharedModifier,
                             coins = wallet.coins,
+                            onOpenDecorations={onLiving("ARRANGE","")},
                             onOpenGarden = {
                                 onTreeIntent(TreeIntent.SetPanelExpanded(false))
                                 onAppIntent(AppIntent.Navigate(AppDestination.GARDEN))
@@ -152,8 +159,8 @@ fun MamXanhAppContent(
                                 plantingSeedId = app.plantingSeedId,
                                 plantingPlotId = app.inventoryPlotId,
                                 onDismissPlanting = { onAppIntent(AppIntent.DismissPlanting) },
-                                treeTransitionModifier = { Modifier })
-                            AppDestination.SHOP -> ShopScreen(walletState, onShopIntent, Modifier)
+                                treeTransitionModifier = { Modifier },onLiving=onLiving)
+                            AppDestination.SHOP -> ShopScreen(walletState, onShopIntent, Modifier,onLiving=onLiving,onDiscovered=onDiscoveredSpecies)
                             AppDestination.STATS -> StatsScreen(statistics, onStatsIntent, Modifier,onEngagement={onEngagement(it,0)})
                         }
                     }

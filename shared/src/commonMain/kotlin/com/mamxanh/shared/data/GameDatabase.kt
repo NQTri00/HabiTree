@@ -4,6 +4,8 @@ import com.mamxanh.shared.model.*
 
 /** Blocking platform persistence. Call from a worker dispatcher, never from composition. */
 interface GameDatabase {
+    fun livingGarden(): LivingGardenSnapshot
+    fun designGarden(action: LivingGardenAction): ActionResult
     fun engagementSnapshot(): EngagementSnapshot
     fun engage(action: EngagementAction): ActionResult
     fun reminderCandidates(): List<ReminderDelivery>
