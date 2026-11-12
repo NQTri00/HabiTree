@@ -17,7 +17,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
 import androidx.compose.material.icons.rounded.Inventory2
-import androidx.compose.material.icons.rounded.GridView
 import androidx.compose.foundation.horizontalScroll
 import com.mamxanh.app.presentation.ui.components.GardenRichText as Text
 import androidx.compose.runtime.*
@@ -95,9 +94,6 @@ fun GardenScreen(state: GardenUiState, onIntent: (GardenIntent) -> Unit, modifie
                             color = if(garden.waterAll.eligible > 0) Color.White else Muted,
                             fontSize = 11.sp, lineHeight = 14.sp, fontWeight = FontWeight.Bold)
                     }
-                }
-                IconButton(onClick={onLiving("STUDIO","")}) {
-                    Icon(androidx.compose.material.icons.Icons.Rounded.GridView,"Sắp xếp vườn",Modifier.size(18.dp),tint=Green)
                 }
                 IconButton(onClick = { onOpenInventory(null) }) {
                     Icon(androidx.compose.material.icons.Icons.Rounded.Inventory2, "Túi đồ", tint = Green)
