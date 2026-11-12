@@ -17,6 +17,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
 import androidx.compose.material.icons.rounded.Inventory2
+import androidx.compose.material.icons.rounded.GridView
 import androidx.compose.foundation.horizontalScroll
 import com.mamxanh.app.presentation.ui.components.GardenRichText as Text
 import androidx.compose.runtime.*
@@ -95,6 +96,9 @@ fun GardenScreen(state: GardenUiState, onIntent: (GardenIntent) -> Unit, modifie
                             fontSize = 11.sp, lineHeight = 14.sp, fontWeight = FontWeight.Bold)
                     }
                 }
+                IconButton(onClick={onLiving("STUDIO","")}) {
+                    Icon(androidx.compose.material.icons.Icons.Rounded.GridView,"Sắp xếp vườn",Modifier.size(18.dp),tint=Green)
+                }
                 IconButton(onClick = { onOpenInventory(null) }) {
                     Icon(androidx.compose.material.icons.Icons.Rounded.Inventory2, "Túi đồ", tint = Green)
                 }
@@ -111,10 +115,6 @@ fun GardenScreen(state: GardenUiState, onIntent: (GardenIntent) -> Unit, modifie
                             colors=FilterChipDefaults.filterChipColors(selectedContainerColor=Green,selectedLabelColor=Color.White,labelColor=Deep))
                     }
                 }
-            }
-            Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.Center) {
-                TextButton({onLiving("STUDIO","")}){Text("Vườn của bạn · Sắp xếp",fontSize=11.sp,color=Green)}
-                TextButton({onLiving("ENCYCLOPEDIA","")}){Text("Bách thảo",fontSize=11.sp,color=Green)}
             }
             LazyColumn(Modifier.weight(1f).mintScrollEdges(listState.canScrollBackward, listState.canScrollForward),
                 state = listState, contentPadding = PaddingValues(start = 12.dp, end = 12.dp, top = 4.dp, bottom = 12.dp),

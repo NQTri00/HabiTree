@@ -4,6 +4,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.*
 import androidx.compose.material3.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Palette
+import androidx.compose.material.icons.automirrored.rounded.MenuBook
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -33,14 +36,13 @@ fun ShopScreen(state: ShopUiState, onIntent: (ShopIntent) -> Unit, modifier: Mod
     }
     MintBackdrop(modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
-            MintCompactHeader(state.wallet.coins,title="Tiệm hạt")
+            MintCompactHeader(state.wallet.coins,title="Tiệm hạt",actions={
+                IconButton({onLiving("SHOP","")}){Icon(Icons.Rounded.Palette,"Trang trí",Modifier.size(18.dp),tint=Green)}
+                IconButton({onLiving("ENCYCLOPEDIA","")}){Icon(Icons.AutoMirrored.Rounded.MenuBook,"Bách thảo",Modifier.size(18.dp),tint=Green)}
+            })
             MintCatalogTabs(if(state.filter == ShopFilter.ITEMS) 0 else 1,
                 {onIntent(ShopIntent.SetFilter(if(it==0)ShopFilter.ITEMS else ShopFilter.SEEDS))},
                 Modifier.padding(horizontal=10.dp,vertical=3.dp))
-            Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.Center) {
-                TextButton({onLiving("SHOP","")}){Text("Trang trí",fontSize=11.sp,color=Green)}
-                TextButton({onLiving("ENCYCLOPEDIA","")}){Text("Bách thảo",fontSize=11.sp,color=Green)}
-            }
             if(state.isLoading) LinearProgressIndicator(Modifier.fillMaxWidth())
             BoxWithConstraints(Modifier.weight(1f)) {
                 val fontScale=androidx.compose.ui.platform.LocalDensity.current.fontScale

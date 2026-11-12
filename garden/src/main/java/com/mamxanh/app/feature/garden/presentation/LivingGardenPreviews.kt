@@ -23,16 +23,27 @@ private fun fixture()=LivingGardenUiState(
     route="STUDIO",loading=false,selected="cherry")
 @Composable private fun Document(content:@Composable ColumnScope.()->Unit) {
     MamXanhPreviewTheme {ProvideTextStyle(TextStyle(fontSize=12.sp,lineHeight=17.sp)){
-        Column(Modifier.fillMaxWidth().padding(12.dp),verticalArrangement=Arrangement.spacedBy(10.dp),content=content)
+        Column(Modifier.fillMaxWidth().padding(10.dp),verticalArrangement=Arrangement.spacedBy(6.dp),content=content)
     }}
 }
-@Preview(name="Bách thảo · complete content",widthDp=360,heightDp=1700,device="spec:width=360dp,height=1700dp,dpi=160")
+@Preview(name="Bách thảo · complete content",widthDp=360,heightDp=900,device="spec:width=360dp,height=900dp,dpi=160")
 @Composable fun EncyclopediaDocumentPreview(){Document{Encyclopedia(fixture()){_,_->}}}
-@Preview(name="Species gallery · complete content",widthDp=320,heightDp=1100,fontScale=1.3f,device="spec:width=320dp,height=1100dp,dpi=160")
+@Preview(name="Species gallery · complete content",widthDp=320,heightDp=780,fontScale=1.3f,device="spec:width=320dp,height=780dp,dpi=160")
 @Composable fun SpeciesDocumentPreview(){Document{SpeciesDetail(fixture(),{}, {})}}
-@Preview(name="Appearance · complete content",widthDp=360,heightDp=1000,device="spec:width=360dp,height=1000dp,dpi=160")
+@Preview(name="Appearance · complete content",widthDp=360,heightDp=620,device="spec:width=360dp,height=620dp,dpi=160")
 @Composable fun AppearanceDocumentPreview(){Document{AppearanceContent(fixture(),false,{}, {}, {})}}
-@Preview(name="Garden Studio · complete section",widthDp=360,heightDp=1150,device="spec:width=360dp,height=1150dp,dpi=160")
+@Preview(name="Garden Studio · complete section",widthDp=360,heightDp=640,device="spec:width=360dp,height=640dp,dpi=160")
 @Composable fun GardenStudioDocumentPreview(){
-    MamXanhPreviewTheme {LivingGardenScreen(fixture(),{_,_->},{},{},{_,_->},{},{},{},{},{},{},{},true,{},false)}
+    CompactScreenPreview(fixture())
 }
+@Composable private fun CompactScreenPreview(state:LivingGardenUiState) {
+    MamXanhPreviewTheme {LivingGardenScreen(state,{_,_->},{},{},{_,_->},{},{},{},{},{},{},{},true,{},false)}
+}
+@Preview(name="Arrange · compact full section",widthDp=360,heightDp=640,device="spec:width=360dp,height=640dp,dpi=160")
+@Composable fun GardenArrangeDocumentPreview(){val s=fixture();CompactScreenPreview(s.copy(route="ARRANGE",selected="ground_moss",draft=s.snapshot.placements))}
+@Preview(name="Decorations · complete catalog",widthDp=360,heightDp=720,device="spec:width=360dp,height=720dp,dpi=160")
+@Composable fun CosmeticCatalogDocumentPreview(){CompactScreenPreview(fixture().copy(route="SHOP"))}
+@Preview(name="Decoration detail · complete content",widthDp=320,heightDp=440,fontScale=1.3f,device="spec:width=320dp,height=440dp,dpi=160")
+@Composable fun CosmeticDetailDocumentPreview(){Document{CosmeticDetail(fixture().copy(selected="accent_lantern"),{_,_->},{})}}
+@Preview(name="Expansion · complete confirmation",widthDp=320,heightDp=360,fontScale=1.3f,device="spec:width=320dp,height=360dp,dpi=160")
+@Composable fun ExpansionDocumentPreview(){CompactScreenPreview(fixture().copy(route="EXPANSION",selected="2"))}

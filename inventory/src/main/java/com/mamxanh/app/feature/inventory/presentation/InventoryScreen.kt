@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Inventory2
+import androidx.compose.material.icons.rounded.Palette
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -66,6 +67,7 @@ fun InventoryScreen(
                 Icon(Icons.Rounded.Inventory2, null, tint = Green, modifier = Modifier.size(16.dp))
                 Text("Túi đồ", Modifier.weight(1f), color = Deep,
                     fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                IconButton({onLiving("INVENTORY","")}){Icon(Icons.Rounded.Palette,"Trang trí đã sở hữu",Modifier.size(18.dp),tint=Green)}
                 GardenBotanicalFrame(contentPadding = PaddingValues(5.dp)) {
                     GardenRichText("🪙 ${state.coins}", color = Deep, fontSize = 13.sp)
                 }
@@ -77,7 +79,6 @@ fun InventoryScreen(
                 "Chọn hạt để gieo tại ô " + targetPlotId.toString().padStart(2, '0'),
                 Modifier.padding(horizontal = 10.dp, vertical = 3.dp),
                 color = Deep, fontSize = 13.sp)
-            TextButton({onLiving("INVENTORY","")},Modifier.align(Alignment.CenterHorizontally)){Text("Trang trí đã sở hữu",fontSize=11.sp,color=Green)}
             if (state.isLoading) LinearProgressIndicator(Modifier.fillMaxWidth())
             BoxWithConstraints(Modifier.weight(1f)) {
             val fontScale=androidx.compose.ui.platform.LocalDensity.current.fontScale
