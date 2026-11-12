@@ -4,6 +4,10 @@ import com.mamxanh.shared.model.*
 
 /** Blocking platform persistence. Call from a worker dispatcher, never from composition. */
 interface GameDatabase {
+    fun engagementSnapshot(): EngagementSnapshot
+    fun engage(action: EngagementAction): ActionResult
+    fun reminderCandidates(): List<ReminderDelivery>
+    fun claimReminder(id: Long,date: String,kind: String): Boolean
     fun waterAllQuote(): WaterAllSummary
     fun waterAll(key: String): ActionResult
     fun applyFertilizer(treeId: Long,tierId: String): ActionResult

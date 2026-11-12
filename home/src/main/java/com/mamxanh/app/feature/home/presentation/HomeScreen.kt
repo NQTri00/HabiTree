@@ -26,7 +26,8 @@ fun HomeScreen(
     modifier: Modifier = Modifier, sharedTreeModifier: Modifier = Modifier,
     taskTitle: String = "Mỗi việc nhỏ, một bước lớn lên",
     onTaskAction: (Long,Boolean)->Unit = {_,_->onIntent(HomeIntent.OpenTasks)},
-    canClaimBonus: Boolean = false, onClaimBonus: () -> Unit = { onIntent(HomeIntent.OpenTasks) }
+    canClaimBonus: Boolean = false, onClaimBonus: () -> Unit = { onIntent(HomeIntent.OpenTasks) },
+    onWeeklyReview: ()->Unit = {}
 ) {
     val d = state.dashboard
     val tree = d.trees.firstOrNull()
@@ -80,10 +81,11 @@ fun HomeScreen(
                                 if(tree?.status?.fertilizerLabel?.isNotBlank()==true)MintStatusPill(tree.status.fertilizerLabel)
                             }
                         }
+                        HomeLink(GardenArt.CHECKLIST,"Nhìn lại tuần","Một khoảng để điều chỉnh nhẹ nhàng",onWeeklyReview)
                         val claimed=d.dailyRewardDate.isNotBlank()
                         if(canClaimBonus && !claimed)HomeLink(GardenArt.COIN,"Nhận thưởng hôm nay","+${d.dailyRewardCoins} xu",onClaimBonus)
                         if(d.nextTasks.isEmpty())HomeLink(GardenArt.CHECKLIST,"Thêm thói quen","Chọn việc nhỏ cho ngày mới",{onIntent(HomeIntent.OpenTasks)})
-                        d.nextTasks.forEach { task ->
+                        d.nextTasks.take(1).forEach { task ->
                             HomeLink(GardenArt.CHECKLIST,task.title,task.availability.ifBlank{"+${task.reward} xu"},
                                 {onTaskAction(task.id,task.config.verification=="TIMER")},enabled=task.available)
                         }

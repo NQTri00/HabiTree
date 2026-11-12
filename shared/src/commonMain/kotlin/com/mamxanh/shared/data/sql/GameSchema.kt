@@ -2,7 +2,7 @@ package com.mamxanh.shared.data.sql
 
 /** Shared schema; migrations preserve existing tree identities and player balances. */
 object GameSchema {
-    const val VERSION = 5
+    const val VERSION = 6
 
     fun create(connection: GameSqlConnection) {
         connection.execute("CREATE TABLE tasks(id INTEGER PRIMARY KEY AUTOINCREMENT,title TEXT NOT NULL,kind TEXT NOT NULL,category TEXT NOT NULL,reward INTEGER NOT NULL,frequency TEXT NOT NULL,due TEXT NOT NULL DEFAULT '',completed TEXT NOT NULL DEFAULT '',streak INTEGER NOT NULL DEFAULT 0,last_done TEXT NOT NULL DEFAULT '')")
@@ -29,6 +29,7 @@ object GameSchema {
         createPlots(connection)
         phaseOne(connection)
         phaseTwo(connection)
+        EngagementSchema.create(connection,true)
     }
 
     private fun phaseOne(c: GameSqlConnection) {
@@ -107,5 +108,6 @@ object GameSchema {
             }
         }
         if (oldVersion < 5) phaseTwo(connection)
+        if (oldVersion < 6) EngagementSchema.create(connection,false)
     }
 }

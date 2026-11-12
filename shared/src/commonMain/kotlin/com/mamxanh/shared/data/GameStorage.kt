@@ -4,6 +4,10 @@ package com.mamxanh.shared.data
 class GameStorage(private val database: GameDatabase) {
     val changes = kotlinx.coroutines.flow.MutableStateFlow(0L)
     private fun changed() { while (true) { val old=changes.value; if(changes.compareAndSet(old,old+1))return } }
+    fun engagementSnapshot() = database.engagementSnapshot()
+    fun engage(action: com.mamxanh.shared.model.EngagementAction) = database.engage(action).also { changed() }
+    fun reminderCandidates() = database.reminderCandidates()
+    fun claimReminder(id: Long,date: String,kind: String) = database.claimReminder(id,date,kind)
     fun waterAllQuote() = database.waterAllQuote()
     fun waterAll(key: String) = database.waterAll(key).also { changed() }
     fun applyFertilizer(id: Long,tier: String) = database.applyFertilizer(id,tier).also { changed() }

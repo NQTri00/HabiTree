@@ -6,6 +6,7 @@ import com.mamxanh.app.feature.home.presentation.HomeViewModel
 import com.mamxanh.app.feature.shop.presentation.ShopViewModel
 import com.mamxanh.app.feature.stats.presentation.StatsViewModel
 import com.mamxanh.app.feature.tasks.presentation.TasksViewModel
+import com.mamxanh.app.feature.tasks.presentation.EngagementViewModel
 import com.mamxanh.app.feature.tree.presentation.TreeViewModel
 import com.mamxanh.app.presentation.ui.AppViewModel
 import com.mamxanh.shared.data.GameDatabase
@@ -26,6 +27,7 @@ fun appModule(networkConfig: NetworkConfig = NetworkConfig()) = module {
     viewModelOf(::ShopViewModel)
     viewModelOf(::StatsViewModel)
     viewModelOf(::TasksViewModel)
+    viewModelOf(::EngagementViewModel)
     viewModelOf(::TreeViewModel)
     viewModelOf(::AppViewModel)
 }

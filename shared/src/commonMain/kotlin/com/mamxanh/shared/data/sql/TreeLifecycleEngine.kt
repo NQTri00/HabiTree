@@ -60,7 +60,7 @@ class TreeLifecycleEngine(private val db: GameSqlConnection,private val clock: G
     fun initializeNew(id:Long) {
         val row=rows("SELECT species_id FROM trees WHERE id=?",1,id).first()
         val species=row.string(0)
-        val free=species=="succulent" && meta("free_seed_available","0")=="1"
+        val free=species==meta("starter_species","succulent") && meta("free_seed_available","0")=="1"
         if(free)put("free_seed_available",0)
         exec("UPDATE trees SET free_starter=? WHERE id=?",if(free)1 else 0,id)
         save(id,TreeSimulation(clock.now(),clock.zone(),clock.now(),day=treeDateAt(clock.now(),clock.zone())),lifecycleProfile(species))

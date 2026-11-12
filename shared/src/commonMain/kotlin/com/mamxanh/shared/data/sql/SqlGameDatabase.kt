@@ -22,6 +22,11 @@ class SqlGameDatabase(private val connection: GameSqlConnection, private val clo
         rows("SELECT date(?,?)", 1, date, "$days days").first().string(0)
     private fun weekday(date: String): Int = count("SELECT CAST(strftime('%w',?) AS INTEGER)", date)
 
+    private val engagement = EngagementEngine(connection,clock)
+    override fun engagementSnapshot() = engagement.snapshot()
+    override fun engage(action: EngagementAction) = engagement.act(action)
+    override fun reminderCandidates() = engagement.reminders()
+    override fun claimReminder(id: Long,date: String,kind: String) = engagement.claimReminder(id,date,kind)
     private val phase = PhaseOneEngine(connection,clock)
     private val life = TreeLifecycleEngine(connection,clock)
     override fun waterAllQuote() = life.waterAllQuote()

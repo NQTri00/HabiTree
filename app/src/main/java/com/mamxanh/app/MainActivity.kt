@@ -1,6 +1,7 @@
 package com.mamxanh.app
 
 import android.os.Bundle
+import androidx.compose.runtime.*
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -16,8 +17,15 @@ import com.mamxanh.app.presentation.ui.MamXanhApp
 import org.koin.androidx.compose.koinViewModel
 
 class MainActivity : ComponentActivity() {
+    private var incomingEntity by mutableStateOf<Long?>(null)
+    override fun onNewIntent(intent:android.content.Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        incomingEntity=intent.getLongExtra("engagement_task",0).takeIf{it!=0L}
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        incomingEntity=intent.getLongExtra("engagement_task",0).takeIf{it!=0L}
         enableEdgeToEdge(
             statusBarStyle = SystemBarStyle.light(android.graphics.Color.TRANSPARENT, android.graphics.Color.TRANSPARENT),
             navigationBarStyle = SystemBarStyle.light(android.graphics.Color.TRANSPARENT, android.graphics.Color.TRANSPARENT)
@@ -31,7 +39,9 @@ class MainActivity : ComponentActivity() {
             val tasksVm: TasksViewModel = koinViewModel()
             val treeVm: TreeViewModel = koinViewModel()
             val appVm: AppViewModel = koinViewModel()
-            MamXanhApp(tasksVm, gardenVm, shopVm, treeVm, statsVm, homeVm, appVm)
+            val engagementVm: com.mamxanh.app.feature.tasks.presentation.EngagementViewModel = koinViewModel()
+            MamXanhApp(tasksVm, gardenVm, shopVm, treeVm, statsVm, homeVm, appVm,engagementVm,
+                incomingEntity=incomingEntity,onIncomingHandled={incomingEntity=null})
         }
     }
 }

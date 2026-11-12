@@ -38,7 +38,11 @@ fun MamXanhAppContent(
     onGardenIntent: (GardenIntent) -> Unit = {},
     onShopIntent: (ShopIntent) -> Unit = {},
     onStatsIntent: (StatsIntent) -> Unit = {},
-    onTreeIntent: (TreeIntent) -> Unit = {}
+    onTreeIntent: (TreeIntent) -> Unit = {},
+    onEngagement: (String,Long) -> Unit = {_,_->},
+    engagementContent: (@Composable (Modifier)->Unit)? = null,
+    hideNavigation: Boolean = false,
+    reducedMotion: Boolean = false
 ) {
     val routeStates = rememberSaveableStateHolder()
     val app = state
@@ -51,13 +55,15 @@ fun MamXanhAppContent(
             modifier = modifier,
             containerColor = Color(0xFFE9F7F2),
             bottomBar = {
-                GardenTrailBar(app.destination, {
+                if(!hideNavigation)GardenTrailBar(app.destination, {
+                    onEngagement("",0)
                     onTreeIntent(TreeIntent.SetPanelExpanded(false))
                     onAppIntent(AppIntent.Navigate(it))
                 })
             }
         ) { padding ->
-            if (app.inventoryOpen) {
+            if(engagementContent!=null)engagementContent(Modifier.padding(padding))
+            else if (app.inventoryOpen) {
                 InventoryScreen(
                     state = InventoryUiState(
                         seeds = com.mamxanh.app.feature.garden.domain.model.seedCatalog.map {
@@ -84,7 +90,9 @@ fun MamXanhAppContent(
                     transitionSpec = {
                         val (fromDestination, fromTreeId) = initialState
                         val (toDestination, toTreeId) = targetState
-                        if (fromTreeId == null && toTreeId != null) {
+                        if(reducedMotion) {
+                            EnterTransition.None togetherWith ExitTransition.None
+                        } else if (fromTreeId == null && toTreeId != null) {
                             EnterTransition.None togetherWith ExitTransition.None
                         } else if (fromTreeId != null && toTreeId == null) {
                             EnterTransition.None togetherWith ExitTransition.None
@@ -128,16 +136,17 @@ fun MamXanhAppContent(
                             AppDestination.HOME -> HomeScreen(state = dashboard, onIntent = onHomeIntent,
                                 fertilizerCount = com.mamxanh.shared.model.FertilizerTier.entries.sumOf { wallet.inventory[it.itemId] ?: 0 }, modifier = Modifier,
                                 sharedTreeModifier = treeSharedModifier,
+                                onWeeklyReview={onEngagement("REVIEW",0)},
                                 taskTitle = tasks.tasks.firstOrNull { !it.doneToday && !it.finished }?.title ?: "Mọi việc đã xong hôm nay",
                                 canClaimBonus = tasks.canClaimDailyBonus && !tasks.isDailyBonusClaimed,
                                 onTaskAction = { id,timer ->
                             if(timer) {
                                 onAppIntent(AppIntent.Navigate(AppDestination.TASKS))
-                                onTasksIntent(TasksIntent.Detail(id))
+                                onEngagement("FOCUS",id)
                             } else onTasksIntent(TasksIntent.Complete(id))
                         },
                         onClaimBonus = { onTasksIntent(TasksIntent.ClaimBonus) })
-                            AppDestination.TASKS -> TasksScreen(tasks, onTasksIntent, Modifier, coins = wallet.coins)
+                            AppDestination.TASKS -> TasksScreen(tasks, onTasksIntent, Modifier, coins = wallet.coins,onEngagement=onEngagement)
                             AppDestination.GARDEN -> GardenScreen(gardenState, onGardenIntent, Modifier,
                                 onOpenInventory = { onAppIntent(AppIntent.OpenInventory(it)) },
                                 plantingSeedId = app.plantingSeedId,
@@ -145,7 +154,7 @@ fun MamXanhAppContent(
                                 onDismissPlanting = { onAppIntent(AppIntent.DismissPlanting) },
                                 treeTransitionModifier = { Modifier })
                             AppDestination.SHOP -> ShopScreen(walletState, onShopIntent, Modifier)
-                            AppDestination.STATS -> StatsScreen(statistics, onStatsIntent, Modifier)
+                            AppDestination.STATS -> StatsScreen(statistics, onStatsIntent, Modifier,onEngagement={onEngagement(it,0)})
                         }
                     }
                     }

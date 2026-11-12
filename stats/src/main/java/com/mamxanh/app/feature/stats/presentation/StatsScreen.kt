@@ -30,7 +30,7 @@ import com.mamxanh.app.presentation.ui.components.*
 import java.util.Calendar
 
 @Composable
-fun StatsScreen(state: StatsUiState, onIntent: (StatsIntent) -> Unit, modifier: Modifier = Modifier) {
+fun StatsScreen(state: StatsUiState, onIntent: (StatsIntent) -> Unit, modifier: Modifier = Modifier,onEngagement:(String)->Unit = {}) {
     val s = state.statistics
     val listState = rememberLazyListState()
     val firstUse = s.total == 0 && s.treeCount == 0
@@ -42,6 +42,12 @@ fun StatsScreen(state: StatsUiState, onIntent: (StatsIntent) -> Unit, modifier: 
     MintBackdrop(modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
             MintCompactHeader(s.coins, title="Nhật ký", titleSize=14.sp)
+            androidx.compose.foundation.layout.FlowRow(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceEvenly) {
+                listOf("FOCUS" to "Tập trung","REVIEW" to "Nhìn lại tuần","ACHIEVEMENTS" to "Dấu mốc",
+                    "TIMELINE" to "Kỷ niệm","SETTINGS" to "Tùy chọn").forEach{(route,label)->
+                    TextButton(onClick={onEngagement(route)}){Text(label,fontSize=11.sp,color=Green)}
+                }
+            }
             LazyColumn(Modifier.weight(1f).mintScrollEdges(listState.canScrollBackward, listState.canScrollForward),
                 state = listState, contentPadding = PaddingValues(10.dp),
                 verticalArrangement = Arrangement.spacedBy(6.dp)) {

@@ -48,7 +48,10 @@ fun MamXanhApp(
     treeVm: TreeViewModel,
     statsVm: StatsViewModel,
     homeVm: HomeViewModel,
-    appVm: AppViewModel
+    appVm: AppViewModel,
+    engagementVm: EngagementViewModel,
+    incomingEntity: Long? = null,
+    onIncomingHandled: ()->Unit = {}
 ) {
     val tasks by tasksVm.uiState.collectAsStateWithLifecycle()
     val gardenState by gardenVm.uiState.collectAsStateWithLifecycle()
@@ -60,18 +63,28 @@ fun MamXanhApp(
     val lifecycleOwner = LocalLifecycleOwner.current
     val storage = org.koin.compose.koinInject<com.mamxanh.shared.data.GameStorage>()
     val context = androidx.compose.ui.platform.LocalContext.current
-    val permission = androidx.activity.compose.rememberLauncherForActivityResult(
-        androidx.activity.result.contract.ActivityResultContracts.RequestPermission()) {}
-    LaunchedEffect(tasks.tasks) {
+    val engagement by engagementVm.state.collectAsStateWithLifecycle()
+    var permissionExplanation by remember { mutableStateOf(false) }
+    val requestPrefs=remember(context){context.getSharedPreferences("engagement_permissions",android.content.Context.MODE_PRIVATE)}
+    val permission=androidx.activity.compose.rememberLauncherForActivityResult(
+        androidx.activity.result.contract.ActivityResultContracts.RequestPermission()) { granted ->
+        appVm.dispatch(AppIntent.ShowMessage(if(granted)"Đã bật quyền thông báo" else "Thông báo đang tắt. Việc và bộ đếm vẫn hoạt động."))
+    }
+    LaunchedEffect(tasks.tasks,engagement.snapshot.settings,engagement.snapshot.reminders,
+        gardenState.garden.trees.map{Triple(it.id,it.status.wateredUntil,it.status.alive)}) {
         kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
             com.mamxanh.app.data.TaskReminders.schedule(context,tasks.tasks)
         }
-        if(android.os.Build.VERSION.SDK_INT>=33 && tasks.tasks.any{it.config.reminderMinute>=0}) {
-            val prefs=context.getSharedPreferences("reminder_permission",android.content.Context.MODE_PRIVATE)
-            if(!prefs.getBoolean("requested",false)) {
-                prefs.edit().putBoolean("requested",true).apply()
-                permission.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+    }
+    LaunchedEffect(incomingEntity,tasks.isLoading) {
+        val id=incomingEntity
+        if(id!=null && !tasks.isLoading) {
+            if(id<0)appVm.dispatch(AppIntent.OpenTree(-id))
+            else {
+                val task=tasks.tasks.firstOrNull{it.id==id}
+                if(task!=null)engagementVm.open(if(task.config.verification=="TIMER")"FOCUS" else "INSIGHTS",id)
             }
+            onIncomingHandled()
         }
     }
     LaunchedEffect(storage,lifecycleOwner) {
@@ -100,13 +113,15 @@ fun MamXanhApp(
     }
     DisposableEffect(lifecycleOwner) {
         val observer = androidx.lifecycle.LifecycleEventObserver { _,event ->
-            if(event==Lifecycle.Event.ON_START)tasksVm.dispatch(TasksIntent.Foreground(true))
-            if(event==Lifecycle.Event.ON_STOP)tasksVm.dispatch(TasksIntent.Foreground(false))
+            if(event==Lifecycle.Event.ON_START){tasksVm.dispatch(TasksIntent.Foreground(true));engagementVm.foreground(true)}
+            if(event==Lifecycle.Event.ON_STOP){tasksVm.dispatch(TasksIntent.Foreground(false));engagementVm.foreground(false)}
         }
         lifecycleOwner.lifecycle.addObserver(observer)
+        engagementVm.foreground(lifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED))
         tasksVm.dispatch(TasksIntent.Foreground(lifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)))
         onDispose {
             lifecycleOwner.lifecycle.removeObserver(observer)
+            engagementVm.foreground(false)
             tasksVm.dispatch(TasksIntent.Foreground(false))
         }
     }
@@ -175,10 +190,31 @@ fun MamXanhApp(
         }
     }
 
-    val canGoBack = app.inventoryOpen || app.selectedTreeId != null || app.backStack.isNotEmpty()
+    val canGoBack = engagement.route.isNotBlank() || app.inventoryOpen || app.selectedTreeId != null || app.backStack.isNotEmpty()
     BackHandler(enabled = canGoBack) {
-        if (app.inventoryOpen) appVm.dispatch(AppIntent.Back)
+        if(engagement.route.isNotBlank())engagementVm.open("")
+        else if (app.inventoryOpen) appVm.dispatch(AppIntent.Back)
         else if (app.selectedTreeId != null) treeVm.dispatch(TreeIntent.Back) else appVm.dispatch(AppIntent.Back)
+    }
+    if(permissionExplanation) {
+        val activity=context as? android.app.Activity
+        val granted=android.os.Build.VERSION.SDK_INT<33 ||
+            context.checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS)==android.content.pm.PackageManager.PERMISSION_GRANTED
+        val rationale=android.os.Build.VERSION.SDK_INT>=33 &&
+            activity?.shouldShowRequestPermissionRationale(android.Manifest.permission.POST_NOTIFICATIONS)==true
+        val settings=granted || requestPrefs.getBoolean("requested",false) && !rationale
+        com.mamxanh.app.presentation.ui.components.MintDialog("Nhắc việc tùy chọn",
+            {permissionExplanation=false},if(settings)"Mở cài đặt" else "Tiếp tục",{
+                permissionExplanation=false
+                if(settings)context.startActivity(android.content.Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                    android.net.Uri.fromParts("package",context.packageName,null)))
+                else {
+                    requestPrefs.edit().putBoolean("requested",true).apply()
+                    if(android.os.Build.VERSION.SDK_INT>=33)permission.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+                }
+            }) {
+            Text("Thông báo chỉ nhắc những việc bạn đã chọn, tôn trọng giờ yên lặng và có thể tắt bất cứ lúc nào. Từ chối vẫn dùng được mọi việc và phiên tập trung.")
+        }
     }
     MamXanhAppContent(
         state = app,
@@ -194,6 +230,19 @@ fun MamXanhApp(
         onGardenIntent = gardenVm::dispatch,
         onShopIntent = shopVm::dispatch,
         onStatsIntent = statsVm::dispatch,
-        onTreeIntent = treeVm::dispatch
+        onTreeIntent = treeVm::dispatch,
+        onEngagement = engagementVm::open,
+        hideNavigation=engagement.route=="ONBOARD",
+        reducedMotion=engagement.snapshot.settings.reducedMotion,
+        engagementContent=if(engagement.route.isBlank())null else { contentModifier ->
+            EngagementScreen(engagement,engagementVm::open,engagementVm::act,engagementVm::adjust,
+                onPermission={permissionExplanation=true},
+                onEntity={event->
+                    if(event.type.startsWith("TREE") && gardenState.garden.trees.any{it.id==event.entity}) {
+                        engagementVm.open("");appVm.dispatch(AppIntent.OpenTree(event.entity))
+                    } else if(!event.type.startsWith("TREE") && tasks.tasks.any{it.id==event.entity})engagementVm.open("INSIGHTS",event.entity)
+                    else appVm.dispatch(AppIntent.ShowMessage("Mục này đã được lưu trong lịch sử."))
+                },onDismissMessage=engagementVm::dismissMessage,modifier=contentModifier)
+        }
     )
 }

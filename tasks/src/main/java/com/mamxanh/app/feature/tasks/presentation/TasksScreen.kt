@@ -62,7 +62,8 @@ import com.mamxanh.app.presentation.ui.components.GardenSceneBackdrop
 import com.mamxanh.app.presentation.ui.components.GardenJournalPage
 
 @Composable
-fun TasksScreen(state: TasksUiState, onIntent: (TasksIntent) -> Unit, modifier: Modifier = Modifier, coins: Int = 0) {
+fun TasksScreen(state: TasksUiState, onIntent: (TasksIntent) -> Unit, modifier: Modifier = Modifier, coins: Int = 0,
+    onEngagement: (String,Long)->Unit = {_,_->}) {
     val listState = rememberLazyListState()
     // Completion updates a row in place; moving the first visible key would move the viewport too.
     val filtered = state.tasks.filter { it.lifecycle == "ACTIVE" && (it.scheduledToday || it.doneToday || it.finished) }
@@ -71,6 +72,11 @@ fun TasksScreen(state: TasksUiState, onIntent: (TasksIntent) -> Unit, modifier: 
     MintBackdrop(modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
             MintCompactHeader(coins, title = "Việc nhỏ")
+            Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceEvenly) {
+                TextButton(onClick={onEngagement("FOCUS",0)}){Text("Tập trung",fontSize=11.sp,color=Green)}
+                TextButton(onClick={onEngagement("TEMPLATES",0)}){Text("Việc mẫu",fontSize=11.sp,color=Green)}
+                TextButton(onClick={onEngagement("INSIGHTS",0)}){Text("Nhịp thói quen",fontSize=11.sp,color=Green)}
+            }
             GardenBotanicalFrame(Modifier.padding(horizontal = 12.dp).fillMaxWidth(),
                 contentPadding = PaddingValues(6.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {

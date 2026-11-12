@@ -76,6 +76,7 @@ class PhaseOneEngine(private val db: GameSqlConnection, private val clock: GameC
                 if (c.kind!="TODO" && scheduled(c,date)) exec("INSERT OR IGNORE INTO obligations(date,task_id,title,category,frequency,days,start_minute,end_minute) VALUES(?,?,?,?,?,?,?,?)",
                     date,row.long(0),c.title,c.category,c.frequency,c.days,c.startMinute,c.endMinute)
             }
+            if(number("SELECT COUNT(*) FROM rest_days WHERE date=?",date)>0)exec("UPDATE obligations SET waived=1 WHERE date=?",date)
             if (date == today) break
             date = offset(date,1)
         }
@@ -258,6 +259,7 @@ class PhaseOneEngine(private val db: GameSqlConnection, private val clock: GameC
         var count=0
         val dates=rows("SELECT date,cleared FROM plans ORDER BY date DESC",2)
         for(r in dates) {
+            if(number("SELECT COUNT(*) FROM protection_uses WHERE date=?",r.string(0))>0)continue
             val required=number("SELECT COUNT(*) FROM obligations WHERE date=? AND waived=0",r.string(0))
             if(required==0L)continue
             val missing=number("SELECT COUNT(*) FROM obligations o WHERE date=? AND waived=0 AND NOT EXISTS(SELECT 1 FROM occurrences x WHERE x.task_id=o.task_id AND x.date=o.date)",r.string(0))
