@@ -68,8 +68,12 @@ click("data-route", "journal");
 assert.match(view(), /Nhật ký/, "Journal renders");
 click("data-route", "inventory");
 assert.match(view(), /Túi đồ/, "Inventory renders");
+click("data-route", "collection");
+assert.match(view(), /Các loài cây/, "Collection renders");
 click("data-route", "tree");
 assert.match(view(), /Hành trình lớn lên/, "Tree care renders");
+click("data-route", "decor");
+assert.match(view(), /Trang trí cây/, "Decoration renders");
 const pngs = [
   "simple_cherry.png", "simple_pine.png", "simple_mandarin.png",
   "simple_succulent.png", "simple_home.png", "simple_forest.png",
