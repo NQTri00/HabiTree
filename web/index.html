@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f7f8f2">
+<meta name="description" content="HabiTree — mobile-first web UI concept, grounded in the original project.">
+<title>HabiTree · A little growth, every day</title>
+<style>
+:root{color-scheme:light;--ink:#233e35;--ink-soft:#607368;--green:#286a4c;--green-deep:#1b563e;--green-pale:#e8f1e7;--mint:#eff6ed;--cream:#faf9f3;--surface:#fffefa;--line:#e4eadf;--rose:#f5e4e9;--yellow:#f6cb73;--shadow:0 12px 28px rgba(39,73,52,.085);font-family:ui-rounded,"Nunito Sans","Segoe UI",Arial,sans-serif;font-synthesis:none}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;overflow:hidden}
+body{background:radial-gradient(circle at 17% 11%,#f8f4e8 0,transparent 35%),radial-gradient(circle at 82% 90%,#d3e4d3 0,transparent 36%),#e6eee5;color:var(--ink);display:grid;place-items:center}
+body:before,body:after{content:"";position:fixed;border:1px solid #b7cdbd;border-radius:50%;pointer-events:none;opacity:.35}
+body:before{width:560px;height:560px;left:-370px;top:-210px}
+body:after{width:730px;height:730px;right:-470px;bottom:-360px}
+button,input,select{font:inherit}
+button{cursor:pointer;-webkit-tap-highlight-color:transparent}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #87b59b;outline-offset:2px}
+button:disabled{cursor:not-allowed;opacity:.46}
+.app{position:relative;width:min(100%,430px);height:min(920px,100dvh);background:var(--cream);display:flex;flex-direction:column;overflow:hidden;box-shadow:0 30px 90px rgba(27,63,41,.19),0 0 0 8px rgba(255,255,255,.3);border-radius:30px;isolation:isolate}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+.icon{width:20px;height:20px;display:inline-block;vertical-align:middle;flex-shrink:0;stroke:currentColor;stroke-width:1.9;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.logo-icon{display:grid;place-items:center;background:#e3efde;color:var(--green);width:39px;height:39px;border-radius:14px}
+.logo-icon .icon{width:22px;height:22px}
+.app-header{flex-shrink:0;height:76px;padding:14px 23px 8px;display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--cream);z-index:4}
+.brand{display:flex;align-items:center;gap:10px;font-weight:900;letter-spacing:-.7px;font-size:21px}
+.header-actions{display:flex;align-items:center;gap:8px}
+.coin-pill{display:flex;align-items:center;gap:7px;padding:8px 11px;background:#fff4d9;color:#81591d;border:1px solid #f2e3bd;border-radius:100px;font-size:13px;font-weight:900;min-height:40px;white-space:nowrap}
+.coin-disc{width:18px;height:18px;display:grid;place-items:center;background:var(--yellow);border:2px solid #dcaf51;border-radius:50%;font-size:10px;font-weight:900}
+.icon-btn{width:42px;height:42px;border:0;background:transparent;color:var(--ink);border-radius:14px;display:grid;place-items:center}
+.icon-btn:hover,.icon-btn:focus-visible{background:var(--green-pale)}
+.scroll{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#c8d9ca transparent;padding:7px 21px 24px}
+.scroll::-webkit-scrollbar{width:4px}.scroll::-webkit-scrollbar-thumb{background:#c8d9ca;border-radius:5px}
+.eyebrow{font-size:11px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;color:var(--green);margin:1px 0 5px}
+.page-title{font-size:27px;letter-spacing:-1.1px;line-height:1.13;margin:0;font-weight:900}
+.muted{color:var(--ink-soft)}.small{font-size:12px}.semi{font-weight:750}.bold{font-weight:900}
+.page-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin:12px 0 17px}
+.caption{font-size:13px;color:var(--ink-soft);margin:7px 0 0;line-height:1.45}
+.section-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:22px 1px 12px}
+.section-head h2{font-size:17px;letter-spacing:-.35px;margin:0;font-weight:900}
+.text-link{color:var(--green);background:transparent;border:0;display:flex;align-items:center;gap:3px;font-size:12px;font-weight:900;padding:7px 0}
+.text-link .icon{width:14px;height:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:22px;box-shadow:0 4px 10px rgba(41,71,43,.028)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:none;border-radius:15px;padding:12px 17px;min-height:44px;font-weight:900;font-size:13px;transition:transform .18s ease,background .18s ease}
+.btn:active:not(:disabled){transform:scale(.975)}
+.btn-primary{color:white;background:var(--green);box-shadow:0 5px 12px rgba(39,104,72,.16)}
+.btn-primary:hover{background:var(--green-deep)}
+.btn-soft{color:var(--green-deep);background:var(--green-pale)}
+.btn-cream{background:var(--surface);color:var(--green-deep);border:1px solid var(--line)}
+.btn-outline{color:var(--ink);border:1px solid var(--line);background:transparent}
+.btn .icon{width:17px;height:17px}
+.full{width:100%}
+.hero{height:328px;border-radius:28px;overflow:hidden;position:relative;background:linear-gradient(160deg,#e6f3eb,#b8d6c0);border:1px solid #d6e5d8;box-shadow:var(--shadow)}
+.hero:after{position:absolute;inset:0;content:"";background:linear-gradient(180deg,rgba(250,255,248,.37),transparent 32%,transparent 70%,rgba(33,76,50,.10));pointer-events:none}
+.scene-bg{position:absolute;inset:0;width:100%;height:100%;background-image:linear-gradient(180deg,rgba(230,244,231,.15),rgba(206,230,209,.13)),url("../core-ui/src/main/res/drawable-nodpi/simple_home.png");background-size:cover;background-position:center 57%;filter:saturate(.75)}
+.scene-fallback{position:absolute;bottom:0;left:0;right:0;height:34%;background:radial-gradient(ellipse 58% 35% at 50% 80%,#89b894 0%,transparent 95%);opacity:.43}
+.hero-art{position:absolute;inset:29px 22px 47px;display:grid;place-items:center;z-index:1}
+.hero-art img{width:100%;height:100%;max-width:290px;object-fit:contain;filter:drop-shadow(0 9px 11px rgba(44,70,44,.15))}
+.hero-top{position:absolute;top:14px;left:14px;right:14px;display:flex;justify-content:space-between;align-items:flex-start;z-index:2}
+.hero-tag{display:flex;align-items:center;gap:6px;border-radius:100px;background:rgba(255,255,250,.88);backdrop-filter:blur(10px);padding:9px 11px;color:#456453;font-size:11px;font-weight:900;box-shadow:0 3px 12px rgba(22,69,48,.05)}
+.status-dot{width:7px;height:7px;background:#67ae73;border-radius:50%}
+.hero-action{width:36px;height:36px;border:0;border-radius:13px;background:rgba(255,255,250,.9);display:grid;place-items:center;color:var(--ink)}
+.hero-card{position:absolute;left:12px;right:12px;bottom:12px;z-index:2;background:rgba(255,255,253,.94);border-radius:17px;padding:12px 14px;box-shadow:0 4px 14px #1a51301a;display:flex;align-items:center;gap:11px}
+.hero-card .name{font-size:14px;font-weight:900;letter-spacing:-.2px}
+.hero-card .sub{font-size:11px;color:var(--ink-soft);margin-top:3px}
+.hero-card .meter-wrap{flex:1;min-width:50px}
+.progress{height:7px;background:#dfeadd;border-radius:99px;overflow:hidden;margin-top:6px}
+.progress > span{display:block;height:100%;background:linear-gradient(90deg,#8cc99b,#36835e);border-radius:99px}
+.percent{font-size:14px;font-weight:900;color:var(--green)}
+.hero-water{position:absolute;right:12px;top:63px;z-index:2;min-height:38px;padding:9px 12px;font-size:11px}
+.home-summary{display:flex;gap:10px;margin-top:14px}
+.mini-overview{flex:1;background:#fffefa;border:1px solid var(--line);padding:13px 14px;border-radius:19px;display:flex;align-items:center;gap:10px;min-width:0}
+.mini-overview .iconbox{display:grid;place-items:center;width:36px;height:36px;flex-shrink:0;border-radius:12px;background:#e6f2eb;color:var(--green)}
+.mini-overview .big{font-size:17px;font-weight:900;white-space:nowrap}
+.mini-overview .label{font-size:11px;color:var(--ink-soft);margin-top:1px;white-space:nowrap}
+.task-row{display:flex;align-items:center;gap:11px;min-height:62px;padding:11px 12px;border-bottom:1px solid #edf0e8}
+.task-row:last-child{border-bottom:none}
+.check{border:1.8px solid #b6cbb9;border-radius:11px;width:36px;height:36px;background:#f9fcf7;color:white;flex-shrink:0;display:grid;place-items:center}
+.check.done{background:#2e825b;border-color:#2e825b}
+.check .icon{width:18px;height:18px}
+.task-main{flex:1;min-width:0}
+.task-name{font-size:13px;font-weight:850;line-height:1.4;overflow-wrap:anywhere}
+.task-name.done{text-decoration:line-through;color:#8b9d8d}
+.task-desc{font-size:11px;color:#849488;margin-top:3px}
+.reward{color:#9a722e;background:#fbf4df;border-radius:100px;padding:5px 8px;font-weight:900;font-size:11px;white-space:nowrap}
+.row-arrow{border:0;background:transparent;width:30px;height:32px;color:#8fa497}
+.cta-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:15px}
+.greeting{font-size:13px;color:#698071;margin:0 0 12px}
+.progress-banner{background:linear-gradient(115deg,#dcece1,#e8f4e9);border-radius:21px;padding:15px;display:flex;gap:12px;align-items:center;border:1px solid #dcebdc;margin-bottom:17px}
+.ring{width:62px;height:62px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--green) calc(var(--p) * 1%),#c9dfcf 0);flex-shrink:0}
+.ring:before{content:"";position:absolute;width:46px;height:46px;background:#eef7ee;border-radius:50%}
+.ring b{position:relative;font-size:14px;font-weight:900}
+.progress-banner strong{display:block;font-size:15px;margin-bottom:3px}
+.progress-banner span{font-size:12px;color:#627c6b}
+.filter-row{display:flex;gap:8px;overflow:auto;scrollbar-width:none;margin:9px 0 15px}
+.chip{border:1px solid var(--line);background:#fffefa;color:#708375;border-radius:99px;font-size:12px;font-weight:850;padding:9px 14px;white-space:nowrap;min-height:38px}
+.chip.active{background:var(--green);color:white;border-color:var(--green)}
+.task-list{overflow:hidden}
+.task-list .task-row{padding:13px 12px;min-height:73px}
+.focus-mini{background:#f0f4e9;border:0;border-radius:10px;padding:8px;color:var(--green);font-size:11px;font-weight:900}
+.empty{padding:30px 19px;text-align:center}
+.empty-art{display:grid;place-items:center;margin:auto auto 11px;width:70px;height:70px;background:var(--green-pale);border-radius:24px;color:var(--green)}
+.empty-art .icon{width:32px;height:32px}
+.garden-hero{height:190px;position:relative;overflow:hidden;border-radius:25px;background:linear-gradient(#dfeee3,#c5decc);border:1px solid #d8e9d9;box-shadow:var(--shadow)}
+.garden-hero .scene-bg{background-image:url("../core-ui/src/main/res/drawable-nodpi/simple_forest.png");background-size:cover;background-position:center}
+.garden-small-tree{position:absolute;bottom:12px;height:146px;width:46%;object-fit:contain;z-index:1;filter:drop-shadow(0 8px 8px #36614524)}
+.garden-small-tree.a{left:6%}.garden-small-tree.b{right:4%;height:128px}
+.garden-caption{position:absolute;top:13px;left:13px;background:#fffefaeb;padding:8px 11px;border-radius:100px;z-index:2;font-size:11px;font-weight:900;color:var(--green)}
+.plot-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.plot{border:1px solid var(--line);background:var(--surface);border-radius:22px;min-height:188px;padding:11px;text-align:left;position:relative;overflow:hidden;box-shadow:0 4px 9px #244e3510;color:var(--ink);display:flex;flex-direction:column}
+.plot:hover,.product:hover{border-color:#adcbb4}
+.plot-image{height:114px;display:grid;place-items:center;background:linear-gradient(145deg,#f4f6ed,#e8f2e7);border-radius:15px;margin-bottom:9px}
+.plot-image img{height:112px;width:100%;object-fit:contain;filter:drop-shadow(0 5px 6px #274b3018)}
+.plot-name{font-size:13px;font-weight:900}
+.plot-info{display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--ink-soft);margin-top:5px}
+.plot.empty-plot{align-items:center;justify-content:center;border:1.5px dashed #b5ccba;background:#f2f6ed;color:#4e8061}
+.empty-plot .icon{width:25px;height:25px}
+.empty-plot .add-circle{background:#e0ede1;border-radius:17px;width:59px;height:59px;display:grid;place-items:center;margin-bottom:12px}
+.empty-plot span:last-child{font-weight:900;font-size:13px}
+.segment{display:flex;background:#ecf0e8;border-radius:14px;padding:4px;gap:4px;margin-bottom:18px}
+.segment button{border:0;background:transparent;color:#7b8c7c;min-height:39px;flex:1;border-radius:10px;font-size:12px;font-weight:900}
+.segment button.active{background:white;box-shadow:0 2px 7px #1f492416;color:var(--green)}
+.product-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.product{padding:10px;text-align:left;border:1px solid var(--line);border-radius:22px;background:var(--surface);color:var(--ink);min-width:0;box-shadow:0 5px 13px #254f3510}
+.product-image{position:relative;height:130px;border-radius:16px;background:#f0f4ed;display:grid;place-items:center;overflow:hidden}
+.product:nth-child(2n) .product-image{background:#f8efe7}
+.product:nth-child(3n) .product-image{background:#f4ecf0}
+.product-image img{width:100%;height:126px;object-fit:contain;filter:drop-shadow(0 6px 7px #2c503221)}
+.product-name{font-weight:900;font-size:13px;margin:11px 2px 4px}
+.product-bottom{display:flex;align-items:center;justify-content:space-between;gap:4px;margin:0 2px 3px}
+.product-bottom span{font-size:12px;font-weight:900;color:#987026}
+.round-add{width:30px;height:30px;border-radius:11px;border:0;background:#e4f0e6;display:grid;place-items:center;color:var(--green)}
+.round-add .icon{width:17px;height:17px}
+.product-type{position:absolute;top:9px;left:8px;border-radius:99px;background:#fffefaed;font-size:10px;color:#758678;padding:6px 8px;font-weight:900}
+.journal-hero{background:linear-gradient(115deg,#d8e8d6,#ecf2e5);border-radius:24px;padding:20px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.journal-hero strong{font-size:38px;letter-spacing:-1.9px;display:block;line-height:1.1}
+.journal-hero p{font-size:12px;color:#698271;margin:5px 0 0}
+.journal-hero .icon{width:60px;height:60px;color:#76a27d;stroke-width:1.2}
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:13px 0 20px}
+.metric{padding:15px 8px;border:1px solid var(--line);border-radius:18px;background:#fffefa;text-align:center}
+.metric strong{display:block;font-size:20px}
+.metric span{font-size:10px;color:var(--ink-soft)}
+.bars{padding:17px 13px 14px;border:1px solid var(--line);background:#fffefa;border-radius:22px}
+.bar-stage{height:122px;display:flex;align-items:flex-end;justify-content:space-around;gap:9px;border-bottom:1px solid #ecf0e7;padding:0 7px}
+.bar-column{width:22px;max-height:100%;background:linear-gradient(#8dc9a3,#5da47b);border-radius:8px 8px 3px 3px;position:relative;min-height:6px}
+.bar-column.today{background:linear-gradient(#4e9970,#1f6647)}
+.bar-labels{display:flex;justify-content:space-around;padding-top:9px;font-size:10px;color:#869789;font-weight:800}
+.memory-row{display:flex;align-items:center;gap:12px;padding:14px;border-bottom:1px solid var(--line);font-size:12px}
+.memory-row:last-child{border:0}
+.memory-symbol{background:#edf4e8;border-radius:13px;width:38px;height:38px;color:#568662;display:grid;place-items:center}
+.detail-hero{height:310px;border-radius:26px;background:linear-gradient(155deg,#e6f1e8,#d9e8d6);display:grid;place-items:center;position:relative;overflow:hidden;border:1px solid #d4e8d8}
+.detail-hero img{height:96%;width:95%;object-fit:contain;filter:drop-shadow(0 12px 12px #315c3c23)}
+.detail-percent{position:absolute;bottom:12px;right:12px;background:#fffffff0;padding:9px 12px;border-radius:12px;font-weight:900;color:var(--green)}
+.detail-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+.detail-actions button{min-height:53px}
+.panel{padding:14px;border-radius:20px;background:#fffefa;border:1px solid var(--line)}
+.nav{height:77px;flex-shrink:0;z-index:4;background:rgba(255,254,250,.98);border-top:1px solid var(--line);padding:7px 10px max(8px,env(safe-area-inset-bottom));display:flex;align-items:flex-start;justify-content:space-between}
+.nav button{border:0;background:transparent;color:#8b9f91;min-width:60px;min-height:55px;display:flex;align-items:center;flex-direction:column;gap:4px;justify-content:center;border-radius:14px;font-size:10px;font-weight:850;letter-spacing:.1px;position:relative}
+.nav button.active{color:var(--green)}
+.nav button.active:not(.home-nav):before{content:"";position:absolute;top:-7px;width:30px;height:3px;background:var(--green);border-radius:0 0 8px 8px}
+.nav button .icon{width:22px;height:22px}
+.nav button.home-nav{transform:translateY(-13px);background:var(--green-pale);color:var(--green);width:60px;height:67px;border:4px solid var(--cream);border-radius:23px;box-shadow:0 6px 15px #30583c20}
+.nav button.home-nav.active{background:var(--green);color:white}
+.nav button.home-nav .icon{width:25px;height:25px}
+.modal-layer{position:absolute;inset:0;background:rgba(19,39,30,.36);z-index:10;display:none;align-items:flex-end;justify-content:center}
+.modal-layer.visible{display:flex}
+.sheet{width:100%;max-height:86%;background:var(--cream);border-radius:26px 26px 0 0;padding:12px 21px max(21px,env(safe-area-inset-bottom));overflow-y:auto;box-shadow:0 -10px 44px #203f3126;animation:rise .22s ease}
+.handle{height:5px;width:35px;border-radius:10px;background:#c8d6ca;margin:0 auto 15px}
+.sheet-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:17px}
+.sheet-head h2{font-size:20px;letter-spacing:-.5px;margin:0}
+.field{display:flex;flex-direction:column;gap:7px;font-size:12px;color:#5d7865;font-weight:900;margin:12px 0}
+.field input,.field select{width:100%;border:1px solid #d9e3d7;border-radius:14px;padding:13px 14px;min-height:45px;color:var(--ink);background:white;font-size:14px}
+.sheet-action{display:flex;gap:10px;margin-top:17px}
+.sheet-action .btn{flex:1}
+.sheet-plant{height:180px;background:#eef2e7;border-radius:20px;display:grid;place-items:center;margin-bottom:12px}
+.sheet-plant img{height:170px;width:90%;object-fit:contain}
+.shop-note{font-size:12px;color:var(--ink-soft);line-height:1.5}
+.toast{position:absolute;bottom:90px;left:50%;transform:translate(-50%,16px);max-width:calc(100% - 32px);background:#254b3a;color:white;border-radius:13px;padding:11px 15px;font-size:12px;font-weight:850;opacity:0;pointer-events:none;transition:opacity .2s ease,transform .2s ease;z-index:15;white-space:nowrap;box-shadow:0 5px 18px #234d3b36}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.inline-list{display:grid;gap:7px}.inline-choice{border:1px solid var(--line);background:white;border-radius:15px;display:flex;align-items:center;gap:13px;padding:8px 12px;min-height:60px;text-align:left;color:var(--ink);font-weight:850}
+.inline-choice img{width:44px;height:44px;object-fit:contain}
+.inline-choice span{flex:1}
+.inline-choice small{color:var(--green);font-size:11px}
+.settings-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;gap:15px;border-bottom:1px solid var(--line);font-size:13px;font-weight:800}
+.toggle{width:48px;height:28px;border:0;background:#bdcaba;border-radius:99px;padding:3px;transition:background .2s}
+.toggle:before{content:"";display:block;width:22px;height:22px;background:white;border-radius:50%;transition:transform .2s}
+.toggle.on{background:var(--green)}.toggle.on:before{transform:translateX(20px)}
+@keyframes rise{from{transform:translateY(16px);opacity:.75}to{transform:translateY(0);opacity:1}}
+@media (max-width:480px){body{background:var(--cream)}body:before,body:after{display:none}.app{width:100%;height:100dvh;max-height:none;border-radius:0;box-shadow:none}.app-header{padding-top:max(12px,env(safe-area-inset-top));height:calc(68px + env(safe-area-inset-top));}.hero{height:clamp(290px,39dvh,354px)}}
+@media (max-height:720px){.hero{height:290px}.scroll{padding-top:0}.app-header{height:66px}.nav{height:72px}}
+@media (prefers-reduced-motion:reduce){*,*:before,*:after{transition-duration:.01ms!important;animation-duration:.01ms!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<svg xmlns="http://www.w3.org/2000/svg" class="sr-only" aria-hidden="true">
+<symbol id="i-leaf" viewBox="0 0 24 24"><path d="M20 4C8 4 4 10 4 17a3 3 0 0 0 3 3c7 0 13-4 13-16Z"/><path d="M4 20c3-5 6-8 11-10"/></symbol>
+<symbol id="i-home" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V10Z"/><path d="M9 21v-8h6v8"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 5 5L20 7"/></symbol>
+<symbol id="i-tasks" viewBox="0 0 24 24"><rect x="5" y="4" width="15" height="17" rx="3"/><path d="M9 4v-2m7 2v-2M9 11l1.5 1.5L13 10m-4 7h7"/></symbol>
+<symbol id="i-garden" viewBox="0 0 24 24"><path d="M12 21V11M12 15C4 15 3 10 4 6c5 0 8 2 8 7m0-2c0-6 4-9 8-9 1 5 0 9-8 11M5 21h14"/></symbol>
+<symbol id="i-shop" viewBox="0 0 24 24"><path d="m3 9 2-5h14l2 5-2 3H5L3 9Zm2 3v9h14v-9M9 21v-6h6v6"/></symbol>
+<symbol id="i-book" viewBox="0 0 24 24"><path d="M12 6c-3-2-6-2-10-1v15c4-1 7-1 10 1m0-15c3-2 6-2 10-1v15c-4-1-7-1-10 1V6Z"/></symbol>
+<symbol id="i-coin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9 9.5h4.3a2 2 0 0 1 0 4H10a2 2 0 0 0 0 4H15M12 7v10"/></symbol>
+<symbol id="i-droplet" viewBox="0 0 24 24"><path d="M12 2S5 11 5 15a7 7 0 0 0 14 0c0-4-7-13-7-13Z"/><path d="M9 16a3 3 0 0 0 3 3"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+<symbol id="i-chevron" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
+<symbol id="i-back" viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></symbol>
+<symbol id="i-settings" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M20 12a8 8 0 0 0-.1-1l2-1.6-2-3.5-2.4 1a8 8 0 0 0-1.6-1L15.5 3h-4l-.4 2.9a8 8 0 0 0-1.6 1l-2.4-1-2 3.5 2 1.6a8 8 0 0 0 0 2l-2 1.6 2 3.5 2.4-1a8 8 0 0 0 1.6 1l.4 2.9h4l.4-2.9a8 8 0 0 0 1.6-1l2.4 1 2-3.5-2-1.6A8 8 0 0 0 20 12Z"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+<symbol id="i-fire" viewBox="0 0 24 24"><path d="M12 22c5 0 8-4 8-9 0-3-1-5-4-8 .3 4-2 5-2 5-.2-3-2-6-4-8-1 6-6 8-6 12a8 8 0 0 0 8 8Z"/><path d="M12 21c2 0 4-2 4-4 0-1-1-3-3-4 0 2-3 3-3 5 0 2 1 3 2 3Z"/></symbol>
+<symbol id="i-close" viewBox="0 0 24 24"><path d="M5 5l14 14M19 5 5 19"/></symbol>
+<symbol id="i-bag" viewBox="0 0 24 24"><rect x="4" y="8" width="16" height="13" rx="3"/><path d="M9 9V6a3 3 0 0 1 6 0v3"/></symbol>
+<symbol id="i-spark" viewBox="0 0 24 24"><path d="m12 2 2.5 7.5L22 12l-7.5 2.5L12 22l-2.5-7.5L2 12l7.5-2.5L12 2Z"/></symbol>
+</svg>
+<main class="app" aria-label="HabiTree web preview">
+<header class="app-header"><div class="brand"><span class="logo-icon"><svg class="icon"><use href="#i-leaf"/></svg></span> HabiTree</div><div class="header-actions"><span id="wallet" class="coin-pill"><span class="coin-disc">★</span><span>1,280</span></span><button class="icon-btn" data-modal="settings" aria-label="Cài đặt"><svg class="icon"><use href="#i-settings"/></svg></button></div></header>
+<div class="scroll" id="view" tabindex="-1"></div>
+<nav class="nav" id="nav" aria-label="Điều hướng chính"></nav>
+<div class="modal-layer" id="modal-layer"></div><div class="toast" id="toast" role="status" aria-live="polite"></div>
+</main>
+<script>
+(function(){
+'use strict';
+var base='../core-ui/src/main/res/drawable-nodpi/';
+var imageMap={cherry:'simple_cherry.png',pine:'simple_pine.png',succulent:'simple_succulent.png',mandarin:'simple_mandarin.png',seed:'simple_seed.png',fertilizer:'design_fertilizer.png',water:'design_water_can.png'};
+var catalog={cherry:{name:'Anh đào',price:200,tier:'Phổ thông'},pine:{name:'Thông xanh',price:900,tier:'Hiếm'},mandarin:{name:'Quýt',price:4500,tier:'Huyền thoại'},succulent:{name:'Sen đá',price:200,tier:'Phổ thông'}};
+var defaults={coins:1280,dailyEarned:31,streak:7,completedTotal:34,filter:'all',shopTab:'seed',reducedMotion:false,tasks:[{id:'t1',title:'Uống nước',type:'daily',minutes:0,done:true},{id:'t2',title:'Đọc sách',type:'habit',minutes:15,done:true},{id:'t3',title:'Đi dạo',type:'daily',minutes:20,done:false}],plants:[{id:'p1',species:'cherry',name:'Anh đào',percent:68,stage:4,watered:false},{id:'p2',species:'pine',name:'Thông xanh',percent:31,stage:2,watered:true},null,null],seeds:{cherry:1,pine:0,mandarin:0,succulent:0},items:{fertilizer:2},events:[{title:'Chuỗi 7 ngày',sub:'Bạn đã duy trì thói quen'},{title:'Cây mới',sub:'Thông xanh đã được trồng'}]};
+function clone(x){return JSON.parse(JSON.stringify(x))}
+var state=clone(defaults);
+try{var saved=JSON.parse(localStorage.getItem('habitree-design-demo-v1'));if(saved && Array.isArray(saved.tasks) && Array.isArray(saved.plants))state=Object.assign(clone(defaults),saved)}catch(e){}
+function save(){try{localStorage.setItem('habitree-design-demo-v1',JSON.stringify(state))}catch(e){}}
+function esc(x){return String(x).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function icon(name){return '<svg class="icon" aria-hidden="true"><use href="#i-'+name+'"></use></svg>'}
+function art(kind){return base+(imageMap[kind]||imageMap.seed)}
+function money(n){return Number(n).toLocaleString('vi-VN')}
+function done(){return state.tasks.filter(function(t){return t.done}).length}
+function pct(){return state.tasks.length?Math.round(done()*100/state.tasks.length):0}
+function today(){return new Intl.DateTimeFormat('vi-VN',{weekday:'long',day:'numeric',month:'long'}).format(new Date())}
+var route=(location.hash||'#/home').replace(/^#\//,'');var previous='home',modal=null,toastTimer=null;
+if(!/^(home|tasks|garden|shop|journal|inventory|tree)$/.test(route))route='home';
+function setRoute(next){if(next===route)return;previous=route;route=next;history.pushState({route:next},'','#/'+next);render();document.getElementById('view').scrollTop=0}
+window.addEventListener('popstate',function(){route=(location.hash||'#/home').replace('#/','');if(!/^(home|tasks|garden|shop|journal|inventory|tree)$/.test(route))route='home';closeModal();render()});
+function nav(){return [['tasks','Việc','tasks'],['garden','Vườn','garden'],['home','Nhà','home'],['shop','Cửa hàng','shop'],['journal','Nhật ký','book']].map(function(v){return '<button type="button" data-route="'+v[0]+'" class="'+(v[0]===route?'active ':'')+(v[0]==='home'?'home-nav':'')+'" aria-label="'+v[1]+'" aria-current="'+(v[0]===route?'page':'false')+'">'+icon(v[2])+'<span>'+v[1]+'</span></button>'}).join('')}
+function head(kicker,title,desc,action){return '<div class="page-head"><div><p class="eyebrow">'+kicker+'</p><h1 class="page-title">'+title+'</h1>'+(desc?'<p class="caption">'+desc+'</p>':'')+'</div>'+(action||'')+'</div>'}
+function section(title,view,label){return '<div class="section-head"><h2>'+title+'</h2>'+(view?'<button class="text-link" data-route="'+view+'">'+(label||'Xem tất cả')+' '+icon('chevron')+'</button>':'')+'</div>'}
+function row(task){return '<div class="task-row"><button class="check '+(task.done?'done':'')+'" data-done="'+esc(task.id)+'" aria-label="'+(task.done?'Đã hoàn thành: ':'Hoàn thành: ')+esc(task.title)+'" '+(task.done?'disabled':'')+'>'+(task.done?icon('check'):'')+'</button><div class="task-main"><div class="task-name '+(task.done?'done':'')+'">'+esc(task.title)+'</div><div class="task-desc">'+(task.minutes?icon('clock')+' '+task.minutes+' phút':task.type==='habit'?'Thói quen':'Mỗi ngày')+'</div></div>'+(task.minutes&&!task.done?'<button class="focus-mini" data-focus="'+esc(task.id)+'">Bắt đầu</button>':'<span class="reward">+'+(task.minutes?15:8)+' xu</span>')+'</div>'}
+function home(){var tree=state.plants.find(function(t){return t!==null})||{species:'cherry',name:'Anh đào',percent:0,stage:1,watered:false};return '<p class="eyebrow" style="margin-top:9px">GÓC NHỎ CỦA BẠN</p><h1 class="page-title" style="margin-bottom:7px">Mỗi ngày một chút <span style="color:#6d9b76">🌱</span></h1><p class="greeting">'+today()+'</p>'+
+'<section class="hero" aria-label="Cây đang phát triển"><div class="scene-bg"></div><div class="scene-fallback"></div><div class="hero-top"><span class="hero-tag"><span class="status-dot"></span> Khu vườn bình yên</span><button class="hero-action" data-route="tree" aria-label="Xem cây">'+icon('chevron')+'</button></div><div class="hero-art"><img src="'+art(tree.species)+'" alt="Minh họa cây '+esc(tree.name)+'"></div><button class="btn btn-soft hero-water" data-water="'+esc(tree.id||'')+'">'+icon('droplet')+' '+(tree.watered?'Đã tưới':'Tưới cây')+'</button><div class="hero-card"><div><div class="name">'+esc(tree.name)+'</div><div class="sub">Dáng '+tree.stage+' · '+(tree.watered?'Đủ nước':'Cần chăm sóc')+'</div></div><div class="meter-wrap"><div class="progress"><span style="width:'+tree.percent+'%"></span></div></div><span class="percent">'+tree.percent+'%</span></div></section>'+
+'<div class="home-summary"><div class="mini-overview"><span class="iconbox">'+icon('fire')+'</span><div><div class="big">'+state.streak+' ngày</div><div class="label">Chuỗi duy trì</div></div></div><div class="mini-overview"><span class="iconbox">'+icon('check')+'</span><div><div class="big">'+done()+'/'+state.tasks.length+'</div><div class="label">Việc hôm nay</div></div></div></div>'+
+section('Việc hôm nay','tasks','Xem thêm')+'<div class="card">'+(state.tasks.length?state.tasks.slice(0,3).map(row).join(''):'<div class="empty">Chưa có việc nào</div>')+'</div>'+
+'<div class="cta-row"><button class="btn btn-primary" data-route="tasks">'+icon('tasks')+' Làm việc tiếp</button><button class="btn btn-soft" data-route="garden">'+icon('garden')+' Thăm vườn</button></div>'}
+function tasks(){var visible=state.tasks.filter(function(t){return state.filter==='all'||(state.filter==='habit'?t.type==='habit':t.type!=='habit')});return head('TỪNG CHÚT MỘT','Việc hôm nay',today(),'<button class="btn btn-primary" data-modal="add-task">'+icon('plus')+' Thêm</button>')+
+'<div class="progress-banner"><div class="ring" style="--p:'+pct()+'"><b>'+pct()+'%</b></div><div><strong>'+done()+'/'+state.tasks.length+' việc hoàn thành</strong><span>'+(pct()===100?'Hôm nay bạn làm tốt lắm!':'Bạn đang làm rất tốt!')+'</span><div class="progress" style="width:186px;max-width:100%"><span style="width:'+pct()+'%"></span></div></div></div>'+
+'<div class="filter-row">'+[['all','Tất cả'],['habit','Thói quen'],['daily','Hằng ngày']].map(function(f){return '<button class="chip '+(state.filter===f[0]?'active':'')+'" data-filter="'+f[0]+'" aria-pressed="'+(state.filter===f[0])+'">'+f[1]+'</button>'}).join('')+'</div>'+
+'<div class="card task-list">'+(visible.length?visible.map(row).join(''):'<div class="empty"><div class="empty-art">'+icon('leaf')+'</div><strong>Chưa có việc ở đây</strong><p class="small muted">Thêm một việc nhỏ để bắt đầu.</p><button class="btn btn-soft" data-modal="add-task">'+icon('plus')+' Thêm việc</button></div>')+'</div>'+
+section('Phần thưởng hôm nay',null)+'<div class="card" style="padding:14px 16px;display:flex;justify-content:space-between;align-items:center"><div><strong class="semi" style="font-size:13px">'+state.dailyEarned+'/50 xu</strong><p class="small muted" style="margin:4px 0 0">Giới hạn mỗi ngày</p></div><div class="progress" style="width:44%;height:9px;margin:0"><span style="width:'+Math.min(100,state.dailyEarned/50*100)+'%"></span></div></div>'}
+function garden(){var used=state.plants.filter(Boolean).length;return head('KHÔNG GIAN CỦA BẠN','Khu vườn',used+'/'+state.plants.length+' ô đã trồng','<button class="icon-btn" data-route="inventory" aria-label="Túi đồ">'+icon('bag')+'</button>')+
+'<div class="garden-hero"><div class="scene-bg"></div><div class="garden-caption">'+icon('leaf')+' Vườn của tôi</div>'+state.plants.filter(Boolean).slice(0,2).map(function(p,i){return '<img class="garden-small-tree '+(i?'b':'a')+'" src="'+art(p.species)+'" alt="'+esc(p.name)+'">' }).join('')+'</div>'+
+'<div class="cta-row" style="margin-top:13px"><span class="semi" style="font-size:12px;color:#637e6b">'+used+' cây đang lớn</span><button class="btn btn-soft" data-water-all>'+icon('droplet')+' Tưới tất cả</button></div>'+
+section('Cây của bạn',null)+'<div class="plot-grid">'+state.plants.map(function(t,i){return t?'<button class="plot" data-plot="'+i+'"><div class="plot-image"><img src="'+art(t.species)+'" alt=""></div><div class="plot-name">'+esc(t.name)+'</div><div class="plot-info"><span>'+t.percent+'% lớn lên</span><span>'+(t.watered?'Đủ nước':'Cần nước')+'</span></div></button>':'<button class="plot empty-plot" data-plant="'+i+'"><span class="add-circle">'+icon('plus')+'</span><span>Trồng cây</span></button>'}).join('')+'</div>'+
+'<button class="btn btn-cream full" style="margin-top:15px" data-route="inventory">'+icon('bag')+' Mở túi đồ</button>'}
+function products(){return state.shopTab==='seed'?Object.keys(catalog).map(function(k){var s=catalog[k];return '<button class="product" data-buy="'+k+'"><div class="product-image"><span class="product-type">'+s.tier+'</span><img src="'+art(k)+'" alt="" loading="lazy"></div><div class="product-name">'+s.name+'</div><div class="product-bottom"><span>'+money(s.price)+' xu</span><span class="round-add">'+icon('plus')+'</span></div></button>'}).join(''):['fertilizer','water'].map(function(k){var p=k==='water'?{name:'Bình tưới',price:300,type:'Dụng cụ'}:{name:'Phân bón',price:35,type:'Chăm cây'};return '<button class="product" data-buy="'+k+'"><div class="product-image"><span class="product-type">'+p.type+'</span><img src="'+art(k)+'" alt="" loading="lazy"></div><div class="product-name">'+p.name+'</div><div class="product-bottom"><span>'+money(p.price)+' xu</span><span class="round-add">'+icon('plus')+'</span></div></button>'}).join('')}
+function shop(){return head('MANG ĐIỀU XANH VỀ','Cửa hàng','Chọn một điều đáng yêu','<button class="icon-btn" data-route="inventory" aria-label="Túi đồ">'+icon('bag')+'</button>')+
+'<div class="segment"><button data-shop-tab="seed" class="'+(state.shopTab==='seed'?'active':'')+'" aria-pressed="'+(state.shopTab==='seed')+'">Hạt giống</button><button data-shop-tab="items" class="'+(state.shopTab==='items'?'active':'')+'" aria-pressed="'+(state.shopTab==='items')+'">Dụng cụ</button></div>'+
+'<div class="product-grid">'+products()+'</div><p class="small muted" style="text-align:center;margin-top:20px">Trồng chậm, vui lâu.</p>'}
+function inventory(){var entries=Object.keys(state.seeds).filter(function(k){return state.seeds[k]>0});return '<div class="page-head"><div><button class="text-link" data-route="garden">'+icon('back')+' Trở về</button><h1 class="page-title">Túi đồ</h1><p class="caption">Hạt giống và đồ chăm cây</p></div></div>'+section('Hạt giống',null)+(entries.length?'<div class="inline-list">'+entries.map(function(k){return '<button class="inline-choice" data-inventory-seed="'+k+'"><img src="'+art(k)+'" alt=""><span>'+catalog[k].name+'</span><small>×'+state.seeds[k]+'</small></button>'}).join('')+'</div>':'<div class="card empty">Chưa có hạt giống<br><button class="btn btn-soft" style="margin-top:12px" data-route="shop">Đến cửa hàng</button></div>')+section('Dụng cụ',null)+'<div class="inline-list"><div class="inline-choice"><img src="'+art('water')+'" alt=""><span>Bình tưới</span><small>Đang dùng</small></div><div class="inline-choice"><img src="'+art('fertilizer')+'" alt=""><span>Phân bón</span><small>×'+state.items.fertilizer+'</small></div></div>'}
+function journal(){var bars=[45,69,36,82,60,79,Math.max(15,pct())],days=['T7','CN','T2','T3','T4','T5','Hôm nay'];return head('MỘT CHẶNG ĐƯỜNG','Nhật ký','Mỗi ngày đều đáng nhớ')+
+'<div class="journal-hero"><div><p class="eyebrow">CHUỖI NGÀY</p><strong>'+state.streak+' ngày</strong><p>Cứ tiếp tục theo nhịp của bạn</p></div>'+icon('leaf')+'</div>'+
+'<div class="metrics"><div class="metric"><strong>'+state.completedTotal+'</strong><span>Việc đã xong</span></div><div class="metric"><strong>'+state.plants.filter(Boolean).length+'</strong><span>Cây đang lớn</span></div><div class="metric"><strong>'+money(state.coins)+'</strong><span>Xu hiện có</span></div></div>'+
+section('7 ngày gần đây',null)+'<div class="bars"><div class="bar-stage">'+bars.map(function(n,i){return '<div class="bar-column '+(i===6?'today':'')+'" style="height:'+n+'%" aria-label="'+days[i]+': '+n+'%"></div>'}).join('')+'</div><div class="bar-labels">'+days.map(function(d){return '<span>'+d+'</span>'}).join('')+'</div></div>'+
+section('Khoảnh khắc',null)+'<div class="card">'+state.events.slice(0,4).map(function(e){return '<div class="memory-row"><div class="memory-symbol">'+icon('spark')+'</div><div><strong>'+esc(e.title)+'</strong><div class="small muted" style="margin-top:3px">'+esc(e.sub)+'</div></div></div>'}).join('')+'</div>'}
+var selectedPlot=0;
+function tree(){var t=state.plants[selectedPlot]||state.plants.find(Boolean);if(!t)return garden();return '<button class="text-link" data-route="garden">'+icon('back')+' Khu vườn</button>'+head('CÂY CỦA BẠN',esc(t.name),'Dáng '+t.stage+' · '+(t.watered?'Đủ nước':'Cần tưới'))+
+'<div class="detail-hero"><img src="'+art(t.species)+'" alt="Cây '+esc(t.name)+'"><span class="detail-percent">'+t.percent+'%</span></div>'+
+'<div class="detail-actions"><button class="btn btn-primary" data-water="'+esc(t.id)+'">'+icon('droplet')+' '+(t.watered?'Đã tưới':'Tưới cây')+'</button><button class="btn btn-soft" data-fertilize="'+esc(t.id)+'">'+icon('leaf')+' Bón phân ('+state.items.fertilizer+')</button></div>'+
+'<div class="panel"><div style="display:flex;justify-content:space-between;gap:10px"><span class="semi">Hành trình lớn lên</span><strong>'+t.percent+'%</strong></div><div class="progress" style="margin-top:12px;height:10px"><span style="width:'+t.percent+'%"></span></div><p class="small muted" style="margin:10px 0 0">Chăm cây nhẹ nhàng mỗi ngày.</p></div>'}
+function render(){document.getElementById('wallet').innerHTML='<span class="coin-disc">★</span><span>'+money(state.coins)+'</span>';document.getElementById('nav').innerHTML=nav();var pages={home:home,tasks:tasks,garden:garden,shop:shop,journal:journal,inventory:inventory,tree:tree};document.getElementById('view').innerHTML=(pages[route]||home)();save()}
+function notify(s){var t=document.getElementById('toast');t.textContent=s;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(function(){t.classList.remove('show')},2400)}
+function closeModal(){modal=null;var layer=document.getElementById('modal-layer');layer.classList.remove('visible');layer.innerHTML=''}
+function showModal(type,id){modal={type:type,id:id};var h='<div class="sheet" role="dialog" aria-modal="true" aria-labelledby="modal-title"><div class="handle"></div><div class="sheet-head"><h2 id="modal-title">';var b='';if(type==='add-task'){h+='Thêm việc mới';b='<form id="new-task-form"><label class="field">Tên việc<input name="name" maxlength="60" placeholder="Ví dụ: Đọc 10 trang sách" required autofocus></label><label class="field">Loại việc<select name="type"><option value="daily">Hằng ngày</option><option value="habit">Thói quen</option><option value="todo">Việc một lần</option></select></label><label class="field">Cách hoàn thành<select name="mode"><option value="click">Đánh dấu</option><option value="timer">Hẹn giờ</option></select></label><div class="sheet-action"><button type="button" class="btn btn-cream" data-close>Hủy</button><button class="btn btn-primary" type="submit">Lưu việc</button></div></form>'}
+else if(type==='buy'){var s=catalog[id]||{name:id==='water'?'Bình tưới':'Phân bón',price:id==='water'?300:35,tier:'Chăm sóc'};h+=s.name;b='<div class="sheet-plant"><img src="'+art(id)+'" alt=""></div><p class="shop-note">'+(s.tier||'')+' · '+money(s.price)+' xu / món</p><label class="field">Số lượng<select id="buy-qty"><option value="1">1</option><option value="2">2</option><option value="3">3</option></select></label><div class="sheet-action"><button class="btn btn-cream" data-close>Để sau</button><button class="btn btn-primary" data-confirm-buy="'+id+'">'+icon('coin')+' Mua</button></div>'}
+else if(type==='plant'){h+='Chọn hạt giống';var keys=Object.keys(state.seeds).filter(function(k){return state.seeds[k]>0});b=keys.length?'<div class="inline-list">'+keys.map(function(k){return '<button class="inline-choice" data-confirm-plant="'+k+'"><img src="'+art(k)+'" alt=""><span>'+catalog[k].name+'</span><small>×'+state.seeds[k]+'</small></button>'}).join('')+'</div>':'<div class="empty"><p>Chưa có hạt giống.</p><button class="btn btn-primary" data-route="shop">Đến cửa hàng</button></div>'}
+else if(type==='focus'){var task=state.tasks.find(function(x){return x.id===id});h+='Tập trung';b='<div style="text-align:center;padding:15px 0"><div class="eyebrow">'+esc(task?task.title:'')+'</div><div style="font-size:48px;font-weight:900;margin:18px 0">'+(task?task.minutes:15)+':00</div><p class="small muted">Bản xem thử — phiên hẹn giờ chưa được kết nối dữ liệu thật.</p></div><div class="sheet-action"><button class="btn btn-cream" data-close>Để sau</button><button class="btn btn-primary" data-finish-demo="'+id+'">Hoàn tất (demo)</button></div>'}
+else if(type==='settings'){h+='Cài đặt';b='<div class="settings-row"><span>Giảm chuyển động</span><button class="toggle '+(state.reducedMotion?'on':'')+'" data-reduced aria-pressed="'+state.reducedMotion+'" aria-label="Giảm chuyển động"></button></div><div class="settings-row"><span>Đặt lại dữ liệu demo</span><button class="btn btn-soft" data-reset>Đặt lại</button></div><p class="shop-note" style="margin-top:16px">Bản xem trước dùng dữ liệu thử trên trình duyệt. Không kết nối dữ liệu Android.</p>'}
+else{h+='Thông tin';b=''}
+var layer=document.getElementById('modal-layer');layer.innerHTML=h+'</h2><button class="icon-btn" data-close aria-label="Đóng">'+icon('close')+'</button></div>'+b+'</div>';layer.classList.add('visible');var first=layer.querySelector('[autofocus],button[data-close]');if(first)first.focus()}
+function mark(id){var t=state.tasks.find(function(x){return x.id===id});if(!t||t.done)return;t.done=true;var reward=t.minutes?15:8;var earned=Math.max(0,Math.min(reward,50-state.dailyEarned));state.coins+=earned;state.dailyEarned+=earned;state.completedTotal+=1;state.events.unshift({title:'Hoàn thành việc',sub:t.title});render();notify('Hoàn thành · +'+earned+' xu')}
+function buy(id){var price=catalog[id]?catalog[id].price:id==='water'?300:35;var select=document.getElementById('buy-qty');var qty=Math.max(1,Math.min(3,Number(select?select.value:1)||1));if(state.coins<price*qty){notify('Bạn chưa đủ xu');return}state.coins-=price*qty;if(catalog[id])state.seeds[id]=(state.seeds[id]||0)+qty;else state.items[id]=(state.items[id]||0)+qty;closeModal();render();notify('Đã thêm vào túi đồ')}
+function plant(species){var i=Number(modal?modal.id:0);if(state.plants[i]||!state.seeds[species])return;state.plants[i]={id:'p'+Date.now(),species:species,name:catalog[species].name,percent:0,stage:1,watered:false};state.seeds[species]-=1;state.events.unshift({title:'Cây mới',sub:catalog[species].name+' đã được trồng'});closeModal();setRoute('garden');render();notify('Đã trồng '+catalog[species].name)}
+function water(id){var t=state.plants.find(function(p){return p&&p.id===id});if(!t)return;if(t.watered){notify('Cây đã được tưới');return}t.watered=true;render();notify('Đã tưới '+t.name)}
+function waterAll(){var n=0;state.plants.forEach(function(p){if(p&&!p.watered){p.watered=true;n++}});render();notify(n?'Đã tưới '+n+' cây':'Tất cả cây đã đủ nước')}
+document.addEventListener('click',function(e){var btn=e.target.closest('button');if(!btn)return;if(btn.hasAttribute('data-route')){closeModal();setRoute(btn.getAttribute('data-route'));return}if(btn.hasAttribute('data-modal')){showModal(btn.dataset.modal);return}if(btn.hasAttribute('data-close')){closeModal();return}if(btn.hasAttribute('data-done')){mark(btn.dataset.done);return}if(btn.hasAttribute('data-filter')){state.filter=btn.dataset.filter;render();return}if(btn.hasAttribute('data-shop-tab')){state.shopTab=btn.dataset.shopTab;render();return}if(btn.hasAttribute('data-buy')){showModal('buy',btn.dataset.buy);return}if(btn.hasAttribute('data-confirm-buy')){buy(btn.dataset.confirmBuy);return}if(btn.hasAttribute('data-focus')){showModal('focus',btn.dataset.focus);return}if(btn.hasAttribute('data-finish-demo')){var id=btn.dataset.finishDemo;closeModal();mark(id);return}if(btn.hasAttribute('data-water')){water(btn.dataset.water);return}if(btn.hasAttribute('data-water-all')){waterAll();return}if(btn.hasAttribute('data-fertilize')){if(!state.items.fertilizer){notify('Chưa có phân bón');return}state.items.fertilizer-=1;render();notify('Đã bón phân (demo)');return}if(btn.hasAttribute('data-plant')){showModal('plant',btn.dataset.plant);return}if(btn.hasAttribute('data-confirm-plant')){plant(btn.dataset.confirmPlant);return}if(btn.hasAttribute('data-inventory-seed')){setRoute('garden');notify('Chọn một ô trống để trồng');return}if(btn.hasAttribute('data-plot')){selectedPlot=Number(btn.dataset.plot);setRoute('tree');return}if(btn.hasAttribute('data-reduced')){state.reducedMotion=!state.reducedMotion;document.documentElement.style.setProperty('scroll-behavior',state.reducedMotion?'auto':'smooth');showModal('settings');save();return}if(btn.hasAttribute('data-reset')){state=clone(defaults);closeModal();setRoute('home');render();notify('Đã đặt lại bản demo');return}});
+document.addEventListener('submit',function(e){if(e.target.id!=='new-task-form')return;e.preventDefault();var fd=new FormData(e.target);var title=String(fd.get('name')||'').trim();if(!title)return;var minutes=fd.get('mode')==='timer'?15:0;state.tasks.push({id:'t'+Date.now(),title:title,type:fd.get('type'),minutes:minutes,done:false});closeModal();setRoute('tasks');render();notify('Đã thêm việc mới')});
+document.getElementById('modal-layer').addEventListener('click',function(e){if(e.target.id==='modal-layer')closeModal()});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&modal)closeModal()});
+render();
+})();
+</script>
+</body>
+</html>
