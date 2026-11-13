@@ -27,6 +27,8 @@ The preview reuses original assets from `core-ui/src/main/res/drawable-nodpi/` u
 | Tree | Progress, water and fertilizer care |
 | Shop | Eleven genuine species, tier prices, quantity picker, sample supplies |
 | Inventory | Owned seeds and consumables |
+| Collection | 11-species visual encyclopedia with discovered/seed status |
+| Decorations | Contextual tree decorations with sample selection state |
 | Journal | Streak, summary, seven-day sample chart, timeline |
 
 ## Sources and decisions
@@ -47,7 +49,7 @@ This is a **visual and interaction concept with sample local state**, NOT an int
 - Shop purchases, task rewards and watering in this demo do not use KMP SQL transactions or production validation.
 - The inline timer is a sample. It does not guarantee elapsed-time recovery, scheduling windows, notifications, or clock-change protection.
 - Growth, permanent tree death, sale/removal, fertilizer cooldowns, and plant-stage time calculation are deliberately **not simulated** here.
-- The shop displays all eleven real seed species but only two sample care cards. A production implementation needs the actual complete care and cosmetic catalogs.
+- The shop displays all eleven real seed species but only two sample care cards. Collection and decorations show sample discovery/selection rather than real unlock entitlements. A production implementation needs the actual complete care and cosmetic catalogs.
 - The seven-day Journal bars are illustrative.
 - No existing Kotlin/Compose UI is modified. The web concept can be evaluated before any native redesign.
 
