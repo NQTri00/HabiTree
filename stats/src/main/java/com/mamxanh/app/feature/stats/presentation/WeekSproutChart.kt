@@ -1,5 +1,13 @@
 package com.mamxanh.app.feature.stats.presentation
 
+import com.mamxanh.app.presentation.ui.design.AppColors
+import com.mamxanh.app.presentation.ui.design.AppDimensions
+import com.mamxanh.app.presentation.ui.design.AppTypography
+
+import com.mamxanh.shared.localization.TextKey
+
+import com.mamxanh.shared.localization.AppText
+
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -33,13 +41,13 @@ import com.mamxanh.app.presentation.ui.components.GardenArtwork
 internal fun WeekSproutChart(counts: List<Int>, days: List<String>, modifier: Modifier = Modifier) {
     val values=counts.takeLast(7).map{it.coerceAtLeast(0)}
     val maxValue=maxOf(4,values.maxOrNull()?:0).toDouble()
-    Row(modifier.semantics(mergeDescendants=true){contentDescription=values.mapIndexed{index,value->"${days.getOrElse(index){""}}: $value việc"}.joinToString(", ")}.fillMaxWidth().height(150.dp),horizontalArrangement=Arrangement.spacedBy(12.dp),verticalAlignment=Alignment.Bottom) {
+    Row(modifier.semantics(mergeDescendants=true){contentDescription=values.mapIndexed{index,value->AppText.text(TextKey.Copy01ViecEc6e1e,days.getOrElse(index){""},value)}.joinToString(", ")}.fillMaxWidth().height(AppDimensions.Dp150),horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp12),verticalAlignment=Alignment.Bottom) {
         values.forEachIndexed{index,value->
-            Column(Modifier.weight(1f),horizontalAlignment=Alignment.CenterHorizontally,verticalArrangement=Arrangement.spacedBy(7.dp)) {
-                Text(value.toString(),color=com.mamxanh.app.presentation.ui.Muted,fontSize=10.sp,lineHeight=14.sp,textAlign=TextAlign.Center)
-                Box(Modifier.widthIn(max=24.dp).fillMaxWidth().height(maxOf(4.dp,100.dp*(value/maxValue).toFloat()))
-                    .background(if(index==values.lastIndex)com.mamxanh.app.presentation.ui.Green else Color(0xFFDCECB8),RoundedCornerShape(topStart=7.dp,topEnd=7.dp,bottomStart=3.dp,bottomEnd=3.dp)))
-                Text(days.getOrElse(index){""},color=com.mamxanh.app.presentation.ui.Muted,fontSize=10.sp,lineHeight=14.sp,textAlign=TextAlign.Center)
+            Column(Modifier.weight(1f),horizontalAlignment=Alignment.CenterHorizontally,verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp7)) {
+                Text(value.toString(),color=com.mamxanh.app.presentation.ui.Muted,fontSize=AppTypography.Sp10,lineHeight=AppTypography.Sp14,textAlign=TextAlign.Center)
+                Box(Modifier.widthIn(max=AppDimensions.Dp24).fillMaxWidth().height(maxOf(AppDimensions.Dp4,AppDimensions.Dp100*(value/maxValue).toFloat()))
+                    .background(if(index==values.lastIndex)com.mamxanh.app.presentation.ui.Green else AppColors.SwatchFFDCECB8,RoundedCornerShape(topStart=AppDimensions.Dp7,topEnd=AppDimensions.Dp7,bottomStart=AppDimensions.Dp3,bottomEnd=AppDimensions.Dp3)))
+                Text(days.getOrElse(index){""},color=com.mamxanh.app.presentation.ui.Muted,fontSize=AppTypography.Sp10,lineHeight=AppTypography.Sp14,textAlign=TextAlign.Center)
             }
         }
     }
@@ -50,7 +58,7 @@ internal fun WeekSproutChart(counts: List<Int>, days: List<String>, modifier: Mo
 @Composable
 fun WeekSproutChartLargeTextPreview() {
     MamXanhPreviewTheme {
-        WeekSproutChart(listOf(0, 1, 10, 12, 3, 1, 2), listOf("T2", "T3", "T4", "T5", "T6", "T7", "CN"), Modifier.padding(8.dp))
+        WeekSproutChart(listOf(0, 1, 10, 12, 3, 1, 2), listOf("T2", "T3", "T4", "T5", "T6", "T7", "CN"), Modifier.padding(AppDimensions.Dp8))
     }
 }
 
@@ -59,6 +67,6 @@ fun WeekSproutChartLargeTextPreview() {
 @Composable
 fun WeekSproutChartEmptyPreview() {
     MamXanhPreviewTheme {
-        WeekSproutChart(List(7) { 0 }, listOf("T2", "T3", "T4", "T5", "T6", "T7", "CN"), Modifier.padding(8.dp))
+        WeekSproutChart(List(7) { 0 }, listOf("T2", "T3", "T4", "T5", "T6", "T7", "CN"), Modifier.padding(AppDimensions.Dp8))
     }
 }

@@ -1,6 +1,18 @@
 package com.mamxanh.app.presentation.ui
 
-enum class AppDestination(val label: String) { HOME("Trang chủ"), TASKS("Nhiệm vụ"), GARDEN("Khu vườn"), SHOP("Cửa hàng"), STATS("Thống kê") }
+import com.mamxanh.shared.localization.TextKey
+
+import com.mamxanh.shared.localization.AppText
+
+enum class AppDestination(private val labelKey: TextKey) {
+    HOME(TextKey.CopyTrangChu8be437),
+    TASKS(TextKey.CopyNhiemVu0f2beb),
+    GARDEN(TextKey.CopyKhuVuonC22009),
+    SHOP(TextKey.CopyCuaHangCde3b6),
+    STATS(TextKey.CopyThongKe9befe4);
+
+    val label: String get() = AppText.text(labelKey)
+}
 
 data class AppUiState(
     val destination: AppDestination = AppDestination.HOME,

@@ -1,5 +1,13 @@
 package com.mamxanh.app.presentation.ui.components
 
+import com.mamxanh.app.presentation.ui.design.AppColors
+import com.mamxanh.app.presentation.ui.design.AppDimensions
+import com.mamxanh.app.presentation.ui.design.AppTypography
+
+import com.mamxanh.shared.localization.TextKey
+
+import com.mamxanh.shared.localization.AppText
+
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -22,18 +30,18 @@ fun MintFeedback(message: String, onDismiss: () -> Unit, modifier: Modifier = Mo
         kotlinx.coroutines.delay(3500)
         dismiss()
     }
-    Box(modifier.fillMaxSize().padding(10.dp), contentAlignment = Alignment.BottomCenter) {
-        Surface(Modifier.widthIn(max = 440.dp).fillMaxWidth().semantics { liveRegion = LiveRegionMode.Polite },
-            shape = RoundedCornerShape(18.dp), color = Deep, contentColor = Color.White, shadowElevation = 6.dp) {
-            Row(Modifier.padding(start = 14.dp), verticalAlignment = Alignment.CenterVertically) {
+    Box(modifier.fillMaxSize().padding(AppDimensions.Dp10), contentAlignment = Alignment.BottomCenter) {
+        Surface(Modifier.widthIn(max = AppDimensions.Dp440).fillMaxWidth().semantics { liveRegion = LiveRegionMode.Polite },
+            shape = RoundedCornerShape(AppDimensions.Dp18), color = Deep, contentColor = AppColors.White, shadowElevation = AppDimensions.Dp6) {
+            Row(Modifier.padding(start = AppDimensions.Dp14), verticalAlignment = Alignment.CenterVertically) {
                 val copy = message.substringAfter("\n", message).let {
-                    if(message.startsWith("Đã")) it.substringBefore(" · ") else it
+                    if(message.startsWith(AppText.text(TextKey.CopyDa64a504))) it.substringBefore(" · ") else it
                 }
-                GardenRichText(copy, Modifier.weight(1f).padding(vertical = 8.dp),
-                    color = Color.White, fontSize = 12.sp, lineHeight = 16.sp,
+                GardenRichText(copy, Modifier.weight(1f).padding(vertical = AppDimensions.Dp8),
+                    color = AppColors.White, fontSize = AppTypography.Sp12, lineHeight = AppTypography.Sp16,
                     maxLines = 3, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
-                TextButton(onClick = onDismiss, contentPadding = PaddingValues(8.dp)) {
-                    Text("×", color = Color.White, fontSize = 20.sp)
+                TextButton(onClick = onDismiss, contentPadding = PaddingValues(AppDimensions.Dp8)) {
+                    Text("×", color = AppColors.White, fontSize = AppTypography.Sp20)
                 }
             }
         }

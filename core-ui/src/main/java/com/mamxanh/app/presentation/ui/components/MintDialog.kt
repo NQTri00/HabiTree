@@ -1,5 +1,13 @@
 package com.mamxanh.app.presentation.ui.components
 
+import com.mamxanh.app.presentation.ui.design.AppColors
+import com.mamxanh.app.presentation.ui.design.AppDimensions
+import com.mamxanh.app.presentation.ui.design.AppTypography
+
+import com.mamxanh.shared.localization.TextKey
+
+import com.mamxanh.shared.localization.AppText
+
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.rememberScrollState
@@ -19,17 +27,17 @@ import com.mamxanh.app.presentation.ui.*
 
 @Composable
 fun MintDialogAction(label: String,onClick:()->Unit,modifier:Modifier=Modifier,primary:Boolean=true,enabled:Boolean=true,destructive:Boolean=false) {
-    val shape=RoundedCornerShape(15.dp)
-    val tint=if(destructive)Color(0xFFA94036) else Green
-    Box(modifier.heightIn(min=48.dp)
+    val shape=RoundedCornerShape(AppDimensions.Dp15)
+    val tint=if(destructive)AppColors.SwatchFFA94036 else Green
+    Box(modifier.heightIn(min=AppDimensions.Dp48)
         .clickable(enabled=enabled,role=androidx.compose.ui.semantics.Role.Button,onClick=onClick),
         contentAlignment=Alignment.Center) {
         Surface(Modifier.fillMaxWidth(),shape=shape,
-            color=if(primary) tint.copy(alpha=if(enabled)1f else .2f) else if(destructive)Color(0xFFF7E5E2) else Color.Transparent,
-            border=if(primary||destructive)null else androidx.compose.foundation.BorderStroke(1.dp,Deep.copy(alpha=if(enabled).25f else .1f))) {
-            Text(label,Modifier.padding(horizontal=14.dp,vertical=13.dp),
-                color=if(!enabled)Muted else if(primary)Color.White else if(destructive)tint else Deep,
-                fontSize=14.sp,lineHeight=20.sp,fontWeight=FontWeight.SemiBold,
+            color=if(primary) tint.copy(alpha=if(enabled)1f else .2f) else if(destructive)AppColors.SwatchFFF7E5E2 else AppColors.Transparent,
+            border=if(primary||destructive)null else androidx.compose.foundation.BorderStroke(AppDimensions.Dp1,Deep.copy(alpha=if(enabled).25f else .1f))) {
+            Text(label,Modifier.padding(horizontal=AppDimensions.Dp14,vertical=AppDimensions.Dp13),
+                color=if(!enabled)Muted else if(primary)AppColors.White else if(destructive)tint else Deep,
+                fontSize=AppTypography.Sp14,lineHeight=AppTypography.Sp20,fontWeight=FontWeight.SemiBold,
                 textAlign=androidx.compose.ui.text.style.TextAlign.Center)
         }
     }
@@ -38,27 +46,27 @@ fun MintDialogAction(label: String,onClick:()->Unit,modifier:Modifier=Modifier,p
 /** One compact visual language for confirmations and forms, with reachable actions. */
 @Composable
 fun MintDialog(title:String,onDismiss:()->Unit,confirmLabel:String,onConfirm:()->Unit,
-    cancelLabel:String="Để sau",confirmEnabled:Boolean=true,dismissEnabled:Boolean=true,destructive:Boolean=false,
+    cancelLabel:String=AppText.text(TextKey.CopyDeSau9be0a7),confirmEnabled:Boolean=true,dismissEnabled:Boolean=true,destructive:Boolean=false,
     content:@Composable ColumnScope.()->Unit) {
     val body: @Composable () -> Unit = {
-        BoxWithConstraints(Modifier.fillMaxSize().safeDrawingPadding().imePadding().padding(12.dp),contentAlignment=Alignment.Center) {
-            val short=maxHeight<180.dp
-            Surface(Modifier.widthIn(max=440.dp).fillMaxWidth().heightIn(max=620.dp),
-                shape=RoundedCornerShape(28.dp),color=Cream,shadowElevation=12.dp) {
-                Column(Modifier.padding(if(short)8.dp else 20.dp),verticalArrangement=Arrangement.spacedBy(if(short)8.dp else 20.dp)) {
+        BoxWithConstraints(Modifier.fillMaxSize().safeDrawingPadding().imePadding().padding(AppDimensions.Dp12),contentAlignment=Alignment.Center) {
+            val short=maxHeight<AppDimensions.Dp180
+            Surface(Modifier.widthIn(max=AppDimensions.Dp440).fillMaxWidth().heightIn(max=AppDimensions.Dp620),
+                shape=RoundedCornerShape(AppDimensions.Dp28),color=Cream,shadowElevation=AppDimensions.Dp12) {
+                Column(Modifier.padding(if(short)AppDimensions.Dp8 else AppDimensions.Dp20),verticalArrangement=Arrangement.spacedBy(if(short)AppDimensions.Dp8 else AppDimensions.Dp20)) {
                     if(!short) Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically) {
-                        Text(title,Modifier.weight(1f),color=Deep,fontSize=21.sp,lineHeight=27.sp,fontWeight=FontWeight.Bold)
-                        IconButton(onClick=onDismiss,enabled=dismissEnabled,modifier=Modifier.size(48.dp)) {
-                            Text("×",color=Muted,fontSize=22.sp)
+                        Text(title,Modifier.weight(1f),color=Deep,fontSize=AppTypography.Sp21,lineHeight=AppTypography.Sp27,fontWeight=FontWeight.Bold)
+                        IconButton(onClick=onDismiss,enabled=dismissEnabled,modifier=Modifier.size(AppDimensions.Dp48)) {
+                            Text("×",color=Muted,fontSize=AppTypography.Sp22)
                         }
                     }
-                    if(!short)HorizontalDivider(color=Color(0xFFE1EBE4))
+                    if(!short)HorizontalDivider(color=AppColors.SwatchFFE1EBE4)
                     Column(Modifier.weight(1f,fill=false).fillMaxWidth().verticalScroll(rememberScrollState()),
-                        verticalArrangement=Arrangement.spacedBy(12.dp)) {
-                        if(short)Text(title,color=Deep,fontSize=15.sp,fontWeight=FontWeight.Bold)
-                        ProvideTextStyle(MaterialTheme.typography.bodySmall.copy(fontSize=12.sp,lineHeight=17.sp)) { content() }
+                        verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp12)) {
+                        if(short)Text(title,color=Deep,fontSize=AppTypography.Sp15,fontWeight=FontWeight.Bold)
+                        ProvideTextStyle(MaterialTheme.typography.bodySmall.copy(fontSize=AppTypography.Sp12,lineHeight=AppTypography.Sp17)) { content() }
                     }
-                    Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min),horizontalArrangement=Arrangement.spacedBy(8.dp)) {
+                    Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min),horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp8)) {
                         MintDialogAction(cancelLabel,onDismiss,Modifier.weight(1f).fillMaxHeight(),primary=false,enabled=dismissEnabled)
                         MintDialogAction(confirmLabel,onConfirm,Modifier.weight(1f).fillMaxHeight(),enabled=confirmEnabled,destructive=destructive)
                     }

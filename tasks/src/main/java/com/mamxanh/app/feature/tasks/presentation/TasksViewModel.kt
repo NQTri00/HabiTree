@@ -1,5 +1,9 @@
 package com.mamxanh.app.feature.tasks.presentation
 
+import com.mamxanh.shared.localization.TextKey
+
+import com.mamxanh.shared.localization.AppText
+
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -104,7 +108,7 @@ class TasksViewModel(private val repository: TaskRepository,private val savedSta
                 val before=repository.snapshot().earnedToday
                 val success=repository.claimDailyBonus()
                 val after=repository.snapshot().earnedToday
-                ActionResult(success,if(success)"Daily Clear +${after-before} xu · Giới hạn ${Balance.DAILY_CAP} xu/ngày" else "Hoàn thành kế hoạch bắt buộc")
+                ActionResult(success,if(success)AppText.text(TextKey.CopyDailyClear0XuGioiHan1XuNgay6fe04e,after-before,Balance.DAILY_CAP) else AppText.text(TextKey.CopyHoanThanhKeHoachBatBuoc5342d8))
             }
         }
     }

@@ -1,5 +1,9 @@
 package com.mamxanh.shared.feature.home.data
 
+import com.mamxanh.shared.localization.TextKey
+
+import com.mamxanh.shared.localization.AppText
+
 import com.mamxanh.shared.data.GameStorage
 import com.mamxanh.shared.feature.home.domain.HomeDashboardRepository
 import com.mamxanh.shared.feature.home.domain.model.HomeDashboard
@@ -20,7 +24,7 @@ class OfflineHomeDashboardRepository(private val game: GameStorage) : HomeDashbo
             seedCount = garden.inventory.filterKeys { id -> com.mamxanh.shared.model.catalog.any{it.id==id} }.values.sum(),
             coins = statistics.coins,
             equippedCan = garden.equippedCan,
-            nextGoal = com.mamxanh.shared.model.catalog.minBy { it.price }.let { if(statistics.coins>=it.price) "Có thể chọn hạt: ${it.name}" else "Còn ${it.price-statistics.coins} xu để chọn ${it.name}" },
+            nextGoal = com.mamxanh.shared.model.catalog.minBy { it.price }.let { if(statistics.coins>=it.price) AppText.text(TextKey.CopyCoTheChonHat0E01474,it.name) else AppText.text(TextKey.CopyCon0XuDeChon1133bcf,it.price-statistics.coins,it.name) },
             dailyRewardDate = if (game.isDailyBonusClaimed()) com.mamxanh.shared.time.currentDateKey() else ""
         )
     }

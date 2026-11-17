@@ -1,5 +1,13 @@
 package com.mamxanh.app.presentation.ui.components
 
+import com.mamxanh.app.presentation.ui.design.AppColors
+import com.mamxanh.app.presentation.ui.design.AppDimensions
+import com.mamxanh.app.presentation.ui.design.AppTypography
+
+import com.mamxanh.shared.localization.TextKey
+
+import com.mamxanh.shared.localization.AppText
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -27,13 +35,13 @@ fun MintBackdrop(modifier: Modifier = Modifier, content: @Composable BoxScope.()
 
 @Composable
 fun MintHeader(title: String, coins: Int, modifier: Modifier = Modifier) {
-    Row(modifier.fillMaxWidth().mintDepth(RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp), MintDepth.bar, 3.dp)
-        .heightIn(min = 56.dp).padding(horizontal = 16.dp, vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-        GardenArtwork(GardenArt.SPROUT, Modifier.size(28.dp))
-        Text(title, Modifier.weight(1f), fontSize = 23.sp, lineHeight = 27.sp, fontWeight = FontWeight.Bold, color = Deep)
-        GardenBotanicalFrame(contentPadding = PaddingValues(horizontal = 10.dp, vertical = 5.dp), cornerSize = 50.dp) {
-            GardenRichText("🪙 ${coins} xu", color = Deep, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+    Row(modifier.fillMaxWidth().mintDepth(RoundedCornerShape(bottomStart = AppDimensions.Dp20, bottomEnd = AppDimensions.Dp20), MintDepth.bar, AppDimensions.Dp3)
+        .heightIn(min = AppDimensions.Dp56).padding(horizontal = AppDimensions.Dp16, vertical = AppDimensions.Dp8),
+        verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(AppDimensions.Dp10)) {
+        GardenArtwork(GardenArt.SPROUT, Modifier.size(AppDimensions.Dp28))
+        Text(title, Modifier.weight(1f), fontSize = AppTypography.Sp23, lineHeight = AppTypography.Sp27, fontWeight = FontWeight.Bold, color = Deep)
+        GardenBotanicalFrame(contentPadding = PaddingValues(horizontal = AppDimensions.Dp10, vertical = AppDimensions.Dp5), cornerSize = AppDimensions.Dp50) {
+            GardenRichText(AppText.text(TextKey.Copy0Xu279a5c,coins), color = Deep, fontSize = AppTypography.Sp14, fontWeight = FontWeight.Bold)
         }
     }
 }
@@ -41,13 +49,13 @@ fun MintHeader(title: String, coins: Int, modifier: Modifier = Modifier) {
 @Composable
 fun MintProgress(value: Float, modifier: Modifier = Modifier) {
     LinearProgressIndicator(progress = { value.coerceIn(0f, 1f) },
-        modifier = modifier.height(5.dp).clip(RoundedCornerShape(50)),
-        color = Color(0xFF315C3C), trackColor = Color(0xFFD8DFCE), drawStopIndicator = {})
+        modifier = modifier.height(AppDimensions.Dp5).clip(RoundedCornerShape(50)),
+        color = AppColors.Green, trackColor = AppColors.SwatchFFD8DFCE, drawStopIndicator = {})
 }
 
 @Composable
 fun MintSegments(labels: List<String>, selected: Int, onSelect: (Int) -> Unit, modifier: Modifier = Modifier) {
-    Row(modifier.fillMaxWidth().height(IntrinsicSize.Min).mintDepth(RoundedCornerShape(50), MintDepth.secondary, 3.dp)) {
+    Row(modifier.fillMaxWidth().height(IntrinsicSize.Min).mintDepth(RoundedCornerShape(50), MintDepth.secondary, AppDimensions.Dp3)) {
         labels.forEachIndexed { index, label ->
             GardenChoiceChip(label, selected == index, { onSelect(index) }, Modifier.weight(1f).fillMaxHeight())
         }

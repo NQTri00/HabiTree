@@ -1,5 +1,14 @@
 package com.mamxanh.app.presentation.ui.components
 
+import com.mamxanh.app.presentation.ui.design.AppColors
+import com.mamxanh.app.presentation.ui.design.AppDimensions
+import com.mamxanh.app.presentation.ui.design.AppOpacity
+import com.mamxanh.app.presentation.ui.design.AppTypography
+
+import com.mamxanh.shared.localization.TextKey
+
+import com.mamxanh.shared.localization.AppText
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -38,26 +47,26 @@ fun GardenTextField(
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     errorMessage: String? = null
 ) {
-    Box(modifier.heightIn(min = 48.dp), contentAlignment = Alignment.Center) {
+    Box(modifier.heightIn(min = AppDimensions.Dp48), contentAlignment = Alignment.Center) {
         Box(Modifier.matchParentSize().background(
-            MintDepth.diagonal(if (errorMessage == null) listOf(Color.White, Color.White)
-                else listOf(Color(0xFFFFE1DB), Color(0xFFFFF5F2))), RoundedCornerShape(14.dp))
-            .border(1.5.dp, if (errorMessage == null) Color(0xFFE4E7DC) else Color(0xFFB73D32), RoundedCornerShape(14.dp)))
+            MintDepth.diagonal(if (errorMessage == null) listOf(AppColors.White, AppColors.White)
+                else listOf(AppColors.SwatchFFFFE1DB, AppColors.SwatchFFFFF5F2)), RoundedCornerShape(AppDimensions.Dp14))
+            .border(AppDimensions.Dp1_5, if (errorMessage == null) AppColors.SwatchFFE4E7DC else AppColors.SwatchFFB73D32, RoundedCornerShape(AppDimensions.Dp14)))
         BasicTextField(value, onValueChange,
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 12.dp).semantics {
+            modifier = Modifier.fillMaxWidth().padding(horizontal = AppDimensions.Dp14, vertical = AppDimensions.Dp12).semantics {
                 contentDescription = description
                 errorMessage?.let { error(it) }
             },
             singleLine = true, keyboardOptions = keyboardOptions,
-            textStyle = MaterialTheme.typography.bodyLarge.copy(color = Deep, fontSize = 14.sp, lineHeight = 20.sp, fontWeight = FontWeight.Normal),
+            textStyle = MaterialTheme.typography.bodyLarge.copy(color = Deep, fontSize = AppTypography.Sp14, lineHeight = AppTypography.Sp20, fontWeight = FontWeight.Normal),
             cursorBrush = SolidColor(Green),
             decorationBox = { inner ->
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Box(Modifier.weight(1f)) {
-                        if (value.isEmpty()) GardenRichText(placeholder, color = Deep.copy(alpha = .55f), fontSize = 12.sp)
+                        if (value.isEmpty()) GardenRichText(placeholder, color = Deep.copy(alpha = AppOpacity.Value_55), fontSize = AppTypography.Sp12)
                         inner()
                     }
-                    if (trailingText != null) GardenRichText(trailingText, color = Deep, fontSize = 12.sp)
+                    if (trailingText != null) GardenRichText(trailingText, color = Deep, fontSize = AppTypography.Sp12)
                 }
             })
     }
@@ -65,33 +74,33 @@ fun GardenTextField(
 
 @Composable
 fun GardenFieldButton(text: String, onClick: () -> Unit, modifier: Modifier = Modifier) {
-    Box(modifier.heightIn(min = 48.dp).clickable(role = Role.Button, onClick = onClick), contentAlignment = Alignment.Center) {
-        Box(Modifier.matchParentSize().mintDepth(RoundedCornerShape(14.dp), MintDepth.secondary, 2.dp))
-        Row(Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 6.dp), verticalAlignment = Alignment.CenterVertically) {
-            GardenRichText(text, Modifier.weight(1f), color = Deep, fontSize = 12.sp, fontWeight = FontWeight.Bold)
-            GardenRichText("▾", color = Deep, fontSize = 16.sp)
+    Box(modifier.heightIn(min = AppDimensions.Dp48).clickable(role = Role.Button, onClick = onClick), contentAlignment = Alignment.Center) {
+        Box(Modifier.matchParentSize().mintDepth(RoundedCornerShape(AppDimensions.Dp14), MintDepth.secondary, AppDimensions.Dp2))
+        Row(Modifier.fillMaxWidth().padding(horizontal = AppDimensions.Dp8, vertical = AppDimensions.Dp6), verticalAlignment = Alignment.CenterVertically) {
+            GardenRichText(text, Modifier.weight(1f), color = Deep, fontSize = AppTypography.Sp12, fontWeight = FontWeight.Bold)
+            GardenRichText("▾", color = Deep, fontSize = AppTypography.Sp16)
         }
     }
 }
 
 @Composable
 fun GardenChoiceChip(text: String, selected: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
-    Box(modifier.heightIn(min = 48.dp).selectable(selected, role = Role.RadioButton, onClick = onClick), contentAlignment = Alignment.Center) {
+    Box(modifier.heightIn(min = AppDimensions.Dp48).selectable(selected, role = Role.RadioButton, onClick = onClick), contentAlignment = Alignment.Center) {
         Box(Modifier.matchParentSize().mintDepth(RoundedCornerShape(50),
-            if (selected) MintDepth.primary else MintDepth.secondary, if (selected) 4.dp else 1.dp))
-        GardenRichText(text, color = if (selected) Color(0xFFFFFFFF) else Deep, fontSize = 11.sp, lineHeight = 14.sp,
-            fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp))
+            if (selected) MintDepth.primary else MintDepth.secondary, if (selected) AppDimensions.Dp4 else AppDimensions.Dp1))
+        GardenRichText(text, color = if (selected) AppColors.SwatchFFFFFFFF else Deep, fontSize = AppTypography.Sp11, lineHeight = AppTypography.Sp14,
+            fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, modifier = Modifier.padding(horizontal = AppDimensions.Dp8, vertical = AppDimensions.Dp6))
     }
 }
 
 @Preview(name = "Reference live text field", widthDp = 240)
 @Composable
-fun GardenTextFieldPreview() { GardenTextField("Đọc 10 trang sách", {}, "Tên việc") }
+fun GardenTextFieldPreview() { GardenTextField(AppText.text(TextKey.CopyDoc10TrangSachA3c873), {}, AppText.text(TextKey.CopyTenViec672c8c)) }
 
 @Preview(name = "Reference dropdown field", widthDp = 200)
 @Composable
-fun GardenFieldButtonPreview() { GardenFieldButton("Học tập", {}) }
+fun GardenFieldButtonPreview() { GardenFieldButton(AppText.canonical(TextKey.CopyHocTapA51516), {}) }
 
 @Preview(name = "Reference selected choice", widthDp = 120)
 @Composable
-fun GardenChoiceChipPreview() { GardenChoiceChip("Hằng ngày", true, {}) }
+fun GardenChoiceChipPreview() { GardenChoiceChip(AppText.text(TextKey.CopyHangNgay545b54), true, {}) }

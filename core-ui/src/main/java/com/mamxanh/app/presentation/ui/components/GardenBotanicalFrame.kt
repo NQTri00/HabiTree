@@ -1,6 +1,12 @@
 @file:JvmName("GardenPanelComponents")
 package com.mamxanh.app.presentation.ui.components
 
+import com.mamxanh.app.presentation.ui.design.AppDimensions
+
+import com.mamxanh.shared.localization.TextKey
+
+import com.mamxanh.shared.localization.AppText
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -18,19 +24,19 @@ enum class GardenPanelSkin { BADGE, PRICE, DIALOG, TASK_DIALOG, PLANTING_DIALOG,
 @Composable
 fun GardenBotanicalFrame(
     modifier: Modifier = Modifier,
-    contentPadding: PaddingValues = PaddingValues(18.dp),
-    cornerSize: Dp = 22.dp,
+    contentPadding: PaddingValues = PaddingValues(AppDimensions.Dp18),
+    cornerSize: Dp = AppDimensions.Dp22,
     skin: GardenPanelSkin = GardenPanelSkin.BADGE,
     content: @Composable BoxScope.() -> Unit
 ) {
     val modal = skin in setOf(GardenPanelSkin.DIALOG, GardenPanelSkin.TASK_DIALOG, GardenPanelSkin.PLANTING_DIALOG)
-    val shape = RoundedCornerShape(if (modal) 28.dp else cornerSize)
+    val shape = RoundedCornerShape(if (modal) AppDimensions.Dp28 else cornerSize)
     val colors = when (skin) {
         GardenPanelSkin.PRICE -> MintDepth.price
         GardenPanelSkin.HINT -> MintDepth.hint
         else -> MintDepth.card
     }
-    Box(modifier.mintDepth(shape, colors, if (modal) 16.dp else 6.dp)) {
+    Box(modifier.mintDepth(shape, colors, if (modal) AppDimensions.Dp16 else AppDimensions.Dp6)) {
         Box(Modifier.padding(contentPadding), content = content)
     }
 }
@@ -39,6 +45,6 @@ fun GardenBotanicalFrame(
 @Composable
 fun GardenBotanicalFramePreview() {
     GardenBotanicalFrame(Modifier.fillMaxSize(), skin = GardenPanelSkin.DIALOG) {
-        androidx.compose.material3.Text("Nhật ký khu vườn")
+        androidx.compose.material3.Text(AppText.text(TextKey.CopyNhatKyKhuVuonFe206c))
     }
 }

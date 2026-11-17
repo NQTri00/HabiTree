@@ -1,5 +1,13 @@
 package com.mamxanh.app.presentation.ui.components
 
+import com.mamxanh.app.presentation.ui.design.AppDimensions
+import com.mamxanh.app.presentation.ui.design.AppOpacity
+import com.mamxanh.app.presentation.ui.design.AppTypography
+
+import com.mamxanh.shared.localization.TextKey
+
+import com.mamxanh.shared.localization.AppText
+
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -35,27 +43,27 @@ fun GardenPageHeader(
     Card(
         modifier = modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = Pale),
-        shape = RoundedCornerShape(24.dp),
-        border = BorderStroke(1.dp, Green.copy(alpha = 0.14f)),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+        shape = RoundedCornerShape(AppDimensions.Dp24),
+        border = BorderStroke(AppDimensions.Dp1, Green.copy(alpha = AppOpacity.Value0_14)),
+        elevation = CardDefaults.cardElevation(defaultElevation = AppDimensions.Dp1)
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth().padding(16.dp),
+            modifier = Modifier.fillMaxWidth().padding(AppDimensions.Dp16),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(14.dp)
+            horizontalArrangement = Arrangement.spacedBy(AppDimensions.Dp14)
         ) {
             Surface(
-                color = androidx.compose.ui.graphics.Color.White.copy(alpha = 0.88f),
-                shape = RoundedCornerShape(18.dp),
-                modifier = Modifier.size(54.dp)
+                color = androidx.compose.ui.graphics.Color.White.copy(alpha = AppOpacity.Value0_88),
+                shape = RoundedCornerShape(AppDimensions.Dp18),
+                modifier = Modifier.size(AppDimensions.Dp54)
             ) {
                 androidx.compose.foundation.layout.Box(contentAlignment = Alignment.Center) {
-                    Text(emoji, fontSize = 27.sp)
+                    Text(emoji, fontSize = AppTypography.Sp27)
                 }
             }
-            Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {
-                Text(title, color = Deep, fontSize = 20.sp, fontWeight = FontWeight.ExtraBold)
-                Text(subtitle, color = Green, fontSize = 13.sp)
+            Column(verticalArrangement = Arrangement.spacedBy(AppDimensions.Dp3)) {
+                Text(title, color = Deep, fontSize = AppTypography.Sp20, fontWeight = FontWeight.ExtraBold)
+                Text(subtitle, color = Green, fontSize = AppTypography.Sp13)
             }
             Spacer(Modifier.weight(1f))
         }
@@ -66,6 +74,6 @@ fun GardenPageHeader(
 @Composable
 fun GardenPageHeaderPreview() {
     MamXanhPreviewTheme {
-        GardenPageHeader("🌱", "Khu vườn của bạn", "Mầm xanh đang lớn lên từng ngày.")
+        GardenPageHeader("🌱", AppText.text(TextKey.CopyKhuVuonCuaBanC08654), AppText.text(TextKey.CopyMamXanhDangLonLenTungNgay6feecd))
     }
 }

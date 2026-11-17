@@ -1,5 +1,14 @@
 package com.mamxanh.app.presentation.ui.components
 
+import com.mamxanh.app.presentation.ui.design.AppColors
+import com.mamxanh.app.presentation.ui.design.AppDimensions
+import com.mamxanh.app.presentation.ui.design.AppOpacity
+import com.mamxanh.app.presentation.ui.design.AppTypography
+
+import com.mamxanh.shared.localization.TextKey
+
+import com.mamxanh.shared.localization.AppText
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -50,28 +59,28 @@ fun GardenArtwork(art: GardenArt, modifier: Modifier = Modifier) {
         GardenArt.PUMP->Icons.Outlined.Air
         GardenArt.SPROUT,GardenArt.NATURAL->Icons.Outlined.Spa
     }
-    Box(modifier,contentAlignment=Alignment.Center){Icon(vector,null,Modifier.fillMaxSize().padding(2.dp),tint=Green)}
+    Box(modifier,contentAlignment=Alignment.Center){Icon(vector,null,Modifier.fillMaxSize().padding(AppDimensions.Dp2),tint=Green)}
 }
 
 @Composable
 fun GardenCareAction(art: GardenArt, label: String, onClick: () -> Unit, modifier: Modifier = Modifier,
     enabled: Boolean = true, completed: Boolean = false) {
-    Column(modifier.alpha(if (enabled || completed) 1f else .5f)
+    Column(modifier.alpha(if (enabled || completed) AppOpacity.Value1 else AppOpacity.Value_5)
         .clickable(enabled = enabled && !completed, role = Role.Button, onClick = onClick),
         horizontalAlignment = Alignment.CenterHorizontally) {
-        GardenArtwork(art, Modifier.fillMaxWidth().height(58.dp))
+        GardenArtwork(art, Modifier.fillMaxWidth().height(AppDimensions.Dp58))
         if (completed) {
-            val shape = RoundedCornerShape(14.dp)
-            Box(Modifier.fillMaxWidth().heightIn(min = 30.dp)
-                .background(Brush.verticalGradient(listOf(Color(0xFF739747), Color(0xFF3E6B2F))), shape)
-                .border(1.5.dp, Color(0xFF8DAB59), shape)
-                .padding(horizontal = 6.dp, vertical = 5.dp), contentAlignment = Alignment.Center) {
-                GardenRichText("✓ $label", color = Color(0xFFFFF5DB), fontSize = 15.sp, lineHeight = 17.sp,
+            val shape = RoundedCornerShape(AppDimensions.Dp14)
+            Box(Modifier.fillMaxWidth().heightIn(min = AppDimensions.Dp30)
+                .background(Brush.verticalGradient(listOf(AppColors.SwatchFF739747, AppColors.SwatchFF3E6B2F)), shape)
+                .border(AppDimensions.Dp1_5, AppColors.SwatchFF8DAB59, shape)
+                .padding(horizontal = AppDimensions.Dp6, vertical = AppDimensions.Dp5), contentAlignment = Alignment.Center) {
+                GardenRichText("✓ $label", color = AppColors.SwatchFFFFF5DB, fontSize = AppTypography.Sp15, lineHeight = AppTypography.Sp17,
                     fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
             }
-        } else GardenBotanicalFrame(Modifier.fillMaxWidth().heightIn(min = 30.dp),
-            contentPadding = PaddingValues(horizontal = 6.dp, vertical = 5.dp), cornerSize = 14.dp) {
-            GardenRichText(label, color = Deep, fontSize = 15.sp, lineHeight = 17.sp, fontWeight = FontWeight.Bold,
+        } else GardenBotanicalFrame(Modifier.fillMaxWidth().heightIn(min = AppDimensions.Dp30),
+            contentPadding = PaddingValues(horizontal = AppDimensions.Dp6, vertical = AppDimensions.Dp5), cornerSize = AppDimensions.Dp14) {
+            GardenRichText(label, color = Deep, fontSize = AppTypography.Sp15, lineHeight = AppTypography.Sp17, fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
         }
     }
@@ -79,23 +88,23 @@ fun GardenCareAction(art: GardenArt, label: String, onClick: () -> Unit, modifie
 
 @Composable
 fun GardenWoodenTray(modifier: Modifier = Modifier, decoration: Boolean = false, content: @Composable ColumnScope.() -> Unit) {
-    val shape = RoundedCornerShape(if (decoration) 24.dp else 28.dp)
-    Box(modifier.background(Brush.verticalGradient(listOf(Color(0xFFC78F50),Color(0xFFB87A3F),Color(0xFFD6A365))),shape)
-        .border(3.dp,Color(0xFFDDB17A),shape)) {
-        Column(Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 10.dp), content = content)
+    val shape = RoundedCornerShape(if (decoration) AppDimensions.Dp24 else AppDimensions.Dp28)
+    Box(modifier.background(Brush.verticalGradient(listOf(AppColors.SwatchFFC78F50,AppColors.SwatchFFB87A3F,AppColors.SwatchFFD6A365)),shape)
+        .border(AppDimensions.Dp3,AppColors.SwatchFFDDB17A,shape)) {
+        Column(Modifier.fillMaxWidth().padding(horizontal = AppDimensions.Dp12, vertical = AppDimensions.Dp10), content = content)
     }
 }
 
 @Preview(name = "Simple care shelf", widthDp = 340)
 @Composable
-fun GardenCareActionPreview() { GardenWoodenTray { Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-    GardenCareAction(GardenArt.WATERING_CAN, "Tưới", {}, Modifier.weight(1f))
-    GardenCareAction(GardenArt.FERTILIZER, "Bón", {}, Modifier.weight(1f))
-    GardenCareAction(GardenArt.PUMP, "Bơm", {}, Modifier.weight(1f))
+fun GardenCareActionPreview() { GardenWoodenTray { Row(horizontalArrangement = Arrangement.spacedBy(AppDimensions.Dp6)) {
+    GardenCareAction(GardenArt.WATERING_CAN, AppText.text(TextKey.CopyTuoi617613), {}, Modifier.weight(1f))
+    GardenCareAction(GardenArt.FERTILIZER, AppText.text(TextKey.CopyBon4fd741), {}, Modifier.weight(1f))
+    GardenCareAction(GardenArt.PUMP, AppText.text(TextKey.CopyBomCfb1a6), {}, Modifier.weight(1f))
 } } }
 
 @Preview(name = "Simple navigation icons", widthDp = 360, heightDp = 80)
 @Composable
 fun GardenArtworkPreview() { Row { listOf(GardenArt.SPROUT,GardenArt.CHECKLIST,GardenArt.TREE,GardenArt.SHOP,GardenArt.JOURNAL).forEach {
-    GardenArtwork(it,Modifier.weight(1f).height(70.dp))
+    GardenArtwork(it,Modifier.weight(1f).height(AppDimensions.Dp70))
 } } }

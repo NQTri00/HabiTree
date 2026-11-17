@@ -1,5 +1,9 @@
 package com.mamxanh.app.presentation.ui.components
 
+import com.mamxanh.shared.localization.TextKey
+
+import com.mamxanh.shared.localization.AppText
+
 import androidx.compose.foundation.text.InlineTextContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.text.appendInlineContent
@@ -70,4 +74,4 @@ fun GardenRichText(
 
 @Preview(name = "Live text with source icons")
 @Composable
-fun GardenRichTextPreview() { GardenRichText("💧 500 ml  ·  🪙 120 xu") }
+fun GardenRichTextPreview() { GardenRichText(AppText.text(TextKey.Copy500Ml120XuCf988e)) }

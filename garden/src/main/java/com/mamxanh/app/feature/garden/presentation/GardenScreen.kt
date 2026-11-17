@@ -1,5 +1,14 @@
 package com.mamxanh.app.feature.garden.presentation
 
+import com.mamxanh.app.presentation.ui.design.AppColors
+import com.mamxanh.app.presentation.ui.design.AppDimensions
+import com.mamxanh.app.presentation.ui.design.AppOpacity
+import com.mamxanh.app.presentation.ui.design.AppTypography
+
+import com.mamxanh.shared.localization.TextKey
+
+import com.mamxanh.shared.localization.AppText
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -77,75 +86,75 @@ fun GardenScreen(state: GardenUiState, onIntent: (GardenIntent) -> Unit, modifie
     MintBackdrop(modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
             MintCompactHeader(garden.coins, actions = {
-                IconButton({onOpenInventory(null)}){Icon(androidx.compose.material.icons.Icons.Rounded.Inventory2,"Túi đồ",tint=Green)}
+                IconButton({onOpenInventory(null)}){Icon(androidx.compose.material.icons.Icons.Rounded.Inventory2,AppText.text(TextKey.CopyTuiDo6a8e55),tint=Green)}
             })
-            GardenScreenIntro("Cây trong vườn","GÓC NHỎ CỦA BẠN","${garden.trees.size} cây · ${plots.count{it.isUnlocked}} ô mở",Modifier.padding(horizontal=24.dp,vertical=12.dp))
-            Row(Modifier.fillMaxWidth().padding(horizontal=24.dp,vertical=8.dp),horizontalArrangement=Arrangement.spacedBy(12.dp)) {
-                GardenPaintedButton("Tưới cả vườn",{waterAllKey=java.util.UUID.randomUUID().toString()},Modifier.weight(1f),enabled=garden.waterAll.eligible>0&&!state.isLoading)
-                GardenPaintedButton("Góc vườn",{onLiving("STUDIO","")},Modifier.weight(1f),primary=false)
+            GardenScreenIntro(AppText.text(TextKey.CopyCayTrongVuon6565bb),AppText.text(TextKey.CopyGocNhoCuaBanBa1417),AppText.text(TextKey.Copy0Cay1OMo528d81,garden.trees.size,plots.count{it.isUnlocked}),Modifier.padding(horizontal=AppDimensions.Dp24,vertical=AppDimensions.Dp12))
+            Row(Modifier.fillMaxWidth().padding(horizontal=AppDimensions.Dp24,vertical=AppDimensions.Dp8),horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp12)) {
+                GardenPaintedButton(AppText.text(TextKey.CopyTuoiCaVuon20a14a),{waterAllKey=java.util.UUID.randomUUID().toString()},Modifier.weight(1f),enabled=garden.waterAll.eligible>0&&!state.isLoading)
+                GardenPaintedButton(AppText.text(TextKey.CopyGocVuonF4c049),{onLiving("STUDIO","")},Modifier.weight(1f),primary=false)
             }
-            Column(Modifier.fillMaxWidth().padding(horizontal = 24.dp),
-                verticalArrangement = Arrangement.spacedBy(2.dp)) {
+            Column(Modifier.fillMaxWidth().padding(horizontal = AppDimensions.Dp24),
+                verticalArrangement = Arrangement.spacedBy(AppDimensions.Dp2)) {
                 Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
-                    horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                    listOf("Tất cả","Cần tưới","Đang lớn","Trưởng thành","Khô héo").forEachIndexed { index,label ->
+                    horizontalArrangement = Arrangement.spacedBy(AppDimensions.Dp4)) {
+                    listOf(AppText.text(TextKey.CopyTatCa49c73a),AppText.text(TextKey.CopyCanTuoiA0957f),AppText.text(TextKey.CopyDangLon40daab),AppText.text(TextKey.CopyTruongThanh8c14d7),AppText.text(TextKey.CopyKhoHeoBf546a)).forEachIndexed { index,label ->
                         FilterChip(selected = filter == index, onClick = {filter=index},
-                            label = {Text(label,fontSize=11.sp,lineHeight=14.sp)},
-                            shape=RoundedCornerShape(14.dp),
-                            colors=FilterChipDefaults.filterChipColors(selectedContainerColor=Green,selectedLabelColor=Color.White,labelColor=Deep))
+                            label = {Text(label,fontSize=AppTypography.Sp11,lineHeight=AppTypography.Sp14)},
+                            shape=RoundedCornerShape(AppDimensions.Dp14),
+                            colors=FilterChipDefaults.filterChipColors(selectedContainerColor=Green,selectedLabelColor=AppColors.White,labelColor=Deep))
                     }
                 }
             }
             LazyVerticalGrid(columns=GridCells.Fixed(2),modifier=Modifier.weight(1f).mintScrollEdges(listState.canScrollBackward,listState.canScrollForward),
-                state=listState,contentPadding=PaddingValues(horizontal=24.dp,vertical=16.dp),
-                horizontalArrangement=Arrangement.spacedBy(14.dp),verticalArrangement=Arrangement.spacedBy(14.dp)) {
-                if(visiblePlots.isEmpty()) item { Text("Chưa có cây phù hợp.",color=Muted) }
+                state=listState,contentPadding=PaddingValues(horizontal=AppDimensions.Dp24,vertical=AppDimensions.Dp16),
+                horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp14),verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp14)) {
+                if(visiblePlots.isEmpty()) item { Text(AppText.text(TextKey.CopyChuaCoCayPhuHop75e67d),color=Muted) }
                 items(visiblePlots, key = { it.id }) { plot ->
                     val tree = garden.trees.firstOrNull { it.id == plot.treeId }
                     GardenBotanicalFrame(Modifier.fillMaxWidth().clickable(enabled=!state.isLoading){
                         if(tree!=null)onIntent(GardenIntent.OpenTree(tree.id)) else if(plot.isUnlocked)onOpenInventory(plot.id) else unlockingPlotId=plot.id
-                    },contentPadding=PaddingValues(12.dp),cornerSize=20.dp) {
-                        Column(Modifier.fillMaxWidth(),verticalArrangement=Arrangement.spacedBy(9.dp)) {
-                            Text(plot.id.toString().padStart(2,'0'),color=Muted,fontSize=10.sp)
-                            Box(Modifier.fillMaxWidth().height(108.dp).background(Pale,RoundedCornerShape(14.dp)),contentAlignment=Alignment.Center) {
+                    },contentPadding=PaddingValues(AppDimensions.Dp12),cornerSize=AppDimensions.Dp20) {
+                        Column(Modifier.fillMaxWidth(),verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp9)) {
+                            Text(plot.id.toString().padStart(2,'0'),color=Muted,fontSize=AppTypography.Sp10)
+                            Box(Modifier.fillMaxWidth().height(AppDimensions.Dp108).background(Pale,RoundedCornerShape(AppDimensions.Dp14)),contentAlignment=Alignment.Center) {
                                 if(tree!=null)GardenPlantPortrait(tree.speciesId,tree.decoration,Modifier.fillMaxSize(),growth=tree.growth,withered=!tree.status.alive)
-                                else Text(if(plot.isUnlocked)"+" else "◇",color=Green,fontSize=30.sp)
+                                else Text(if(plot.isUnlocked)"+" else "◇",color=Green,fontSize=AppTypography.Sp30)
                             }
-                            Text(tree?.name?:if(plot.isUnlocked)"Gieo cây" else "Chưa mở",color=Deep,fontSize=13.sp,lineHeight=18.sp,fontWeight=FontWeight.SemiBold)
+                            Text(tree?.name?:if(plot.isUnlocked)AppText.text(TextKey.CopyGieoCay31adde) else AppText.text(TextKey.CopyChuaMoB744b3),color=Deep,fontSize=AppTypography.Sp13,lineHeight=AppTypography.Sp18,fontWeight=FontWeight.SemiBold)
                             if(tree!=null){
                                 MintProgress(tree.status.stageProgress,Modifier.fillMaxWidth())
-                                Text("${tree.status.percentage}% · ${tree.status.stateLabel}",color=Muted,fontSize=10.sp,lineHeight=14.sp)
-                                Text(tree.status.waterLabel,color=Muted,fontSize=11.sp)
-                                if(tree.status.fertilizerLabel.isNotBlank())Text(tree.status.fertilizerLabel,color=Green,fontSize=10.sp)
-                            }else Text(if(plot.isUnlocked)"Một khởi đầu mới" else "${com.mamxanh.shared.model.Balance.plot(plots.count{it.isUnlocked})} xu",color=Muted,fontSize=11.sp,lineHeight=16.sp)
+                                Text("${tree.status.percentage}% · ${tree.status.stateLabel}",color=Muted,fontSize=AppTypography.Sp10,lineHeight=AppTypography.Sp14)
+                                Text(tree.status.waterLabel,color=Muted,fontSize=AppTypography.Sp11)
+                                if(tree.status.fertilizerLabel.isNotBlank())Text(tree.status.fertilizerLabel,color=Green,fontSize=AppTypography.Sp10)
+                            }else Text(if(plot.isUnlocked)AppText.text(TextKey.CopyMotKhoiDauMoi280995) else AppText.text(TextKey.Copy0Xu251e68,com.mamxanh.shared.model.Balance.plot(plots.count{it.isUnlocked})),color=Muted,fontSize=AppTypography.Sp11,lineHeight=AppTypography.Sp16)
                         }
                     }
                 }
-                item(span={GridItemSpan(maxLineSpan)}){GardenNavigationCard("Bách thảo",{onLiving("ENCYCLOPEDIA","")})}
+                item(span={GridItemSpan(maxLineSpan)}){GardenNavigationCard(AppText.text(TextKey.CopyBachThaoF2ed64),{onLiving("ENCYCLOPEDIA","")})}
             }
         }
     }
     waterAllKey?.let { key ->
-        MintDialog("Tưới cả vườn",{waterAllKey=null},"Tưới cây",
+        MintDialog(AppText.text(TextKey.CopyTuoiCaVuon20a14a),{waterAllKey=null},AppText.text(TextKey.CopyTuoiCay0990f6),
             {onIntent(GardenIntent.WaterAll(key));waterAllKey=null},
             confirmEnabled=!state.isLoading && garden.waterAll.eligible>0) {
-            MintStatusPill("Miễn phí")
-            MintMetricStrip(listOf("Cần tưới" to garden.waterAll.eligible.toString(),
-                "Đã tưới" to garden.waterAll.active.toString(),"Khô héo" to garden.waterAll.dead.toString()))
-            Text("Chỉ tưới cây còn sống đang cần nước. Thời gian tưới không cộng dồn.",color=Muted,fontSize=12.sp,lineHeight=17.sp)
+            MintStatusPill(AppText.text(TextKey.CopyMienPhiDfc4f7))
+            MintMetricStrip(listOf(AppText.text(TextKey.CopyCanTuoiA0957f) to garden.waterAll.eligible.toString(),
+                AppText.text(TextKey.CopyDaTuoiDe2042) to garden.waterAll.active.toString(),AppText.text(TextKey.CopyKhoHeoBf546a) to garden.waterAll.dead.toString()))
+            Text(AppText.text(TextKey.CopyChiTuoiCayConSongDangCanNuocThoiGianTuoiK958a7a),color=Muted,fontSize=AppTypography.Sp12,lineHeight=AppTypography.Sp17)
         }
     }
     unlockingPlotId?.let { id ->
         val price=com.mamxanh.shared.model.Balance.plot(garden.plots.count{it.isUnlocked})
-        MintDialog("Mở ô trồng",{unlockingPlotId=null},"Mở ô",
+        MintDialog(AppText.text(TextKey.CopyMoOTrong11b979),{unlockingPlotId=null},AppText.text(TextKey.CopyMoO6d274c),
             {onIntent(GardenIntent.UnlockPlot(id));unlockingPlotId=null},
             confirmEnabled=garden.coins>=price && !state.isLoading) {
-            Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(12.dp)) {
-                GardenArtwork(GardenArt.SPROUT,Modifier.size(56.dp))
-                Text("Ô ${id.toString().padStart(2,'0')}",color=Deep,fontSize=17.sp,fontWeight=FontWeight.Bold)
+            Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp12)) {
+                GardenArtwork(GardenArt.SPROUT,Modifier.size(AppDimensions.Dp56))
+                Text(AppText.text(TextKey.CopyO03d2411,id.toString().padStart(2,'0')),color=Deep,fontSize=AppTypography.Sp17,fontWeight=FontWeight.Bold)
             }
-            MintMetricStrip(listOf("Giá mở ô" to "$price xu","Ví của bạn" to "${garden.coins} xu"))
-            if(garden.coins<price)Text("Cần thêm ${price-garden.coins} xu.",color=Muted,fontSize=12.sp)
+            MintMetricStrip(listOf(AppText.text(TextKey.CopyGiaMoO708ec3) to AppText.text(TextKey.Copy0Xu251e68,price),AppText.text(TextKey.CopyViCuaBanD87c21) to AppText.text(TextKey.Copy0Xu251e68,garden.coins)))
+            if(garden.coins<price)Text(AppText.text(TextKey.CopyCanThem0XuD7d41b,price-garden.coins),color=Muted,fontSize=AppTypography.Sp12)
         }
     }
     selectedSeed?.let { seed ->
@@ -159,10 +168,10 @@ fun GardenScreen(state: GardenUiState, onIntent: (GardenIntent) -> Unit, modifie
             onPlant = { name ->
                 onIntent(GardenIntent.Plant(seed.id, name, selectedPlotId)); onDismissPlanting()
             })
-        else MintDialog("Chưa có ô trống",onDismissPlanting,"Xem ô khóa",{
+        else MintDialog(AppText.text(TextKey.CopyChuaCoOTrong6abd67),onDismissPlanting,AppText.text(TextKey.CopyXemOKhoa2d0677),{
             onDismissPlanting();unlockingPlotId=plots.firstOrNull{!it.isUnlocked}?.id
         }) {
-            Text("Hạt vẫn ở trong túi. Mở thêm ô trồng để gieo cây.",color=Muted,fontSize=12.sp,lineHeight=17.sp)
+            Text(AppText.text(TextKey.CopyHatVanOTrongTuiMoThemOTrongDeGieoCay54d8b7),color=Muted,fontSize=AppTypography.Sp12,lineHeight=AppTypography.Sp17)
         }
     }
     state.message?.let { message ->
@@ -172,47 +181,47 @@ fun GardenScreen(state: GardenUiState, onIntent: (GardenIntent) -> Unit, modifie
 
 @Composable
 private fun GardenOverviewCard(treeCount: Int, treesNeedingWater: Int, seedCount: Int) {
-    Column(Modifier.fillMaxWidth().padding(top = 4.dp, bottom = 4.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-        GardenWoodSign("Vườn ươm", Modifier.widthIn(max = 285.dp).fillMaxWidth(.85f))
-        GardenBotanicalFrame(contentPadding = PaddingValues(horizontal = 20.dp, vertical = 6.dp), cornerSize = 20.dp) {
-            Text("🌿  $treeCount cây đang lớn  🌿", color = Deep, fontSize = 17.sp, fontWeight = FontWeight.Bold)
+    Column(Modifier.fillMaxWidth().padding(top = AppDimensions.Dp4, bottom = AppDimensions.Dp4), horizontalAlignment = Alignment.CenterHorizontally) {
+        GardenWoodSign(AppText.text(TextKey.CopyVuonUomCd0b43), Modifier.widthIn(max = AppDimensions.Dp285).fillMaxWidth(.85f))
+        GardenBotanicalFrame(contentPadding = PaddingValues(horizontal = AppDimensions.Dp20, vertical = AppDimensions.Dp6), cornerSize = AppDimensions.Dp20) {
+            Text(AppText.text(TextKey.Copy0CayDangLonC1217a,treeCount), color = Deep, fontSize = AppTypography.Sp17, fontWeight = FontWeight.Bold)
         }
-        Row(Modifier.padding(top = 3.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            GardenMetric("💧", "$treesNeedingWater cần tưới")
-            GardenMetric("🌰", "$seedCount hạt")
+        Row(Modifier.padding(top = AppDimensions.Dp3), horizontalArrangement = Arrangement.spacedBy(AppDimensions.Dp8)) {
+            GardenMetric("💧", AppText.text(TextKey.Copy0CanTuoi425a0d,treesNeedingWater))
+            GardenMetric("🌰", AppText.text(TextKey.Copy0HatB54ddd,seedCount))
         }
     }
 }
 
 @Composable
 private fun GardenMetric(emoji: String, label: String, modifier: Modifier = Modifier) {
-    GardenBotanicalFrame(modifier, contentPadding = PaddingValues(horizontal = 14.dp, vertical = 6.dp), cornerSize = 18.dp) {
-        Text("$emoji $label", color = Deep, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+    GardenBotanicalFrame(modifier, contentPadding = PaddingValues(horizontal = AppDimensions.Dp14, vertical = AppDimensions.Dp6), cornerSize = AppDimensions.Dp18) {
+        Text("$emoji $label", color = Deep, fontSize = AppTypography.Sp14, fontWeight = FontWeight.Bold)
     }
 }
 
 /** A planted scene with a live name plaque; no card or flowerpot around the tree. */
 @Composable
 private fun GardenTreeIsland(tree: Tree, onClick: () -> Unit, modifier: Modifier = Modifier) {
-    Column(modifier.clickable(onClickLabel = "Chăm sóc ${tree.name}", onClick = onClick), horizontalAlignment = Alignment.CenterHorizontally) {
-        PaintedGardenPlant(tree.speciesId, Modifier.fillMaxWidth().height(96.dp))
+    Column(modifier.clickable(onClickLabel = AppText.text(TextKey.CopyChamSoc0E5e78b,tree.name), onClick = onClick), horizontalAlignment = Alignment.CenterHorizontally) {
+        PaintedGardenPlant(tree.speciesId, Modifier.fillMaxWidth().height(AppDimensions.Dp96))
         GardenBotanicalFrame(
-            Modifier.fillMaxWidth(.84f).offset(y = (-8).dp),
-            contentPadding = PaddingValues(horizontal = 14.dp, vertical = 7.dp), cornerSize = 25.dp
+            Modifier.fillMaxWidth(.84f).offset(y = AppDimensions.DpMinus8),
+            contentPadding = PaddingValues(horizontal = AppDimensions.Dp14, vertical = AppDimensions.Dp7), cornerSize = AppDimensions.Dp25
         ) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                Text(tree.name, color = Deep, fontSize = 15.sp, lineHeight = 17.sp, fontWeight = FontWeight.Bold, maxLines = 2, overflow = TextOverflow.Ellipsis, textAlign = TextAlign.Center)
+            Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(AppDimensions.Dp2)) {
+                Text(tree.name, color = Deep, fontSize = AppTypography.Sp15, lineHeight = AppTypography.Sp17, fontWeight = FontWeight.Bold, maxLines = 2, overflow = TextOverflow.Ellipsis, textAlign = TextAlign.Center)
                 LinearProgressIndicator(progress = { (tree.growth / 120f).coerceIn(0f, 1f) },
-                    Modifier.fillMaxWidth().height(6.dp).clip(CircleShape), color = Green, trackColor = Color(0xFFD7BD7C), drawStopIndicator = {})
-                Text("${tree.growth.coerceIn(0,120)} / 120", color = Deep, fontSize = 12.sp, lineHeight = 14.sp, fontWeight = FontWeight.Bold)
-                Text(if (tree.wateredToday) "✓ Đã tưới" else "💧 Chờ tưới",
-                    color = if (tree.wateredToday) Green else Color(0xFF1F6481), fontSize = 13.sp, lineHeight = 15.sp, fontWeight = FontWeight.Bold)
+                    Modifier.fillMaxWidth().height(AppDimensions.Dp6).clip(CircleShape), color = Green, trackColor = AppColors.SwatchFFD7BD7C, drawStopIndicator = {})
+                Text("${tree.growth.coerceIn(0,120)} / 120", color = Deep, fontSize = AppTypography.Sp12, lineHeight = AppTypography.Sp14, fontWeight = FontWeight.Bold)
+                Text(if (tree.wateredToday) AppText.text(TextKey.CopyDaTuoiD97f10) else AppText.text(TextKey.CopyChoTuoi79f9ea),
+                    color = if (tree.wateredToday) Green else AppColors.SwatchFF1F6481, fontSize = AppTypography.Sp13, lineHeight = AppTypography.Sp15, fontWeight = FontWeight.Bold)
             }
         }
     }
 }
 
-private val PlantingDialogBounds = Modifier.widthIn(max = 440.dp).fillMaxWidth(.92f).heightIn(max = 700.dp)
+private val PlantingDialogBounds = Modifier.widthIn(max = AppDimensions.Dp440).fillMaxWidth(.92f).heightIn(max = AppDimensions.Dp700)
 
 @Composable
 private fun PlantingDialog(seed: Species,count: Int,targetPlotId: Int?,availablePlotIds: List<Int>,
@@ -224,25 +233,25 @@ private fun PlantingDialog(seed: Species,count: Int,targetPlotId: Int?,available
     var focused by remember{mutableStateOf(false)}
     val ime=WindowInsets.ime.getBottom(density)
     LaunchedEffect(focused,ime){if(focused && ime>0){withFrameNanos{};requester.bringIntoView()}}
-    MintDialog("Gieo cây",onDismiss,"Gieo hạt",{onPlant(name)},confirmEnabled=count>0) {
-        Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(12.dp)) {
-            PaintedGardenPlant(seed.id,Modifier.size(64.dp))
-            Column(verticalArrangement=Arrangement.spacedBy(4.dp)) {
-                Text(seed.name,color=Deep,fontSize=16.sp,fontWeight=FontWeight.Bold)
-                MintStatusPill("Trong túi: $count hạt")
+    MintDialog(AppText.text(TextKey.CopyGieoCay31adde),onDismiss,AppText.text(TextKey.CopyGieoHat6d82a9),{onPlant(name)},confirmEnabled=count>0) {
+        Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp12)) {
+            PaintedGardenPlant(seed.id,Modifier.size(AppDimensions.Dp64))
+            Column(verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp4)) {
+                Text(seed.name,color=Deep,fontSize=AppTypography.Sp16,fontWeight=FontWeight.Bold)
+                MintStatusPill(AppText.text(TextKey.CopyTrongTui0HatD56e0e,count))
             }
         }
-        GardenTextField(name,{name=it},"Tên cây tùy chọn",Modifier.fillMaxWidth()
-            .bringIntoViewRequester(requester).onFocusChanged{focused=it.hasFocus},placeholder="Mầm bình yên")
-        Text("Bỏ trống để dùng tên loài cây.",color=Muted,fontSize=11.sp)
+        GardenTextField(name,{name=it},AppText.text(TextKey.CopyTenCayTuyChon3f3d38),Modifier.fillMaxWidth()
+            .bringIntoViewRequester(requester).onFocusChanged{focused=it.hasFocus},placeholder=AppText.text(TextKey.CopyMamBinhYenDf7062))
+        Text(AppText.text(TextKey.CopyBoTrongDeDungTenLoaiCayA7e5fc),color=Muted,fontSize=AppTypography.Sp11)
         Box(Modifier.fillMaxWidth()) {
-            GardenFieldButton("Ô trồng · ${targetPlotId?.toString()?.padStart(2,'0') ?: "—"}",{plotMenu=true},Modifier.fillMaxWidth())
+            GardenFieldButton(AppText.text(TextKey.CopyOTrong0174f9e,targetPlotId?.toString()?.padStart(2,'0') ?: "—"),{plotMenu=true},Modifier.fillMaxWidth())
             DropdownMenu(expanded=plotMenu,onDismissRequest={plotMenu=false}) {
-                availablePlotIds.forEach{id->DropdownMenuItem(text={Text("Ô ${id.toString().padStart(2,'0')}")},
+                availablePlotIds.forEach{id->DropdownMenuItem(text={Text(AppText.text(TextKey.CopyO03d2411,id.toString().padStart(2,'0')))},
                     onClick={onSelectPlot(id);plotMenu=false})}
             }
         }
-        Text("Dùng 1 hạt trong túi để bắt đầu trồng.",color=Muted,fontSize=12.sp)
+        Text(AppText.text(TextKey.CopyDung1HatTrongTuiDeBatDauTrongBde1a7),color=Muted,fontSize=AppTypography.Sp12)
     }
 }
 
@@ -254,7 +263,7 @@ private fun PlantingParchment(seed: Species,count:Int,onDismiss:()->Unit,onPlant
 }
 
 private fun sampleGarden() = Garden(
-    trees = listOf(Tree(1,"cherry","Đào hồng",68,"2026-01-01"), Tree(2,"pine","Thông nhỏ",24,"2026-01-02", wateredToday=true), Tree(3,"succulent","Sen đá",12,"2026-01-03")),
+    trees = listOf(Tree(1,"cherry",AppText.text(TextKey.CopyDaoHong76f74f),68,"2026-01-01"), Tree(2,"pine",AppText.text(TextKey.CopyThongNho84a4db),24,"2026-01-02", wateredToday=true), Tree(3,"succulent",AppText.text(TextKey.CopySenDaB2d005),12,"2026-01-03")),
     inventory = mapOf("cherry" to 1, "pine" to 1)
 )
 
@@ -291,7 +300,7 @@ fun PlantingDialogPreview(background: (@Composable () -> Unit)? = null) {
             if (background == null) MintBackdrop(Modifier.fillMaxSize()) {}
             else {
                 background()
-                Box(Modifier.matchParentSize().background(Color.Black.copy(alpha = .32f)))
+                Box(Modifier.matchParentSize().background(AppColors.Black.copy(alpha = AppOpacity.Value_32)))
             }
             Box(PlantingDialogBounds) { PlantingParchment(seedCatalog.first { it.id == "cherry" }, 1, {}, {}) }
         }
@@ -311,7 +320,7 @@ fun PlantingDialogLargeTextPreview() { MamXanhPreviewTheme { Box(Modifier.fillMa
 fun PlantingShortWindowPreview() {
     MamXanhPreviewTheme {
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Box(Modifier.widthIn(max = 440.dp).fillMaxWidth(.92f)) {
+            Box(Modifier.widthIn(max = AppDimensions.Dp440).fillMaxWidth(.92f)) {
                 PlantingParchment(seedCatalog.first { it.id == "cherry" }, 1, {}, {})
             }
         }

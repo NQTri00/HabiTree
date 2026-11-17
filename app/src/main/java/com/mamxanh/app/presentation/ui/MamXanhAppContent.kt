@@ -1,5 +1,9 @@
 package com.mamxanh.app.presentation.ui
 
+import com.mamxanh.shared.localization.TextKey
+
+import com.mamxanh.shared.localization.AppText
+
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
@@ -145,7 +149,7 @@ fun MamXanhAppContent(
                                 sharedTreeModifier = treeSharedModifier,
                                 onWeeklyReview={onEngagement("REVIEW",0)},
                                 onJourney={onEngagement("MORE",0)},
-                                taskTitle = tasks.tasks.firstOrNull { !it.doneToday && !it.finished }?.title ?: "Mọi việc đã xong hôm nay",
+                                taskTitle = tasks.tasks.firstOrNull { !it.doneToday && !it.finished }?.title ?: AppText.text(TextKey.CopyMoiViecDaXongHomNay02350c),
                                 canClaimBonus = tasks.canClaimDailyBonus && !tasks.isDailyBonusClaimed,
                                 onTaskAction = { id,timer ->
                             if(timer) {
@@ -203,12 +207,12 @@ fun MamXanhAppContentHomePreview() {
     MamXanhPreviewTheme {
         MamXanhAppContent(
             state = route,
-            dashboard = HomeUiState(HomeDashboard(listOf(HomeTree(1L, "cherry", "Đào hồng xuân", 68, "FLOWERS", false)), 2, 4, coins = 120, equippedCan = "can_basic"), false),
+            dashboard = HomeUiState(HomeDashboard(listOf(HomeTree(1L, "cherry", AppText.text(TextKey.CopyDaoHongXuanC2fd99), 68, "FLOWERS", false)), 2, 4, coins = 120, equippedCan = "can_basic"), false),
             tasks = TasksUiState(isLoading = false),
             garden = GardenUiState(
                 com.mamxanh.app.feature.garden.domain.model.Garden(
                     trees = listOf(com.mamxanh.app.feature.garden.domain.model.Tree(
-                        1L, "cherry", "Đào hồng xuân", 68, "2026-11-01", "FLOWERS"
+                        1L, "cherry", AppText.text(TextKey.CopyDaoHongXuanC2fd99), 68, "2026-11-01", "FLOWERS"
                     ))
                 ), false
             ),

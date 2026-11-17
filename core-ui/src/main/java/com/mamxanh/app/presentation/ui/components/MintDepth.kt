@@ -1,5 +1,9 @@
 package com.mamxanh.app.presentation.ui.components
 
+import com.mamxanh.app.presentation.ui.design.AppColors
+import com.mamxanh.app.presentation.ui.design.AppDimensions
+import com.mamxanh.app.presentation.ui.design.AppOpacity
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.ui.Modifier
@@ -17,13 +21,13 @@ import androidx.compose.ui.unit.dp
 
 /** One light direction and elevation palette for all live mint surfaces. */
 object MintDepth {
-    val card = listOf(Color.White, Color.White, Color(0xFFFEFFFC))
-    val hint = listOf(Color(0xFFEBF0DF), Color(0xFFEBF0DF))
-    val price = listOf(Color(0xFFFFF9E9), Color(0xFFF3E8C9))
-    val primary = listOf(Color(0xFF315C3C), Color(0xFF315C3C))
-    val secondary = listOf(Color.White, Color.White)
-    val bar = listOf(Color(0xFFF7F8F2), Color(0xFFF7F8F2))
-    val shadow = Color(0xFF23382B)
+    val card = listOf(AppColors.White, AppColors.White, AppColors.SwatchFFFEFFFC)
+    val hint = listOf(AppColors.Pale, AppColors.Pale)
+    val price = listOf(AppColors.SwatchFFFFF9E9, AppColors.RewardSurface)
+    val primary = listOf(AppColors.Green, AppColors.Green)
+    val secondary = listOf(AppColors.White, AppColors.White)
+    val bar = listOf(AppColors.Cream, AppColors.Cream)
+    val shadow = AppColors.Deep
 
     /** A true 45° light direction, independent of a card or button's aspect ratio. */
     fun diagonal(colors: List<Color>): Brush = object : ShaderBrush() {
@@ -40,11 +44,11 @@ object MintDepth {
 fun Modifier.mintDepth(
     shape: Shape,
     colors: List<Color> = MintDepth.card,
-    elevation: Dp = 6.dp
+    elevation: Dp = AppDimensions.Dp6
 ): Modifier = shadow(
     elevation = elevation, shape = shape, clip = false,
-    ambientColor = MintDepth.shadow.copy(alpha = .12f),
-    spotColor = MintDepth.shadow.copy(alpha = .20f)
+    ambientColor = MintDepth.shadow.copy(alpha = AppOpacity.Value_12),
+    spotColor = MintDepth.shadow.copy(alpha = AppOpacity.Value_20)
 ).background(MintDepth.diagonal(colors), shape)
-    .border(1.dp, MintDepth.diagonal(listOf(Color.White.copy(alpha = .96f),
-        Color(0xFFE4E7DC))), shape)
+    .border(AppDimensions.Dp1, MintDepth.diagonal(listOf(AppColors.White.copy(alpha = AppOpacity.Value_96),
+        AppColors.SwatchFFE4E7DC)), shape)

@@ -1,5 +1,13 @@
 package com.mamxanh.app.presentation.ui.components
 
+import com.mamxanh.app.presentation.ui.design.AppDimensions
+import com.mamxanh.app.presentation.ui.design.AppOpacity
+import com.mamxanh.app.presentation.ui.design.AppTypography
+
+import com.mamxanh.shared.localization.TextKey
+
+import com.mamxanh.shared.localization.AppText
+
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
@@ -26,21 +34,21 @@ fun mintTreeHeroHeight(speciesId: String = "", availableWidth: Dp? = null): Dp {
     val windowHeight = with(density) { LocalWindowInfo.current.containerSize.height.toDp() }
     val bars = WindowInsets.systemBars.asPaddingValues()
     val halfWindow = ((windowHeight - bars.calculateTopPadding() - bars.calculateBottomPadding()) * .5f)
-        .coerceAtLeast(240.dp)
+        .coerceAtLeast(AppDimensions.Dp240)
     // The temporary succulent sprite is wide. Trim empty scene space, retaining
     // its full visible width and aspect ratio without another bitmap decode.
     return if(speciesId == "succulent" && availableWidth != null)
-        minOf(halfWindow, (availableWidth - 92.dp).coerceAtLeast(48.dp) * .62f)
+        minOf(halfWindow, (availableWidth - AppDimensions.Dp92).coerceAtLeast(AppDimensions.Dp48) * .62f)
     else halfWindow
 }
 
 @Composable
-fun MintCompactHeader(coins: Int, title: String = "Mầm Xanh", titleSize: androidx.compose.ui.unit.TextUnit = 17.sp,
+fun MintCompactHeader(coins: Int, title: String = AppText.text(TextKey.CopyMamXanh7d3324), titleSize: androidx.compose.ui.unit.TextUnit = AppTypography.Sp17,
     actions: @Composable RowScope.()->Unit = {}) {
     Row(Modifier.fillMaxWidth()
-        .heightIn(min = 56.dp).padding(horizontal = 24.dp, vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        GardenArtwork(GardenArt.SPROUT, Modifier.size(16.dp))
+        .heightIn(min = AppDimensions.Dp56).padding(horizontal = AppDimensions.Dp24, vertical = AppDimensions.Dp8),
+        verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(AppDimensions.Dp8)) {
+        GardenArtwork(GardenArt.SPROUT, Modifier.size(AppDimensions.Dp16))
         Text(title, Modifier.weight(1f), fontSize = titleSize, lineHeight = titleSize * 1.2f, fontWeight = FontWeight.Bold, color = Deep)
         actions()
         MintCoinBadge(coins)
@@ -49,8 +57,8 @@ fun MintCompactHeader(coins: Int, title: String = "Mầm Xanh", titleSize: andro
 
 @Composable
 fun MintCoinBadge(coins: Int) {
-    GardenBotanicalFrame(contentPadding = PaddingValues(horizontal = 6.dp, vertical = 3.dp), cornerSize = 24.dp) {
-        GardenRichText("🪙 $coins xu", color = Deep, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+    GardenBotanicalFrame(contentPadding = PaddingValues(horizontal = AppDimensions.Dp6, vertical = AppDimensions.Dp3), cornerSize = AppDimensions.Dp24) {
+        GardenRichText(AppText.text(TextKey.Copy0Xu279a5c,coins), color = Deep, fontSize = AppTypography.Sp11, fontWeight = FontWeight.Bold)
     }
 }
 
@@ -59,28 +67,28 @@ fun MintCareIcon(
     art: GardenArt, label: String, enabled: Boolean, onClick: () -> Unit,
     checked: Boolean = false, caption: String? = null
 ) {
-    Column(Modifier.width(48.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-        Box(Modifier.size(48.dp)
+    Column(Modifier.width(AppDimensions.Dp48), horizontalAlignment = Alignment.CenterHorizontally) {
+        Box(Modifier.size(AppDimensions.Dp48)
             .clickable(enabled = enabled, role = Role.Button, onClick = onClick)
             .semantics(mergeDescendants = true) { contentDescription = label },
             contentAlignment = Alignment.Center) {
             androidx.compose.material3.Surface(
-                Modifier.size(32.dp).mintDepth(androidx.compose.foundation.shape.CircleShape,
-                    if (checked) MintDepth.hint else MintDepth.card, if (enabled || checked) 4.dp else 1.dp),
+                Modifier.size(AppDimensions.Dp32).mintDepth(androidx.compose.foundation.shape.CircleShape,
+                    if (checked) MintDepth.hint else MintDepth.card, if (enabled || checked) AppDimensions.Dp4 else AppDimensions.Dp1),
                 shape = androidx.compose.foundation.shape.CircleShape,
                 color = androidx.compose.ui.graphics.Color.Transparent,
-                border = androidx.compose.foundation.BorderStroke(1.dp, androidx.compose.ui.graphics.Color.White),
-                shadowElevation = 0.dp
+                border = androidx.compose.foundation.BorderStroke(AppDimensions.Dp1, androidx.compose.ui.graphics.Color.White),
+                shadowElevation = AppDimensions.Dp0
             ) {
                 Box(contentAlignment = Alignment.Center) {
-                    GardenArtwork(art, Modifier.size(20.dp).alpha(if (enabled || checked) 1f else .4f))
+                    GardenArtwork(art, Modifier.size(AppDimensions.Dp20).alpha(if (enabled || checked) AppOpacity.Value1 else AppOpacity.Value_4))
                     if (checked) Text("✓", Modifier.align(Alignment.BottomEnd),
-                        color = Green, fontSize = 10.sp, lineHeight = 12.sp, fontWeight = FontWeight.Bold)
+                        color = Green, fontSize = AppTypography.Sp10, lineHeight = AppTypography.Sp12, fontWeight = FontWeight.Bold)
                 }
             }
         }
-        if (caption != null) Text(caption.replace('\n', ' '), color = Deep, fontSize = 9.sp,
-            lineHeight = 11.sp, textAlign = TextAlign.Center)
+        if (caption != null) Text(caption.replace('\n', ' '), color = Deep, fontSize = AppTypography.Sp9,
+            lineHeight = AppTypography.Sp11, textAlign = TextAlign.Center)
     }
 }
 

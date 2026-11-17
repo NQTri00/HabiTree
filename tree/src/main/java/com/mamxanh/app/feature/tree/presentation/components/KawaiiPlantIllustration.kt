@@ -1,5 +1,8 @@
 package com.mamxanh.app.feature.tree.presentation.components
 
+import com.mamxanh.app.presentation.ui.design.AppColors
+import com.mamxanh.app.presentation.ui.design.AppOpacity
+
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.aspectRatio
@@ -77,14 +80,14 @@ fun KawaiiPlantIllustration(
                 cubicTo(root.x - w * .045f, root.y - h * .10f * shoot,
                     tip.x + w * .03f, tip.y + h * .06f * shoot, tip.x, tip.y)
             }
-            drawPath(stem, Color(0xFF658B30), alpha = 1f - wood, style = Stroke(w * .014f, cap = StrokeCap.Round))
+            drawPath(stem, AppColors.SwatchFF658B30, alpha = AppOpacity.Value1 - wood, style = Stroke(w * .014f, cap = StrokeCap.Round))
             for (side in listOf(-1f, 1f)) {
                 val leaf = Path().apply {
                     moveTo(tip.x, tip.y + h * .025f)
                     cubicTo(tip.x + side * w * .14f * shoot, tip.y + h * .025f,
                         tip.x + side * w * .14f * shoot, tip.y - h * .075f * shoot, tip.x, tip.y + h * .025f)
                 }
-                drawPath(leaf, Color(0xFF91B53B), alpha = 1f - wood)
+                drawPath(leaf, AppColors.SwatchFF91B53B, alpha = AppOpacity.Value1 - wood)
             }
         }
 
@@ -116,8 +119,8 @@ fun KawaiiPlantIllustration(
                         }
                         if (decoration == "LANTERNS") {
                             val anchor = Offset(w * .25f, -h * .27f)
-                            drawLine(Color(0xFF72502B), anchor, anchor + Offset(0f, h * .12f), w * .004f)
-                            drawOval(Color(0xFFFFBD44), anchor + Offset(-w * .035f, h * .10f), Size(w * .07f, h * .075f))
+                            drawLine(AppColors.SwatchFF72502B, anchor, anchor + Offset(0f, h * .12f), w * .004f)
+                            drawOval(AppColors.SwatchFFFFBD44, anchor + Offset(-w * .035f, h * .10f), Size(w * .07f, h * .075f))
                         }
                         if (decoration == "RIBBON") {
                             val y = -h * .10f
@@ -126,7 +129,7 @@ fun KawaiiPlantIllustration(
                                 lineTo(-w * .065f, y - h * .03f); lineTo(-w * .065f, y + h * .03f)
                                 lineTo(w * .065f, y - h * .03f); lineTo(w * .065f, y + h * .03f); close()
                             }
-                            drawPath(bow, Color(0xFFE593A7))
+                            drawPath(bow, AppColors.SwatchFFE593A7)
                         }
                     }
                 }

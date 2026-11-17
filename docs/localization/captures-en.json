@@ -1,0 +1,1014 @@
+{
+  "language": "en",
+  "collectedAt": "2026-11-17T18:13:35.714Z",
+  "captures": [
+    {
+      "name": "achievements-full",
+      "width": 375,
+      "height": 1436,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioAchievementsFullPreviewEnKt\\BioAchievementsFullPreviewEn_0.png",
+      "preview": "BioAchievementsFullPreviewEn"
+    },
+    {
+      "name": "achievements",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioAchievementsPreviewEnKt\\BioAchievementsPreviewEn_0.png",
+      "preview": "BioAchievementsPreviewEn"
+    },
+    {
+      "name": "audit-busy-purchase",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioAuditBusyPurchasePreviewEnKt\\BioAuditBusyPurchasePreviewEn_0.png",
+      "preview": "BioAuditBusyPurchasePreviewEn"
+    },
+    {
+      "name": "audit-focus-45",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioAuditFocus45PreviewEnKt\\BioAuditFocus45PreviewEn_0.png",
+      "preview": "BioAuditFocus45PreviewEn"
+    },
+    {
+      "name": "audit-focus-invalid",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioAuditFocusInvalidPreviewEnKt\\BioAuditFocusInvalidPreviewEn_0.png",
+      "preview": "BioAuditFocusInvalidPreviewEn"
+    },
+    {
+      "name": "audit-focus-task",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioAuditFocusTaskPreviewEnKt\\BioAuditFocusTaskPreviewEn_0.png",
+      "preview": "BioAuditFocusTaskPreviewEn"
+    },
+    {
+      "name": "audit-landscape-focus",
+      "width": 844,
+      "height": 390,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioAuditLandscapeFocusPreviewEnKt\\BioAuditLandscapeFocusPreviewEn_0.png",
+      "preview": "BioAuditLandscapeFocusPreviewEn"
+    },
+    {
+      "name": "audit-landscape-home",
+      "width": 844,
+      "height": 390,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioAuditLandscapeHomePreviewEnKt\\BioAuditLandscapeHomePreviewEn_0.png",
+      "preview": "BioAuditLandscapeHomePreviewEn"
+    },
+    {
+      "name": "audit-large-text-form",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioAuditLargeTextFormPreviewEnKt\\BioAuditLargeTextFormPreviewEn_0.png",
+      "preview": "BioAuditLargeTextFormPreviewEn"
+    },
+    {
+      "name": "audit-large-text-home",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioAuditLargeTextHomePreviewEnKt\\BioAuditLargeTextHomePreviewEn_0.png",
+      "preview": "BioAuditLargeTextHomePreviewEn"
+    },
+    {
+      "name": "audit-large-text-popup",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioAuditLargeTextPopupPreviewEnKt\\BioAuditLargeTextPopupPreviewEn_0.png",
+      "preview": "BioAuditLargeTextPopupPreviewEn"
+    },
+    {
+      "name": "audit-large-text-species-bottom",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioAuditLargeTextSpeciesBottomPreviewEnKt\\BioAuditLargeTextSpeciesBottomPreviewEn_0.png",
+      "preview": "BioAuditLargeTextSpeciesBottomPreviewEn"
+    },
+    {
+      "name": "audit-large-text-species",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioAuditLargeTextSpeciesPreviewEnKt\\BioAuditLargeTextSpeciesPreviewEn_0.png",
+      "preview": "BioAuditLargeTextSpeciesPreviewEn"
+    },
+    {
+      "name": "audit-task-days-error",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioAuditTaskDaysErrorPreviewEnKt\\BioAuditTaskDaysErrorPreviewEn_0.png",
+      "preview": "BioAuditTaskDaysErrorPreviewEn"
+    },
+    {
+      "name": "audit-task-edit",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioAuditTaskEditPreviewEnKt\\BioAuditTaskEditPreviewEn_0.png",
+      "preview": "BioAuditTaskEditPreviewEn"
+    },
+    {
+      "name": "audit-task-minutes-error",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioAuditTaskMinutesErrorPreviewEnKt\\BioAuditTaskMinutesErrorPreviewEn_0.png",
+      "preview": "BioAuditTaskMinutesErrorPreviewEn"
+    },
+    {
+      "name": "audit-task-title-error",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioAuditTaskTitleErrorPreviewEnKt\\BioAuditTaskTitleErrorPreviewEn_0.png",
+      "preview": "BioAuditTaskTitleErrorPreviewEn"
+    },
+    {
+      "name": "audit-templates-selected",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioAuditTemplatesSelectedPreviewEnKt\\BioAuditTemplatesSelectedPreviewEn_0.png",
+      "preview": "BioAuditTemplatesSelectedPreviewEn"
+    },
+    {
+      "name": "audit-tree-missing",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioAuditTreeMissingPreviewEnKt\\BioAuditTreeMissingPreviewEn_0.png",
+      "preview": "BioAuditTreeMissingPreviewEn"
+    },
+    {
+      "name": "data-expanded-full",
+      "width": 375,
+      "height": 1100,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioDataExpandedFullPreviewEnKt\\BioDataExpandedFullPreviewEn_0.png",
+      "preview": "BioDataExpandedFullPreviewEn"
+    },
+    {
+      "name": "data-expanded",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioDataExpandedPreviewEnKt\\BioDataExpandedPreviewEn_0.png",
+      "preview": "BioDataExpandedPreviewEn"
+    },
+    {
+      "name": "data-full",
+      "width": 375,
+      "height": 836,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioDataFullPreviewEnKt\\BioDataFullPreviewEn_0.png",
+      "preview": "BioDataFullPreviewEn"
+    },
+    {
+      "name": "data",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioDataPreviewEnKt\\BioDataPreviewEn_0.png",
+      "preview": "BioDataPreviewEn"
+    },
+    {
+      "name": "encyclopedia-full",
+      "width": 375,
+      "height": 2300,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioEncyclopediaFullPreviewEnKt\\BioEncyclopediaFullPreviewEn_0.png",
+      "preview": "BioEncyclopediaFullPreviewEn"
+    },
+    {
+      "name": "encyclopedia",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioEncyclopediaPreviewEnKt\\BioEncyclopediaPreviewEn_0.png",
+      "preview": "BioEncyclopediaPreviewEn"
+    },
+    {
+      "name": "focus-full",
+      "width": 375,
+      "height": 968,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioFocusFullPreviewEnKt\\BioFocusFullPreviewEn_0.png",
+      "preview": "BioFocusFullPreviewEn"
+    },
+    {
+      "name": "focus",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioFocusPreviewEnKt\\BioFocusPreviewEn_0.png",
+      "preview": "BioFocusPreviewEn"
+    },
+    {
+      "name": "garden-full",
+      "width": 375,
+      "height": 1232,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioGardenFullPreviewEnKt\\BioGardenFullPreviewEn_0.png",
+      "preview": "BioGardenFullPreviewEn"
+    },
+    {
+      "name": "garden",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioGardenPreviewEnKt\\BioGardenPreviewEn_0.png",
+      "preview": "BioGardenPreviewEn"
+    },
+    {
+      "name": "home-320",
+      "width": 320,
+      "height": 640,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioHome320PreviewEnKt\\BioHome320PreviewEn_0.png",
+      "preview": "BioHome320PreviewEn"
+    },
+    {
+      "name": "home-844",
+      "width": 414,
+      "height": 390,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioHome844PreviewEnKt\\BioHome844PreviewEn_0.png",
+      "preview": "BioHome844PreviewEn"
+    },
+    {
+      "name": "home-full",
+      "width": 375,
+      "height": 1143,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioHomeFullPreviewEnKt\\BioHomeFullPreviewEn_0.png",
+      "preview": "BioHomeFullPreviewEn"
+    },
+    {
+      "name": "home-lavender-full",
+      "width": 375,
+      "height": 1143,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioHomeLavenderFullPreviewEnKt\\BioHomeLavenderFullPreviewEn_0.png",
+      "preview": "BioHomeLavenderFullPreviewEn"
+    },
+    {
+      "name": "home-lavender",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioHomeLavenderPreviewEnKt\\BioHomeLavenderPreviewEn_0.png",
+      "preview": "BioHomeLavenderPreviewEn"
+    },
+    {
+      "name": "home-orange-full",
+      "width": 375,
+      "height": 1143,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioHomeOrangeFullPreviewEnKt\\BioHomeOrangeFullPreviewEn_0.png",
+      "preview": "BioHomeOrangeFullPreviewEn"
+    },
+    {
+      "name": "home-orange",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioHomeOrangePreviewEnKt\\BioHomeOrangePreviewEn_0.png",
+      "preview": "BioHomeOrangePreviewEn"
+    },
+    {
+      "name": "home",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioHomePreviewEnKt\\BioHomePreviewEn_0.png",
+      "preview": "BioHomePreviewEn"
+    },
+    {
+      "name": "popup-import-confirm",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioImportConfirmPreviewEnKt\\BioImportConfirmPreviewEn_0.png",
+      "preview": "BioImportConfirmPreviewEn"
+    },
+    {
+      "name": "insights-detail-full",
+      "width": 375,
+      "height": 1250,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioInsightsDetailFullPreviewEnKt\\BioInsightsDetailFullPreviewEn_0.png",
+      "preview": "BioInsightsDetailFullPreviewEn"
+    },
+    {
+      "name": "insights-detail",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioInsightsDetailPreviewEnKt\\BioInsightsDetailPreviewEn_0.png",
+      "preview": "BioInsightsDetailPreviewEn"
+    },
+    {
+      "name": "insights-full",
+      "width": 375,
+      "height": 836,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioInsightsFullPreviewEnKt\\BioInsightsFullPreviewEn_0.png",
+      "preview": "BioInsightsFullPreviewEn"
+    },
+    {
+      "name": "insights-month-full",
+      "width": 375,
+      "height": 1450,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioInsightsMonthFullPreviewEnKt\\BioInsightsMonthFullPreviewEn_0.png",
+      "preview": "BioInsightsMonthFullPreviewEn"
+    },
+    {
+      "name": "insights-month",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioInsightsMonthPreviewEnKt\\BioInsightsMonthPreviewEn_0.png",
+      "preview": "BioInsightsMonthPreviewEn"
+    },
+    {
+      "name": "insights",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioInsightsPreviewEnKt\\BioInsightsPreviewEn_0.png",
+      "preview": "BioInsightsPreviewEn"
+    },
+    {
+      "name": "inventory-accessories-full",
+      "width": 375,
+      "height": 836,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioInventoryAccessoriesFullPreviewEnKt\\BioInventoryAccessoriesFullPreviewEn_0.png",
+      "preview": "BioInventoryAccessoriesFullPreviewEn"
+    },
+    {
+      "name": "inventory-accessories",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioInventoryAccessoriesPreviewEnKt\\BioInventoryAccessoriesPreviewEn_0.png",
+      "preview": "BioInventoryAccessoriesPreviewEn"
+    },
+    {
+      "name": "inventory-care-full",
+      "width": 375,
+      "height": 836,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioInventoryCareFullPreviewEnKt\\BioInventoryCareFullPreviewEn_0.png",
+      "preview": "BioInventoryCareFullPreviewEn"
+    },
+    {
+      "name": "inventory-care",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioInventoryCarePreviewEnKt\\BioInventoryCarePreviewEn_0.png",
+      "preview": "BioInventoryCarePreviewEn"
+    },
+    {
+      "name": "inventory-full",
+      "width": 375,
+      "height": 836,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioInventoryFullPreviewEnKt\\BioInventoryFullPreviewEn_0.png",
+      "preview": "BioInventoryFullPreviewEn"
+    },
+    {
+      "name": "inventory",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioInventoryPreviewEnKt\\BioInventoryPreviewEn_0.png",
+      "preview": "BioInventoryPreviewEn"
+    },
+    {
+      "name": "more-full",
+      "width": 375,
+      "height": 1076,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioMoreFullPreviewEnKt\\BioMoreFullPreviewEn_0.png",
+      "preview": "BioMoreFullPreviewEn"
+    },
+    {
+      "name": "more",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioMorePreviewEnKt\\BioMorePreviewEn_0.png",
+      "preview": "BioMorePreviewEn"
+    },
+    {
+      "name": "onboard-full",
+      "width": 375,
+      "height": 836,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioOnboardFullPreviewEnKt\\BioOnboardFullPreviewEn_0.png",
+      "preview": "BioOnboardFullPreviewEn"
+    },
+    {
+      "name": "onboard",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioOnboardPreviewEnKt\\BioOnboardPreviewEn_0.png",
+      "preview": "BioOnboardPreviewEn"
+    },
+    {
+      "name": "onboard-1-full",
+      "width": 375,
+      "height": 836,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioOnboardStep1FullPreviewEnKt\\BioOnboardStep1FullPreviewEn_0.png",
+      "preview": "BioOnboardStep1FullPreviewEn"
+    },
+    {
+      "name": "onboard-1",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioOnboardStep1PreviewEnKt\\BioOnboardStep1PreviewEn_0.png",
+      "preview": "BioOnboardStep1PreviewEn"
+    },
+    {
+      "name": "onboard-2-full",
+      "width": 375,
+      "height": 836,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioOnboardStep2FullPreviewEnKt\\BioOnboardStep2FullPreviewEn_0.png",
+      "preview": "BioOnboardStep2FullPreviewEn"
+    },
+    {
+      "name": "onboard-2",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioOnboardStep2PreviewEnKt\\BioOnboardStep2PreviewEn_0.png",
+      "preview": "BioOnboardStep2PreviewEn"
+    },
+    {
+      "name": "onboard-3-full",
+      "width": 375,
+      "height": 2200,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioOnboardStep3FullPreviewEnKt\\BioOnboardStep3FullPreviewEn_0.png",
+      "preview": "BioOnboardStep3FullPreviewEn"
+    },
+    {
+      "name": "onboard-3",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioOnboardStep3PreviewEnKt\\BioOnboardStep3PreviewEn_0.png",
+      "preview": "BioOnboardStep3PreviewEn"
+    },
+    {
+      "name": "onboard-4-full",
+      "width": 375,
+      "height": 836,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioOnboardStep4FullPreviewEnKt\\BioOnboardStep4FullPreviewEn_0.png",
+      "preview": "BioOnboardStep4FullPreviewEn"
+    },
+    {
+      "name": "onboard-4",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioOnboardStep4PreviewEnKt\\BioOnboardStep4PreviewEn_0.png",
+      "preview": "BioOnboardStep4PreviewEn"
+    },
+    {
+      "name": "popup-accessory",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioPopupAccessoryPreviewEnKt\\BioPopupAccessoryPreviewEn_0.png",
+      "preview": "BioPopupAccessoryPreviewEn"
+    },
+    {
+      "name": "popup-adjust",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioPopupAdjustPreviewEnKt\\BioPopupAdjustPreviewEn_0.png",
+      "preview": "BioPopupAdjustPreviewEn"
+    },
+    {
+      "name": "popup-archive",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioPopupArchivePreviewEnKt\\BioPopupArchivePreviewEn_0.png",
+      "preview": "BioPopupArchivePreviewEn"
+    },
+    {
+      "name": "popup-clear-final",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioPopupClearFinalPreviewEnKt\\BioPopupClearFinalPreviewEn_0.png",
+      "preview": "BioPopupClearFinalPreviewEn"
+    },
+    {
+      "name": "popup-clear",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioPopupClearPreviewEnKt\\BioPopupClearPreviewEn_0.png",
+      "preview": "BioPopupClearPreviewEn"
+    },
+    {
+      "name": "popup-discard",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioPopupDiscardPreviewEnKt\\BioPopupDiscardPreviewEn_0.png",
+      "preview": "BioPopupDiscardPreviewEn"
+    },
+    {
+      "name": "popup-fertilizer-buy",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioPopupFertilizerBuyPreviewEnKt\\BioPopupFertilizerBuyPreviewEn_0.png",
+      "preview": "BioPopupFertilizerBuyPreviewEn"
+    },
+    {
+      "name": "popup-fertilizer-help",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioPopupFertilizerHelpPreviewEnKt\\BioPopupFertilizerHelpPreviewEn_0.png",
+      "preview": "BioPopupFertilizerHelpPreviewEn"
+    },
+    {
+      "name": "popup-focus-end",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioPopupFocusEndPreviewEnKt\\BioPopupFocusEndPreviewEn_0.png",
+      "preview": "BioPopupFocusEndPreviewEn"
+    },
+    {
+      "name": "popup-license-bottom",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioPopupLicenseBottomPreviewEnKt\\BioPopupLicenseBottomPreviewEn_0.png",
+      "preview": "BioPopupLicenseBottomPreviewEn"
+    },
+    {
+      "name": "popup-license",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioPopupLicensePreviewEnKt\\BioPopupLicensePreviewEn_0.png",
+      "preview": "BioPopupLicensePreviewEn"
+    },
+    {
+      "name": "popup-permission-choice",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioPopupPermissionChoicePreviewEnKt\\BioPopupPermissionChoicePreviewEn_0.png",
+      "preview": "BioPopupPermissionChoicePreviewEn"
+    },
+    {
+      "name": "popup-permission",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioPopupPermissionPreviewEnKt\\BioPopupPermissionPreviewEn_0.png",
+      "preview": "BioPopupPermissionPreviewEn"
+    },
+    {
+      "name": "popup-permission-settings",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioPopupPermissionSettingsPreviewEnKt\\BioPopupPermissionSettingsPreviewEn_0.png",
+      "preview": "BioPopupPermissionSettingsPreviewEn"
+    },
+    {
+      "name": "popup-plant-bottom",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioPopupPlantBottomPreviewEnKt\\BioPopupPlantBottomPreviewEn_0.png",
+      "preview": "BioPopupPlantBottomPreviewEn"
+    },
+    {
+      "name": "popup-plant",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioPopupPlantPreviewEnKt\\BioPopupPlantPreviewEn_0.png",
+      "preview": "BioPopupPlantPreviewEn"
+    },
+    {
+      "name": "popup-recover",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioPopupRecoverPreviewEnKt\\BioPopupRecoverPreviewEn_0.png",
+      "preview": "BioPopupRecoverPreviewEn"
+    },
+    {
+      "name": "popup-remove",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioPopupRemovePreviewEnKt\\BioPopupRemovePreviewEn_0.png",
+      "preview": "BioPopupRemovePreviewEn"
+    },
+    {
+      "name": "popup-seed-320",
+      "width": 320,
+      "height": 640,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioPopupSeed320PreviewEnKt\\BioPopupSeed320PreviewEn_0.png",
+      "preview": "BioPopupSeed320PreviewEn"
+    },
+    {
+      "name": "popup-seed-844",
+      "width": 414,
+      "height": 390,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioPopupSeed844PreviewEnKt\\BioPopupSeed844PreviewEn_0.png",
+      "preview": "BioPopupSeed844PreviewEn"
+    },
+    {
+      "name": "popup-seed-buy-bottom",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioPopupSeedBuyBottomPreviewEnKt\\BioPopupSeedBuyBottomPreviewEn_0.png",
+      "preview": "BioPopupSeedBuyBottomPreviewEn"
+    },
+    {
+      "name": "popup-seed-buy",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioPopupSeedBuyPreviewEnKt\\BioPopupSeedBuyPreviewEn_0.png",
+      "preview": "BioPopupSeedBuyPreviewEn"
+    },
+    {
+      "name": "popup-seed-picker",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioPopupSeedPickerPreviewEnKt\\BioPopupSeedPickerPreviewEn_0.png",
+      "preview": "BioPopupSeedPickerPreviewEn"
+    },
+    {
+      "name": "popup-sell",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioPopupSellPreviewEnKt\\BioPopupSellPreviewEn_0.png",
+      "preview": "BioPopupSellPreviewEn"
+    },
+    {
+      "name": "popup-ticket",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioPopupTicketPreviewEnKt\\BioPopupTicketPreviewEn_0.png",
+      "preview": "BioPopupTicketPreviewEn"
+    },
+    {
+      "name": "popup-tool-buy",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioPopupToolBuyPreviewEnKt\\BioPopupToolBuyPreviewEn_0.png",
+      "preview": "BioPopupToolBuyPreviewEn"
+    },
+    {
+      "name": "popup-tool-owned",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioPopupToolOwnedPreviewEnKt\\BioPopupToolOwnedPreviewEn_0.png",
+      "preview": "BioPopupToolOwnedPreviewEn"
+    },
+    {
+      "name": "popup-tree-picker",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioPopupTreePickerPreviewEnKt\\BioPopupTreePickerPreviewEn_0.png",
+      "preview": "BioPopupTreePickerPreviewEn"
+    },
+    {
+      "name": "popup-unlock",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioPopupUnlockPreviewEnKt\\BioPopupUnlockPreviewEn_0.png",
+      "preview": "BioPopupUnlockPreviewEn"
+    },
+    {
+      "name": "popup-water-all",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioPopupWaterAllPreviewEnKt\\BioPopupWaterAllPreviewEn_0.png",
+      "preview": "BioPopupWaterAllPreviewEn"
+    },
+    {
+      "name": "rest-full",
+      "width": 375,
+      "height": 1260,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioRestFullPreviewEnKt\\BioRestFullPreviewEn_0.png",
+      "preview": "BioRestFullPreviewEn"
+    },
+    {
+      "name": "rest",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioRestPreviewEnKt\\BioRestPreviewEn_0.png",
+      "preview": "BioRestPreviewEn"
+    },
+    {
+      "name": "review-expanded-full",
+      "width": 375,
+      "height": 1201,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioReviewExpandedFullPreviewEnKt\\BioReviewExpandedFullPreviewEn_0.png",
+      "preview": "BioReviewExpandedFullPreviewEn"
+    },
+    {
+      "name": "review-expanded",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioReviewExpandedPreviewEnKt\\BioReviewExpandedPreviewEn_0.png",
+      "preview": "BioReviewExpandedPreviewEn"
+    },
+    {
+      "name": "review-full",
+      "width": 375,
+      "height": 988,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioReviewFullPreviewEnKt\\BioReviewFullPreviewEn_0.png",
+      "preview": "BioReviewFullPreviewEn"
+    },
+    {
+      "name": "review",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioReviewPreviewEnKt\\BioReviewPreviewEn_0.png",
+      "preview": "BioReviewPreviewEn"
+    },
+    {
+      "name": "settings-expanded-full",
+      "width": 375,
+      "height": 1171,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioSettingsExpandedFullPreviewEnKt\\BioSettingsExpandedFullPreviewEn_0.png",
+      "preview": "BioSettingsExpandedFullPreviewEn"
+    },
+    {
+      "name": "settings-expanded",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioSettingsExpandedPreviewEnKt\\BioSettingsExpandedPreviewEn_0.png",
+      "preview": "BioSettingsExpandedPreviewEn"
+    },
+    {
+      "name": "settings-full",
+      "width": 375,
+      "height": 1081,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioSettingsFullPreviewEnKt\\BioSettingsFullPreviewEn_0.png",
+      "preview": "BioSettingsFullPreviewEn"
+    },
+    {
+      "name": "settings",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioSettingsPreviewEnKt\\BioSettingsPreviewEn_0.png",
+      "preview": "BioSettingsPreviewEn"
+    },
+    {
+      "name": "shop-320",
+      "width": 320,
+      "height": 640,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioShop320PreviewEnKt\\BioShop320PreviewEn_0.png",
+      "preview": "BioShop320PreviewEn"
+    },
+    {
+      "name": "shop-844",
+      "width": 414,
+      "height": 390,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioShop844PreviewEnKt\\BioShop844PreviewEn_0.png",
+      "preview": "BioShop844PreviewEn"
+    },
+    {
+      "name": "shop-accessories-full",
+      "width": 375,
+      "height": 873,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioShopAccessoriesFullPreviewEnKt\\BioShopAccessoriesFullPreviewEn_0.png",
+      "preview": "BioShopAccessoriesFullPreviewEn"
+    },
+    {
+      "name": "shop-accessories",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioShopAccessoriesPreviewEnKt\\BioShopAccessoriesPreviewEn_0.png",
+      "preview": "BioShopAccessoriesPreviewEn"
+    },
+    {
+      "name": "shop-care-full",
+      "width": 375,
+      "height": 1349,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioShopCareFullPreviewEnKt\\BioShopCareFullPreviewEn_0.png",
+      "preview": "BioShopCareFullPreviewEn"
+    },
+    {
+      "name": "shop-care",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioShopCarePreviewEnKt\\BioShopCarePreviewEn_0.png",
+      "preview": "BioShopCarePreviewEn"
+    },
+    {
+      "name": "shop-full",
+      "width": 375,
+      "height": 1847,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioShopFullPreviewEnKt\\BioShopFullPreviewEn_0.png",
+      "preview": "BioShopFullPreviewEn"
+    },
+    {
+      "name": "shop",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioShopPreviewEnKt\\BioShopPreviewEn_0.png",
+      "preview": "BioShopPreviewEn"
+    },
+    {
+      "name": "species-expanded-full",
+      "width": 375,
+      "height": 1449,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioSpeciesExpandedFullPreviewEnKt\\BioSpeciesExpandedFullPreviewEn_0.png",
+      "preview": "BioSpeciesExpandedFullPreviewEn"
+    },
+    {
+      "name": "species-expanded",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioSpeciesExpandedPreviewEnKt\\BioSpeciesExpandedPreviewEn_0.png",
+      "preview": "BioSpeciesExpandedPreviewEn"
+    },
+    {
+      "name": "species-full",
+      "width": 375,
+      "height": 1398,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioSpeciesFullPreviewEnKt\\BioSpeciesFullPreviewEn_0.png",
+      "preview": "BioSpeciesFullPreviewEn"
+    },
+    {
+      "name": "species",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioSpeciesPreviewEnKt\\BioSpeciesPreviewEn_0.png",
+      "preview": "BioSpeciesPreviewEn"
+    },
+    {
+      "name": "stats-full",
+      "width": 375,
+      "height": 1349,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioStatsFullPreviewEnKt\\BioStatsFullPreviewEn_0.png",
+      "preview": "BioStatsFullPreviewEn"
+    },
+    {
+      "name": "stats",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioStatsPreviewEnKt\\BioStatsPreviewEn_0.png",
+      "preview": "BioStatsPreviewEn"
+    },
+    {
+      "name": "task-expanded-full",
+      "width": 375,
+      "height": 1100,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioTaskExpandedFullPreviewEnKt\\BioTaskExpandedFullPreviewEn_0.png",
+      "preview": "BioTaskExpandedFullPreviewEn"
+    },
+    {
+      "name": "task-expanded",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioTaskExpandedPreviewEnKt\\BioTaskExpandedPreviewEn_0.png",
+      "preview": "BioTaskExpandedPreviewEn"
+    },
+    {
+      "name": "task-full",
+      "width": 375,
+      "height": 866,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioTaskFullPreviewEnKt\\BioTaskFullPreviewEn_0.png",
+      "preview": "BioTaskFullPreviewEn"
+    },
+    {
+      "name": "task-new-expanded-full",
+      "width": 375,
+      "height": 1280,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioTaskNewExpandedFullPreviewEnKt\\BioTaskNewExpandedFullPreviewEn_0.png",
+      "preview": "BioTaskNewExpandedFullPreviewEn"
+    },
+    {
+      "name": "task-new-expanded",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioTaskNewExpandedPreviewEnKt\\BioTaskNewExpandedPreviewEn_0.png",
+      "preview": "BioTaskNewExpandedPreviewEn"
+    },
+    {
+      "name": "task-new-full",
+      "width": 375,
+      "height": 908,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioTaskNewFullPreviewEnKt\\BioTaskNewFullPreviewEn_0.png",
+      "preview": "BioTaskNewFullPreviewEn"
+    },
+    {
+      "name": "task-new",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioTaskNewPreviewEnKt\\BioTaskNewPreviewEn_0.png",
+      "preview": "BioTaskNewPreviewEn"
+    },
+    {
+      "name": "task",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioTaskPreviewEnKt\\BioTaskPreviewEn_0.png",
+      "preview": "BioTaskPreviewEn"
+    },
+    {
+      "name": "tasks-320",
+      "width": 320,
+      "height": 640,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioTasks320PreviewEnKt\\BioTasks320PreviewEn_0.png",
+      "preview": "BioTasks320PreviewEn"
+    },
+    {
+      "name": "tasks-844",
+      "width": 414,
+      "height": 390,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioTasks844PreviewEnKt\\BioTasks844PreviewEn_0.png",
+      "preview": "BioTasks844PreviewEn"
+    },
+    {
+      "name": "tasks-archived-full",
+      "width": 375,
+      "height": 876,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioTasksArchivedFullPreviewEnKt\\BioTasksArchivedFullPreviewEn_0.png",
+      "preview": "BioTasksArchivedFullPreviewEn"
+    },
+    {
+      "name": "tasks-archived",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioTasksArchivedPreviewEnKt\\BioTasksArchivedPreviewEn_0.png",
+      "preview": "BioTasksArchivedPreviewEn"
+    },
+    {
+      "name": "tasks-full",
+      "width": 375,
+      "height": 1143,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioTasksFullPreviewEnKt\\BioTasksFullPreviewEn_0.png",
+      "preview": "BioTasksFullPreviewEn"
+    },
+    {
+      "name": "tasks-paused-full",
+      "width": 375,
+      "height": 876,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioTasksPausedFullPreviewEnKt\\BioTasksPausedFullPreviewEn_0.png",
+      "preview": "BioTasksPausedFullPreviewEn"
+    },
+    {
+      "name": "tasks-paused",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioTasksPausedPreviewEnKt\\BioTasksPausedPreviewEn_0.png",
+      "preview": "BioTasksPausedPreviewEn"
+    },
+    {
+      "name": "tasks",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioTasksPreviewEnKt\\BioTasksPreviewEn_0.png",
+      "preview": "BioTasksPreviewEn"
+    },
+    {
+      "name": "templates-full",
+      "width": 375,
+      "height": 1890,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioTemplatesFullPreviewEnKt\\BioTemplatesFullPreviewEn_0.png",
+      "preview": "BioTemplatesFullPreviewEn"
+    },
+    {
+      "name": "templates",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioTemplatesPreviewEnKt\\BioTemplatesPreviewEn_0.png",
+      "preview": "BioTemplatesPreviewEn"
+    },
+    {
+      "name": "timeline-full",
+      "width": 375,
+      "height": 836,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioTimelineFullPreviewEnKt\\BioTimelineFullPreviewEn_0.png",
+      "preview": "BioTimelineFullPreviewEn"
+    },
+    {
+      "name": "timeline",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioTimelinePreviewEnKt\\BioTimelinePreviewEn_0.png",
+      "preview": "BioTimelinePreviewEn"
+    },
+    {
+      "name": "tree-320",
+      "width": 320,
+      "height": 640,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioTree320PreviewEnKt\\BioTree320PreviewEn_0.png",
+      "preview": "BioTree320PreviewEn"
+    },
+    {
+      "name": "tree-844",
+      "width": 414,
+      "height": 390,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioTree844PreviewEnKt\\BioTree844PreviewEn_0.png",
+      "preview": "BioTree844PreviewEn"
+    },
+    {
+      "name": "tree-decor-full",
+      "width": 375,
+      "height": 1389,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioTreeDecorFullPreviewEnKt\\BioTreeDecorFullPreviewEn_0.png",
+      "preview": "BioTreeDecorFullPreviewEn"
+    },
+    {
+      "name": "tree-decor",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioTreeDecorPreviewEnKt\\BioTreeDecorPreviewEn_0.png",
+      "preview": "BioTreeDecorPreviewEn"
+    },
+    {
+      "name": "tree-full",
+      "width": 375,
+      "height": 1231,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioTreeFullPreviewEnKt\\BioTreeFullPreviewEn_0.png",
+      "preview": "BioTreeFullPreviewEn"
+    },
+    {
+      "name": "tree-info-full",
+      "width": 375,
+      "height": 1104,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioTreeInfoFullPreviewEnKt\\BioTreeInfoFullPreviewEn_0.png",
+      "preview": "BioTreeInfoFullPreviewEn"
+    },
+    {
+      "name": "tree-info",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioTreeInfoPreviewEnKt\\BioTreeInfoPreviewEn_0.png",
+      "preview": "BioTreeInfoPreviewEn"
+    },
+    {
+      "name": "tree",
+      "width": 375,
+      "height": 812,
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-011020\\com\\mamxanh\\app\\presentation\\bio\\BioTreePreviewEnKt\\BioTreePreviewEn_0.png",
+      "preview": "BioTreePreviewEn"
+    }
+  ]
+}

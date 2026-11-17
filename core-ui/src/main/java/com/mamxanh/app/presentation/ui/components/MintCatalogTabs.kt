@@ -1,5 +1,12 @@
 package com.mamxanh.app.presentation.ui.components
 
+import com.mamxanh.app.presentation.ui.design.AppDimensions
+import com.mamxanh.app.presentation.ui.design.AppTypography
+
+import com.mamxanh.shared.localization.TextKey
+
+import com.mamxanh.shared.localization.AppText
+
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.selection.selectable
@@ -21,21 +28,21 @@ import com.mamxanh.app.presentation.ui.Green
 /** Shared category tabs for the shop catalog and owned inventory. */
 @Composable
 fun MintCatalogTabs(selectedIndex: Int, onSelect: (Int) -> Unit, modifier: Modifier = Modifier) {
-    Row(modifier.fillMaxWidth().height(IntrinsicSize.Min).background(com.mamxanh.app.presentation.ui.Pale,RoundedCornerShape(15.dp)).padding(4.dp).selectableGroup(),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        listOf(1 to "Hạt giống", 0 to "Chăm sóc")
+    Row(modifier.fillMaxWidth().height(IntrinsicSize.Min).background(com.mamxanh.app.presentation.ui.Pale,RoundedCornerShape(AppDimensions.Dp15)).padding(AppDimensions.Dp4).selectableGroup(),
+        horizontalArrangement = Arrangement.spacedBy(AppDimensions.Dp8)) {
+        listOf(1 to AppText.text(TextKey.CopyHatGiongF02257), 0 to AppText.text(TextKey.CopyChamSoc7b7df6))
             .forEach { (index, label) ->
-                Box(Modifier.weight(1f).heightIn(min = 48.dp)
+                Box(Modifier.weight(1f).heightIn(min = AppDimensions.Dp48)
                     .selectable(selectedIndex == index, role = Role.Tab, onClick = { onSelect(index) }),
                     contentAlignment = Alignment.Center) {
                     Row(Modifier.fillMaxWidth()
-                        .mintDepth(RoundedCornerShape(12.dp), if(selectedIndex == index) MintDepth.card else MintDepth.hint, 3.dp)
-                        .padding(horizontal = 8.dp, vertical = 6.dp),
-                        horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterHorizontally),
+                        .mintDepth(RoundedCornerShape(AppDimensions.Dp12), if(selectedIndex == index) MintDepth.card else MintDepth.hint, AppDimensions.Dp3)
+                        .padding(horizontal = AppDimensions.Dp8, vertical = AppDimensions.Dp6),
+                        horizontalArrangement = Arrangement.spacedBy(AppDimensions.Dp6, Alignment.CenterHorizontally),
                         verticalAlignment = Alignment.CenterVertically) {
 
                         Text(label, color = if(selectedIndex == index) com.mamxanh.app.presentation.ui.Green else com.mamxanh.app.presentation.ui.Muted,
-                            fontWeight = FontWeight.Bold, fontSize = 13.sp, lineHeight = 18.sp)
+                            fontWeight = FontWeight.Bold, fontSize = AppTypography.Sp13, lineHeight = AppTypography.Sp18)
                     }
                 }
             }

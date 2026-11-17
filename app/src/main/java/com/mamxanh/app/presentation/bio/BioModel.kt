@@ -1,5 +1,9 @@
 package com.mamxanh.app.presentation.bio
 
+import com.mamxanh.shared.localization.TextKey
+
+import com.mamxanh.shared.localization.AppText
+
 import android.content.Context
 import org.json.JSONArray
 import org.json.JSONObject
@@ -12,10 +16,10 @@ internal fun JSONObject.o(key:String)=optJSONObject(key)?:JSONObject()
 internal fun JSONObject.a(key:String)=optJSONArray(key)?:JSONArray()
 internal fun JSONArray.objects()=(0 until length()).mapNotNull{optJSONObject(it)}
 internal fun JSONArray.strings()=(0 until length()).map{optString(it)}
-internal fun bioTier(value:String)=when(value.lowercase()){"common"->"Phổ biến";"rare"->"Hiếm";"legendary"->"Huyền thoại";else->value}
+internal fun bioTier(value:String)=when(value.lowercase()){"common"->AppText.text(TextKey.CopyPhoBien961e77);"rare"->AppText.text(TextKey.CopyHiem82557a);"legendary"->AppText.text(TextKey.CopyHuyenThoai538bf1);else->value}
 internal fun bioDisplayDate(value:String):String {
     if(!Regex("\\d{4}-\\d{2}-\\d{2}").matches(value))return value
-    return value.split('-').reversed().joinToString("/")
+    return runCatching { bioDateFormat().format(bioIsoDateFormat().parse(value)!!) }.getOrDefault(value)
 }
 internal fun json(vararg pairs:Pair<String,Any?>)=JSONObject().apply{pairs.forEach{(k,v)->put(k,v)}}
 
@@ -42,11 +46,27 @@ internal data class BioWorld(val data:JSONObject, val loading:Boolean=false, val
     }
     fun record(id:String)=records.firstOrNull{it.s("id")==id}?:JSONObject()
     companion object {
-        fun reference(context:Context)=BioWorld(JSONObject(context.assets.open("bio_reference.json").bufferedReader().use{it.readText()}))
+        fun reference(context:Context):BioWorld {
+            val data=JSONObject(context.assets.open("bio_reference.json").bufferedReader().use{it.readText()})
+            fun owned(items:List<JSONObject>,vararg fields:String){items.forEach{item->fields.forEach{field->if(item.has(field))item.put(field,AppText.builtIn(item.s(field)))}}}
+            val catalog=data.o("catalog")
+            owned(catalog.a("species").objects(),"name","description")
+            owned(catalog.a("cosmetics").objects(),"name","description","footprint")
+            owned(catalog.a("templates").objects(),"title","effort")
+            owned(data.a("products").objects(),"name","description")
+            owned(data.a("records").objects(),"status","firstPlanted","firstMatured")
+            owned(data.a("goals").objects(),"title")
+            owned(data.a("achievements").objects(),"title","criterion")
+            owned(data.a("insights").objects(),"suggestion")
+            owned(listOf(data.o("review")),"consistent","improve")
+            val palettes=data.o("palettes");palettes.keys().forEach{key->owned(listOf(palettes.o(key)),"name")}
+            owned(data.o("state").a("memories").objects(),"title")
+            return BioWorld(data)
+        }
     }
 }
 
-internal val bioRoutes=linkedMapOf("home" to "Hôm nay","tasks" to "Việc","garden" to "Vườn","shop" to "Tiệm","stats" to "Nhật ký","task" to "Chi tiết việc","task-new" to "Thêm / sửa việc","inventory" to "Túi đồ","tree" to "Cây của bạn","focus" to "Tập trung","templates" to "Việc mẫu","review" to "Nhìn lại tuần","rest" to "Lịch nghỉ","insights" to "Nhịp thói quen","achievements" to "Dấu mốc","timeline" to "Kỷ niệm","settings" to "Tùy chọn","data" to "Dữ liệu & ứng dụng","encyclopedia" to "Bách thảo","species" to "Hồ sơ loài","onboard" to "Bắt đầu","more" to "Thêm")
+internal val bioRoutes get()=linkedMapOf("home" to AppText.text(TextKey.CopyHomNayE6747a),"tasks" to AppText.text(TextKey.CopyViec818768),"garden" to AppText.text(TextKey.CopyVuon9e4c10),"shop" to AppText.text(TextKey.CopyTiemF1ee00),"stats" to AppText.text(TextKey.CopyNhatKy1e6c3c),"task" to AppText.text(TextKey.CopyChiTietViecD9965a),"task-new" to AppText.text(TextKey.CopyThemSuaViec90d0ff),"inventory" to AppText.text(TextKey.CopyTuiDo6a8e55),"tree" to AppText.text(TextKey.CopyCayCuaBan64f9d7),"focus" to AppText.text(TextKey.CopyTapTrung964002),"templates" to AppText.text(TextKey.CopyViecMau535dc1),"review" to AppText.text(TextKey.CopyNhinLaiTuanFf3f0c),"rest" to AppText.text(TextKey.CopyLichNghi588c3f),"insights" to AppText.text(TextKey.CopyNhipThoiQuen1b8324),"achievements" to AppText.text(TextKey.CopyDauMocDffd66),"timeline" to AppText.text(TextKey.CopyKyNiemE3e113),"settings" to AppText.text(TextKey.CopyTuyChon598c1b),"data" to AppText.text(TextKey.CopyDuLieuUngDung9843b7),"encyclopedia" to AppText.text(TextKey.CopyBachThaoF2ed64),"species" to AppText.text(TextKey.CopyHoSoLoaiCfff22),"onboard" to AppText.text(TextKey.CopyBatDauB3cacc),"more" to AppText.text(TextKey.RouteMore))
 
 internal data class BioCommand(val action:String,val values:Map<String,String> = emptyMap())
 internal data class BioResult(val success:Boolean,val message:String="",val route:String="",val param:String="")

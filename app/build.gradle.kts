@@ -10,9 +10,7 @@ android {
         applicationId = "com.mamxanh.app"
         minSdk = 24
         targetSdk = 36
-        // Ship Vietnamese consistently until legacy feature copy is fully translated.
-        // English resource translations remain prepared in source, but are not yet a shipping locale.
-        resourceConfigurations += listOf("vi")
+        resourceConfigurations += listOf("vi", "en")
         versionCode = providers.gradleProperty("mamxanh.versionCode").orElse("2").get().toInt().also { require(it>0) }
         versionName = providers.gradleProperty("mamxanh.versionName").orElse("0.2.0").get()
         val apiBaseUrl = providers.gradleProperty("mamxanh.apiBaseUrl").orElse("").get()

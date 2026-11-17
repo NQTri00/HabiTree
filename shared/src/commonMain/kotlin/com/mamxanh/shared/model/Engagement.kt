@@ -1,22 +1,26 @@
 package com.mamxanh.shared.model
 
+import com.mamxanh.shared.localization.TextKey
+
+import com.mamxanh.shared.localization.AppText
+
 data class HabitTemplate(val id:String,val config:TaskConfig,val effort:String)
-val habitTemplates=listOf(
-    HabitTemplate("study25",TaskConfig("Học tập trung 25 phút","HABIT","Học tập",verification="TIMER",minutes=25),"25 phút"),
-    HabitTemplate("review15",TaskConfig("Ôn lại bài cũ","HABIT","Học tập",verification="TIMER",minutes=15),"15 phút"),
-    HabitTemplate("read20",TaskConfig("Đọc sách","HABIT","Học tập",verification="TIMER",minutes=20),"20 phút"),
-    HabitTemplate("words",TaskConfig("Học 10 từ vựng mới","HABIT","Học tập"),"10 từ"),
-    HabitTemplate("evening",TaskConfig("Học buổi tối","HABIT","Học tập",verification="TIMER",minutes=25,startMinute=1080,endMinute=1380),"25 phút"),
-    HabitTemplate("walk20",TaskConfig("Đi bộ nhẹ nhàng","HABIT","Sức khỏe",verification="TIMER",minutes=20),"20 phút"),
-    HabitTemplate("stretch5",TaskConfig("Giãn cơ","HABIT","Sức khỏe",verification="TIMER",minutes=5),"5 phút"),
-    HabitTemplate("water",TaskConfig("Uống đủ nước","HABIT","Sức khỏe"),"Trong ngày"),
-    HabitTemplate("fruit",TaskConfig("Ăn thêm rau hoặc trái cây","HABIT","Sức khỏe"),"Một phần"),
-    HabitTemplate("brush-am",TaskConfig("Đánh răng buổi sáng","HABIT","Nếp sống",startMinute=360,endMinute=540),"06:00–09:00"),
-    HabitTemplate("brush-pm",TaskConfig("Đánh răng buổi tối","HABIT","Nếp sống",startMinute=1080,endMinute=1380),"18:00–23:00"),
-    HabitTemplate("bed",TaskConfig("Dọn giường, gấp chăn","HABIT","Việc nhà"),"3 phút"),
-    HabitTemplate("dishes",TaskConfig("Rửa chén sau bữa ăn","HABIT","Việc nhà"),"10 phút"),
-    HabitTemplate("room",TaskConfig("Dọn phòng cuối tuần","HABIT","Việc nhà",frequency="WEEKENDS"),"20 phút"),
-    HabitTemplate("prepare",TaskConfig("Chuẩn bị cặp sách cho ngày mai","HABIT","Học tập"),"5 phút")
+val habitTemplates get()=listOf(
+    HabitTemplate("study25",TaskConfig(AppText.text(TextKey.CopyHocTapTrung25Phut9c7edf),"HABIT",AppText.canonical(TextKey.CopyHocTapA51516),verification="TIMER",minutes=25),AppText.text(TextKey.Copy25Phut9786ed)),
+    HabitTemplate("review15",TaskConfig(AppText.text(TextKey.CopyOnLaiBaiCuF7dc50),"HABIT",AppText.canonical(TextKey.CopyHocTapA51516),verification="TIMER",minutes=15),AppText.text(TextKey.Copy15Phut43786c)),
+    HabitTemplate("read20",TaskConfig(AppText.text(TextKey.CopyDocSach4bc171),"HABIT",AppText.canonical(TextKey.CopyHocTapA51516),verification="TIMER",minutes=20),AppText.text(TextKey.Copy20PhutFb6d0d)),
+    HabitTemplate("words",TaskConfig(AppText.text(TextKey.CopyHoc10TuVungMoi37981e),"HABIT",AppText.canonical(TextKey.CopyHocTapA51516)),AppText.text(TextKey.Copy10Tu8bca08)),
+    HabitTemplate("evening",TaskConfig(AppText.text(TextKey.CopyHocBuoiToi33d892),"HABIT",AppText.canonical(TextKey.CopyHocTapA51516),verification="TIMER",minutes=25,startMinute=1080,endMinute=1380),AppText.text(TextKey.Copy25Phut9786ed)),
+    HabitTemplate("walk20",TaskConfig(AppText.text(TextKey.CopyDiBoNheNhang4c4f1a),"HABIT",AppText.canonical(TextKey.CopySucKhoe071df7),verification="TIMER",minutes=20),AppText.text(TextKey.Copy20PhutFb6d0d)),
+    HabitTemplate("stretch5",TaskConfig(AppText.text(TextKey.CopyGianCoC28690),"HABIT",AppText.canonical(TextKey.CopySucKhoe071df7),verification="TIMER",minutes=5),AppText.text(TextKey.Copy5PhutE98d21)),
+    HabitTemplate("water",TaskConfig(AppText.text(TextKey.CopyUongDuNuoc081b30),"HABIT",AppText.canonical(TextKey.CopySucKhoe071df7)),AppText.text(TextKey.CopyTrongNgayBf53f8)),
+    HabitTemplate("fruit",TaskConfig(AppText.text(TextKey.CopyAnThemRauHoacTraiCay4d0f18),"HABIT",AppText.canonical(TextKey.CopySucKhoe071df7)),AppText.text(TextKey.CopyMotPhanC473ce)),
+    HabitTemplate("brush-am",TaskConfig(AppText.text(TextKey.CopyDanhRangBuoiSang731635),"HABIT",AppText.canonical(TextKey.CopyNepSong8d1a98),startMinute=360,endMinute=540),"06:00–09:00"),
+    HabitTemplate("brush-pm",TaskConfig(AppText.text(TextKey.CopyDanhRangBuoiToiCb42b3),"HABIT",AppText.canonical(TextKey.CopyNepSong8d1a98),startMinute=1080,endMinute=1380),"18:00–23:00"),
+    HabitTemplate("bed",TaskConfig(AppText.text(TextKey.CopyDonGiuongGapChan3b6c91),"HABIT",AppText.canonical(TextKey.CopyViecNha126ef3)),AppText.text(TextKey.Copy3Phut36d5bc)),
+    HabitTemplate("dishes",TaskConfig(AppText.text(TextKey.CopyRuaChenSauBuaAnF2df04),"HABIT",AppText.canonical(TextKey.CopyViecNha126ef3)),AppText.text(TextKey.Copy10PhutEd33fe)),
+    HabitTemplate("room",TaskConfig(AppText.text(TextKey.CopyDonPhongCuoiTuan6c7624),"HABIT",AppText.canonical(TextKey.CopyViecNha126ef3),frequency="WEEKENDS"),AppText.text(TextKey.Copy20PhutFb6d0d)),
+    HabitTemplate("prepare",TaskConfig(AppText.text(TextKey.CopyChuanBiCapSachChoNgayMaiF64a3c),"HABIT",AppText.canonical(TextKey.CopyHocTapA51516)),AppText.text(TextKey.Copy5PhutE98d21))
 )
 data class FocusSession(val id:String,val taskId:Long,val title:String,val date:String,val targetSeconds:Long,
     val activeSeconds:Long,val state:String,val breakPrompt:Boolean=false) {

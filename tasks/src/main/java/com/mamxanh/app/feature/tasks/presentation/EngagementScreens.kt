@@ -1,5 +1,13 @@
 package com.mamxanh.app.feature.tasks.presentation
 
+import com.mamxanh.app.presentation.ui.design.AppColors
+import com.mamxanh.app.presentation.ui.design.AppDimensions
+import com.mamxanh.app.presentation.ui.design.AppTypography
+
+import com.mamxanh.shared.localization.TextKey
+
+import com.mamxanh.shared.localization.AppText
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -26,36 +34,36 @@ fun EngagementScreen(state:EngagementUiState,onOpen:(String,Long)->Unit,onAct:(E
     onAdjust:(Task)->Unit,onPermission:()->Unit,onEntity:(MemoryEvent)->Unit,onDismissMessage:()->Unit,
     modifier:Modifier=Modifier) {
     MintBackdrop(modifier.fillMaxSize()) {
-        ProvideTextStyle(MaterialTheme.typography.bodySmall.copy(fontSize=15.sp,lineHeight=21.sp)) {
+        ProvideTextStyle(MaterialTheme.typography.bodySmall.copy(fontSize=AppTypography.Sp15,lineHeight=AppTypography.Sp21)) {
         if(state.route=="ONBOARD")OnboardingScreen(state,onAct)
         else Column(Modifier.fillMaxSize()) {
-            Row(Modifier.fillMaxWidth().padding(horizontal=8.dp),verticalAlignment=Alignment.CenterVertically) {
-                IconButton(onClick={onOpen("",0)}){Text("‹",fontSize=24.sp,color=Deep)}
-                Text(when(state.route){"FOCUS"->"Tập trung";"TEMPLATES"->"Việc mẫu";"REVIEW"->"Nhìn lại tuần";
-                    "REST"->"Lịch nghỉ";"ACHIEVEMENTS"->"Dấu mốc";"TIMELINE"->"Kỷ niệm";"SETTINGS"->"Tùy chọn";"INSIGHTS"->"Nhịp thói quen";else->"Hành trình"},
-                    color=Deep,fontSize=15.sp,lineHeight=20.sp,fontWeight=FontWeight.Bold)
+            Row(Modifier.fillMaxWidth().padding(horizontal=AppDimensions.Dp8),verticalAlignment=Alignment.CenterVertically) {
+                IconButton(onClick={onOpen("",0)}){Text("‹",fontSize=AppTypography.Sp24,color=Deep)}
+                Text(when(state.route){"FOCUS"->AppText.text(TextKey.CopyTapTrung964002);"TEMPLATES"->AppText.text(TextKey.CopyViecMau535dc1);"REVIEW"->AppText.text(TextKey.CopyNhinLaiTuanFf3f0c);
+                    "REST"->AppText.text(TextKey.CopyLichNghi588c3f);"ACHIEVEMENTS"->AppText.text(TextKey.CopyDauMocDffd66);"TIMELINE"->AppText.text(TextKey.CopyKyNiemE3e113);"SETTINGS"->AppText.text(TextKey.CopyTuyChon598c1b);"INSIGHTS"->AppText.text(TextKey.CopyNhipThoiQuen1b8324);else->AppText.text(TextKey.CopyHanhTrinh566b59)},
+                    color=Deep,fontSize=AppTypography.Sp15,lineHeight=AppTypography.Sp20,fontWeight=FontWeight.Bold)
             }
             val scroll=key(state.route,state.selectedTask){rememberScrollState()}
             Column(Modifier.weight(1f).fillMaxWidth().mintScrollEdges(scroll.canScrollBackward,scroll.canScrollForward)
-                .verticalScroll(scroll).padding(horizontal=24.dp,vertical=12.dp),
-                verticalArrangement=Arrangement.spacedBy(16.dp)) {
+                .verticalScroll(scroll).padding(horizontal=AppDimensions.Dp24,vertical=AppDimensions.Dp12),
+                verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp16)) {
                 when(state.route) {
                     "FOCUS"->FocusContent(state,onAct,onOpen)
                     "TEMPLATES"->TemplateContent(state,onAct)
-                    "REVIEW"->{ReviewContent(state,onAct);GardenNavigationCard("Lịch nghỉ & bảo vệ",{onOpen("REST",0)},"${state.snapshot.protectionTickets} vé bảo vệ")}
+                    "REVIEW"->{ReviewContent(state,onAct);GardenNavigationCard(AppText.text(TextKey.CopyLichNghiBaoVe8eda57),{onOpen("REST",0)},AppText.text(TextKey.Copy0VeBaoVe8bf912,state.snapshot.protectionTickets))}
                     "REST"->RestContent(state,onAct)
                     "ACHIEVEMENTS"->{
-                        GardenScreenIntro("Từng dấu mốc nhỏ",subtitle="Ghi nhận hành trình · Không thưởng xu")
+                        GardenScreenIntro(AppText.text(TextKey.CopyTungDauMocNhoA0b175),subtitle=AppText.text(TextKey.CopyGhiNhanHanhTrinhKhongThuongXu061899))
                         state.snapshot.achievements.forEach{badge->
-                            GardenBotanicalFrame(Modifier.fillMaxWidth(),contentPadding=PaddingValues(16.dp),cornerSize=20.dp){
-                                Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(14.dp)) {
-                                    Box(Modifier.size(44.dp).background(if(badge.unlockedAt>0)Gold else androidx.compose.ui.graphics.Color(0xFFEEEEEE),androidx.compose.foundation.shape.CircleShape),contentAlignment=Alignment.Center){GardenArtwork(GardenArt.RIBBON,Modifier.size(24.dp))}
-                                    Column(Modifier.weight(1f),verticalArrangement=Arrangement.spacedBy(6.dp)){
-                                        Text(badge.title,color=Deep,fontSize=14.sp,lineHeight=20.sp,fontWeight=FontWeight.SemiBold)
-                                        Text(badge.criterion,color=Muted,fontSize=11.sp,lineHeight=16.sp)
-                                        Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(8.dp)){
+                            GardenBotanicalFrame(Modifier.fillMaxWidth(),contentPadding=PaddingValues(AppDimensions.Dp16),cornerSize=AppDimensions.Dp20){
+                                Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp14)) {
+                                    Box(Modifier.size(AppDimensions.Dp44).background(if(badge.unlockedAt>0)Gold else AppColors.SwatchFFEEEEEE,androidx.compose.foundation.shape.CircleShape),contentAlignment=Alignment.Center){GardenArtwork(GardenArt.RIBBON,Modifier.size(AppDimensions.Dp24))}
+                                    Column(Modifier.weight(1f),verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp6)){
+                                        Text(badge.title,color=Deep,fontSize=AppTypography.Sp14,lineHeight=AppTypography.Sp20,fontWeight=FontWeight.SemiBold)
+                                        Text(badge.criterion,color=Muted,fontSize=AppTypography.Sp11,lineHeight=AppTypography.Sp16)
+                                        Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp8)){
                                             MintProgress(badge.progress.toFloat()/badge.target,Modifier.weight(1f))
-                                            Text("${badge.progress.coerceAtMost(badge.target)}/${badge.target}"+if(badge.unlockedAt>0)" · Đã ghi nhận" else "",color=Green,fontSize=10.sp)
+                                            Text("${badge.progress.coerceAtMost(badge.target)}/${badge.target}"+if(badge.unlockedAt>0)AppText.text(TextKey.CopyDaGhiNhanEbd27e) else "",color=Green,fontSize=AppTypography.Sp10)
                                         }
                                     }
                                 }
@@ -63,25 +71,25 @@ fun EngagementScreen(state:EngagementUiState,onOpen:(String,Long)->Unit,onAct:(E
                         }
                     }
                     "TIMELINE"->{
-                        GardenScreenIntro("Điều mình muốn nhớ")
-                        if(state.snapshot.memories.isEmpty())Text("Kỷ niệm sẽ xuất hiện từ những việc bạn thực sự đã làm.",color=Muted,fontSize=12.sp)
+                        GardenScreenIntro(AppText.text(TextKey.CopyDieuMinhMuonNho665bc8))
+                        if(state.snapshot.memories.isEmpty())Text(AppText.text(TextKey.CopyKyNiemSeXuatHienTuNhungViecBanThucSuDaLaDf826a),color=Muted,fontSize=AppTypography.Sp12)
                         state.snapshot.memories.forEach{event->
                             var note by rememberSaveable(event.id,event.note){mutableStateOf(event.note)}
-                            Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min),horizontalArrangement=Arrangement.spacedBy(14.dp)){
-                                Column(Modifier.width(10.dp).fillMaxHeight().padding(top=4.dp),horizontalAlignment=Alignment.CenterHorizontally){
-                                    Box(Modifier.size(8.dp).background(Green,androidx.compose.foundation.shape.CircleShape))
-                                    Spacer(Modifier.height(5.dp))
-                                    Box(Modifier.width(1.dp).weight(1f).background(androidx.compose.ui.graphics.Color(0xFFD8DFD0)))
+                            Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min),horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp14)){
+                                Column(Modifier.width(AppDimensions.Dp10).fillMaxHeight().padding(top=AppDimensions.Dp4),horizontalAlignment=Alignment.CenterHorizontally){
+                                    Box(Modifier.size(AppDimensions.Dp8).background(Green,androidx.compose.foundation.shape.CircleShape))
+                                    Spacer(Modifier.height(AppDimensions.Dp5))
+                                    Box(Modifier.width(AppDimensions.Dp1).weight(1f).background(AppColors.SwatchFFD8DFD0))
                                 }
-                                Column(Modifier.weight(1f),verticalArrangement=Arrangement.spacedBy(10.dp)){
-                                    if(event.at>0)Text(java.text.SimpleDateFormat("dd/MM · HH:mm",java.util.Locale.getDefault()).format(java.util.Date(event.at)),color=Muted,fontSize=11.sp)
-                                    Text(event.title,color=Deep,fontSize=14.sp,lineHeight=20.sp,fontWeight=FontWeight.SemiBold)
-                                    if(event.entity>0)TextButton(onClick={onEntity(event)}){Text("Xem liên quan ›",fontSize=13.sp)}
-                                    OutlinedTextField(note,{note=it.take(1000)},Modifier.fillMaxWidth().semantics{contentDescription="Ghi chú: ${event.title}"},
-                                        placeholder={Text("Một điều muốn nhớ…",fontSize=12.sp)},minLines=3,maxLines=6,
-                                        shape=androidx.compose.foundation.shape.RoundedCornerShape(14.dp),textStyle=MaterialTheme.typography.bodySmall,
+                                Column(Modifier.weight(1f),verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp10)){
+                                    if(event.at>0)Text(java.text.SimpleDateFormat("dd/MM · HH:mm",java.util.Locale.getDefault()).format(java.util.Date(event.at)),color=Muted,fontSize=AppTypography.Sp11)
+                                    Text(event.title,color=Deep,fontSize=AppTypography.Sp14,lineHeight=AppTypography.Sp20,fontWeight=FontWeight.SemiBold)
+                                    if(event.entity>0)TextButton(onClick={onEntity(event)}){Text(AppText.text(TextKey.CopyXemLienQuan127914),fontSize=AppTypography.Sp13)}
+                                    OutlinedTextField(note,{note=it.take(1000)},Modifier.fillMaxWidth().semantics{contentDescription=AppText.text(TextKey.CopyGhiChu0E5b4bc,event.title)},
+                                        placeholder={Text(AppText.text(TextKey.CopyMotDieuMuonNho200cc4),fontSize=AppTypography.Sp12)},minLines=3,maxLines=6,
+                                        shape=androidx.compose.foundation.shape.RoundedCornerShape(AppDimensions.Dp14),textStyle=MaterialTheme.typography.bodySmall,
                                         colors=OutlinedTextFieldDefaults.colors(unfocusedContainerColor=androidx.compose.ui.graphics.Color.White,focusedContainerColor=androidx.compose.ui.graphics.Color.White))
-                                    TextButton(onClick={onAct(EngagementAction.MemoryNote(event.id,note))},enabled=!state.busy){Text("Lưu ghi chú",fontSize=13.sp)}
+                                    TextButton(onClick={onAct(EngagementAction.MemoryNote(event.id,note))},enabled=!state.busy){Text(AppText.text(TextKey.CopyLuuGhiChuE3d8bd),fontSize=AppTypography.Sp13)}
                                 }
                             }
                         }
@@ -89,9 +97,9 @@ fun EngagementScreen(state:EngagementUiState,onOpen:(String,Long)->Unit,onAct:(E
                     "SETTINGS"->SettingsContent(state,onAct,onPermission,onData={onOpen("DATA",0)},onTaskReminders={onOpen("INSIGHTS",0)})
                     "INSIGHTS"->InsightsContent(state,onAct,onAdjust,onOpen)
                     else-> {
-                        GardenScreenIntro("Chăm một chút, mỗi ngày.",subtitle="Một nhịp sống vừa sức, theo cách của bạn.")
-                        listOf("FOCUS" to "Tập trung","TEMPLATES" to "Thêm từ việc mẫu","REVIEW" to "Nhìn lại tuần",
-                            "ACHIEVEMENTS" to "Dấu mốc","TIMELINE" to "Kỷ niệm","INSIGHTS" to "Nhịp từng thói quen","SETTINGS" to "Tùy chọn & nhắc việc").forEach{(route,title)->
+                        GardenScreenIntro(AppText.text(TextKey.CopyChamMotChutMoiNgayE8732c),subtitle=AppText.text(TextKey.CopyMotNhipSongVuaSucTheoCachCuaBan0f4521))
+                        listOf("FOCUS" to AppText.text(TextKey.CopyTapTrung964002),"TEMPLATES" to AppText.text(TextKey.CopyThemTuViecMau4e3260),"REVIEW" to AppText.text(TextKey.CopyNhinLaiTuanFf3f0c),
+                            "ACHIEVEMENTS" to AppText.text(TextKey.CopyDauMocDffd66),"TIMELINE" to AppText.text(TextKey.CopyKyNiemE3e113),"INSIGHTS" to AppText.text(TextKey.CopyNhipTungThoiQuen8481ee),"SETTINGS" to AppText.text(TextKey.CopyTuyChonNhacViecA44d85)).forEach{(route,title)->
                             GardenNavigationCard(title,{onOpen(route,0)},art=when(route){"FOCUS"->GardenArt.LANTERN;"REVIEW"->GardenArt.CALENDAR;"TIMELINE"->GardenArt.JOURNAL;"TEMPLATES"->GardenArt.CHECKLIST;"ACHIEVEMENTS"->GardenArt.RIBBON;else->GardenArt.CATEGORY})
                         }
                     }
@@ -107,32 +115,32 @@ fun EngagementScreen(state:EngagementUiState,onOpen:(String,Long)->Unit,onAct:(E
 internal fun TemplateContent(state:EngagementUiState,onAct:(EngagementAction)->Unit) {
     var selected by rememberSaveable{mutableStateOf(listOf<String>())}
     val key=rememberSaveable{java.util.UUID.randomUUID().toString()}
-    GardenScreenIntro("Chọn việc vừa sức")
-    Text("Thêm một lần, chỉnh sửa bất cứ lúc nào.",
-        color=Muted,fontSize=11.sp,lineHeight=16.sp)
+    GardenScreenIntro(AppText.text(TextKey.CopyChonViecVuaSuc895fff))
+    Text(AppText.text(TextKey.CopyThemMotLanChinhSuaBatCuLucNao55b241),
+        color=Muted,fontSize=AppTypography.Sp11,lineHeight=AppTypography.Sp16)
     habitTemplates.forEach{template->
         val added=template.id in state.snapshot.templates
         TemplateCard(template,template.id in selected,added){
             selected=if(template.id in selected)selected-template.id else selected+template.id
         }
     }
-    GardenPaintedButton("Thêm ${selected.size} việc",{
+    GardenPaintedButton(AppText.text(TextKey.CopyThem0ViecD0390c,selected.size),{
         onAct(EngagementAction.Templates(selected,key))
     },Modifier.fillMaxWidth(),enabled=selected.isNotEmpty() && !state.busy)
 }
 
 @Composable
 private fun TemplateCard(t:HabitTemplate,selected:Boolean,added:Boolean=false,onClick:()->Unit) {
-    GardenBotanicalFrame(Modifier.fillMaxWidth().heightIn(min=48.dp).clickable(enabled=!added,onClick=onClick),
+    GardenBotanicalFrame(Modifier.fillMaxWidth().heightIn(min=AppDimensions.Dp48).clickable(enabled=!added,onClick=onClick),
         skin=if(selected)GardenPanelSkin.HINT else GardenPanelSkin.BADGE) {
-        Row(horizontalArrangement=Arrangement.spacedBy(16.dp),verticalAlignment=Alignment.CenterVertically) {
-            GardenArtwork(if(t.config.verification=="TIMER")GardenArt.LANTERN else GardenArt.SPROUT,Modifier.size(24.dp))
+        Row(horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp16),verticalAlignment=Alignment.CenterVertically) {
+            GardenArtwork(if(t.config.verification=="TIMER")GardenArt.LANTERN else GardenArt.SPROUT,Modifier.size(AppDimensions.Dp24))
             Column(Modifier.weight(1f)) {
-                Text(t.config.title,color=Deep,fontSize=15.sp,lineHeight=21.sp,fontWeight=FontWeight.Bold)
-                Text("${t.config.category} · ${if(t.config.verification=="TIMER")"Bộ đếm" else "Chạm"} · ${t.effort}",
-                    color=Muted,fontSize=12.sp,lineHeight=17.sp)
-                Text("${if(t.config.frequency=="WEEKENDS")"Cuối tuần" else "Mỗi ngày"} · +${t.config.reward} xu",color=Green,fontSize=12.sp,lineHeight=17.sp)
-                if(t.config.startMinute>=0)Text("Khung giờ ${clockLabel(t.config.startMinute)}–${clockLabel(t.config.endMinute)}",color=Muted,fontSize=12.sp,lineHeight=17.sp)
+                Text(t.config.title,color=Deep,fontSize=AppTypography.Sp15,lineHeight=AppTypography.Sp21,fontWeight=FontWeight.Bold)
+                Text("${AppText.category(t.config.category)} · ${if(t.config.verification=="TIMER")AppText.text(TextKey.CopyBoDemC8def0) else AppText.text(TextKey.CopyCham36a8bd)} · ${t.effort}",
+                    color=Muted,fontSize=AppTypography.Sp12,lineHeight=AppTypography.Sp17)
+                Text(AppText.text(TextKey.Copy01Xu8a2ae4,if(t.config.frequency=="WEEKENDS")AppText.text(TextKey.CopyCuoiTuanA0fb27) else AppText.text(TextKey.CopyMoiNgay8270cb),t.config.reward),color=Green,fontSize=AppTypography.Sp12,lineHeight=AppTypography.Sp17)
+                if(t.config.startMinute>=0)Text(AppText.text(TextKey.CopyKhungGio01C4abe6,clockLabel(t.config.startMinute),clockLabel(t.config.endMinute)),color=Muted,fontSize=AppTypography.Sp12,lineHeight=AppTypography.Sp17)
             }
             Checkbox(selected||added,onCheckedChange=null,enabled=!added)
         }
@@ -144,55 +152,55 @@ internal fun FocusContent(state:EngagementUiState,onAct:(EngagementAction)->Unit
     var minutes by rememberSaveable{mutableStateOf("25")}
     var attached by rememberSaveable(state.selectedTask){mutableLongStateOf(state.selectedTask)}
     val current=state.snapshot.focus.firstOrNull{it.state in setOf("RUNNING","PAUSED","BREAK")}
-    GardenScreenIntro("Tập trung","CHỈ MỘT VIỆC THÔI", "Dành một khoảng cho điều quan trọng.")
+    GardenScreenIntro(AppText.text(TextKey.CopyTapTrung964002),AppText.text(TextKey.CopyChiMotViecThoi83ccd7), AppText.text(TextKey.CopyDanhMotKhoangChoDieuQuanTrongDfd9b6))
     if(current!=null) {
         Column(Modifier.fillMaxWidth()) {
-            Column(Modifier.fillMaxWidth(),horizontalAlignment=Alignment.CenterHorizontally,verticalArrangement=Arrangement.spacedBy(16.dp)) {
-                Text(current.title,color=Deep,fontSize=14.sp,lineHeight=18.sp,fontWeight=FontWeight.Bold,textAlign=TextAlign.Center)
-                Box(Modifier.size(240.dp),contentAlignment=Alignment.Center) {
+            Column(Modifier.fillMaxWidth(),horizontalAlignment=Alignment.CenterHorizontally,verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp16)) {
+                Text(current.title,color=Deep,fontSize=AppTypography.Sp14,lineHeight=AppTypography.Sp18,fontWeight=FontWeight.Bold,textAlign=TextAlign.Center)
+                Box(Modifier.size(AppDimensions.Dp240),contentAlignment=Alignment.Center) {
                     CircularProgressIndicator(progress={current.activeSeconds.toFloat()/current.targetSeconds.coerceAtLeast(1)},
-                        modifier=Modifier.fillMaxSize(),color=Green,strokeWidth=9.dp,trackColor=androidx.compose.ui.graphics.Color(0xFFDDEBE1))
-                    Text("${current.remaining/60}:${(current.remaining%60).toString().padStart(2,'0')}",color=Deep,fontSize=46.sp,lineHeight=56.sp,fontWeight=FontWeight.Bold)
+                        modifier=Modifier.fillMaxSize(),color=Green,strokeWidth=AppDimensions.Dp9,trackColor=AppColors.SwatchFFDDEBE1)
+                    Text("${current.remaining/60}:${(current.remaining%60).toString().padStart(2,'0')}",color=Deep,fontSize=AppTypography.Sp46,lineHeight=AppTypography.Sp56,fontWeight=FontWeight.Bold)
                 }
-                Text(if(current.state=="BREAK")"Nghỉ một chút · Không tính thời gian nghỉ" else if(current.state=="RUNNING")"Đang tập trung" else "Đã tạm dừng",
-                    color=Muted,fontSize=11.sp)
-                Row(horizontalArrangement=Arrangement.spacedBy(16.dp)) {
-                    MintDialogAction(if(current.state=="RUNNING")"Tạm dừng" else "Tiếp tục",
+                Text(if(current.state=="BREAK")AppText.text(TextKey.CopyNghiMotChutKhongTinhThoiGianNghiA616c7) else if(current.state=="RUNNING")AppText.text(TextKey.CopyDangTapTrung1c969b) else AppText.text(TextKey.CopyDaTamDungA919ce),
+                    color=Muted,fontSize=AppTypography.Sp11)
+                Row(horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp16)) {
+                    MintDialogAction(if(current.state=="RUNNING")AppText.text(TextKey.CopyTamDung676358) else AppText.text(TextKey.CopyTiepTuc87a7ae),
                         {onAct(EngagementAction.Focus(current.id,if(current.state=="RUNNING")"PAUSE" else "RESUME"))},
                         Modifier.weight(1f),enabled=!state.busy)
-                    MintDialogAction("Kết thúc",{onAct(EngagementAction.Focus(current.id,"END"))},Modifier.weight(1f),primary=false,enabled=!state.busy)
+                    MintDialogAction(AppText.text(TextKey.CopyKetThuc351849),{onAct(EngagementAction.Focus(current.id,"END"))},Modifier.weight(1f),primary=false,enabled=!state.busy)
                 }
-                GardenExpandableSection("Phiên đang lưu"){Text("Rời ứng dụng sẽ tạm dừng. Phần đã làm luôn được lưu.",color=Muted,fontSize=12.sp,lineHeight=17.sp)}
+                GardenExpandableSection(AppText.text(TextKey.CopyPhienDangLuuD6c8c9)){Text(AppText.text(TextKey.CopyRoiUngDungSeTamDungPhanDaLamLuonDuocLuu381f0a),color=Muted,fontSize=AppTypography.Sp12,lineHeight=AppTypography.Sp17)}
             }
         }
     } else {
-        Box(Modifier.fillMaxWidth().padding(vertical=4.dp),contentAlignment=Alignment.Center) {
-            Box(Modifier.size(240.dp),contentAlignment=Alignment.Center) {
-                CircularProgressIndicator(progress={0f},modifier=Modifier.fillMaxSize(),color=Green,strokeWidth=9.dp,trackColor=androidx.compose.ui.graphics.Color(0xFFDFE7D1))
-                Column(horizontalAlignment=Alignment.CenterHorizontally,verticalArrangement=Arrangement.spacedBy(8.dp)) {
-                    Text("${minutes.toIntOrNull() ?: 0}:00",color=Deep,fontSize=46.sp,lineHeight=56.sp,fontWeight=FontWeight.SemiBold)
-                    Text("Bắt đầu khi bạn sẵn sàng",color=Muted,fontSize=11.sp)
+        Box(Modifier.fillMaxWidth().padding(vertical=AppDimensions.Dp4),contentAlignment=Alignment.Center) {
+            Box(Modifier.size(AppDimensions.Dp240),contentAlignment=Alignment.Center) {
+                CircularProgressIndicator(progress={0f},modifier=Modifier.fillMaxSize(),color=Green,strokeWidth=AppDimensions.Dp9,trackColor=AppColors.SwatchFFDFE7D1)
+                Column(horizontalAlignment=Alignment.CenterHorizontally,verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp8)) {
+                    Text("${minutes.toIntOrNull() ?: 0}:00",color=Deep,fontSize=AppTypography.Sp46,lineHeight=AppTypography.Sp56,fontWeight=FontWeight.SemiBold)
+                    Text(AppText.text(TextKey.CopyBatDauKhiBanSanSang3d0a9a),color=Muted,fontSize=AppTypography.Sp11)
                 }
             }
         }
-        FlowRow(horizontalArrangement=Arrangement.spacedBy(4.dp)) {
-            listOf(15,25,45,60).forEach{n->FilterChip(minutes==n.toString(),{minutes=n.toString()},label={Text("$n phút",fontSize=11.sp)})}
+        FlowRow(horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp4)) {
+            listOf(15,25,45,60).forEach{n->FilterChip(minutes==n.toString(),{minutes=n.toString()},label={Text(AppText.text(TextKey.Copy0Phut2596d2,n),fontSize=AppTypography.Sp11)})}
         }
-        GardenTextField(minutes,{minutes=it.filter(Char::isDigit).take(3)},"Phút tập trung",placeholder="5–120 phút")
-        Text("Dành cho",color=Muted,fontSize=12.sp)
-        FilterChip(attached==0L,{attached=0},label={Text("Tự do · không thưởng xu",fontSize=12.sp)})
+        GardenTextField(minutes,{minutes=it.filter(Char::isDigit).take(3)},AppText.text(TextKey.CopyPhutTapTrung459fbd),placeholder=AppText.text(TextKey.Copy5120Phut0c4b29))
+        Text(AppText.text(TextKey.CopyDanhChoFf565f),color=Muted,fontSize=AppTypography.Sp12)
+        FilterChip(attached==0L,{attached=0},label={Text(AppText.text(TextKey.CopyTuDoKhongThuongXu113e54),fontSize=AppTypography.Sp12)})
         state.tasks.filter{it.config.verification=="TIMER" && it.lifecycle=="ACTIVE" && !it.doneToday && !it.finished}.forEach{task->
-            FilterChip(attached==task.id,{attached=task.id},enabled=task.available,label={Text(task.title,fontSize=11.sp)})
+            FilterChip(attached==task.id,{attached=task.id},enabled=task.available,label={Text(task.title,fontSize=AppTypography.Sp11)})
         }
-        GardenPaintedButton("Bắt đầu",{
+        GardenPaintedButton(AppText.text(TextKey.CopyBatDauB3cacc),{
             onAct(EngagementAction.StartFocus(attached,minutes.toIntOrNull() ?: 0,java.util.UUID.randomUUID().toString()))
         },Modifier.fillMaxWidth(),enabled=!state.busy && (minutes.toIntOrNull() ?: 0) in 5..120)
     }
-    GardenExpandableSection("Các phiên đã lưu · ${state.snapshot.focusCompleted} hoàn thành") {
-    Text("Đã hoàn thành ${state.snapshot.focusCompleted} phiên",color=Deep,fontSize=12.sp,fontWeight=FontWeight.Bold)
+    GardenExpandableSection(AppText.text(TextKey.CopyCacPhienDaLuu0HoanThanhBb1ef4,state.snapshot.focusCompleted)) {
+    Text(AppText.text(TextKey.CopyDaHoanThanh0Phien3aedba,state.snapshot.focusCompleted),color=Deep,fontSize=AppTypography.Sp12,fontWeight=FontWeight.Bold)
     state.snapshot.focus.take(10).forEach{s->
-        Text("${s.date} · ${s.activeSeconds/60} / ${s.targetSeconds/60} phút · ${when(s.state){"COMPLETE"->"Trọn vẹn";"ENDED"->"Đã lưu phần đã làm";"RUNNING"->"Đang chạy";else->"Tạm dừng"}}",
-            color=Muted,fontSize=13.sp,lineHeight=19.sp)
+        Text(AppText.text(TextKey.Copy012Phut31cab4a,s.date,s.activeSeconds/60,s.targetSeconds/60,when(s.state){"COMPLETE"->AppText.text(TextKey.CopyTronVen2a4501);"ENDED"->AppText.text(TextKey.CopyDaLuuPhanDaLam0f9d18);"RUNNING"->AppText.text(TextKey.CopyDangChayCd07e6);else->AppText.text(TextKey.TabPaused)}),
+            color=Muted,fontSize=AppTypography.Sp13,lineHeight=AppTypography.Sp19)
     }
     }
 }
@@ -201,87 +209,87 @@ internal fun FocusContent(state:EngagementUiState,onAct:(EngagementAction)->Unit
 internal fun ReviewContent(state:EngagementUiState,onAct:(EngagementAction)->Unit) {
     val r=state.snapshot.review ?: return
     var note by rememberSaveable(r.start,r.reflection){mutableStateOf(r.reflection)}
-    GardenScreenIntro("Tuần của bạn","TUẦN TỪ ${r.start}")
-    MintMetricStrip(listOf("Hoàn thành" to "${r.completed}/${r.scheduled}","Tỷ lệ" to (r.rate?.let{"$it%"} ?: "—"),
-        "Tập trung" to "${r.focusMinutes} phút"))
-    Text(if(r.previousRate==null)"Chưa đủ dữ liệu để so sánh tuần trước."
-        else "Tuần trước: ${r.previousRate}% · Số liệu đến hôm nay.",color=Muted,fontSize=11.sp,lineHeight=16.sp)
-    GardenExpandableSection("Những điều đã làm") {
-        Column(verticalArrangement=Arrangement.spacedBy(12.dp)) {
-            Text("Thu ${r.earned} xu · Chi ${r.spent} xu",color=Deep,fontSize=12.sp)
-            Text("${r.careDays} ngày chăm cây · ${r.milestones} mốc trưởng thành",color=Deep,fontSize=11.sp)
-            Text(if(r.consistent.isBlank())"Chưa đủ dữ liệu về nhóm thói quen." else "Đều đặn nhất: ${r.consistent}",color=Muted,fontSize=11.sp)
-            if(r.improve.isNotBlank())Text("Có thể điều chỉnh nhẹ: ${r.improve}",color=Muted,fontSize=11.sp)
+    GardenScreenIntro(AppText.text(TextKey.CopyTuanCuaBanC82d43),AppText.text(TextKey.CopyTuanTu055af46,r.start))
+    MintMetricStrip(listOf(AppText.text(TextKey.CopyHoanThanh5eb36f) to "${r.completed}/${r.scheduled}",AppText.text(TextKey.CopyTyLeE86c12) to (r.rate?.let{"$it%"} ?: "—"),
+        AppText.text(TextKey.CopyTapTrung964002) to AppText.text(TextKey.Copy0Phut2596d2,r.focusMinutes)))
+    Text(if(r.previousRate==null)AppText.text(TextKey.CopyChuaDuDuLieuDeSoSanhTuanTruoc63f9c2)
+        else AppText.text(TextKey.CopyTuanTruoc0SoLieuDenHomNay1201e0,r.previousRate),color=Muted,fontSize=AppTypography.Sp11,lineHeight=AppTypography.Sp16)
+    GardenExpandableSection(AppText.text(TextKey.CopyNhungDieuDaLam9f52b2)) {
+        Column(verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp12)) {
+            Text(AppText.text(TextKey.CopyThu0XuChi1XuD34d57,r.earned,r.spent),color=Deep,fontSize=AppTypography.Sp12)
+            Text(AppText.text(TextKey.Copy0NgayChamCay1MocTruongThanhEb3af0,r.careDays,r.milestones),color=Deep,fontSize=AppTypography.Sp11)
+            Text(if(r.consistent.isBlank())AppText.text(TextKey.CopyChuaDuDuLieuVeNhomThoiQuen2068bb) else AppText.text(TextKey.CopyDeuDanNhat0B18f80,r.consistent),color=Muted,fontSize=AppTypography.Sp11)
+            if(r.improve.isNotBlank())Text(AppText.text(TextKey.CopyCoTheDieuChinhNhe0C674c2,r.improve),color=Muted,fontSize=AppTypography.Sp11)
         }
     }
-    Text("Điều gì khiến tuần này dễ dàng hơn?",color=Deep,fontSize=12.sp,fontWeight=FontWeight.Bold)
-    GardenTextField(note,{note=it.take(2000)},"Suy ngẫm tuần",placeholder="Ghi lại cho riêng bạn")
-    GardenPaintedButton("Lưu suy ngẫm",{onAct(EngagementAction.Reflection(r.start,note))},Modifier.fillMaxWidth(),enabled=!state.busy)
+    Text(AppText.text(TextKey.CopyDieuGiKhienTuanNayDeDangHon72fdd9),color=Deep,fontSize=AppTypography.Sp12,fontWeight=FontWeight.Bold)
+    GardenTextField(note,{note=it.take(2000)},AppText.text(TextKey.CopySuyNgamTuan75229e),placeholder=AppText.text(TextKey.CopyGhiLaiChoRiengBanDa0345))
+    GardenPaintedButton(AppText.text(TextKey.CopyLuuSuyNgam18cdd3),{onAct(EngagementAction.Reflection(r.start,note))},Modifier.fillMaxWidth(),enabled=!state.busy)
 }
 
 @Composable
 private fun RestContent(state:EngagementUiState,onAct:(EngagementAction)->Unit) {
     var rest by rememberSaveable(state.snapshot.tomorrow){mutableStateOf(state.snapshot.tomorrow)}
     var protect by rememberSaveable{mutableStateOf("")}
-    GardenScreenIntro("Nghỉ cũng là một nhịp.")
+    GardenScreenIntro(AppText.text(TextKey.CopyNghiCungLaMotNhipE4f3b6))
     DayCalendar(state.snapshot.days)
-    Text("Ngày nghỉ sắp tới",color=Deep,fontSize=12.sp)
-    GardenTextField(rest,{rest=it},"Ngày nghỉ YYYY-MM-DD")
-    Text("Tối đa 2 ngày/tháng · Đặt trước ngày nghỉ · Không thưởng xu.",color=Muted,fontSize=12.sp,lineHeight=18.sp)
-    GardenPaintedButton("Lên lịch nghỉ",{onAct(EngagementAction.Rest(rest))},Modifier.fillMaxWidth(),enabled=!state.busy)
-    Text("Vé bảo vệ",color=Deep,fontSize=18.sp,fontWeight=FontWeight.SemiBold)
+    Text(AppText.text(TextKey.CopyNgayNghiSapToiA8efda),color=Deep,fontSize=AppTypography.Sp12)
+    GardenTextField(rest,{rest=it},AppText.text(TextKey.CopyNgayNghiYyyyMmDd2d6975))
+    Text(AppText.text(TextKey.CopyToiDa2NgayThangDatTruocNgayNghiKhongThuong8e36f0),color=Muted,fontSize=AppTypography.Sp12,lineHeight=AppTypography.Sp18)
+    GardenPaintedButton(AppText.text(TextKey.CopyLenLichNghiD71876),{onAct(EngagementAction.Rest(rest))},Modifier.fillMaxWidth(),enabled=!state.busy)
+    Text(AppText.text(TextKey.CopyVeBaoVe5a852e),color=Deep,fontSize=AppTypography.Sp18,fontWeight=FontWeight.SemiBold)
     Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.SpaceBetween){
-        MintStatusPill("${state.snapshot.protectionTickets} vé")
-        GardenPaintedButton("Mua · 250 xu",{onAct(EngagementAction.BuyProtection(java.util.UUID.randomUUID().toString()))},primary=false,enabled=!state.busy)
+        MintStatusPill(AppText.text(TextKey.Copy0Ve604049,state.snapshot.protectionTickets))
+        GardenPaintedButton(AppText.text(TextKey.CopyMua250XuAa5fe3),{onAct(EngagementAction.BuyProtection(java.util.UUID.randomUUID().toString()))},primary=false,enabled=!state.busy)
     }
-    GardenTextField(protect,{protect=it},"Ngày đã bỏ lỡ YYYY-MM-DD",placeholder="YYYY-MM-DD")
-    GardenPaintedButton("Dùng vé",{onAct(EngagementAction.Protect(protect,java.util.UUID.randomUUID().toString()))},Modifier.fillMaxWidth(),primary=false,enabled=!state.busy&&state.snapshot.protectionTickets>0)
+    GardenTextField(protect,{protect=it},AppText.text(TextKey.CopyNgayDaBoLoYyyyMmDdD52a2a),placeholder=AppText.text(TextKey.DateIsoPlaceholder))
+    GardenPaintedButton(AppText.text(TextKey.CopyDungVe767d96),{onAct(EngagementAction.Protect(protect,java.util.UUID.randomUUID().toString()))},Modifier.fillMaxWidth(),primary=false,enabled=!state.busy&&state.snapshot.protectionTickets>0)
 }
 
 @Composable
 internal fun InsightsContent(state:EngagementUiState,onAct:(EngagementAction)->Unit,onAdjust:(Task)->Unit,onOpen:(String,Long)->Unit) {
     val insight=state.snapshot.insights.firstOrNull{it.taskId==state.selectedTask}
     if(insight==null) {
-        GardenScreenIntro("Mỗi ngày một chút","NHỊP THÓI QUEN")
+        GardenScreenIntro(AppText.text(TextKey.CopyMoiNgayMotChutF24459),AppText.text(TextKey.CopyNhipThoiQuen9c03a7))
         state.snapshot.insights.forEach{i->GardenNavigationCard(i.title,{onOpen("INSIGHTS",i.taskId)},art=GardenArt.CALENDAR)}
-        if(state.snapshot.insights.isEmpty())Text("Thêm một việc để bắt đầu ghi lại nhịp thói quen.",color=Muted,fontSize=12.sp)
+        if(state.snapshot.insights.isEmpty())Text(AppText.text(TextKey.CopyThemMotViecDeBatDauGhiLaiNhipThoiQuen5bc1b9),color=Muted,fontSize=AppTypography.Sp12)
         return
     }
     val task=state.tasks.firstOrNull{it.id==insight.taskId} ?: return
     var days by rememberSaveable{mutableIntStateOf(7)}
     var confirm by remember{mutableStateOf(false)}
     GardenScreenIntro(insight.title)
-    Row(horizontalArrangement=Arrangement.spacedBy(12.dp)) {
-        listOf(7,30).forEach{n->FilterChip(days==n,{days=n},label={Text("$n ngày",fontSize=11.sp)})}
+    Row(horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp12)) {
+        listOf(7,30).forEach{n->FilterChip(days==n,{days=n},label={Text(AppText.text(TextKey.Copy0Ngay45fa48,n),fontSize=AppTypography.Sp11)})}
     }
     DayCalendar(insight.days.takeLast(days))
-    MintMetricStrip(listOf("Hiện tại" to "${insight.streak}","Dài nhất" to "${insight.longest}",
-        "Tỷ lệ 30 ngày" to (insight.rate?.let{"$it%"} ?: "—")))
-    GardenExpandableSection("Tập trung & gợi ý") {
-    Text("Tập trung: ${insight.focusMinutes} phút · Giờ thường hoàn thành: ${insight.commonHour.ifBlank{"chưa đủ dữ liệu"}}",
-        color=Muted,fontSize=11.sp,lineHeight=16.sp)
+    MintMetricStrip(listOf(AppText.text(TextKey.CopyHienTai027390) to "${insight.streak}",AppText.text(TextKey.CopyDaiNhat67c21e) to "${insight.longest}",
+        AppText.text(TextKey.CopyTyLe30Ngay84d03d) to (insight.rate?.let{"$it%"} ?: "—")))
+    GardenExpandableSection(AppText.text(TextKey.CopyTapTrungGoiY2462a6)) {
+    Text(AppText.text(TextKey.CopyTapTrung0PhutGioThuongHoanThanh1E3e85d,insight.focusMinutes,insight.commonHour.ifBlank{AppText.text(TextKey.CopyChuaDuDuLieu348596)}),
+        color=Muted,fontSize=AppTypography.Sp11,lineHeight=AppTypography.Sp16)
     if(insight.suggestion.isNotBlank()) {
-        Text(insight.suggestion,color=Muted,fontSize=11.sp)
-        GardenPaintedButton("Xem điều chỉnh",{confirm=true},Modifier.fillMaxWidth(),primary=false)
+        Text(insight.suggestion,color=Muted,fontSize=AppTypography.Sp11)
+        GardenPaintedButton(AppText.text(TextKey.CopyXemDieuChinhA56d7a),{confirm=true},Modifier.fillMaxWidth(),primary=false)
     }
     }
     val pref=state.snapshot.reminders.firstOrNull{it.taskId==task.id} ?: ReminderPreference(task.id)
     var minute by rememberSaveable(task.id,pref.minute){mutableStateOf(clockLabel(pref.minute))}
-    Text("Nhắc việc",color=Deep,fontSize=12.sp,fontWeight=FontWeight.Bold)
-    Text("Mặc định tắt. Bật quyền và nhắc toàn cục trong Tùy chọn nếu muốn nhận thông báo.",color=Muted,fontSize=11.sp,lineHeight=16.sp)
-    GardenTextField(minute,{minute=it},"Giờ nhắc HH:mm")
-    TextButton(onClick={parseMinute(minute)?.let{onAct(EngagementAction.Reminder(pref.copy(minute=it)))}}){Text("Lưu giờ nhắc",fontSize=11.sp)}
-    FlowRow(horizontalArrangement=Arrangement.spacedBy(4.dp)) {
-        listOf("OFF" to "Tắt","AT" to "Theo giờ","BEFORE" to "Trước khung giờ").forEach{(mode,label)->
+    Text(AppText.text(TextKey.CopyNhacViec9e9055),color=Deep,fontSize=AppTypography.Sp12,fontWeight=FontWeight.Bold)
+    Text(AppText.text(TextKey.CopyMacDinhTatBatQuyenVaNhacToanCucTrongTuyCh703a98),color=Muted,fontSize=AppTypography.Sp11,lineHeight=AppTypography.Sp16)
+    GardenTextField(minute,{minute=it},AppText.text(TextKey.CopyGioNhacHhMmAb3321))
+    TextButton(onClick={parseMinute(minute)?.let{onAct(EngagementAction.Reminder(pref.copy(minute=it)))}}){Text(AppText.text(TextKey.CopyLuuGioNhacBc709c),fontSize=AppTypography.Sp11)}
+    FlowRow(horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp4)) {
+        listOf("OFF" to AppText.text(TextKey.CopyTat328606),"AT" to AppText.text(TextKey.CopyTheoGio4bd1ce),"BEFORE" to AppText.text(TextKey.CopyTruocKhungGioC97c51)).forEach{(mode,label)->
             FilterChip(pref.mode==mode,{onAct(EngagementAction.Reminder(pref.copy(mode=mode,minute=parseMinute(minute) ?: pref.minute)))},
-                label={Text(label,fontSize=11.sp)})
+                label={Text(label,fontSize=AppTypography.Sp11)})
         }
     }
     TextButton(onClick={onAct(EngagementAction.Reminder(pref.copy(followUp=!pref.followUp)))}) {
-        Text(if(pref.followUp)"✓ Một lần nhắc nhẹ nếu chưa xong" else "Thêm một lần nhắc nhẹ",fontSize=11.sp)
+        Text(if(pref.followUp)AppText.text(TextKey.CopyMotLanNhacNheNeuChuaXong1e2491) else AppText.text(TextKey.CopyThemMotLanNhacNhe2b429d),fontSize=AppTypography.Sp11)
     }
-    if(confirm)MintDialog("Điều chỉnh lịch",{confirm=false},"Xác nhận",{onAdjust(task);confirm=false}) {
-        Text("Chuyển sang ngày thường từ ngày mai. Lịch sử và kế hoạch hôm nay được giữ nguyên.",color=Muted,fontSize=12.sp,lineHeight=17.sp)
+    if(confirm)MintDialog(AppText.text(TextKey.CopyDieuChinhLich513357),{confirm=false},AppText.text(TextKey.CopyXacNhan1503b0),{onAdjust(task);confirm=false}) {
+        Text(AppText.text(TextKey.CopyChuyenSangNgayThuongTuNgayMaiLichSuVaKeHoEbd07c),color=Muted,fontSize=AppTypography.Sp12,lineHeight=AppTypography.Sp17)
     }
 }
 
@@ -292,20 +300,20 @@ internal fun parseMinute(s:String):Int? {
 }
 @Composable
 internal fun DayCalendar(days:List<ReviewDay>) {
-    GardenBotanicalFrame(Modifier.fillMaxWidth(),contentPadding=PaddingValues(14.dp),cornerSize=20.dp){
-        Column(verticalArrangement=Arrangement.spacedBy(12.dp)){
-    Column(verticalArrangement=Arrangement.spacedBy(6.dp)) {
-        days.chunked(7).forEach{week->Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.spacedBy(6.dp)) {
+    GardenBotanicalFrame(Modifier.fillMaxWidth(),contentPadding=PaddingValues(AppDimensions.Dp14),cornerSize=AppDimensions.Dp20){
+        Column(verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp12)){
+    Column(verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp6)) {
+        days.chunked(7).forEach{week->Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp6)) {
             week.forEach{d->
-                Surface(Modifier.weight(1f).heightIn(min=36.dp).semantics(mergeDescendants=true){contentDescription="${d.date}: ${when(d.state){"SUCCESS"->"Hoàn thành";"REST"->"Nghỉ";"PROTECTED"->"Đã bảo vệ";"MISSED"->"Bỏ lỡ";else->"Chưa ghi nhận"}}"},shape=androidx.compose.foundation.shape.RoundedCornerShape(10.dp),
-                    color=when(d.state){"SUCCESS"->Green;"REST"->androidx.compose.ui.graphics.Color(0xFFE5DFF6);"PROTECTED"->Gold;else->androidx.compose.ui.graphics.Color(0xFFF0F4F1)}) {
-                    Text(d.date.takeLast(2)+when(d.state){"SUCCESS"->"✓";"REST"->" N";"PROTECTED"->" ◇";"MISSED"->" ·";else->""},Modifier.padding(vertical=10.dp),textAlign=TextAlign.Center,color=if(d.state=="SUCCESS")androidx.compose.ui.graphics.Color.White else Deep,fontSize=10.sp)
+                Surface(Modifier.weight(1f).heightIn(min=AppDimensions.Dp36).semantics(mergeDescendants=true){contentDescription="${d.date}: ${when(d.state){"SUCCESS"->AppText.text(TextKey.CopyHoanThanh5eb36f);"REST"->AppText.text(TextKey.CopyNghiF0aa0a);"PROTECTED"->AppText.text(TextKey.CopyDaBaoVeF1dfce);"MISSED"->AppText.text(TextKey.CopyBoLoF8cf8f);else->AppText.text(TextKey.CopyChuaGhiNhanF7654d)}}"},shape=androidx.compose.foundation.shape.RoundedCornerShape(AppDimensions.Dp10),
+                    color=when(d.state){"SUCCESS"->Green;"REST"->AppColors.SwatchFFE5DFF6;"PROTECTED"->Gold;else->AppColors.SwatchFFF0F4F1}) {
+                    Text(d.date.takeLast(2)+when(d.state){"SUCCESS"->"✓";"REST"->" N";"PROTECTED"->" ◇";"MISSED"->" ·";else->""},Modifier.padding(vertical=AppDimensions.Dp10),textAlign=TextAlign.Center,color=if(d.state=="SUCCESS")androidx.compose.ui.graphics.Color.White else Deep,fontSize=AppTypography.Sp10)
                 }
             }
             repeat(7-week.size){Spacer(Modifier.weight(1f))}
         }}
     }
-    Text("✓ Hoàn thành · N Nghỉ · ◇ Bảo vệ · Chấm: đã bỏ lỡ",color=Muted,fontSize=12.sp,lineHeight=17.sp)
+    Text(AppText.text(TextKey.CopyHoanThanhNNghiBaoVeChamDaBoLoEc2735),color=Muted,fontSize=AppTypography.Sp12,lineHeight=AppTypography.Sp17)
         }
     }
 }
@@ -315,10 +323,10 @@ internal fun DayCalendar(days:List<ReviewDay>) {
 @Composable
 fun EngagementComponentsPreview() {
     MamXanhPreviewTheme {
-        ProvideTextStyle(MaterialTheme.typography.bodySmall.copy(fontSize=15.sp,lineHeight=21.sp)) {
-            Column(Modifier.fillMaxWidth().padding(12.dp),verticalArrangement=Arrangement.spacedBy(16.dp)) {
+        ProvideTextStyle(MaterialTheme.typography.bodySmall.copy(fontSize=AppTypography.Sp15,lineHeight=AppTypography.Sp21)) {
+            Column(Modifier.fillMaxWidth().padding(AppDimensions.Dp12),verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp16)) {
                 ReviewContent(EngagementUiState(snapshot=EngagementSnapshot(
-                    review=WeeklyReview("2026-11-09",5,3,null,25,24,0,2,0,"Học tập","",""),
+                    review=WeeklyReview("2026-11-09",5,3,null,25,24,0,2,0,AppText.canonical(TextKey.CopyHocTapA51516),"",""),
                     days=listOf(ReviewDay("2026-11-10","REST")),tomorrow="2026-11-13")), {})
             }
         }
@@ -327,17 +335,17 @@ fun EngagementComponentsPreview() {
 
 @Preview(widthDp=414,heightDp=1000,device="spec:width=414dp,height=1000dp,dpi=160")
 @Composable
-fun FocusWebDesignPreview(){com.mamxanh.app.presentation.ui.MamXanhPreviewTheme{MintBackdrop{Column(Modifier.padding(24.dp),verticalArrangement=Arrangement.spacedBy(18.dp)){FocusContent(EngagementUiState(loading=false,snapshot=EngagementSnapshot(focus=listOf(FocusSession("preview",0,"Một khoảng cho riêng mình","2026-11-16",1500,750,"PAUSED")))),{},{_,_->})}}}}
+fun FocusWebDesignPreview(){com.mamxanh.app.presentation.ui.MamXanhPreviewTheme{MintBackdrop{Column(Modifier.padding(AppDimensions.Dp24),verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp18)){FocusContent(EngagementUiState(loading=false,snapshot=EngagementSnapshot(focus=listOf(FocusSession("preview",0,AppText.text(TextKey.CopyMotKhoangChoRiengMinhCcf66e),"2026-11-16",1500,750,"PAUSED")))),{},{_,_->})}}}}
 
 
 @Preview(widthDp=414,heightDp=1100,device="spec:width=414dp,height=1100dp,dpi=160")
-@Composable fun FocusIdleWebDesignPreview(){com.mamxanh.app.presentation.ui.MamXanhPreviewTheme{MintBackdrop{Column(Modifier.padding(24.dp),verticalArrangement=Arrangement.spacedBy(18.dp)){FocusContent(EngagementUiState(loading=false),{},{_,_->})}}}}
+@Composable fun FocusIdleWebDesignPreview(){com.mamxanh.app.presentation.ui.MamXanhPreviewTheme{MintBackdrop{Column(Modifier.padding(AppDimensions.Dp24),verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp18)){FocusContent(EngagementUiState(loading=false),{},{_,_->})}}}}
 
-private fun webEngagementState(route:String)=EngagementUiState(loading=false,route=route,tasks=listOf(Task(1,"Đọc 10 trang sách","HABIT","Học tập",8,"EVERY_DAY","","",4,"")),snapshot=EngagementSnapshot(
- insights=listOf(TaskInsight(1,"Đọc 10 trang sách",(1..7).map{ReviewDay("2026-11-${it.toString().padStart(2,'0')}",if(it==3) "MISSED" else "SUCCESS")},86,4,6,"20:30",45,"Chọn một khung giờ vừa sức.")),
- review=WeeklyReview("2026-11-09",15,10,null,45,40,0,3,0,"Học tập","Nếp sống",""),
- achievements=listOf(Achievement("first","Việc đầu tiên","Hoàn thành một việc",1,1,1),Achievement("three","Ba ngày xanh","Giữ nhịp ba ngày",2,3)),
- memories=listOf(MemoryEvent("first","TASK",1,"Việc đầu tiên đã xong",1794819600000)),
+private fun webEngagementState(route:String)=EngagementUiState(loading=false,route=route,tasks=listOf(Task(1,AppText.text(TextKey.CopyDoc10TrangSachA3c873),"HABIT",AppText.canonical(TextKey.CopyHocTapA51516),8,"EVERY_DAY","","",4,"")),snapshot=EngagementSnapshot(
+ insights=listOf(TaskInsight(1,AppText.text(TextKey.CopyDoc10TrangSachA3c873),(1..7).map{ReviewDay("2026-11-${it.toString().padStart(2,'0')}",if(it==3) "MISSED" else "SUCCESS")},86,4,6,"20:30",45,AppText.text(TextKey.CopyChonMotKhungGioVuaSucD8a536))),
+ review=WeeklyReview("2026-11-09",15,10,null,45,40,0,3,0,AppText.canonical(TextKey.CopyHocTapA51516),AppText.canonical(TextKey.CopyNepSong8d1a98),""),
+ achievements=listOf(Achievement("first",AppText.text(TextKey.CopyViecDauTien28bcbf),AppText.text(TextKey.CopyHoanThanhMotViec1c20b2),1,1,1),Achievement("three",AppText.text(TextKey.CopyBaNgayXanh0c655e),AppText.text(TextKey.CopyGiuNhipBaNgayB90ddb),2,3)),
+ memories=listOf(MemoryEvent("first","TASK",1,AppText.text(TextKey.CopyViecDauTienDaXongB1f060),1794819600000)),
  days=(1..12).map{ReviewDay("2026-11-${it.toString().padStart(2,'0')}",if(it%3==0) "REST" else "SUCCESS")},tomorrow="2026-11-17"))
 
 @Preview(widthDp=414,heightDp=1400,device="spec:width=414dp,height=1400dp,dpi=160")

@@ -1,5 +1,13 @@
 package com.mamxanh.app.feature.tasks.presentation
 
+import com.mamxanh.app.presentation.ui.design.AppColors
+import com.mamxanh.app.presentation.ui.design.AppDimensions
+import com.mamxanh.app.presentation.ui.design.AppTypography
+
+import com.mamxanh.shared.localization.TextKey
+
+import com.mamxanh.shared.localization.AppText
+
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
@@ -75,35 +83,35 @@ fun TasksScreen(state: TasksUiState, onIntent: (TasksIntent) -> Unit, modifier: 
     val done = state.phase.completed
     MintBackdrop(modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
-            MintCompactHeader(coins, title = "mầm xanh")
-            GardenScreenIntro("Việc hôm nay","TỪNG CHÚT MỘT",modifier=Modifier.padding(horizontal=24.dp,vertical=12.dp))
-            GardenBotanicalFrame(Modifier.padding(horizontal=24.dp).fillMaxWidth(),skin=GardenPanelSkin.HINT,contentPadding=PaddingValues(16.dp)) {
-                Column(verticalArrangement=Arrangement.spacedBy(12.dp)) {
-                    Text("$done/${state.phase.required} việc bắt buộc đã xong",color=Deep,fontSize=14.sp,fontWeight=FontWeight.SemiBold)
+            MintCompactHeader(coins, title = AppText.text(TextKey.CopyMamXanh692a0a))
+            GardenScreenIntro(AppText.text(TextKey.CopyViecHomNay22a0a4),AppText.text(TextKey.CopyTungChutMot238966),modifier=Modifier.padding(horizontal=AppDimensions.Dp24,vertical=AppDimensions.Dp12))
+            GardenBotanicalFrame(Modifier.padding(horizontal=AppDimensions.Dp24).fillMaxWidth(),skin=GardenPanelSkin.HINT,contentPadding=PaddingValues(AppDimensions.Dp16)) {
+                Column(verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp12)) {
+                    Text(AppText.text(TextKey.Copy01ViecBatBuocDaXong0ffc34,done,state.phase.required),color=Deep,fontSize=AppTypography.Sp14,fontWeight=FontWeight.SemiBold)
                     MintProgress(done.toFloat()/state.phase.required.coerceAtLeast(1),Modifier.fillMaxWidth())
                 }
             }
-            Row(Modifier.padding(horizontal=24.dp,vertical=12.dp),horizontalArrangement=Arrangement.spacedBy(12.dp)) {
-                GardenPaintedButton("Tập trung",{onEngagement("FOCUS",0)},Modifier.weight(1f),primary=false)
-                GardenPaintedButton("Việc mẫu",{onEngagement("TEMPLATES",0)},Modifier.weight(1f),primary=false)
+            Row(Modifier.padding(horizontal=AppDimensions.Dp24,vertical=AppDimensions.Dp12),horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp12)) {
+                GardenPaintedButton(AppText.text(TextKey.CopyTapTrung964002),{onEngagement("FOCUS",0)},Modifier.weight(1f),primary=false)
+                GardenPaintedButton(AppText.text(TextKey.CopyViecMau535dc1),{onEngagement("TEMPLATES",0)},Modifier.weight(1f),primary=false)
             }
-            Row(Modifier.padding(horizontal=24.dp),horizontalArrangement=Arrangement.spacedBy(8.dp)) {
-                listOf("ACTIVE" to "Hôm nay","PAUSED" to "Tạm dừng","ARCHIVED" to "Lưu trữ").forEach{(id,label)->
+            Row(Modifier.padding(horizontal=AppDimensions.Dp24),horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp8)) {
+                listOf("ACTIVE" to AppText.text(TextKey.CopyHomNayE6747a),"PAUSED" to AppText.text(TextKey.TabPaused),"ARCHIVED" to AppText.text(TextKey.CopyLuuTru7e7c5f)).forEach{(id,label)->
                     GardenChoiceChip(label,selectedFilter==id,{selectedFilter=id},Modifier.weight(1f))
                 }
             }
             LazyColumn(Modifier.weight(1f).mintScrollEdges(listState.canScrollBackward, listState.canScrollForward),
-                state = listState, contentPadding = PaddingValues(horizontal=24.dp,vertical=16.dp),
-                verticalArrangement = Arrangement.spacedBy(14.dp)) {
+                state = listState, contentPadding = PaddingValues(horizontal=AppDimensions.Dp24,vertical=AppDimensions.Dp16),
+                verticalArrangement = Arrangement.spacedBy(AppDimensions.Dp14)) {
                 if(state.isLoading && state.tasks.isEmpty()) item { LinearProgressIndicator(Modifier.fillMaxWidth()) }
                 if(!state.isLoading && filtered.isEmpty()) item {
-                    Column(Modifier.fillMaxWidth().padding(vertical = 12.dp), horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                        com.mamxanh.app.presentation.ui.components.MintEmptySprout(Modifier.size(55.dp))
-                        Text("Chưa có việc nào",
-                            color = Deep, fontSize = 14.sp, fontWeight = FontWeight.Bold,
+                    Column(Modifier.fillMaxWidth().padding(vertical = AppDimensions.Dp12), horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(AppDimensions.Dp12)) {
+                        com.mamxanh.app.presentation.ui.components.MintEmptySprout(Modifier.size(AppDimensions.Dp55))
+                        Text(AppText.text(TextKey.CopyChuaCoViecNao2c72b0),
+                            color = Deep, fontSize = AppTypography.Sp14, fontWeight = FontWeight.Bold,
                             textAlign = androidx.compose.ui.text.style.TextAlign.Center)
-                        Text("Hãy thêm việc nhỏ để xây dựng thói quen mỗi ngày.", color = Deep,
+                        Text(AppText.text(TextKey.CopyHayThemViecNhoDeXayDungThoiQuenMoiNgay8aeb29), color = Deep,
                             textAlign = androidx.compose.ui.text.style.TextAlign.Center)
                     }
                 }
@@ -112,16 +120,16 @@ fun TasksScreen(state: TasksUiState, onIntent: (TasksIntent) -> Unit, modifier: 
                     TaskCard(task, { onIntent(TasksIntent.Complete(task.id)) },
                         { onIntent(TasksIntent.Timer(task.id, if (session?.running == true) "PAUSE" else "START")) },
                         readOnly = task.finished, session = session, busy = state.busy, onOpen={onIntent(TasksIntent.Detail(task.id))})
-                    if(task.availability.isNotEmpty()) Text(task.availability,color=Muted,fontSize=12.sp)
+                    if(task.availability.isNotEmpty()) Text(task.availability,color=Muted,fontSize=AppTypography.Sp12)
                 }
-                item {GardenNavigationCard("Nhịp thói quen",{onEngagement("INSIGHTS",0)})}
+                item {GardenNavigationCard(AppText.text(TextKey.CopyNhipThoiQuen1b8324),{onEngagement("INSIGHTS",0)})}
                 if(state.phase.required > 0) item {
                     DailyRewardCard(state.canClaimDailyBonus && !state.isLoading && !state.busy,
                         { onIntent(TasksIntent.ClaimBonus) }, state.isDailyBonusClaimed)
                 }
             }
-            GardenPaintedButton("+ Thêm việc", { onIntent(TasksIntent.ShowAddDialog) },
-                Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 12.dp))
+            GardenPaintedButton(AppText.text(TextKey.CopyThemViec3e34ed), { onIntent(TasksIntent.ShowAddDialog) },
+                Modifier.fillMaxWidth().padding(horizontal = AppDimensions.Dp24, vertical = AppDimensions.Dp12))
         }
     }
     if (state.isAddingTask) AddTaskDialog(
@@ -136,8 +144,8 @@ fun TasksScreen(state: TasksUiState, onIntent: (TasksIntent) -> Unit, modifier: 
 @Composable
 private fun TaskQuestHeader(done: Int, total: Int, progress: Float, allComplete: Boolean, onAddTask: () -> Unit) {
     GardenBotanicalFrame(Modifier.fillMaxWidth()) {
-        Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
-            Text("Đã hoàn thành $done / $total việc", fontWeight = FontWeight.Bold, color = Deep)
+        Column(verticalArrangement = Arrangement.spacedBy(AppDimensions.Dp14)) {
+            Text(AppText.text(TextKey.CopyDaHoanThanh01ViecE78274,done,total), fontWeight = FontWeight.Bold, color = Deep)
             MintProgress(progress, Modifier.fillMaxWidth())
         }
     }
@@ -149,28 +157,28 @@ private fun DailyRewardCard(canClaim: Boolean, onClaim: () -> Unit, claimed: Boo
         if (claimed) {
             Surface(Modifier.fillMaxWidth().clickable(enabled = false,
                 role = androidx.compose.ui.semantics.Role.Button, onClick = onClaim),
-                shape = RoundedCornerShape(22.dp), color = Color(0xFFE0DFD1),
-                border = BorderStroke(1.dp, Color(0xFFC8C7B7))) {
-                Row(Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
+                shape = RoundedCornerShape(AppDimensions.Dp22), color = AppColors.SwatchFFE0DFD1,
+                border = BorderStroke(AppDimensions.Dp1, AppColors.SwatchFFC8C7B7)) {
+                Row(Modifier.padding(horizontal = AppDimensions.Dp14, vertical = AppDimensions.Dp8),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(14.dp)) {
-                    Surface(shape = CircleShape, color = Color(0xFF939C80), modifier = Modifier.size(20.dp)) {
-                        Icon(Icons.Rounded.Check, null, tint = Color(0xFFFFF9E9), modifier = Modifier.padding(5.dp))
+                    horizontalArrangement = Arrangement.spacedBy(AppDimensions.Dp14)) {
+                    Surface(shape = CircleShape, color = AppColors.SwatchFF939C80, modifier = Modifier.size(AppDimensions.Dp20)) {
+                        Icon(Icons.Rounded.Check, null, tint = AppColors.SwatchFFFFF9E9, modifier = Modifier.padding(AppDimensions.Dp5))
                     }
-                    Text("Đã nhận thưởng", Modifier.weight(1f), color = Color(0xFF626756),
-                        fontSize = 12.sp, lineHeight = 18.sp, fontWeight = FontWeight.Bold)
+                    Text(AppText.text(TextKey.CopyDaNhanThuong98b708), Modifier.weight(1f), color = AppColors.SwatchFF626756,
+                        fontSize = AppTypography.Sp12, lineHeight = AppTypography.Sp18, fontWeight = FontWeight.Bold)
                 }
             }
         } else GardenBotanicalFrame(Modifier.fillMaxWidth().clickable(enabled = canClaim,
             role = androidx.compose.ui.semantics.Role.Button,
-            onClickLabel = "Nhận thưởng hôm nay", onClick = onClaim),
-            contentPadding = PaddingValues(horizontal = 10.dp, vertical = 8.dp),
+            onClickLabel = AppText.text(TextKey.CopyNhanThuongHomNay7b23cc), onClick = onClaim),
+            contentPadding = PaddingValues(horizontal = AppDimensions.Dp10, vertical = AppDimensions.Dp8),
             skin = com.mamxanh.app.presentation.ui.components.GardenPanelSkin.HINT) {
-            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                Icon(Icons.Rounded.CardGiftcard, null, Modifier.size(20.dp), tint = Green)
-                Text("Thưởng hôm nay", Modifier.weight(1f),
-                    color = Deep, fontSize = 12.sp, lineHeight = 18.sp, fontWeight = FontWeight.Bold)
-                Text("+${com.mamxanh.shared.model.Balance.DAILY_CLEAR} xu", color = Deep, fontSize = 12.sp, lineHeight = 15.sp, fontWeight = FontWeight.Bold)
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(AppDimensions.Dp6)) {
+                Icon(Icons.Rounded.CardGiftcard, null, Modifier.size(AppDimensions.Dp20), tint = Green)
+                Text(AppText.text(TextKey.CopyThuongHomNayC015c6), Modifier.weight(1f),
+                    color = Deep, fontSize = AppTypography.Sp12, lineHeight = AppTypography.Sp18, fontWeight = FontWeight.Bold)
+                Text(AppText.text(TextKey.Copy0Xu7c2391,com.mamxanh.shared.model.Balance.DAILY_CLEAR), color = Deep, fontSize = AppTypography.Sp12, lineHeight = AppTypography.Sp15, fontWeight = FontWeight.Bold)
             }
         }
     }
@@ -178,18 +186,18 @@ private fun DailyRewardCard(canClaim: Boolean, onClaim: () -> Unit, claimed: Boo
 
 @Composable
 private fun TaskFilterSearchArtwork() {
-    Box(Modifier.size(48.dp)) {
+    Box(Modifier.size(AppDimensions.Dp48)) {
         Canvas(Modifier.fillMaxSize()) {
             val center = Offset(size.width * .42f, size.height * .40f)
             val radius = size.minDimension * .29f
-            drawLine(Color(0xFFD7A15D), Offset(size.width * .63f, size.height * .61f),
-                Offset(size.width * .86f, size.height * .84f), 10.dp.toPx(), cap = StrokeCap.Round)
-            drawCircle(Color(0xFFFFF8E8), radius, center)
-            drawCircle(Color(0xFFE3AD68), radius, center,
-                style = androidx.compose.ui.graphics.drawscope.Stroke(3.dp.toPx()))
+            drawLine(AppColors.SwatchFFD7A15D, Offset(size.width * .63f, size.height * .61f),
+                Offset(size.width * .86f, size.height * .84f), AppDimensions.Dp10.toPx(), cap = StrokeCap.Round)
+            drawCircle(AppColors.SwatchFFFFF8E8, radius, center)
+            drawCircle(AppColors.SwatchFFE3AD68, radius, center,
+                style = androidx.compose.ui.graphics.drawscope.Stroke(AppDimensions.Dp3.toPx()))
         }
         GardenArtwork(GardenArt.SPROUT,
-            Modifier.align(Alignment.TopStart).offset(11.dp, 10.dp).size(18.dp))
+            Modifier.align(Alignment.TopStart).offset(AppDimensions.Dp11, AppDimensions.Dp10).size(AppDimensions.Dp18))
     }
 }
 
@@ -199,41 +207,41 @@ private fun TaskCard(task: Task, onComplete: () -> Unit, onTimer: () -> Unit, re
     val done = task.doneToday || readOnly
     val timer = task.config.verification == "TIMER"
     Column {
-        Row(Modifier.fillMaxWidth().heightIn(min = 48.dp)
-            .mintDepth(RoundedCornerShape(18.dp), if (done) MintDepth.hint else MintDepth.card, 4.dp)
+        Row(Modifier.fillMaxWidth().heightIn(min = AppDimensions.Dp48)
+            .mintDepth(RoundedCornerShape(AppDimensions.Dp18), if (done) MintDepth.hint else MintDepth.card, AppDimensions.Dp4)
             .clickable(onClick = onOpen)
-            .padding(horizontal = 12.dp, vertical = 14.dp), verticalAlignment = Alignment.CenterVertically) {
+            .padding(horizontal = AppDimensions.Dp12, vertical = AppDimensions.Dp14), verticalAlignment = Alignment.CenterVertically) {
             GardenArtwork(when {
-                task.title.contains("bộ", ignoreCase = true) -> GardenArt.BOOTS
-                task.title.contains("nước", ignoreCase = true) -> GardenArt.GLASS
-                task.title.contains("Dọn", ignoreCase = true) -> GardenArt.BROOM
-                task.title.contains("từ vựng", ignoreCase = true) -> GardenArt.PENCIL
-                task.title.contains("Chuẩn bị", ignoreCase = true) -> GardenArt.CALENDAR
-                task.category.contains("Học", ignoreCase = true) -> GardenArt.BOOK
+                task.title.contains(AppText.canonical(TextKey.CopyBoEecf2d), ignoreCase = true) -> GardenArt.BOOTS
+                task.title.contains(AppText.canonical(TextKey.CopyNuocA2a970), ignoreCase = true) -> GardenArt.GLASS
+                task.title.contains(AppText.canonical(TextKey.CopyDon673082), ignoreCase = true) -> GardenArt.BROOM
+                task.title.contains(AppText.canonical(TextKey.CopyTuVungE67acb), ignoreCase = true) -> GardenArt.PENCIL
+                task.title.contains(AppText.canonical(TextKey.CopyChuanBiE65470), ignoreCase = true) -> GardenArt.CALENDAR
+                task.category.contains(AppText.canonical(TextKey.CopyHoc380b3f), ignoreCase = true) -> GardenArt.BOOK
                 else -> GardenArt.SPROUT
-            }, Modifier.size(30.dp, 36.dp))
-            Column(Modifier.weight(1f).padding(horizontal = 3.dp)) {
-                Text(task.title, color = Deep, fontSize = 12.sp, fontWeight = FontWeight.Bold)
-                if (!done) Text(task.category, color = Muted, fontSize = 12.sp)
-                if (task.kind == "TODO" && task.due.isNotBlank()) Text("Hạn: " + task.due, color = Muted, fontSize = 11.sp)
-                if (done) Text("Đã xong", color = Green, fontSize = 12.sp)
+            }, Modifier.size(AppDimensions.Dp30, AppDimensions.Dp36))
+            Column(Modifier.weight(1f).padding(horizontal = AppDimensions.Dp3)) {
+                Text(task.title, color = Deep, fontSize = AppTypography.Sp12, fontWeight = FontWeight.Bold)
+                if (!done) Text(AppText.category(task.category), color = Muted, fontSize = AppTypography.Sp12)
+                if (task.kind == "TODO" && task.due.isNotBlank()) Text(AppText.text(TextKey.CopyHan59b874) + task.due, color = Muted, fontSize = AppTypography.Sp11)
+                if (done) Text(AppText.text(TextKey.CopyDaXong565e93), color = Green, fontSize = AppTypography.Sp12)
                 else if (timer) {
                     val seconds = session?.activeSeconds ?: 0L
-                    Text("${seconds / 60}:${(seconds % 60).toString().padStart(2,'0')} / ${task.config.minutes} phút",
-                        color = Green, fontSize = 12.sp)
+                    Text(AppText.text(TextKey.Copy012PhutB73be0,seconds / 60,(seconds % 60).toString().padStart(2,'0'),task.config.minutes),
+                        color = Green, fontSize = AppTypography.Sp12)
                 }
             }
-            if (!readOnly) Text("+${task.reward}", color = Green, fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
+            if (!readOnly) Text("+${task.reward}", color = Green, fontSize = AppTypography.Sp12, fontWeight = FontWeight.SemiBold)
             IconButton(onClick = if (timer) onTimer else onComplete,
                 enabled = !done && !busy && task.lifecycle=="ACTIVE" && (task.available || session?.running == true),
-                modifier = Modifier.size(48.dp).semantics {
-                    contentDescription = when { done -> "Đã hoàn thành"; timer && session?.running == true -> "Tạm dừng bộ đếm"; timer -> "Bắt đầu bộ đếm"; else -> "Hoàn thành nhiệm vụ" }
+                modifier = Modifier.size(AppDimensions.Dp48).semantics {
+                    contentDescription = when { done -> AppText.text(TextKey.CopyDaHoanThanh14eefb); timer && session?.running == true -> AppText.text(TextKey.CopyTamDungBoDemE82e42); timer -> AppText.text(TextKey.CopyBatDauBoDem35c256); else -> AppText.text(TextKey.CopyHoanThanhNhiemVuE5ef43) }
                 }) {
-                Surface(shape = CircleShape, color = if (done) Color(0xFF7B9D3D) else Color.Transparent,
-                    border = if (done) null else BorderStroke(1.dp,Color(0xFF9FAF93)), modifier = Modifier.size(32.dp)) {
-                    if (done) Icon(Icons.Rounded.Check, null, tint = Color(0xFFFFF5DC), modifier = Modifier.padding(3.dp))
+                Surface(shape = CircleShape, color = if (done) AppColors.SwatchFF7B9D3D else AppColors.Transparent,
+                    border = if (done) null else BorderStroke(AppDimensions.Dp1,AppColors.SwatchFF9FAF93), modifier = Modifier.size(AppDimensions.Dp32)) {
+                    if (done) Icon(Icons.Rounded.Check, null, tint = AppColors.SwatchFFFFF5DC, modifier = Modifier.padding(AppDimensions.Dp3))
                     else if (timer) Icon(if (session?.running == true) Icons.Rounded.Pause else Icons.Rounded.PlayArrow,
-                        null, tint = Green, modifier = Modifier.padding(2.dp))
+                        null, tint = Green, modifier = Modifier.padding(AppDimensions.Dp2))
                 }
             }
 
@@ -248,9 +256,9 @@ private fun TaskCard(task: Task, onComplete: () -> Unit, onTimer: () -> Unit, re
 fun TasksScreenPopulatedPreview() {
     MamXanhPreviewTheme {
         TasksScreen(TasksUiState(tasks = listOf(
-            Task(1, "Đọc 10 trang sách", "HABIT", "Học tập", 10, "EVERY_DAY", "", "", 4, ""),
-            Task(2, "Uống đủ nước", "DAILY", "Sức khỏe", 10, "EVERY_DAY", "", today(), 2, today()),
-            Task(3, "Đi bộ 20 phút", "TODO", "Sức khỏe", 10, "ONCE", "", "", 0, "")
+            Task(1, AppText.text(TextKey.CopyDoc10TrangSachA3c873), "HABIT", AppText.canonical(TextKey.CopyHocTapA51516), 10, "EVERY_DAY", "", "", 4, ""),
+            Task(2, AppText.text(TextKey.CopyUongDuNuoc081b30), "DAILY", AppText.canonical(TextKey.CopySucKhoe071df7), 10, "EVERY_DAY", "", today(), 2, today()),
+            Task(3, AppText.text(TextKey.CopyDiBo20PhutB36d50), "TODO", AppText.canonical(TextKey.CopySucKhoe071df7), 10, "ONCE", "", "", 0, "")
         ), isLoading = false), {})
     }
 }
@@ -261,12 +269,12 @@ fun TasksScreenPopulatedPreview() {
 fun TasksExtendedDocumentPreview() {
     MamXanhPreviewTheme {
         TasksScreen(TasksUiState(tasks = listOf(
-            Task(1, "Đọc 10 trang sách", "HABIT", "Học tập", 10, "EVERY_DAY", "", "", 0, ""),
-            Task(2, "Uống đủ nước", "DAILY", "Sức khỏe", 10, "EVERY_DAY", "", today(), 1, today()),
-            Task(3, "Đi bộ 20 phút", "DAILY", "Sức khỏe", 10, "EVERY_DAY", "", today(), 1, today()),
-            Task(4, "Ôn từ vựng 15 phút", "DAILY", "Tiếng Anh", 10, "EVERY_DAY", "", "", 0, ""),
-            Task(5, "Dọn góc học tập", "TODO", "Giữ gọn gàng", 10, "ONCE", "", "", 0, ""),
-            Task(6, "Chuẩn bị bài cho ngày mai", "TODO", "Học tập", 10, "ONCE", "", "", 0, "")
+            Task(1, AppText.text(TextKey.CopyDoc10TrangSachA3c873), "HABIT", AppText.canonical(TextKey.CopyHocTapA51516), 10, "EVERY_DAY", "", "", 0, ""),
+            Task(2, AppText.text(TextKey.CopyUongDuNuoc081b30), "DAILY", AppText.canonical(TextKey.CopySucKhoe071df7), 10, "EVERY_DAY", "", today(), 1, today()),
+            Task(3, AppText.text(TextKey.CopyDiBo20PhutB36d50), "DAILY", AppText.canonical(TextKey.CopySucKhoe071df7), 10, "EVERY_DAY", "", today(), 1, today()),
+            Task(4, AppText.text(TextKey.CopyOnTuVung15PhutAcc66f), "DAILY", AppText.text(TextKey.CopyTiengAnh7ecaa5), 10, "EVERY_DAY", "", "", 0, ""),
+            Task(5, AppText.text(TextKey.CopyDonGocHocTapE45d91), "TODO", AppText.text(TextKey.CopyGiuGonGang63ed82), 10, "ONCE", "", "", 0, ""),
+            Task(6, AppText.text(TextKey.CopyChuanBiBaiChoNgayMai0c86eb), "TODO", AppText.canonical(TextKey.CopyHocTapA51516), 10, "ONCE", "", "", 0, "")
         ), isLoading = false), {})
     }
 }
@@ -281,7 +289,7 @@ fun TasksScreenEmptyPreview() { MamXanhPreviewTheme { TasksScreen(TasksUiState(i
 fun TasksEmptyFilterPreview() {
     MamXanhPreviewTheme {
         TasksScreen(TasksUiState(tasks = listOf(
-            Task(1, "Uống đủ nước", "DAILY", "Sức khỏe", 10, "EVERY_DAY", "", "", 0, "")
+            Task(1, AppText.text(TextKey.CopyUongDuNuoc081b30), "DAILY", AppText.canonical(TextKey.CopySucKhoe071df7), 10, "EVERY_DAY", "", "", 0, "")
         ), filter = TaskFilter.HABIT, isLoading = false), {})
     }
 }
@@ -291,7 +299,7 @@ fun TasksEmptyFilterPreview() {
 @Composable
 fun DailyRewardClaimedPreview() {
     MamXanhPreviewTheme {
-        Box(Modifier.padding(16.dp)) { DailyRewardCard(false, {}, claimed = true) }
+        Box(Modifier.padding(AppDimensions.Dp16)) { DailyRewardCard(false, {}, claimed = true) }
     }
 }
 
@@ -308,6 +316,6 @@ fun DailyRewardCardPreview() { MamXanhPreviewTheme { DailyRewardCard(true, {}) }
 @Composable
 fun TaskCardPreview() {
     MamXanhPreviewTheme {
-        TaskCard(Task(1, "Đọc 10 trang sách", "HABIT", "Học tập", 10, "EVERY_DAY", "", "", 4, ""), {}, {})
+        TaskCard(Task(1, AppText.text(TextKey.CopyDoc10TrangSachA3c873), "HABIT", AppText.canonical(TextKey.CopyHocTapA51516), 10, "EVERY_DAY", "", "", 4, ""), {}, {})
     }
 }

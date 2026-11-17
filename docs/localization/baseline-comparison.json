@@ -1,0 +1,1010 @@
+[
+  {
+    "name": "home",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "tasks",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "garden",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "shop",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "stats",
+    "changedPixels": 977,
+    "totalPixels": 304500,
+    "changedPercent": 0.32085385878489325,
+    "meanChannelDifference": 0.23746688560481663
+  },
+  {
+    "name": "task",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "task-new",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "inventory",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "tree",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "focus",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "templates",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "review",
+    "changedPixels": 1071,
+    "totalPixels": 304500,
+    "changedPercent": 0.35172413793103446,
+    "meanChannelDifference": 0.2539069512862616
+  },
+  {
+    "name": "rest",
+    "changedPixels": 1562,
+    "totalPixels": 304500,
+    "changedPercent": 0.5129720853858785,
+    "meanChannelDifference": 0.39411275314723593
+  },
+  {
+    "name": "insights",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "achievements",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "timeline",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "settings",
+    "changedPixels": 111874,
+    "totalPixels": 304500,
+    "changedPercent": 36.740229885057474,
+    "meanChannelDifference": 11.247832512315272
+  },
+  {
+    "name": "data",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "encyclopedia",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "species",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "onboard",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "more",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "shop-care",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "shop-accessories",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "inventory-care",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "inventory-accessories",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "tree-decor",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "tree-info",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "tasks-paused",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "tasks-archived",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "insights-detail",
+    "changedPixels": 1373,
+    "totalPixels": 304500,
+    "changedPercent": 0.4509031198686371,
+    "meanChannelDifference": 0.3370093048713738
+  },
+  {
+    "name": "insights-month",
+    "changedPixels": 1373,
+    "totalPixels": 304500,
+    "changedPercent": 0.4509031198686371,
+    "meanChannelDifference": 0.3370093048713738
+  },
+  {
+    "name": "popup-tree-picker",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "popup-seed-picker",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "popup-seed-buy",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "popup-tool-buy",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "popup-tool-owned",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "popup-fertilizer-buy",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "popup-accessory",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "popup-plant",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "popup-water-all",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "popup-unlock",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "popup-fertilizer-help",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "popup-remove",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "popup-sell",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "popup-archive",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "popup-discard",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "popup-ticket",
+    "changedPixels": 1562,
+    "totalPixels": 304500,
+    "changedPercent": 0.5129720853858785,
+    "meanChannelDifference": 0.2470454296661193
+  },
+  {
+    "name": "popup-adjust",
+    "changedPixels": 1373,
+    "totalPixels": 304500,
+    "changedPercent": 0.4509031198686371,
+    "meanChannelDifference": 0.21124685276409413
+  },
+  {
+    "name": "popup-permission",
+    "changedPixels": 80749,
+    "totalPixels": 304500,
+    "changedPercent": 26.518555008210182,
+    "meanChannelDifference": 4.669124247400109
+  },
+  {
+    "name": "popup-permission-choice",
+    "changedPixels": 81092,
+    "totalPixels": 304500,
+    "changedPercent": 26.6311986863711,
+    "meanChannelDifference": 4.683135194307608
+  },
+  {
+    "name": "popup-permission-settings",
+    "changedPixels": 81092,
+    "totalPixels": 304500,
+    "changedPercent": 26.6311986863711,
+    "meanChannelDifference": 4.683135194307608
+  },
+  {
+    "name": "popup-clear",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "popup-clear-final",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "popup-recover",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "popup-license",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "popup-focus-end",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "home-lavender",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "home-orange",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "onboard-1",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "onboard-2",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "onboard-3",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "onboard-4",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "task-new-expanded",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "task-expanded",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "settings-expanded",
+    "changedPixels": 98045,
+    "totalPixels": 304500,
+    "changedPercent": 32.198686371100166,
+    "meanChannelDifference": 9.986081007115489
+  },
+  {
+    "name": "data-expanded",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "review-expanded",
+    "changedPixels": 1071,
+    "totalPixels": 304500,
+    "changedPercent": 0.35172413793103446,
+    "meanChannelDifference": 0.2539069512862616
+  },
+  {
+    "name": "species-expanded",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "popup-seed-buy-bottom",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "popup-plant-bottom",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "popup-license-bottom",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "home-320",
+    "changedPixels": 0,
+    "totalPixels": 204800,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "tree-320",
+    "changedPixels": 0,
+    "totalPixels": 204800,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "tasks-320",
+    "changedPixels": 0,
+    "totalPixels": 204800,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "shop-320",
+    "changedPixels": 0,
+    "totalPixels": 204800,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "popup-seed-320",
+    "changedPixels": 0,
+    "totalPixels": 204800,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "home-844",
+    "changedPixels": 0,
+    "totalPixels": 161460,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "tree-844",
+    "changedPixels": 0,
+    "totalPixels": 161460,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "tasks-844",
+    "changedPixels": 0,
+    "totalPixels": 161460,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "shop-844",
+    "changedPixels": 0,
+    "totalPixels": 161460,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "popup-seed-844",
+    "changedPixels": 0,
+    "totalPixels": 161460,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "achievements-full",
+    "changedPixels": 0,
+    "totalPixels": 538500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "data-expanded-full",
+    "changedPixels": 0,
+    "totalPixels": 412500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "data-full",
+    "changedPixels": 0,
+    "totalPixels": 313500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "encyclopedia-full",
+    "changedPixels": 0,
+    "totalPixels": 862500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "focus-full",
+    "changedPixels": 0,
+    "totalPixels": 363000,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "garden-full",
+    "changedPixels": 0,
+    "totalPixels": 462000,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "home-full",
+    "changedPixels": 0,
+    "totalPixels": 428625,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "home-lavender-full",
+    "changedPixels": 0,
+    "totalPixels": 428625,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "home-orange-full",
+    "changedPixels": 0,
+    "totalPixels": 428625,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "insights-detail-full",
+    "changedPixels": 1373,
+    "totalPixels": 468750,
+    "changedPercent": 0.29290666666666665,
+    "meanChannelDifference": 0.21892124444444444
+  },
+  {
+    "name": "insights-full",
+    "changedPixels": 0,
+    "totalPixels": 313500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "insights-month-full",
+    "changedPixels": 1373,
+    "totalPixels": 543750,
+    "changedPercent": 0.25250574712643675,
+    "meanChannelDifference": 0.18872521072796936
+  },
+  {
+    "name": "inventory-accessories-full",
+    "changedPixels": 0,
+    "totalPixels": 313500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "inventory-care-full",
+    "changedPixels": 0,
+    "totalPixels": 313500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "inventory-full",
+    "changedPixels": 0,
+    "totalPixels": 313500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "more-full",
+    "changedPixels": 0,
+    "totalPixels": 403500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "onboard-1-full",
+    "changedPixels": 0,
+    "totalPixels": 313500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "onboard-2-full",
+    "changedPixels": 0,
+    "totalPixels": 313500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "onboard-3-full",
+    "changedPixels": 0,
+    "totalPixels": 825000,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "onboard-4-full",
+    "changedPixels": 0,
+    "totalPixels": 313500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "onboard-full",
+    "changedPixels": 0,
+    "totalPixels": 313500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "rest-full",
+    "changedPixels": 1562,
+    "totalPixels": 472500,
+    "changedPercent": 0.3305820105820106,
+    "meanChannelDifference": 0.25398377425044094
+  },
+  {
+    "name": "review-expanded-full",
+    "changedPixels": 1071,
+    "totalPixels": 450375,
+    "changedPercent": 0.23780183180682765,
+    "meanChannelDifference": 0.1716673142751411
+  },
+  {
+    "name": "review-full",
+    "changedPixels": 1071,
+    "totalPixels": 370500,
+    "changedPercent": 0.2890688259109312,
+    "meanChannelDifference": 0.208676563202879
+  },
+  {
+    "name": "settings-expanded-full",
+    "changedPixels": 199795,
+    "totalPixels": 439125,
+    "changedPercent": 45.49843438656419,
+    "meanChannelDifference": 12.445879874750926
+  },
+  {
+    "name": "settings-full",
+    "changedPixels": 188693,
+    "totalPixels": 405375,
+    "changedPercent": 46.5477644156645,
+    "meanChannelDifference": 12.727773871929283
+  },
+  {
+    "name": "shop-accessories-full",
+    "changedPixels": 0,
+    "totalPixels": 327375,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "shop-care-full",
+    "changedPixels": 0,
+    "totalPixels": 505875,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "shop-full",
+    "changedPixels": 0,
+    "totalPixels": 692625,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "species-expanded-full",
+    "changedPixels": 264,
+    "totalPixels": 543375,
+    "changedPercent": 0.048585231193926846,
+    "meanChannelDifference": 0.045173222912353345
+  },
+  {
+    "name": "species-full",
+    "changedPixels": 264,
+    "totalPixels": 524250,
+    "changedPercent": 0.05035765379113018,
+    "meanChannelDifference": 0.046821173104434906
+  },
+  {
+    "name": "stats-full",
+    "changedPixels": 977,
+    "totalPixels": 505875,
+    "changedPercent": 0.1931307141092167,
+    "meanChannelDifference": 0.1429378140186146
+  },
+  {
+    "name": "task-expanded-full",
+    "changedPixels": 0,
+    "totalPixels": 412500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "task-full",
+    "changedPixels": 0,
+    "totalPixels": 324750,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "task-new-expanded-full",
+    "changedPixels": 0,
+    "totalPixels": 480000,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "task-new-full",
+    "changedPixels": 0,
+    "totalPixels": 340500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "tasks-archived-full",
+    "changedPixels": 0,
+    "totalPixels": 328500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "tasks-full",
+    "changedPixels": 0,
+    "totalPixels": 428625,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "tasks-paused-full",
+    "changedPixels": 0,
+    "totalPixels": 328500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "templates-full",
+    "changedPixels": 0,
+    "totalPixels": 708750,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "timeline-full",
+    "changedPixels": 0,
+    "totalPixels": 313500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "tree-decor-full",
+    "changedPixels": 0,
+    "totalPixels": 520875,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "tree-full",
+    "changedPixels": 0,
+    "totalPixels": 461625,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "tree-info-full",
+    "changedPixels": 264,
+    "totalPixels": 414000,
+    "changedPercent": 0.06376811594202898,
+    "meanChannelDifference": 0.05928985507246377
+  },
+  {
+    "name": "popup-import-confirm",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "audit-task-title-error",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "audit-task-minutes-error",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "audit-task-days-error",
+    "changedPixels": 1129,
+    "totalPixels": 304500,
+    "changedPercent": 0.37077175697865355,
+    "meanChannelDifference": 0.2988089764641489
+  },
+  {
+    "name": "audit-task-edit",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "audit-focus-45",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "audit-focus-invalid",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "audit-focus-task",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "audit-templates-selected",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "audit-large-text-home",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "audit-large-text-popup",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "audit-large-text-form",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "audit-landscape-focus",
+    "changedPixels": 0,
+    "totalPixels": 329160,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "audit-landscape-home",
+    "changedPixels": 0,
+    "totalPixels": 329160,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "audit-large-text-species",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "audit-tree-missing",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "audit-busy-purchase",
+    "changedPixels": 0,
+    "totalPixels": 304500,
+    "changedPercent": 0,
+    "meanChannelDifference": 0
+  },
+  {
+    "name": "audit-large-text-species-bottom",
+    "changedPixels": 565,
+    "totalPixels": 304500,
+    "changedPercent": 0.18555008210180624,
+    "meanChannelDifference": 0.22381061850027367
+  }
+]

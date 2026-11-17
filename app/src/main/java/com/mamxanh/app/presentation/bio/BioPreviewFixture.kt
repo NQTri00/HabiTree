@@ -13,9 +13,15 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.input.InputMode
 import androidx.compose.ui.input.InputModeManager
 import androidx.compose.ui.tooling.preview.Preview
+import com.mamxanh.shared.localization.AppLanguage
+import com.mamxanh.shared.localization.AppText
+import android.content.res.Configuration
 
 @Composable internal fun BioReferenceSurface(route:String,param:String="",modal:String="",id:String="",tab:String="",home:String="1",step:Int=0,expanded:Boolean=false,bottom:Boolean=false,sheetBottom:Boolean=false,referenceFields:Map<String,String> = emptyMap(),busy:Boolean=false){
- val context=LocalContext.current
+ val baseContext=LocalContext.current
+ val language=if(baseContext.resources.configuration.locales[0].language=="en")AppLanguage.English else AppLanguage.Vietnamese
+ AppText.language=language
+ val context=remember(baseContext,language){baseContext.createConfigurationContext(Configuration(baseContext.resources.configuration).apply{setLocale(java.util.Locale.forLanguageTag(language.tag))})}
  val requestedBusy=busy
  val initialFocus=remember{FocusRequester()}
  val keyboard=LocalSoftwareKeyboardController.current
@@ -25,7 +31,7 @@ import androidx.compose.ui.tooling.preview.Preview
  }}
  val world=remember{BioWorld.reference(context).also{if(modal=="focus-end")it.state.put("focus",json("id" to "reference","title" to "M\u1ed9t kho\u1ea3ng cho ri\u00eang m\u00ecnh","state" to "RUNNING","remaining" to 1500))}}
  val ui=remember{BioController(route,param,modal).apply{modalId=id;homeTree=home;onboardingStep=step;this.busy=requestedBusy;fields.putAll(referenceFields);if(expanded)tabs["expanded"]="true";if(bottom)tabs["scrollBottom"]="true";if(sheetBottom)tabs["sheetBottom"]="true";if(tab.isNotBlank()){val parts=tab.split(':');tabs[parts[0]]=parts[1]}}}
- CompositionLocalProvider(LocalInputModeManager provides touch){
+ CompositionLocalProvider(LocalInputModeManager provides touch,LocalContext provides context){
   Box(Modifier.fillMaxSize().focusRequester(initialFocus).focusable()){BioApplication(world,ui)}
  }
  LaunchedEffect(Unit){initialFocus.requestFocus();keyboard?.hide()}

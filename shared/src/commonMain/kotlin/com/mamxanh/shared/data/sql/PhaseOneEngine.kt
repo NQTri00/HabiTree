@@ -1,5 +1,9 @@
 package com.mamxanh.shared.data.sql
 
+import com.mamxanh.shared.localization.TextKey
+
+import com.mamxanh.shared.localization.AppText
+
 import com.mamxanh.shared.model.*
 import com.mamxanh.shared.time.GameClock
 import com.mamxanh.shared.time.SystemGameClock
@@ -96,9 +100,9 @@ class PhaseOneEngine(private val db: GameSqlConnection, private val clock: GameC
             val eligible = active && (c.kind == "TODO" || scheduled(snap,date))
             Task(r.long(0),c.title,c.kind,c.category,c.reward,c.frequency,c.due,r.string(7),taskStreak(r.long(0)),r.string(9),
                 c,r.string(17),eligible,eligible && enough && clock.now() in b.first until b.second,
-                (if(snap.startMinute < 0) "" else "Khả dụng ${clockLabel(snap.startMinute)}–${clockLabel(snap.endMinute)}" +
-                    if(snap.endMinute < snap.startMinute) " (qua đêm)" else "") +
-                    if(!enough)" · Không đủ thời gian trước khi đóng khung giờ" else "",
+                (if(snap.startMinute < 0) "" else AppText.text(TextKey.CopyKhaDung01783020,clockLabel(snap.startMinute),clockLabel(snap.endMinute)) +
+                    if(snap.endMinute < snap.startMinute) AppText.text(TextKey.CopyQuaDemA64d5b) else "") +
+                    if(!enough)AppText.text(TextKey.CopyKhongDuThoiGianTruocKhiDongKhungGio6e982b) else "",
                 rows("SELECT date,title,category,nominal,granted FROM occurrences WHERE task_id=? AND date>=? ORDER BY date DESC",5,r.long(0),offset(clock.date(),-6)).map {
                     TaskOccurrence(it.string(0),it.string(1),it.string(2),it.int(3),it.int(4))
                 },number("SELECT COUNT(*) FROM obligations WHERE date=? AND task_id=? AND waived=0",clock.date(),r.long(0))>0,
@@ -113,27 +117,27 @@ class PhaseOneEngine(private val db: GameSqlConnection, private val clock: GameC
             c.title.trim(),c.kind,c.category,c.reward,c.frequency,c.due,c.description,c.days,c.verification,c.minutes,c.startMinute,c.endMinute,c.reminderMinute,clock.now(),clock.now())
             freezeSchedule(number("SELECT last_insert_rowid()"),clock.date(),c)
         } else {
-            val old=task(id) ?: return@transaction ActionResult(false,"Không tìm thấy việc")
+            val old=task(id) ?: return@transaction ActionResult(false,AppText.text(TextKey.CopyKhongTimThayViec07c69c))
             val existing=config(old)
             freezeSchedule(id,clock.date(),existing)
             if(number("SELECT COUNT(*) FROM sessions WHERE task_id=? AND date=?",id,clock.date())>0 &&
                 (c.verification!=existing.verification || c.minutes!=existing.minutes || c.kind!=existing.kind))
-                return@transaction ActionResult(false,"Giữ kiểu xác nhận và thời lượng của phiên hôm nay; có thể sửa lại ngày mai")
+                return@transaction ActionResult(false,AppText.text(TextKey.CopyGiuKieuXacNhanVaThoiLuongCuaPhienHomNayCoC75815))
             exec("UPDATE tasks SET title=?,kind=?,category=?,reward=?,frequency=?,due=?,description=?,days=?,verification=?,minutes=?,start_minute=?,end_minute=?,reminder=?,updated=? WHERE id=?",
                 c.title.trim(),c.kind,c.category,c.reward,c.frequency,c.due,c.description,c.days,c.verification,c.minutes,c.startMinute,c.endMinute,c.reminderMinute,clock.now(),id)
         }
-        ActionResult(true,"Đã lưu việc")
+        ActionResult(true,AppText.text(TextKey.CopyDaLuuViecA9499f))
     }
     fun lifecycle(id: Long, state: String): ActionResult = db.transaction {
         require(state in setOf("ACTIVE","PAUSED","ARCHIVED"))
-        if(task(id) == null) return@transaction ActionResult(false,"Không tìm thấy việc")
+        if(task(id) == null) return@transaction ActionResult(false,AppText.text(TextKey.CopyKhongTimThayViec07c69c))
         materialize()
         exec("UPDATE tasks SET lifecycle=?,updated=?,archived=? WHERE id=?",state,clock.now(),if(state=="ARCHIVED")clock.now() else 0,id)
         if(state != "ACTIVE") {
             exec("UPDATE obligations SET waived=1 WHERE date=? AND task_id=?",clock.date(),id)
             exec("UPDATE sessions SET running=0,tick=0 WHERE task_id=?",id)
         }
-        ActionResult(true,if(state=="ARCHIVED")"Đã lưu trữ; lịch sử được giữ lại" else "Đã cập nhật trạng thái")
+        ActionResult(true,if(state=="ARCHIVED")AppText.text(TextKey.CopyDaLuuTruLichSuDuocGiuLai9f5ccd) else AppText.text(TextKey.CopyDaCapNhatTrangThai22624d))
     }
     private fun earned(date: String) = number("SELECT COALESCE(SUM(amount),0) FROM wallet WHERE date=? AND amount>0 AND type<>'MIGRATION'",date).toInt()
     private fun award(key: String,type: String,entity: String,nominal: Int,date: String): Int {
@@ -145,10 +149,10 @@ class PhaseOneEngine(private val db: GameSqlConnection, private val clock: GameC
         return amount
     }
     fun income(key: String,type: String,entity: String,nominal: Int): ActionResult {
-        if(!clockSafe())return ActionResult(false,"Đồng hồ đã lùi; chưa thể nhận xu")
-        if(number("SELECT COUNT(*) FROM wallet WHERE id=?",key)>0)return ActionResult(false,"Giao dịch đã được xử lý")
+        if(!clockSafe())return ActionResult(false,AppText.text(TextKey.CopyDongHoDaLuiChuaTheNhanXu65d491))
+        if(number("SELECT COUNT(*) FROM wallet WHERE id=?",key)>0)return ActionResult(false,AppText.text(TextKey.CopyGiaoDichDaDuocXuLy1e67a0))
         val amount=award(key,type,entity,nominal,clock.date())
-        return ActionResult(true,"Nhận $amount / $nominal xu",nominal,amount)
+        return ActionResult(true,AppText.text(TextKey.CopyNhan01Xu67503c,amount,nominal),nominal,amount)
     }
     fun spend(key: String,type: String,entity: String,total: Int): Boolean {
         if(number("SELECT COUNT(*) FROM wallet WHERE id=?",key)>0) return false
@@ -159,17 +163,17 @@ class PhaseOneEngine(private val db: GameSqlConnection, private val clock: GameC
         return true
     }
     private fun eligible(c: TaskConfig,id: Long,date: String): String? {
-        if(task(id)?.string(17)!="ACTIVE") return "Việc đang tạm dừng hoặc lưu trữ"
-        if(c.kind!="TODO" && !scheduled(c,date)) return "Hôm nay không có lịch"
+        if(task(id)?.string(17)!="ACTIVE") return AppText.text(TextKey.CopyViecDangTamDungHoacLuuTru85fe1f)
+        if(c.kind!="TODO" && !scheduled(c,date)) return AppText.text(TextKey.CopyHomNayKhongCoLichE78d95)
         val b=bounds(c,date)
-        if(clock.now() !in b.first until b.second) return "Ngoài khung giờ ${clockLabel(c.startMinute)}–${clockLabel(c.endMinute)}"
-        if(number("SELECT COUNT(*) FROM occurrences WHERE task_id=? AND (date=? OR kind='TODO')",id,date)>0) return "Đã hoàn thành; không nhận thưởng hai lần"
+        if(clock.now() !in b.first until b.second) return AppText.text(TextKey.CopyNgoaiKhungGio015fdd69,clockLabel(c.startMinute),clockLabel(c.endMinute))
+        if(number("SELECT COUNT(*) FROM occurrences WHERE task_id=? AND (date=? OR kind='TODO')",id,date)>0) return AppText.text(TextKey.CopyDaHoanThanhKhongNhanThuongHaiLan76cddc)
         return null
     }
     fun complete(id: Long): ActionResult = db.transaction {
         materialize()
-        if(!clockSafe()) return@transaction ActionResult(false,"Đồng hồ đã lùi; chờ giờ thực bắt kịp để nhận thưởng")
-        val row=task(id) ?: return@transaction ActionResult(false,"Không tìm thấy việc")
+        if(!clockSafe()) return@transaction ActionResult(false,AppText.text(TextKey.CopyDongHoDaLuiChoGioThucBatKipDeNhanThuongC05c9d))
+        val row=task(id) ?: return@transaction ActionResult(false,AppText.text(TextKey.CopyKhongTimThayViec07c69c))
         val original=config(row)
         val session=rows("SELECT id,date,seconds,required,reward,zone,end_at FROM sessions WHERE task_id=? ORDER BY date DESC LIMIT 1",7,id).firstOrNull()
         val date=if(original.verification=="TIMER" && session!=null)session.string(1) else anchor(original,id)
@@ -177,8 +181,8 @@ class PhaseOneEngine(private val db: GameSqlConnection, private val clock: GameC
         eligible(c,id,date)?.let { return@transaction ActionResult(false,it) }
         var nominal=c.reward
         if(c.verification=="TIMER") {
-            if(session==null || session.long(2)<session.long(3)) return@transaction ActionResult(false,"Chưa đủ thời gian hoạt động")
-            if(session.string(5)!=clock.zone() || clock.now()>=session.long(6)) return@transaction ActionResult(false,"Khung giờ hoặc múi giờ đã thay đổi")
+            if(session==null || session.long(2)<session.long(3)) return@transaction ActionResult(false,AppText.text(TextKey.CopyChuaDuThoiGianHoatDong8dbf00))
+            if(session.string(5)!=clock.zone() || clock.now()>=session.long(6)) return@transaction ActionResult(false,AppText.text(TextKey.CopyKhungGioHoacMuiGioDaThayDoi279590))
             nominal=session.int(4)
         }
         val granted=award("task:$id:$date","TASK",id.toString(),nominal,clock.date())
@@ -187,18 +191,18 @@ class PhaseOneEngine(private val db: GameSqlConnection, private val clock: GameC
         exec("UPDATE tasks SET completed=?,last_done=?,streak=streak+1 WHERE id=?",date,date,id)
         exec("UPDATE sessions SET running=0,tick=0 WHERE task_id=?",id)
         // Task rewards never bypass the timed, watered growth engine.
-        ActionResult(true,"+${granted} xu / ${nominal} xu" + if(granted<nominal)" · Giới hạn ${Balance.DAILY_CAP} xu/ngày" else "",nominal,granted)
+        ActionResult(true,AppText.text(TextKey.Copy0Xu1Xu3d5c4b,granted,nominal) + if(granted<nominal)AppText.text(TextKey.CopyGioiHan0XuNgayB0d660,Balance.DAILY_CAP) else "",nominal,granted)
     }
     fun timer(id: Long,action: String): ActionResult = db.transaction {
         materialize()
-        val r=task(id) ?: return@transaction ActionResult(false,"Không tìm thấy việc")
+        val r=task(id) ?: return@transaction ActionResult(false,AppText.text(TextKey.CopyKhongTimThayViec07c69c))
         val c=config(r); val date=anchor(c,id); val e=effective(c,id,date)
         if(action=="PAUSE") {
             exec("UPDATE sessions SET running=0,tick=0 WHERE task_id=?",id)
-            return@transaction ActionResult(true,"Đã tạm dừng")
+            return@transaction ActionResult(true,AppText.text(TextKey.CopyDaTamDungA919ce))
         }
-        if(c.verification!="TIMER") return@transaction ActionResult(false,"Việc này dùng Click")
-        if(!clockSafe()) return@transaction ActionResult(false,"Kiểm tra lại đồng hồ")
+        if(c.verification!="TIMER") return@transaction ActionResult(false,AppText.text(TextKey.CopyViecNayDungClick24a178))
+        if(!clockSafe()) return@transaction ActionResult(false,AppText.text(TextKey.CopyKiemTraLaiDongHo62f8b9))
         eligible(e,id,date)?.let {
             if(action=="TICK")exec("UPDATE sessions SET running=0,tick=0 WHERE task_id=?",id)
             return@transaction ActionResult(false,it)
@@ -206,23 +210,23 @@ class PhaseOneEngine(private val db: GameSqlConnection, private val clock: GameC
         val b=bounds(e,date)
         val session=rows("SELECT id,seconds,required,tick,running,zone,end_at FROM sessions WHERE task_id=? AND date=?",7,id,date).firstOrNull()
         if(action=="TICK") {
-            if(session==null || session.int(4)==0) return@transaction ActionResult(false,"Bộ đếm đang dừng")
+            if(session==null || session.int(4)==0) return@transaction ActionResult(false,AppText.text(TextKey.CopyBoDemDangDungC643e1))
             if(session.string(5)!=clock.zone() || clock.now()>=session.long(6)) {
                 exec("UPDATE sessions SET running=0,tick=0 WHERE id=?",session.string(0))
-                return@transaction ActionResult(false,"Khung giờ đã kết thúc hoặc múi giờ thay đổi")
+                return@transaction ActionResult(false,AppText.text(TextKey.CopyKhungGioDaKetThucHoacMuiGioThayDoi340a23))
             }
             val delta=((clock.elapsed()-session.long(3))/1000).coerceIn(0,2)
             exec("UPDATE sessions SET seconds=MIN(required,seconds+?),tick=? WHERE id=?",delta,clock.elapsed(),session.string(0))
             if(delta>0)exec("INSERT INTO timer_intervals VALUES(?,?,?,?)",session.string(0),clock.now()-delta*1000,clock.now(),delta)
-            return@transaction ActionResult(true,"Đang tập trung")
+            return@transaction ActionResult(true,AppText.text(TextKey.CopyDangTapTrung1c969b))
         }
         val remaining=(session?.long(2) ?: c.minutes*60L)-(session?.long(1) ?: 0)
-        if(b.second!=Long.MAX_VALUE && clock.now()+remaining*1000>b.second) return@transaction ActionResult(false,"Không đủ thời gian trước khi khung giờ kết thúc")
+        if(b.second!=Long.MAX_VALUE && clock.now()+remaining*1000>b.second) return@transaction ActionResult(false,AppText.text(TextKey.CopyKhongDuThoiGianTruocKhiKhungGioKetThucC42123))
         exec("INSERT OR IGNORE INTO sessions(id,task_id,date,required,reward,zone,start_at,end_at) VALUES(?,?,?,?,?,?,?,?)",
             "timer:$id:$date",id,date,c.minutes*60,c.reward,clock.zone(),b.first,b.second)
-        if(session!=null && session.string(5)!=clock.zone()) return@transaction ActionResult(false,"Múi giờ thay đổi; tiếp tục vào ngày phù hợp")
+        if(session!=null && session.string(5)!=clock.zone()) return@transaction ActionResult(false,AppText.text(TextKey.CopyMuiGioThayDoiTiepTucVaoNgayPhuHop40beb2))
         exec("UPDATE sessions SET running=1,tick=? WHERE task_id=? AND date=?",clock.elapsed(),id,date)
-        ActionResult(true,"Đang tập trung · Chỉ tính khi ứng dụng ở phía trước")
+        ActionResult(true,AppText.text(TextKey.CopyDangTapTrungChiTinhKhiUngDungOPhiaTruoc84a504))
     }
     private fun clearEligible(date: String): Boolean =
         number("SELECT cleared FROM plans WHERE date=?",date)==0L &&
@@ -235,7 +239,7 @@ class PhaseOneEngine(private val db: GameSqlConnection, private val clock: GameC
     fun clear(): ActionResult = db.transaction {
         materialize()
         val date=clearDate()
-        if(!clockSafe() || date==null) return@transaction ActionResult(false,"Hoàn thành kế hoạch bắt buộc để nhận thưởng")
+        if(!clockSafe() || date==null) return@transaction ActionResult(false,AppText.text(TextKey.CopyHoanThanhKeHoachBatBuocDeNhanThuong36d27a))
         // An overnight occurrence belongs to yesterday; its income still uses today's cap.
         val amount=award("clear:$date","DAILY_CLEAR",date,Balance.DAILY_CLEAR,clock.date())
         exec("UPDATE plans SET cleared=1 WHERE date=?",date)
@@ -243,7 +247,7 @@ class PhaseOneEngine(private val db: GameSqlConnection, private val clock: GameC
         val streak=streak()
         val milestone=Balance.milestones[streak] ?: 0
         val extra=if(milestone>0)award("milestone:$streak","MILESTONE",streak.toString(),milestone,clock.date()) else 0
-        ActionResult(true,"Daily Clear +$amount xu" + if(extra>0)" · Cột mốc +$extra xu" else "",Balance.DAILY_CLEAR+milestone,amount+extra)
+        ActionResult(true,AppText.text(TextKey.CopyDailyClear0XuC4bb64,amount) + if(extra>0)AppText.text(TextKey.CopyCotMoc0XuEa5633,extra) else "",Balance.DAILY_CLEAR+milestone,amount+extra)
     }
     private fun taskStreak(id: Long): Int {
         var total=0
@@ -286,17 +290,17 @@ class PhaseOneEngine(private val db: GameSqlConnection, private val clock: GameC
     fun care(treeId: Long,type: String,resource: Int,growth: Int) =
         exec("INSERT INTO care_events(tree_id,type,at,resource,growth) VALUES(?,?,?,?,?)",treeId,type,clock.now(),resource,growth)
     fun purchase(id: String,quantity: Int,key: String): ActionResult = db.transaction {
-        if(number("SELECT COUNT(*) FROM purchase_receipts WHERE id=?",key)>0) return@transaction ActionResult(false,"Giao dịch này đã được xử lý")
-        if(quantity !in 1..99) return@transaction ActionResult(false,"Số lượng từ 1 đến 99")
+        if(number("SELECT COUNT(*) FROM purchase_receipts WHERE id=?",key)>0) return@transaction ActionResult(false,AppText.text(TextKey.CopyGiaoDichNayDaDuocXuLyE67a4b))
+        if(quantity !in 1..99) return@transaction ActionResult(false,AppText.text(TextKey.CopySoLuongTu1Den99415614))
         val product=careProducts.firstOrNull{it.id==id}
         if(product?.permanent==true && (quantity!=1 || number("SELECT quantity FROM inventory WHERE item=?",id)>0))
-            return@transaction ActionResult(false,"Bình tưới đã sở hữu hoặc số lượng không hợp lệ")
+            return@transaction ActionResult(false,AppText.text(TextKey.CopyBinhTuoiDaSoHuuHoacSoLuongKhongHopLeF1595c))
         val price=product?.price ?: catalog.firstOrNull{it.id==id}?.price
-            ?: return@transaction ActionResult(false,"Không tìm thấy sản phẩm")
+            ?: return@transaction ActionResult(false,AppText.text(TextKey.CopyKhongTimThaySanPhamC994c3))
         val total=price*quantity
-        if(!spend(key,"PURCHASE",id,total))return@transaction ActionResult(false,"Không đủ xu; túi đồ không thay đổi")
+        if(!spend(key,"PURCHASE",id,total))return@transaction ActionResult(false,AppText.text(TextKey.CopyKhongDuXuTuiDoKhongThayDoi457d06))
         exec("INSERT OR REPLACE INTO inventory(item,quantity) VALUES(?,?)",id,number("SELECT quantity FROM inventory WHERE item=?",id)+quantity)
         exec("INSERT INTO purchase_receipts VALUES(?,?,?,?,?)",key,id,quantity,total,clock.now())
-        ActionResult(true,"Đã mua $quantity · Tổng $total xu · Còn ${meta("coins")} xu")
+        ActionResult(true,AppText.text(TextKey.CopyDaMua0Tong1XuCon2Xu032b7f,quantity,total,meta("coins")))
     }
 }

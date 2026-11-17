@@ -1,5 +1,13 @@
 package com.mamxanh.app.presentation.ui
 
+import com.mamxanh.app.presentation.ui.design.AppColors
+import com.mamxanh.app.presentation.ui.design.AppDimensions
+import com.mamxanh.app.presentation.ui.design.AppTypography
+
+import com.mamxanh.shared.localization.TextKey
+
+import com.mamxanh.shared.localization.AppText
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -36,17 +44,17 @@ import com.mamxanh.app.presentation.ui.components.mintDepth
 fun GardenTrailBar(selected: AppDestination, onNavigate: (AppDestination) -> Unit, modifier: Modifier = Modifier) {
     val destinations=listOf(AppDestination.TASKS,AppDestination.GARDEN,AppDestination.HOME,AppDestination.SHOP,AppDestination.STATS)
     Column(modifier.fillMaxWidth().background(Cream)) {
-        androidx.compose.material3.HorizontalDivider(color=Color(0xFFE4E7DC))
-        Row(Modifier.fillMaxWidth().navigationBarsPadding().padding(vertical=8.dp).selectableGroup()) {
+        androidx.compose.material3.HorizontalDivider(color=AppColors.SwatchFFE4E7DC)
+        Row(Modifier.fillMaxWidth().navigationBarsPadding().padding(vertical=AppDimensions.Dp8).selectableGroup()) {
             destinations.forEach{destination->
                 val active=destination==selected
                 val icon=when(destination){AppDestination.HOME->Icons.Outlined.Home;AppDestination.TASKS->Icons.Outlined.FactCheck;AppDestination.GARDEN->Icons.Outlined.Park;AppDestination.SHOP->Icons.Outlined.Storefront;AppDestination.STATS->Icons.Outlined.MenuBook}
-                val label=when(destination){AppDestination.HOME->"Vườn";AppDestination.TASKS->"Việc";AppDestination.GARDEN->"Cây";AppDestination.SHOP->"Tiệm";AppDestination.STATS->"Nhật ký"}
-                Column(Modifier.weight(1f).heightIn(min=56.dp).selectable(active,role=Role.Tab,onClick={onNavigate(destination)}),
-                    horizontalAlignment=Alignment.CenterHorizontally,verticalArrangement=Arrangement.spacedBy(4.dp)) {
-                    Icon(icon,null,Modifier.size(22.dp),tint=if(active)Green else Muted)
-                    Text(label,color=if(active)Green else Muted,fontSize=10.sp,lineHeight=14.sp,fontWeight=if(active)FontWeight.SemiBold else FontWeight.Normal)
-                    Box(Modifier.size(4.dp).background(if(active)Green else Color.Transparent,CircleShape))
+                val label=when(destination){AppDestination.HOME->AppText.text(TextKey.CopyVuon9e4c10);AppDestination.TASKS->AppText.text(TextKey.CopyViec818768);AppDestination.GARDEN->AppText.text(TextKey.CopyCayC854d7);AppDestination.SHOP->AppText.text(TextKey.CopyTiemF1ee00);AppDestination.STATS->AppText.text(TextKey.CopyNhatKy1e6c3c)}
+                Column(Modifier.weight(1f).heightIn(min=AppDimensions.Dp56).selectable(active,role=Role.Tab,onClick={onNavigate(destination)}),
+                    horizontalAlignment=Alignment.CenterHorizontally,verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp4)) {
+                    Icon(icon,null,Modifier.size(AppDimensions.Dp22),tint=if(active)Green else Muted)
+                    Text(label,color=if(active)Green else Muted,fontSize=AppTypography.Sp10,lineHeight=AppTypography.Sp14,fontWeight=if(active)FontWeight.SemiBold else FontWeight.Normal)
+                    Box(Modifier.size(AppDimensions.Dp4).background(if(active)Green else AppColors.Transparent,CircleShape))
                 }
             }
         }

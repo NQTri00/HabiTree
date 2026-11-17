@@ -1,5 +1,9 @@
 package com.mamxanh.app.feature.garden.presentation
 
+import com.mamxanh.shared.localization.TextKey
+
+import com.mamxanh.shared.localization.AppText
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mamxanh.app.feature.garden.domain.GardenRepository
@@ -46,10 +50,10 @@ class GardenViewModel(private val repository: GardenRepository) : ViewModel() {
                         val garden = withContext(Dispatchers.IO) { LoadGarden(repository)() }
                         _uiState.value = GardenUiState(garden, false, when {
                             intent is GardenIntent.WaterAll -> batchFeedback
-                            changed && intent is GardenIntent.Plant -> "Đã gieo cây!\nĐã trồng " + (intent.name.ifBlank { "mầm mới" }) + " tại ô " + (intent.plotId?.toString()?.padStart(2, '0') ?: garden.plots.firstOrNull { it.treeId == garden.trees.maxByOrNull { tree -> tree.id }?.id }?.id ?: "")
+                            changed && intent is GardenIntent.Plant -> AppText.text(TextKey.CopyDaGieoCayDaTrongE209c5) + (intent.name.ifBlank { AppText.text(TextKey.CopyMamMoiFa708b) }) + AppText.text(TextKey.CopyTaiOF143a2) + (intent.plotId?.toString()?.padStart(2, '0') ?: garden.plots.firstOrNull { it.treeId == garden.trees.maxByOrNull { tree -> tree.id }?.id }?.id ?: "")
                             changed -> null
-                            intent is GardenIntent.UnlockPlot -> "Không thể mở ô trồng. Hãy kiểm tra số xu hiện có."
-                            else -> "Chưa thể gieo cây. Hãy kiểm tra hạt trong túi và ô trồng còn trống."
+                            intent is GardenIntent.UnlockPlot -> AppText.text(TextKey.CopyKhongTheMoOTrongHayKiemTraSoXuHienCo4a5480)
+                            else -> AppText.text(TextKey.CopyChuaTheGieoCayHayKiemTraHatTrongTuiVaOTr249b81)
                         })
                         if (changed) effectChannel.send(GardenEffect.DataChanged)
                     } finally {

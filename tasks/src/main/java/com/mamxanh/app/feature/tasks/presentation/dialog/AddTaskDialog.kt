@@ -1,5 +1,11 @@
 package com.mamxanh.app.feature.tasks.presentation.dialog
 
+import com.mamxanh.app.presentation.ui.design.AppDimensions
+
+import com.mamxanh.shared.localization.TextKey
+
+import com.mamxanh.shared.localization.AppText
+
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -31,47 +37,47 @@ fun AddTaskDialog(onDismiss: ()->Unit,onSave: (TaskConfig)->Unit,
         val p=value.split(':').map{it.toIntOrNull() ?: return -2}
         return if(p.size==2 && p[0] in 0..23 && p[1] in 0..59)p[0]*60+p[1] else -2
     }
-    MintDialog(if(initial.title.isBlank())"Thêm việc" else "Sửa việc",::dismiss,"Lưu",{
+    MintDialog(if(initial.title.isBlank())AppText.text(TextKey.CopyThemViecC371c2) else AppText.text(TextKey.CopySuaViec55ba70),::dismiss,AppText.text(TextKey.CopyLuuE91f26),{
                         val c=TaskConfig(values[0],values[1],values[2],values[3],
                             if(values[1]=="TODO")"ONCE" else values[4],values[5],values[6],values[7],
                             values[8].toIntOrNull() ?: 0,minute(values[9]),minute(values[10]),minute(values[11]))
                         error=c.error().orEmpty()
                         if(error.isEmpty())onSave(c)
 
-    },cancelLabel="Hủy") {
-                    Text("Việc mới là tùy chọn hôm nay. Lịch mới từ ngày mai.",color=com.mamxanh.app.presentation.ui.Muted)
-                    TaskInput(values[0],{update(0,it.take(100))},"Tên việc (1–100)",Modifier.fillMaxWidth())
-                    TaskChoices("Loại",listOf("HABIT" to "Thói quen","DAILY" to "Hằng ngày","TODO" to "Một lần"),values[1]){update(1,it)}
-                    TaskChoices("Nhóm",listOf("Học tập","Sức khỏe","Nếp sống","Việc nhà","Cá nhân").map{it to it},values[2]){update(2,it)}
+    },cancelLabel=AppText.text(TextKey.CopyHuy74fcd3)) {
+                    Text(AppText.text(TextKey.CopyViecMoiLaTuyChonHomNayLichMoiTuNgayMai984ba2),color=com.mamxanh.app.presentation.ui.Muted)
+                    TaskInput(values[0],{update(0,it.take(100))},AppText.text(TextKey.CopyTenViec1100312f5b),Modifier.fillMaxWidth())
+                    TaskChoices(AppText.text(TextKey.CopyLoai3bfbf9),listOf("HABIT" to AppText.text(TextKey.CopyThoiQuenE6e6e8),"DAILY" to AppText.text(TextKey.CopyHangNgay545b54),"TODO" to AppText.text(TextKey.CopyMotLanCa8e62)),values[1]){update(1,it)}
+                    TaskChoices(AppText.text(TextKey.CopyNhomCd7a71),listOf(AppText.canonical(TextKey.CopyHocTapA51516),AppText.canonical(TextKey.CopySucKhoe071df7),AppText.canonical(TextKey.CopyNepSong8d1a98),AppText.canonical(TextKey.CopyViecNha126ef3),AppText.canonical(TextKey.CopyCaNhan983dcc)).map{it to AppText.category(it)},values[2]){update(2,it)}
                     if(values[1]!="TODO") {
-                        TaskChoices("Lịch",listOf("EVERY_DAY" to "Mỗi ngày","WEEKDAYS" to "Ngày thường","WEEKENDS" to "Cuối tuần","CUSTOM" to "Tự chọn"),values[4]){update(4,it)}
+                        TaskChoices(AppText.text(TextKey.CopyLichBe87b3),listOf("EVERY_DAY" to AppText.text(TextKey.CopyMoiNgay8270cb),"WEEKDAYS" to AppText.text(TextKey.CopyNgayThuongEf45e7),"WEEKENDS" to AppText.text(TextKey.CopyCuoiTuanA0fb27),"CUSTOM" to AppText.text(TextKey.CopyTuChon905069)),values[4]){update(4,it)}
                         if(values[4]=="CUSTOM") {
-                            Text("Chọn ngày")
-                            FlowRow(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.spacedBy(4.dp),verticalArrangement=Arrangement.spacedBy(4.dp)) {
+                            Text(AppText.text(TextKey.CopyChonNgayD724ec))
+                            FlowRow(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp4),verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp4)) {
                                 listOf("CN","T2","T3","T4","T5","T6","T7").forEachIndexed { i,label ->
                                     GardenChoiceChip(label,i.toString() in values[5],onClick={
                                         update(5,if(i.toString() in values[5])values[5].replace(i.toString(),"") else values[5]+i)
-                                    },modifier=Modifier.widthIn(min=48.dp))
+                                    },modifier=Modifier.widthIn(min=AppDimensions.Dp48))
                                 }
                             }
                         }
-                    } else TaskInput(values[6],{update(6,it)},"Hạn chót (YYYY-MM-DD, tùy chọn)",Modifier.fillMaxWidth())
-                    TaskChoices("Xác nhận",listOf("CLICK" to "Click","TIMER" to "Timer"),values[7]){update(7,it)}
-                    if(values[7]=="TIMER")TaskInput(values[8],{update(8,it.filter(Char::isDigit).take(3))},"Phút hoạt động (5–240)",Modifier.fillMaxWidth())
-                    GardenExpandableSection("Thêm chi tiết") {
-                    TaskInput(values[3],{update(3,it.take(500))},"Mô tả (tối đa 500)",Modifier.fillMaxWidth())
-                    Text("Khung giờ tùy chọn · HH:mm. Kết thúc sớm hơn bắt đầu nghĩa là qua đêm.")
-                    TaskInput(values[9],{update(9,it)},"Bắt đầu (HH:mm)",Modifier.fillMaxWidth())
-                    TaskInput(values[10],{update(10,it)},"Kết thúc (HH:mm)",Modifier.fillMaxWidth())
-                    TaskInput(values[11],{update(11,it)},"Nhắc việc (HH:mm, tùy chọn)",Modifier.fillMaxWidth())
-                    Text("Thông báo cần quyền hệ thống; từ chối quyền vẫn lưu được việc.")
+                    } else TaskInput(values[6],{update(6,it)},AppText.text(TextKey.CopyHanChotYyyyMmDdTuyChonB14023),Modifier.fillMaxWidth())
+                    TaskChoices(AppText.text(TextKey.CopyXacNhan1503b0),listOf("CLICK" to "Click","TIMER" to "Timer"),values[7]){update(7,it)}
+                    if(values[7]=="TIMER")TaskInput(values[8],{update(8,it.filter(Char::isDigit).take(3))},AppText.text(TextKey.CopyPhutHoatDong52400e7a6f),Modifier.fillMaxWidth())
+                    GardenExpandableSection(AppText.text(TextKey.CopyThemChiTietAe1911)) {
+                    TaskInput(values[3],{update(3,it.take(500))},AppText.text(TextKey.CopyMoTaToiDa5005b2042),Modifier.fillMaxWidth())
+                    Text(AppText.text(TextKey.CopyKhungGioTuyChonHhMmKetThucSomHonBatDauNgA49a89))
+                    TaskInput(values[9],{update(9,it)},AppText.text(TextKey.CopyBatDauHhMmAf5f85),Modifier.fillMaxWidth())
+                    TaskInput(values[10],{update(10,it)},AppText.text(TextKey.CopyKetThucHhMm8a0762),Modifier.fillMaxWidth())
+                    TaskInput(values[11],{update(11,it)},AppText.text(TextKey.CopyNhacViecHhMmTuyChon952c81),Modifier.fillMaxWidth())
+                    Text(AppText.text(TextKey.CopyThongBaoCanQuyenHeThongTuChoiQuyenVanLuuD26414d))
                     }
-                    Text("Thưởng: ${Balance.reward(values[7],values[8].toIntOrNull() ?: 5)} xu · Tổng tối đa ${Balance.DAILY_CAP} xu/ngày")
+                    Text(AppText.text(TextKey.CopyThuong0XuTongToiDa1XuNgay717b49,Balance.reward(values[7],values[8].toIntOrNull() ?: 5),Balance.DAILY_CAP))
                     if(error.isNotEmpty())Text(error,color=MaterialTheme.colorScheme.error)
     }
-    if(discard)MintDialog("Bỏ thay đổi?",{discard=false},"Bỏ thay đổi",onDismiss,
-        cancelLabel="Tiếp tục sửa",destructive=true) {
-        Text("Nội dung chưa lưu sẽ bị mất.")
+    if(discard)MintDialog(AppText.text(TextKey.CopyBoThayDoiB07820),{discard=false},AppText.text(TextKey.CopyBoThayDoiE01800),onDismiss,
+        cancelLabel=AppText.text(TextKey.CopyTiepTucSua13f645),destructive=true) {
+        Text(AppText.text(TextKey.CopyNoiDungChuaLuuSeBiMat4228e1))
     }
 }
 @Composable

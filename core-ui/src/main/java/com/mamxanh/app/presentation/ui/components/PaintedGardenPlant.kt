@@ -2,6 +2,9 @@
 
 package com.mamxanh.app.presentation.ui.components
 
+import com.mamxanh.app.presentation.ui.design.AppColors
+import com.mamxanh.app.presentation.ui.design.AppDimensions
+
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -52,9 +55,9 @@ fun PaintedGardenPlant(speciesId: String, modifier: Modifier = Modifier, potted:
                 dstOffset=IntOffset(((size.width-target.width)/2).roundToInt(),(size.height*.80f-target.height).roundToInt()),dstSize=target)
             val w=size.width;val h=size.height
             val pot=Path().apply {moveTo(w*.31f,h*.78f);lineTo(w*.69f,h*.78f);lineTo(w*.64f,h*.97f);quadraticTo(w*.50f,h*1.02f,w*.36f,h*.97f);close()}
-            drawPath(pot,Brush.horizontalGradient(listOf(Color(0xFFD2AD7F),Color(0xFFFFE8BD),Color(0xFFD5AF7C))))
-            drawOval(Color(0xFFEFD1A1),Offset(w*.29f,h*.74f),Size(w*.42f,h*.09f))
-            drawOval(Color(0xFFAA8259),Offset(w*.33f,h*.76f),Size(w*.34f,h*.045f))
+            drawPath(pot,Brush.horizontalGradient(listOf(AppColors.SwatchFFD2AD7F,AppColors.SwatchFFFFE8BD,AppColors.SwatchFFD5AF7C)))
+            drawOval(AppColors.SwatchFFEFD1A1,Offset(w*.29f,h*.74f),Size(w*.42f,h*.09f))
+            drawOval(AppColors.SwatchFFAA8259,Offset(w*.33f,h*.76f),Size(w*.34f,h*.045f))
         }
     }
 }
@@ -63,6 +66,6 @@ fun PaintedGardenPlant(speciesId: String, modifier: Modifier = Modifier, potted:
 @Composable
 fun SimplePottedPlantsPreview() {
     Row { listOf("succulent","pine","cherry","mandarin").forEach {
-        PaintedGardenPlant(it,Modifier.weight(1f).height(120.dp),potted=true)
+        PaintedGardenPlant(it,Modifier.weight(1f).height(AppDimensions.Dp120),potted=true)
     } }
 }

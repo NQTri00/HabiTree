@@ -1,5 +1,10 @@
 package com.mamxanh.app.presentation.ui.components
 
+import com.mamxanh.app.presentation.ui.design.AppColors
+import com.mamxanh.app.presentation.ui.design.AppDimensions
+import com.mamxanh.app.presentation.ui.design.AppOpacity
+import com.mamxanh.app.presentation.ui.design.AppTypography
+
 import android.graphics.Paint
 import android.graphics.Typeface
 import androidx.compose.foundation.Canvas
@@ -29,10 +34,10 @@ import com.mamxanh.app.presentation.ui.Deep
 
 /** A shallow reference-style arch; long or enlarged text wraps instead of shrinking. */
 @Composable
-fun GardenArchedHeading(label: String, modifier: Modifier = Modifier, fontSize: TextUnit = 20.sp) {
+fun GardenArchedHeading(label: String, modifier: Modifier = Modifier, fontSize: TextUnit = AppTypography.Sp20) {
     val density = LocalDensity.current
     val textSize = with(density) { fontSize.toPx() }
-    val headingHeight = with(density) { fontSize.toDp() } + 40.dp
+    val headingHeight = with(density) { fontSize.toDp() } + AppDimensions.Dp40
     val paint = remember(textSize) {
         Paint(Paint.ANTI_ALIAS_FLAG).apply {
             typeface = Typeface.create("serif", Typeface.BOLD)
@@ -42,7 +47,7 @@ fun GardenArchedHeading(label: String, modifier: Modifier = Modifier, fontSize: 
         }
     }
     BoxWithConstraints(modifier) {
-        val room = with(density) { (maxWidth - 24.dp).toPx() }
+        val room = with(density) { (maxWidth - AppDimensions.Dp24).toPx() }
         if (paint.measureText(label) > room) {
             GardenRichText(label, Modifier.fillMaxWidth().heightIn(min = headingHeight).semantics { heading() },
                 color = Deep, fontSize = fontSize, lineHeight = fontSize * 1.2f,
@@ -52,9 +57,9 @@ fun GardenArchedHeading(label: String, modifier: Modifier = Modifier, fontSize: 
                 text = AnnotatedString(label)
                 heading()
             }) {
-                val inset = 8.dp.toPx()
-                val baseline = -paint.fontMetrics.ascent + 6.dp.toPx()
-                val bend = 6.dp.toPx()
+                val inset = AppDimensions.Dp8.toPx()
+                val baseline = -paint.fontMetrics.ascent + AppDimensions.Dp6.toPx()
+                val bend = AppDimensions.Dp6.toPx()
                 val arc = android.graphics.Path().apply {
                     moveTo(inset, baseline + bend)
                     quadTo(size.width / 2, baseline - bend, size.width - inset, baseline + bend)
@@ -64,11 +69,11 @@ fun GardenArchedHeading(label: String, modifier: Modifier = Modifier, fontSize: 
                     it.nativeCanvas.drawTextOnPath(label, arc, (length - paint.measureText(label)) / 2, 0f, paint)
                 }
                 val underline = Path().apply {
-                    moveTo(inset, baseline + bend + 10.dp.toPx())
-                    quadraticTo(size.width / 2, baseline - bend + 10.dp.toPx(),
-                        size.width - inset, baseline + bend + 10.dp.toPx())
+                    moveTo(inset, baseline + bend + AppDimensions.Dp10.toPx())
+                    quadraticTo(size.width / 2, baseline - bend + AppDimensions.Dp10.toPx(),
+                        size.width - inset, baseline + bend + AppDimensions.Dp10.toPx())
                 }
-                drawPath(underline, Color(0xFFC89B61).copy(alpha = .45f), style = Stroke(1.dp.toPx()))
+                drawPath(underline, AppColors.SwatchFFC89B61.copy(alpha = AppOpacity.Value_45), style = Stroke(AppDimensions.Dp1.toPx()))
             }
         }
     }

@@ -1,5 +1,9 @@
 package com.mamxanh.app.data
 
+import com.mamxanh.shared.localization.TextKey
+
+import com.mamxanh.shared.localization.AppText
+
 import android.Manifest
 import android.app.*
 import android.content.*
@@ -27,14 +31,14 @@ class TaskReminderReceiver:BroadcastReceiver() {
                             ?.putExtra("engagement_task",id)?.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP)
                         if(launch!=null) {
                             val manager=context.getSystemService(NotificationManager::class.java)
-                            if(Build.VERSION.SDK_INT>=26)manager.createNotificationChannel(NotificationChannel("gentle_tasks","Nhắc nhẹ",
+                            if(Build.VERSION.SDK_INT>=26)manager.createNotificationChannel(NotificationChannel("gentle_tasks",AppText.text(TextKey.CopyNhacNhe651eaf),
                                 NotificationManager.IMPORTANCE_DEFAULT))
                             val open=PendingIntent.getActivity(context,id.hashCode(),launch,PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
                             val builder=if(Build.VERSION.SDK_INT>=26)Notification.Builder(context,"gentle_tasks") else Notification.Builder(context)
                             try {
                                 manager.notify(id.hashCode(),builder.setSmallIcon(android.R.drawable.ic_menu_agenda)
-                                    .setContentTitle(intent.getStringExtra("title") ?: "Một việc nhỏ")
-                                    .setContentText(if(id<0)"Cây cần được chăm sóc khi bạn có thời gian." else "Bạn có thể bắt đầu khi phù hợp.")
+                                    .setContentTitle(intent.getStringExtra("title") ?: AppText.text(TextKey.CopyMotViecNhoC0c1f2))
+                                    .setContentText(if(id<0)AppText.text(TextKey.CopyCayCanDuocChamSocKhiBanCoThoiGianF1c6b2) else AppText.text(TextKey.CopyBanCoTheBatDauKhiPhuHop0f720a))
                                     .setContentIntent(open).setAutoCancel(true).build())
                             }catch(_:SecurityException){ /* Revocation never blocks task/focus behavior. */ }
                         }

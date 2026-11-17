@@ -1,5 +1,7 @@
 package com.mamxanh.app.feature.garden.presentation
 
+import com.mamxanh.app.presentation.ui.design.AppDimensions
+
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
 import androidx.compose.ui.tooling.preview.Preview
@@ -36,9 +38,9 @@ import com.mamxanh.shared.model.GardenCosmetic
 
 @Preview(name="Small decoration artwork",widthDp=160,heightDp=40,device="spec:width=160dp,height=40dp,dpi=160")
 @Composable fun CompactCosmeticIconsPreview() {
-    Row(Modifier.padding(6.dp),horizontalArrangement=Arrangement.spacedBy(12.dp)) {
+    Row(Modifier.padding(AppDimensions.Dp6),horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp12)) {
         listOf("border_wood","reward_path","reward_sign","theme_night").forEach{id->
-            CosmeticArtwork(gardenCosmetics.first{it.id==id},Modifier.size(24.dp))
+            CosmeticArtwork(gardenCosmetics.first{it.id==id},Modifier.size(AppDimensions.Dp24))
         }
     }
 }

@@ -17,6 +17,9 @@ import com.mamxanh.app.presentation.ui.MamXanhApp
 import org.koin.androidx.compose.koinViewModel
 
 class MainActivity : ComponentActivity() {
+    override fun attachBaseContext(newBase:android.content.Context){
+        super.attachBaseContext(com.mamxanh.app.presentation.ui.localization.AppLanguageController.wrap(newBase))
+    }
     private var incomingEntity by mutableStateOf<Long?>(null)
     override fun onNewIntent(intent:android.content.Intent) {
         super.onNewIntent(intent)

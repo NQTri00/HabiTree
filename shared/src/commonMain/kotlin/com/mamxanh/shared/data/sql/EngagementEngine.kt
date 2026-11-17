@@ -1,5 +1,9 @@
 package com.mamxanh.shared.data.sql
 
+import com.mamxanh.shared.localization.TextKey
+
+import com.mamxanh.shared.localization.AppText
+
 import com.mamxanh.shared.model.*
 import com.mamxanh.shared.time.GameClock
 
@@ -48,13 +52,13 @@ class EngagementEngine(private val db:GameSqlConnection,private val clock:GameCl
         }
     }
     fun act(a:EngagementAction):ActionResult=db.transaction {
-        if(!safe())return@transaction ActionResult(false,"Đồng hồ đã lùi; chờ giờ thực bắt kịp")
+        if(!safe())return@transaction ActionResult(false,AppText.text(TextKey.CopyDongHoDaLuiChoGioThucBatKip1475f3))
         val result=when(a) {
             is EngagementAction.Onboard -> {
-                if(meta("onboarded")=="1")ActionResult(false,"Hướng dẫn đã hoàn tất; dùng thư viện để thêm việc")
+                if(meta("onboarded")=="1")ActionResult(false,AppText.text(TextKey.CopyHuongDanDaHoanTatDungThuVienDeThemViecBeee35))
                 else if(!a.skip && (a.seed !in listOf("succulent","monstera","snake") || a.templates.distinct().size !in 2..5 ||
-                    a.templates.any{id->habitTemplates.none{it.id==id}}))ActionResult(false,"Chọn cây và 2–5 việc phù hợp")
-                else if(!receipt(a.key,"ONBOARD"))ActionResult(false,"Đã xử lý")
+                    a.templates.any{id->habitTemplates.none{it.id==id}}))ActionResult(false,AppText.text(TextKey.CopyChonCayVa25ViecPhuHopB6e17e))
+                else if(!receipt(a.key,"ONBOARD"))ActionResult(false,AppText.text(TextKey.CopyDaXuLy602337))
                 else {
                     if(!a.skip) {
                         if(meta("free_seed_available")=="1" && num("SELECT COUNT(*) FROM trees")==0L) {
@@ -72,73 +76,73 @@ class EngagementEngine(private val db:GameSqlConnection,private val clock:GameCl
                             }
                         }
                     }
-                    put("onboarded","1");ActionResult(true,"Sẵn sàng cho những việc nhỏ")
+                    put("onboarded","1");ActionResult(true,AppText.text(TextKey.CopySanSangChoNhungViecNho96b4f6))
                 }
             }
             is EngagementAction.Templates -> {
-                if(a.ids.isEmpty() || a.ids.any{id->habitTemplates.none{it.id==id}})ActionResult(false,"Chọn việc mẫu")
-                else if(!receipt(a.key,"TEMPLATES"))ActionResult(false,"Đã xử lý")
-                else {copyTemplates(a.ids);ActionResult(true,"Đã thêm việc mẫu")}
+                if(a.ids.isEmpty() || a.ids.any{id->habitTemplates.none{it.id==id}})ActionResult(false,AppText.text(TextKey.CopyChonViecMau74fa0a))
+                else if(!receipt(a.key,"TEMPLATES"))ActionResult(false,AppText.text(TextKey.CopyDaXuLy602337))
+                else {copyTemplates(a.ids);ActionResult(true,AppText.text(TextKey.CopyDaThemViecMau3cca51))}
             }
             is EngagementAction.StartFocus -> start(a)
             is EngagementAction.Focus -> control(a.id,a.action)
             is EngagementAction.Rest -> {
-                if(!validDate(a.date) || a.date<=clock.date() || a.date>offset(clock.date(),366))ActionResult(false,"Chọn ngày nghỉ từ ngày mai")
-                else if(num("SELECT COUNT(*) FROM rest_days WHERE date=?",a.date)>0)ActionResult(false,"Ngày nghỉ đã được lên lịch")
-                else if(num("SELECT COUNT(*) FROM rest_days WHERE substr(date,1,7)=?",a.date.take(7))>=2)ActionResult(false,"Tối đa 2 ngày nghỉ mỗi tháng")
+                if(!validDate(a.date) || a.date<=clock.date() || a.date>offset(clock.date(),366))ActionResult(false,AppText.text(TextKey.CopyChonNgayNghiTuNgayMai60732f))
+                else if(num("SELECT COUNT(*) FROM rest_days WHERE date=?",a.date)>0)ActionResult(false,AppText.text(TextKey.CopyNgayNghiDaDuocLenLich560b54))
+                else if(num("SELECT COUNT(*) FROM rest_days WHERE substr(date,1,7)=?",a.date.take(7))>=2)ActionResult(false,AppText.text(TextKey.CopyToiDa2NgayNghiMoiThangCf72ae))
                 else {
                     exec("INSERT INTO rest_days VALUES(?,?)",a.date,clock.now())
                     exec("UPDATE obligations SET waived=1 WHERE date=?",a.date)
-                    memory("rest:${a.date}","REST",0,"Ngày nghỉ đã lên lịch",clock.now())
-                    ActionResult(true,"Đã lên lịch nghỉ; không tính là ngày thành công")
+                    memory("rest:${a.date}","REST",0,AppText.text(TextKey.CopyNgayNghiDaLenLich75e8a1),clock.now())
+                    ActionResult(true,AppText.text(TextKey.CopyDaLenLichNghiKhongTinhLaNgayThanhCong44b511))
                 }
             }
             is EngagementAction.BuyProtection -> {
-                if(!phase.spend("protection-buy:${a.key}","PURCHASE","protection",250))ActionResult(false,"Cần 250 xu; chưa mua vé")
+                if(!phase.spend("protection-buy:${a.key}","PURCHASE","protection",250))ActionResult(false,AppText.text(TextKey.CopyCan250XuChuaMuaVeE8abf3))
                 else {
                     exec("INSERT OR IGNORE INTO inventory VALUES('protection',0)")
                     exec("UPDATE inventory SET quantity=quantity+1 WHERE item='protection'")
-                    ActionResult(true,"Đã thêm 1 vé bảo vệ")
+                    ActionResult(true,AppText.text(TextKey.CopyDaThem1VeBaoVe9989f3))
                 }
             }
             is EngagementAction.Protect -> {
                 phase.snapshot()
                 val missed=num("SELECT COUNT(*) FROM obligations o WHERE date=? AND waived=0 AND NOT EXISTS(SELECT 1 FROM occurrences x WHERE x.task_id=o.task_id AND x.date=o.date)",a.date)
                 if(!validDate(a.date) || a.date>=clock.date() || missed==0L || num("SELECT COUNT(*) FROM rest_days WHERE date=?",a.date)>0)
-                    ActionResult(false,"Chỉ bảo vệ một ngày đã bỏ lỡ có lịch bắt buộc")
-                else if(num("SELECT COUNT(*) FROM protection_uses WHERE date=? OR receipt=?",a.date,a.key)>0)ActionResult(false,"Ngày này đã được bảo vệ")
-                else if(num("SELECT quantity FROM inventory WHERE item='protection'")<=0)ActionResult(false,"Chưa có vé bảo vệ")
+                    ActionResult(false,AppText.text(TextKey.CopyChiBaoVeMotNgayDaBoLoCoLichBatBuoc559497))
+                else if(num("SELECT COUNT(*) FROM protection_uses WHERE date=? OR receipt=?",a.date,a.key)>0)ActionResult(false,AppText.text(TextKey.CopyNgayNayDaDuocBaoVe836dc8))
+                else if(num("SELECT quantity FROM inventory WHERE item='protection'")<=0)ActionResult(false,AppText.text(TextKey.CopyChuaCoVeBaoVe515182))
                 else {
                     exec("UPDATE inventory SET quantity=quantity-1 WHERE item='protection'")
                     exec("INSERT INTO protection_uses VALUES(?,?,?)",a.date,a.key,clock.now())
-                    memory("protect:${a.date}","PROTECTION",0,"Một ngày được bảo vệ",clock.now())
-                    ActionResult(true,"Đã bảo vệ ngày ${a.date}; không nhận Daily Clear")
+                    memory("protect:${a.date}","PROTECTION",0,AppText.text(TextKey.CopyMotNgayDuocBaoVeF0f58e),clock.now())
+                    ActionResult(true,AppText.text(TextKey.CopyDaBaoVeNgay0KhongNhanDailyClearF822ac,a.date))
                 }
             }
             is EngagementAction.Reflection -> {
-                if(!validDate(a.week) || a.note.length>2000)ActionResult(false,"Ghi chú tối đa 2000 ký tự")
-                else {exec("INSERT OR REPLACE INTO weekly_reflections VALUES(?,?,?)",a.week,a.note,clock.now());ActionResult(true,"Đã lưu suy ngẫm trên thiết bị")}
+                if(!validDate(a.week) || a.note.length>2000)ActionResult(false,AppText.text(TextKey.CopyGhiChuToiDa2000KyTuF518c7))
+                else {exec("INSERT OR REPLACE INTO weekly_reflections VALUES(?,?,?)",a.week,a.note,clock.now());ActionResult(true,AppText.text(TextKey.CopyDaLuuSuyNgamTrenThietBiEba47d))}
             }
             is EngagementAction.MemoryNote -> {
-                if(a.note.length>1000)ActionResult(false,"Ghi chú tối đa 1000 ký tự")
-                else {exec("UPDATE memory_events SET note=? WHERE id=?",a.note,a.id);ActionResult(true,"Đã lưu ghi chú")}
+                if(a.note.length>1000)ActionResult(false,AppText.text(TextKey.CopyGhiChuToiDa1000KyTuFc83f2))
+                else {exec("UPDATE memory_events SET note=? WHERE id=?",a.note,a.id);ActionResult(true,AppText.text(TextKey.CopyDaLuuGhiChuCaf027))}
             }
             is EngagementAction.Reminder -> {
                 val p=a.preference
-                if(p.mode !in setOf("OFF","AT","BEFORE") || p.minute !in 0..1439)ActionResult(false,"Giờ nhắc không hợp lệ")
+                if(p.mode !in setOf("OFF","AT","BEFORE") || p.minute !in 0..1439)ActionResult(false,AppText.text(TextKey.CopyGioNhacKhongHopLeC63ad9))
                 else {
                     exec("INSERT OR REPLACE INTO reminder_preferences VALUES(?,?,?,?)",p.taskId,p.mode,p.minute,if(p.followUp)1 else 0)
-                    ActionResult(true,"Đã lưu nhắc việc")
+                    ActionResult(true,AppText.text(TextKey.CopyDaLuuNhacViec91fc70))
                 }
             }
             is EngagementAction.Settings -> {
                 val s=a.value
-                if(s.quietStart !in 0..1439 || s.quietEnd !in 0..1439)ActionResult(false,"Giờ yên lặng không hợp lệ")
+                if(s.quietStart !in 0..1439 || s.quietEnd !in 0..1439)ActionResult(false,AppText.text(TextKey.CopyGioYenLangKhongHopLe4439ed))
                 else {
                     put("reminders_paused",if(s.paused)1 else 0);put("quiet_start",s.quietStart);put("quiet_end",s.quietEnd)
                     put("tree_reminders",if(s.treeReminders)1 else 0);put("reduced_motion",if(s.reducedMotion)1 else 0)
                     put("break_prompts",if(s.breakPrompts)1 else 0)
-                    ActionResult(true,"Đã lưu tùy chọn")
+                    ActionResult(true,AppText.text(TextKey.CopyDaLuuTuyChon6ceb29))
                 }
             }
         }
@@ -146,11 +150,11 @@ class EngagementEngine(private val db:GameSqlConnection,private val clock:GameCl
         result
     }
     private fun start(a:EngagementAction.StartFocus):ActionResult {
-        if(a.minutes !in 5..120)return ActionResult(false,"Phiên tự do từ 5 đến 120 phút")
-        if(num("SELECT COUNT(*) FROM focus_sessions WHERE id=?",a.key)>0)return ActionResult(false,"Phiên này đã tồn tại")
+        if(a.minutes !in 5..120)return ActionResult(false,AppText.text(TextKey.CopyPhienTuDoTu5Den120PhutBd4094))
+        if(num("SELECT COUNT(*) FROM focus_sessions WHERE id=?",a.key)>0)return ActionResult(false,AppText.text(TextKey.CopyPhienNayDaTonTai58b7ad))
         val task=if(a.taskId==0L)null else phase.tasks().firstOrNull{it.id==a.taskId}
         if(a.taskId!=0L && (task==null || task.config.verification!="TIMER" || !task.available || task.doneToday || task.finished))
-            return ActionResult(false,"Chọn việc Timer đang khả dụng")
+            return ActionResult(false,AppText.text(TextKey.CopyChonViecTimerDangKhaDungE11ec8))
         rows("SELECT id FROM focus_sessions WHERE state='RUNNING'",1).forEach{control(it.string(0),"PAUSE")}
         if(task!=null) {
             val result=phase.timer(task.id,"START")
@@ -158,24 +162,24 @@ class EngagementEngine(private val db:GameSqlConnection,private val clock:GameCl
         }
         val saved=if(task==null)null else rows("SELECT seconds,required,date FROM sessions WHERE task_id=? ORDER BY date DESC LIMIT 1",3,task.id).firstOrNull()
         exec("INSERT INTO focus_sessions(id,task_id,title,date,target,seconds,state,tick,at,zone) VALUES(?,?,?,?,?,?,'RUNNING',?,?,?)",
-            a.key,a.taskId,task?.title ?: "Tập trung tự do",saved?.string(2) ?: clock.date(),saved?.long(1) ?: a.minutes*60L,saved?.long(0) ?: 0,clock.elapsed(),clock.now(),clock.zone())
-        return ActionResult(true,"Bắt đầu tập trung")
+            a.key,a.taskId,task?.title ?: AppText.text(TextKey.CopyTapTrungTuDo7ed36c),saved?.string(2) ?: clock.date(),saved?.long(1) ?: a.minutes*60L,saved?.long(0) ?: 0,clock.elapsed(),clock.now(),clock.zone())
+        return ActionResult(true,AppText.text(TextKey.CopyBatDauTapTrungD198d9))
     }
     private fun control(id:String,action:String):ActionResult {
         if(action=="RECOVER") {
             rows("SELECT task_id FROM focus_sessions WHERE state='RUNNING' AND task_id<>0",1).forEach{phase.timer(it.long(0),"PAUSE")}
             exec("UPDATE focus_sessions SET state='PAUSED',tick=0 WHERE state='RUNNING'")
-            return ActionResult(true,"Đã khôi phục phiên đang tạm dừng")
+            return ActionResult(true,AppText.text(TextKey.CopyDaKhoiPhucPhienDangTamDungA70ac6))
         }
         val r=rows("SELECT task_id,title,date,target,seconds,state,tick,zone,break_shown FROM focus_sessions WHERE id=?",9,id).firstOrNull()
-            ?: return ActionResult(false,"Không tìm thấy phiên")
-        if(r.string(5) in setOf("COMPLETE","ENDED"))return ActionResult(false,"Phiên đã kết thúc")
+            ?: return ActionResult(false,AppText.text(TextKey.CopyKhongTimThayPhienE1d131))
+        if(r.string(5) in setOf("COMPLETE","ENDED"))return ActionResult(false,AppText.text(TextKey.CopyPhienDaKetThucDa3bc0))
         val taskId=r.long(0)
         if(action=="RESUME") {
-            if(r.string(7)!=clock.zone() || taskId==0L && r.string(2)!=clock.date())return ActionResult(false,"Ngày hoặc múi giờ thay đổi; bắt đầu phiên mới")
+            if(r.string(7)!=clock.zone() || taskId==0L && r.string(2)!=clock.date())return ActionResult(false,AppText.text(TextKey.CopyNgayHoacMuiGioThayDoiBatDauPhienMoiAd49b0))
             if(taskId!=0L){val result=phase.timer(taskId,"START");if(!result.success)return result}
             exec("UPDATE focus_sessions SET state='RUNNING',tick=? WHERE id=?",clock.elapsed(),id)
-            return ActionResult(true,"Tiếp tục")
+            return ActionResult(true,AppText.text(TextKey.CopyTiepTuc87a7ae))
         }
         var seconds=r.long(4)
         if(r.string(5)=="RUNNING") {
@@ -192,7 +196,7 @@ class EngagementEngine(private val db:GameSqlConnection,private val clock:GameCl
         if(seconds>=r.long(3)) {
             state="COMPLETE"
             if(taskId!=0L)phase.complete(taskId) // Existing unique task receipt owns the only possible reward.
-            memory("focus:$id","FOCUS",taskId,"Một phiên tập trung trọn vẹn",clock.now())
+            memory("focus:$id","FOCUS",taskId,AppText.text(TextKey.CopyMotPhienTapTrungTronVen6970b8),clock.now())
         } else if(action!="END" && (r.string(7)!=clock.zone() || taskId==0L && r.string(2)!=clock.date() ||
             taskId!=0L && num("SELECT running FROM sessions WHERE task_id=? AND date=?",taskId,r.string(2))==0L))state="PAUSED"
         else if(action!="END" && settings().breakPrompts && seconds>=1500 && r.int(8)==0) {
@@ -200,19 +204,19 @@ class EngagementEngine(private val db:GameSqlConnection,private val clock:GameCl
         }
         if(state!="RUNNING" && taskId!=0L)phase.timer(taskId,"PAUSE")
         exec("UPDATE focus_sessions SET seconds=?,state=?,tick=? WHERE id=?",seconds,state,if(state=="RUNNING")clock.elapsed() else 0,id)
-        return ActionResult(true,when(state){"COMPLETE"->"Đã lưu phiên tập trung";"ENDED"->"Đã lưu phần thời gian đã làm";"BREAK"->"Nghỉ một chút khi bạn muốn";else->"Đã cập nhật phiên"})
+        return ActionResult(true,when(state){"COMPLETE"->AppText.text(TextKey.CopyDaLuuPhienTapTrung2df5d3);"ENDED"->AppText.text(TextKey.CopyDaLuuPhanThoiGianDaLam1eecbe);"BREAK"->AppText.text(TextKey.CopyNghiMotChutKhiBanMuonD17dee);else->AppText.text(TextKey.CopyDaCapNhatPhien31f373)})
     }
     private fun successDays()=num("SELECT COUNT(*) FROM plans p WHERE EXISTS(SELECT 1 FROM obligations o WHERE o.date=p.date AND waived=0) AND NOT EXISTS(SELECT 1 FROM obligations o WHERE o.date=p.date AND waived=0 AND NOT EXISTS(SELECT 1 FROM occurrences x WHERE x.task_id=o.task_id AND x.date=o.date))").toInt()
     private fun sync():List<Achievement> {
         val first=rows("SELECT task_id,title,at FROM occurrences ORDER BY at,task_id LIMIT 1",3).firstOrNull()
-        if(first!=null)memory("first-task","TASK",first.long(0),"Việc đầu tiên: ${first.string(1)}",first.long(2))
+        if(first!=null)memory("first-task","TASK",first.long(0),AppText.text(TextKey.CopyViecDauTien0Dd1cd5,first.string(1)),first.long(2))
         val trees=rows("SELECT id,species_id,name,birth_at,matured_at,life_state FROM trees ORDER BY id",6)
-        trees.firstOrNull()?.let{memory("first-tree","TREE",it.long(0),"Mầm cây đầu tiên",it.long(3))}
-        trees.groupBy{it.string(1)}.forEach{(species,values)->values.first().let{memory("species:$species","TREE",it.long(0),"Loài cây mới: ${it.string(2)}",it.long(3))}}
-        trees.filter{it.long(4)>0}.forEach{memory("mature:${it.long(0)}","TREE",it.long(0),"Cây trưởng thành: ${it.string(2)}",it.long(4))}
-        rows("SELECT id,task_id,at FROM focus_sessions ORDER BY at LIMIT 1",3).firstOrNull()?.let{memory("first-focus","FOCUS",it.long(1),"Phiên tập trung đầu tiên",it.long(2))}
+        trees.firstOrNull()?.let{memory("first-tree","TREE",it.long(0),AppText.text(TextKey.CopyMamCayDauTienE1297d),it.long(3))}
+        trees.groupBy{it.string(1)}.forEach{(species,values)->values.first().let{memory("species:$species","TREE",it.long(0),AppText.text(TextKey.CopyLoaiCayMoi00d5d82,it.string(2)),it.long(3))}}
+        trees.filter{it.long(4)>0}.forEach{memory("mature:${it.long(0)}","TREE",it.long(0),AppText.text(TextKey.CopyCayTruongThanh0D56fbb,it.string(2)),it.long(4))}
+        rows("SELECT id,task_id,at FROM focus_sessions ORDER BY at LIMIT 1",3).firstOrNull()?.let{memory("first-focus","FOCUS",it.long(1),AppText.text(TextKey.CopyPhienTapTrungDauTien951e5b),it.long(2))}
         rows("SELECT id,entity,at FROM wallet WHERE type='MILESTONE'",3).forEach {
-            memory("streak:${it.string(0)}","STREAK",0,"Cột mốc ${it.string(1)} ngày",it.long(2))
+            memory("streak:${it.string(0)}","STREAK",0,AppText.text(TextKey.CopyCotMoc0Ngay4c76f2,it.string(1)),it.long(2))
         }
         return badges(first!=null,trees)
     }
@@ -222,16 +226,16 @@ class EngagementEngine(private val db:GameSqlConnection,private val clock:GameCl
         val flowering=setOf("cherry","lavender","cactus")
         val mature=trees.filter{it.long(4)>0}
         val specs=listOf(
-            Achievement("first-step","Bước đầu tiên","Hoàn thành một việc hợp lệ",if(first)1 else 0,1),
-            Achievement("three-days","Ba ngày tốt lành","3 ngày có lịch hoàn thành",good,3),
-            Achievement("week-care","Một tuần đều đặn","7 ngày có lịch hoàn thành",good,7),
-            Achievement("focus25","Khởi đầu tập trung","Hoàn thành một phiên ít nhất 25 phút",num("SELECT COUNT(*) FROM focus_sessions s WHERE state='COMPLETE' AND (SELECT COALESCE(SUM(seconds),0) FROM focus_intervals i WHERE i.session_id=s.id)>=1500").toInt(),1),
-            Achievement("study10","Nhịp học tập","10 lần hoàn thành việc học",num("SELECT COUNT(*) FROM occurrences WHERE category='Học tập'").toInt(),10),
-            Achievement("green-thumb","Bàn tay xanh","Tưới cây trong 10 ngày khác nhau",waterDays,10),
-            Achievement("first-bloom","Bông hoa đầu tiên","Một loài có hoa đạt giai đoạn cuối",mature.count{it.string(1) in flowering},1),
-            Achievement("first-mature","Cây trưởng thành đầu tiên","Một loài không có hoa đạt giai đoạn cuối",mature.count{it.string(1) !in flowering},1),
-            Achievement("collector","Góc vườn đa dạng","Đang sở hữu 3 loài khác nhau",num("SELECT COUNT(DISTINCT species_id) FROM trees WHERE disposition=''").toInt(),3),
-            Achievement("steady20","Tháng đều đặn","20 ngày có lịch hoàn thành",good,20)
+            Achievement("first-step",AppText.text(TextKey.CopyBuocDauTien5dbfda),AppText.text(TextKey.CopyHoanThanhMotViecHopLe912065),if(first)1 else 0,1),
+            Achievement("three-days",AppText.text(TextKey.CopyBaNgayTotLanhD6a627),AppText.text(TextKey.Copy3NgayCoLichHoanThanh0527b6),good,3),
+            Achievement("week-care",AppText.text(TextKey.CopyMotTuanDeuDanD7d5ad),AppText.text(TextKey.Copy7NgayCoLichHoanThanh86a291),good,7),
+            Achievement("focus25",AppText.text(TextKey.CopyKhoiDauTapTrungC3b5b9),AppText.text(TextKey.CopyHoanThanhMotPhienItNhat25Phut6bcfa2),num("SELECT COUNT(*) FROM focus_sessions s WHERE state='COMPLETE' AND (SELECT COALESCE(SUM(seconds),0) FROM focus_intervals i WHERE i.session_id=s.id)>=1500").toInt(),1),
+            Achievement("study10",AppText.text(TextKey.CopyNhipHocTapF10229),AppText.text(TextKey.Copy10LanHoanThanhViecHocDcd041),num("SELECT COUNT(*) FROM occurrences WHERE category='Học tập'").toInt(),10),
+            Achievement("green-thumb",AppText.text(TextKey.CopyBanTayXanh9bd1dc),AppText.text(TextKey.CopyTuoiCayTrong10NgayKhacNhau786a07),waterDays,10),
+            Achievement("first-bloom",AppText.text(TextKey.CopyBongHoaDauTien4d67d1),AppText.text(TextKey.CopyMotLoaiCoHoaDatGiaiDoanCuoi27bd13),mature.count{it.string(1) in flowering},1),
+            Achievement("first-mature",AppText.text(TextKey.CopyCayTruongThanhDauTienF9a6e3),AppText.text(TextKey.CopyMotLoaiKhongCoHoaDatGiaiDoanCuoi149d7d),mature.count{it.string(1) !in flowering},1),
+            Achievement("collector",AppText.text(TextKey.CopyGocVuonDaDang8a3813),AppText.text(TextKey.CopyDangSoHuu3LoaiKhacNhauA27bf0),num("SELECT COUNT(DISTINCT species_id) FROM trees WHERE disposition=''").toInt(),3),
+            Achievement("steady20",AppText.text(TextKey.CopyThangDeuDanD8b460),AppText.text(TextKey.Copy20NgayCoLichHoanThanh4b7346),good,20)
         )
         return specs.map{a->
             if(a.progress>=a.target) {
@@ -303,7 +307,7 @@ class EngagementEngine(private val db:GameSqlConnection,private val clock:GameCl
             TaskInsight(task.id,task.title,dates,if(counted==0)null else done*100/counted,current,longest,
                 hours.maxByOrNull{it.value}?.key?.let{"${it.toString().padStart(2,'0')}:00"}.orEmpty(),
                 focusSeconds(clock.localMinute(offset(today,-29),0),hi,task.id)/60,
-                if(task.config.frequency=="EVERY_DAY" && dates.count{it.state=="MISSED"}>=3)"Bạn có muốn chuyển sang các ngày trong tuần?" else "")
+                if(task.config.frequency=="EVERY_DAY" && dates.count{it.state=="MISSED"}>=3)AppText.text(TextKey.CopyBanCoMuonChuyenSangCacNgayTrongTuan02f638) else "")
         }
         EngagementSnapshot(meta("onboarded","1")=="1",
             rows("SELECT id,task_id,title,date,target,seconds,state FROM focus_sessions ORDER BY at DESC LIMIT 50",7).map{FocusSession(it.string(0),it.long(1),it.string(2),it.string(3),it.long(4),it.long(5),it.string(6),it.string(6)=="BREAK")},
@@ -343,7 +347,7 @@ class EngagementEngine(private val db:GameSqlConnection,private val clock:GameCl
         if(settings().treeReminders)rows("SELECT id,name,water_until FROM trees WHERE disposition='' AND life_state<>'DEAD' AND water_until>0",3).forEach{r->
             val kind="WATER:${r.long(2)}";val at=maxOf(now+1000,r.long(2))
             if(!quiet(at) && num("SELECT COUNT(*) FROM reminder_deliveries WHERE task_id=? AND kind=?",-r.long(0),kind)==0L)
-                deliveries+=ReminderDelivery(-r.long(0),localDate(at),kind,at,"Tưới cây · ${r.string(1)}",false)
+                deliveries+=ReminderDelivery(-r.long(0),localDate(at),kind,at,AppText.text(TextKey.CopyTuoiCay082b107,r.string(1)),false)
         }
         deliveries
     }

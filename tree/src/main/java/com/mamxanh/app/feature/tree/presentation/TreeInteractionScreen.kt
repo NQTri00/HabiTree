@@ -1,5 +1,13 @@
 package com.mamxanh.app.feature.tree.presentation
 
+import com.mamxanh.app.presentation.ui.design.AppColors
+import com.mamxanh.app.presentation.ui.design.AppDimensions
+import com.mamxanh.app.presentation.ui.design.AppTypography
+
+import com.mamxanh.shared.localization.TextKey
+
+import com.mamxanh.shared.localization.AppText
+
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.rememberScrollState
@@ -32,25 +40,25 @@ fun TreeInteractionScreen(
     val scroll=key(tree.id,tab){rememberScrollState()}
     MintBackdrop(modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
-            Row(Modifier.fillMaxWidth().padding(horizontal=16.dp,vertical=8.dp),verticalAlignment=Alignment.CenterVertically) {
-                IconButton(onOpenGarden){Text("‹",color=Deep,fontSize=26.sp)}
-                Text("Cây của bạn",Modifier.weight(1f),color=Deep,fontSize=17.sp,fontWeight=FontWeight.SemiBold)
+            Row(Modifier.fillMaxWidth().padding(horizontal=AppDimensions.Dp16,vertical=AppDimensions.Dp8),verticalAlignment=Alignment.CenterVertically) {
+                IconButton(onOpenGarden){Text("‹",color=Deep,fontSize=AppTypography.Sp26)}
+                Text(AppText.text(TextKey.CopyCayCuaBan64f9d7),Modifier.weight(1f),color=Deep,fontSize=AppTypography.Sp17,fontWeight=FontWeight.SemiBold)
                 MintCoinBadge(coins)
             }
-            Column(Modifier.weight(1f).verticalScroll(scroll).padding(horizontal=24.dp,vertical=12.dp),verticalArrangement=Arrangement.spacedBy(20.dp)) {
-                GardenBotanicalFrame(Modifier.fillMaxWidth(),contentPadding=PaddingValues(18.dp),cornerSize=28.dp,skin=GardenPanelSkin.HINT) {
-                    Column(Modifier.fillMaxWidth(),verticalArrangement=Arrangement.spacedBy(8.dp)) {
+            Column(Modifier.weight(1f).verticalScroll(scroll).padding(horizontal=AppDimensions.Dp24,vertical=AppDimensions.Dp12),verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp20)) {
+                GardenBotanicalFrame(Modifier.fillMaxWidth(),contentPadding=PaddingValues(AppDimensions.Dp18),cornerSize=AppDimensions.Dp28,skin=GardenPanelSkin.HINT) {
+                    Column(Modifier.fillMaxWidth(),verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp8)) {
                         Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween){MintStatusPill(status.stateLabel);MintStatusPill("${status.stageIndex+1}/${status.stageCount}")}
-                        Box(Modifier.fillMaxWidth().height(220.dp),contentAlignment=Alignment.Center) {
-                            Box(Modifier.size(220.dp).background(androidx.compose.ui.graphics.Color(0xFFE1EACF),androidx.compose.foundation.shape.CircleShape))
-                            GardenPlantPortrait(tree.speciesId,tree.decoration,sharedTreeModifier.fillMaxWidth().height(220.dp),fitVisibleArtwork=true,artworkAlignment=Alignment.Center,withered=!status.alive)
+                        Box(Modifier.fillMaxWidth().height(AppDimensions.Dp220),contentAlignment=Alignment.Center) {
+                            Box(Modifier.size(AppDimensions.Dp220).background(AppColors.SwatchFFE1EACF,androidx.compose.foundation.shape.CircleShape))
+                            GardenPlantPortrait(tree.speciesId,tree.decoration,sharedTreeModifier.fillMaxWidth().height(AppDimensions.Dp220),fitVisibleArtwork=true,artworkAlignment=Alignment.Center,withered=!status.alive)
                         }
                         Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically) {
-                            if(onPrevious!=null)IconButton(onPrevious){Text("‹",color=Green,fontSize=24.sp)}
-                            Text(tree.name,Modifier.weight(1f),color=Deep,fontSize=20.sp,lineHeight=26.sp,fontWeight=FontWeight.Bold,textAlign=TextAlign.Center)
-                            if(onNext!=null)IconButton(onNext){Text("›",color=Green,fontSize=24.sp)}
+                            if(onPrevious!=null)IconButton(onPrevious){Text("‹",color=Green,fontSize=AppTypography.Sp24)}
+                            Text(tree.name,Modifier.weight(1f),color=Deep,fontSize=AppTypography.Sp20,lineHeight=AppTypography.Sp26,fontWeight=FontWeight.Bold,textAlign=TextAlign.Center)
+                            if(onNext!=null)IconButton(onNext){Text("›",color=Green,fontSize=AppTypography.Sp24)}
                         }
-                        Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween){Text("Tiến độ",color=Muted,fontSize=12.sp);Text("${status.percentage}%",color=Green,fontSize=12.sp)}
+                        Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween){Text(AppText.text(TextKey.CopyTienDoE59478),color=Muted,fontSize=AppTypography.Sp12);Text("${status.percentage}%",color=Green,fontSize=AppTypography.Sp12)}
                         MintProgress(status.stageProgress,Modifier.fillMaxWidth())
                     }
                 }
@@ -59,23 +67,23 @@ fun TreeInteractionScreen(
             }
         }
         if(state.dispositionId==tree.id)MintDialog(
-            if(state.selling)"Bán cây" else "Dọn cây",
+            if(state.selling)AppText.text(TextKey.CopyBanCay5210c7) else AppText.text(TextKey.CopyDonCayE3d410),
             {if(!state.isLoading)onIntent(TreeIntent.DismissDisposition)},
-            if(state.selling)"Bán cây" else "Dọn cây",
-            {onIntent(TreeIntent.ConfirmDisposition)},cancelLabel="Giữ lại",
+            if(state.selling)AppText.text(TextKey.CopyBanCay5210c7) else AppText.text(TextKey.CopyDonCayE3d410),
+            {onIntent(TreeIntent.ConfirmDisposition)},cancelLabel=AppText.text(TextKey.CopyGiuLai3c3ba2),
             confirmEnabled=!state.isLoading,dismissEnabled=!state.isLoading,destructive=true) {
-            Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(6.dp)) {
-                GardenPlantPortrait(tree.speciesId,tree.decoration,Modifier.size(32.dp),withered=!status.alive)
-                Text(tree.name,color=Deep,fontSize=13.sp,fontWeight=FontWeight.Bold)
+            Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp6)) {
+                GardenPlantPortrait(tree.speciesId,tree.decoration,Modifier.size(AppDimensions.Dp32),withered=!status.alive)
+                Text(tree.name,color=Deep,fontSize=AppTypography.Sp13,fontWeight=FontWeight.Bold)
             }
-            Text("Cây sẽ rời ô trồng vĩnh viễn. Không hoàn lại hạt hoặc tiến trình.",color=Muted,fontSize=12.sp,lineHeight=17.sp)
+            Text(AppText.text(TextKey.CopyCaySeRoiOTrongVinhVienKhongHoanLaiHatHoac9f6b91),color=Muted,fontSize=AppTypography.Sp12,lineHeight=AppTypography.Sp17)
             if(state.selling) {
                 val quote=state.quote
-                MintMetricStrip(listOf("Giá bán" to "${quote?.nominal ?: 0} xu","Nhận hôm nay" to "${quote?.granted ?: 0} xu"))
+                MintMetricStrip(listOf(AppText.text(TextKey.CopyGiaBan358aea) to AppText.text(TextKey.Copy0Xu251e68,quote?.nominal ?: 0),AppText.text(TextKey.CopyNhanHomNay78a91a) to AppText.text(TextKey.Copy0Xu251e68,quote?.granted ?: 0)))
                 if((quote?.granted ?: 0)<(quote?.nominal ?: 0))
-                    Text("Phần vượt giới hạn ${Balance.DAILY_CAP} xu/ngày sẽ mất, không để dành.",
-                        color=MaterialTheme.colorScheme.error,fontSize=12.sp,lineHeight=17.sp)
-            } else MintStatusPill("Không nhận xu hoặc hạt")
+                    Text(AppText.text(TextKey.CopyPhanVuotGioiHan0XuNgaySeMatKhongDeDanhCdcca8,Balance.DAILY_CAP),
+                        color=MaterialTheme.colorScheme.error,fontSize=AppTypography.Sp12,lineHeight=AppTypography.Sp17)
+            } else MintStatusPill(AppText.text(TextKey.CopyKhongNhanXuHoacHatA3884a))
         }
     }
 }
@@ -83,5 +91,5 @@ fun TreeInteractionScreen(
 @Preview(name="Web tree comparison",widthDp=414,heightDp=1200,device="spec:width=414dp,height=1200dp,dpi=160")
 @Composable
 fun TreeWebDesignPreview(){MamXanhPreviewTheme{
-    TreeInteractionScreen(Tree(1,"cherry","Đào hồng xuân",45,"2026-11-01","FLOWERS",status=TreeStatus(stageIndex=3,stageCount=9,stageProgress=.46f)),TreeUiState(),3,mapOf("fertilizer" to 2,"fertilizer_rich" to 1),{})
+    TreeInteractionScreen(Tree(1,"cherry",AppText.text(TextKey.CopyDaoHongXuanC2fd99),45,"2026-11-01","FLOWERS",status=TreeStatus(stageIndex=3,stageCount=9,stageProgress=.46f)),TreeUiState(),3,mapOf("fertilizer" to 2,"fertilizer_rich" to 1),{})
 }}

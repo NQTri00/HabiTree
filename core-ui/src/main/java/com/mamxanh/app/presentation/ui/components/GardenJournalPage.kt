@@ -1,5 +1,8 @@
 package com.mamxanh.app.presentation.ui.components
 
+import com.mamxanh.app.presentation.ui.design.AppColors
+import com.mamxanh.app.presentation.ui.design.AppDimensions
+
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -18,22 +21,22 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun GardenJournalPage(modifier: Modifier = Modifier, content: @Composable BoxScope.() -> Unit) {
     Box(modifier, contentAlignment = Alignment.Center) {
-        Box(Modifier.widthIn(max = 560.dp).fillMaxSize().padding(top = 24.dp, bottom = 10.dp)
-            .background(Color(0xFFA86E36), RoundedCornerShape(30.dp))
-            .padding(start = 12.dp, top = 5.dp, end = 4.dp, bottom = 10.dp)
-            .background(Color(0xFFE8CBA2), RoundedCornerShape(25.dp)).padding(4.dp)
-            .background(Brush.horizontalGradient(listOf(Color(0xFFF9E6C7), Color(0xFFFFF5E5), Color(0xFFFAE9CF))), RoundedCornerShape(22.dp))
-            .border(1.5.dp, Color(0xFFE1BA86), RoundedCornerShape(22.dp))) {
+        Box(Modifier.widthIn(max = AppDimensions.Dp560).fillMaxSize().padding(top = AppDimensions.Dp24, bottom = AppDimensions.Dp10)
+            .background(AppColors.SwatchFFA86E36, RoundedCornerShape(AppDimensions.Dp30))
+            .padding(start = AppDimensions.Dp12, top = AppDimensions.Dp5, end = AppDimensions.Dp4, bottom = AppDimensions.Dp10)
+            .background(AppColors.SwatchFFE8CBA2, RoundedCornerShape(AppDimensions.Dp25)).padding(AppDimensions.Dp4)
+            .background(Brush.horizontalGradient(listOf(AppColors.SwatchFFF9E6C7, AppColors.SwatchFFFFF5E5, AppColors.SwatchFFFAE9CF)), RoundedCornerShape(AppDimensions.Dp22))
+            .border(AppDimensions.Dp1_5, AppColors.SwatchFFE1BA86, RoundedCornerShape(AppDimensions.Dp22))) {
             Canvas(Modifier.matchParentSize()) {
                 repeat(4) { index ->
                     val y = size.height * (.13f + index * .23f)
-                    drawLine(Color(0xFFAC763C), Offset(-12.dp.toPx(), y + 2.dp.toPx()),
-                        Offset(8.dp.toPx(), y + 2.dp.toPx()), 10.dp.toPx(), androidx.compose.ui.graphics.StrokeCap.Round)
-                    drawLine(Color(0xFFE4B474), Offset(-12.dp.toPx(), y - 1.dp.toPx()),
-                        Offset(8.dp.toPx(), y - 1.dp.toPx()), 5.dp.toPx(), androidx.compose.ui.graphics.StrokeCap.Round)
+                    drawLine(AppColors.SwatchFFAC763C, Offset(AppDimensions.DpMinus12.toPx(), y + AppDimensions.Dp2.toPx()),
+                        Offset(AppDimensions.Dp8.toPx(), y + AppDimensions.Dp2.toPx()), AppDimensions.Dp10.toPx(), androidx.compose.ui.graphics.StrokeCap.Round)
+                    drawLine(AppColors.SwatchFFE4B474, Offset(AppDimensions.DpMinus12.toPx(), y - AppDimensions.Dp1.toPx()),
+                        Offset(AppDimensions.Dp8.toPx(), y - AppDimensions.Dp1.toPx()), AppDimensions.Dp5.toPx(), androidx.compose.ui.graphics.StrokeCap.Round)
                 }
             }
-            Box(Modifier.fillMaxSize().padding(start = 22.dp, top = 36.dp, end = 16.dp, bottom = 20.dp), content = content)
+            Box(Modifier.fillMaxSize().padding(start = AppDimensions.Dp22, top = AppDimensions.Dp36, end = AppDimensions.Dp16, bottom = AppDimensions.Dp20), content = content)
         }
     }
 }

@@ -1,5 +1,9 @@
 package com.mamxanh.app.feature.garden.presentation
 
+import com.mamxanh.shared.localization.TextKey
+
+import com.mamxanh.shared.localization.AppText
+
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -86,11 +90,11 @@ class LivingGardenViewModel(private val storage:GameStorage,private val saved:Sa
         val tree=state.garden.trees.firstOrNull{it.id==target?.treeId}
         val base=draft.filterNot{it.id==moving}
         val error=when {
-            item.slot=="THEME"->"Chọn chủ đề tại Diện mạo"
-            item.slot!="AMBIENT" && target?.isUnlocked!=true->"Ô đang khóa"
-            item.slot=="TREE" && tree?.status?.alive!=true->"Chọn ô có cây còn sống"
-            base.count{it.sku==sku} >= (state.snapshot.owned[sku] ?: 0)->"Vật phẩm đã được đặt hết"
-            base.any{it.plotId==(if(item.slot=="AMBIENT")0 else plot) && gardenCosmetics.firstOrNull{c->c.id==it.sku}?.slot==item.slot}->"Ô này đã có vật phẩm cùng loại"
+            item.slot=="THEME"->AppText.text(TextKey.CopyChonChuDeTaiDienMaoBff149)
+            item.slot!="AMBIENT" && target?.isUnlocked!=true->AppText.text(TextKey.CopyODangKhoa0b475c)
+            item.slot=="TREE" && tree?.status?.alive!=true->AppText.text(TextKey.CopyChonOCoCayConSongC0f228)
+            base.count{it.sku==sku} >= (state.snapshot.owned[sku] ?: 0)->AppText.text(TextKey.CopyVatPhamDaDuocDatHet57767b)
+            base.any{it.plotId==(if(item.slot=="AMBIENT")0 else plot) && gardenCosmetics.firstOrNull{c->c.id==it.sku}?.slot==item.slot}->AppText.text(TextKey.CopyONayDaCoVatPhamCungLoaiA47c7d)
             else->null
         }
         if(error!=null){_state.value=state.copy(message=error);return}

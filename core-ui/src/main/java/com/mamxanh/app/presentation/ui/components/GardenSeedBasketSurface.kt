@@ -1,5 +1,9 @@
 package com.mamxanh.app.presentation.ui.components
 
+import com.mamxanh.app.presentation.ui.design.AppColors
+import com.mamxanh.app.presentation.ui.design.AppDimensions
+import com.mamxanh.app.presentation.ui.design.AppOpacity
+
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
@@ -26,18 +30,18 @@ fun GardenSeedBasketSurface(modifier: Modifier = Modifier) {
             cubicTo(w*.09f,h*.97f,-w*.02f,h*.58f,w*.02f,h*.28f)
             close()
         }
-        drawPath(body,Brush.verticalGradient(listOf(Color(0xFFE8B573),Color(0xFFC78B47),Color(0xFFAC7039))))
+        drawPath(body,Brush.verticalGradient(listOf(AppColors.SwatchFFE8B573,AppColors.SwatchFFC78B47,AppColors.SwatchFFAC7039)))
         clipPath(body) {
             repeat(7){i->
                 val y=h*(.31f+i*.10f)
-                drawLine(Color(0xFFE7B778),Offset(w*.10f,y),Offset(w*.90f,y),3.dp.toPx())
+                drawLine(AppColors.SwatchFFE7B778,Offset(w*.10f,y),Offset(w*.90f,y),AppDimensions.Dp3.toPx())
             }
             repeat(10){i->
                 val x=w*(.10f+i*.09f)
-                drawLine(Color(0xFFB67D40).copy(alpha=.6f),Offset(x,h*.22f),Offset(w*.5f+(x-w*.5f)*.75f,h*.95f),2.dp.toPx())
+                drawLine(AppColors.SwatchFFB67D40.copy(alpha=AppOpacity.Value_6),Offset(x,h*.22f),Offset(w*.5f+(x-w*.5f)*.75f,h*.95f),AppDimensions.Dp2.toPx())
             }
         }
-        drawOval(Color(0xFFBF8445),Offset(w*.015f,h*.09f),Size(w*.97f,h*.67f),style=Stroke(11.dp.toPx()))
-        drawOval(Color(0xFFF0C78C),Offset(w*.015f,h*.07f),Size(w*.97f,h*.67f),style=Stroke(5.dp.toPx()))
+        drawOval(AppColors.SwatchFFBF8445,Offset(w*.015f,h*.09f),Size(w*.97f,h*.67f),style=Stroke(AppDimensions.Dp11.toPx()))
+        drawOval(AppColors.SwatchFFF0C78C,Offset(w*.015f,h*.07f),Size(w*.97f,h*.67f),style=Stroke(AppDimensions.Dp5.toPx()))
     }
 }

@@ -1,5 +1,9 @@
 package com.mamxanh.shared.data.sql
 
+import com.mamxanh.shared.localization.TextKey
+
+import com.mamxanh.shared.localization.AppText
+
 import com.mamxanh.shared.model.*
 import com.mamxanh.shared.time.*
 
@@ -68,10 +72,10 @@ class TreeLifecycleEngine(private val db: GameSqlConnection,private val clock: G
     fun equippedCan()=WateringCanTier.fromId(meta("can_equipped","can_basic"))
     fun equip(id:String):ActionResult = db.transaction {
         val can=WateringCanTier.entries.firstOrNull{it.itemId==id}
-            ?: return@transaction ActionResult(false,"Không tìm thấy bình tưới")
-        if(number("SELECT quantity FROM inventory WHERE item=?",id)<1)return@transaction ActionResult(false,"Bạn chưa sở hữu bình tưới này")
+            ?: return@transaction ActionResult(false,AppText.text(TextKey.CopyKhongTimThayBinhTuoi6f9090))
+        if(number("SELECT quantity FROM inventory WHERE item=?",id)<1)return@transaction ActionResult(false,AppText.text(TextKey.CopyBanChuaSoHuuBinhTuoiNayDddea8))
         put("can_equipped",id)
-        ActionResult(true,"Đã trang bị ${can.label}; thời gian tưới mới ${can.hours} giờ")
+        ActionResult(true,AppText.text(TextKey.CopyDaTrangBi0ThoiGianTuoiMoi1Gio5b667d,can.label,can.hours))
     }
     private fun event(id:Long,type:String,resource:Int,growth:Int)=
         exec("INSERT INTO care_events(tree_id,type,at,resource,growth) VALUES(?,?,?,?,?)",id,type,clock.now(),resource,growth)
@@ -100,48 +104,48 @@ class TreeLifecycleEngine(private val db: GameSqlConnection,private val clock: G
         val eligible=values.filter{it.sim.state!=TreeGrowthState.DEAD && it.sim.wateredUntil<=clock.now()}
         val quote=WaterAllSummary(eligible.size,active,dead)
         if(!canMutateNow() || values.any{clock.now()<it.sim.at})
-            return@transaction ActionResult(false,"Đồng hồ đã lùi; chưa thể tưới") to quote
+            return@transaction ActionResult(false,AppText.text(TextKey.CopyDongHoDaLuiChuaTheTuoi304eb9)) to quote
         if(number("SELECT COUNT(*) FROM tree_actions WHERE id=?",key)>0)
-            return@transaction ActionResult(false,"Lượt tưới này đã được xử lý") to quote
-        if(eligible.isEmpty())return@transaction ActionResult(false,"Không có cây cần tưới") to quote
+            return@transaction ActionResult(false,AppText.text(TextKey.CopyLuotTuoiNayDaDuocXuLy0137a8)) to quote
+        if(eligible.isEmpty())return@transaction ActionResult(false,AppText.text(TextKey.CopyKhongCoCayCanTuoiE80eed)) to quote
         eligible.forEach(::waterRecord)
         exec("INSERT INTO tree_actions VALUES(?,?,?)",key,"WATER_ALL",clock.now())
-        ActionResult(true,"Đã tưới ${eligible.size} cây · Bỏ qua $active cây đang được tưới và $dead cây khô héo") to quote.copy(affected=eligible.size)
+        ActionResult(true,AppText.text(TextKey.CopyDaTuoi0CayBoQua1CayDangDuocTuoiVa2CayK2a0dbb,eligible.size,active,dead)) to quote.copy(affected=eligible.size)
     }
     fun fertilize(id:Long,tierId:String):ActionResult = db.transaction {
-        val r=get(id) ?: return@transaction ActionResult(false,"Không tìm thấy cây")
-        if(!safe(r))return@transaction ActionResult(false,"Đồng hồ đã lùi; chưa thể bón phân")
-        if(r.sim.state!=TreeGrowthState.GROWING)return@transaction ActionResult(false,"Không dùng phân cho cây trưởng thành hoặc khô héo")
-        if(r.sim.wateredUntil<=clock.now())return@transaction ActionResult(false,"Hãy tưới cây trước khi bón phân")
-        if(r.sim.fertilizerEndsAt>clock.now())return@transaction ActionResult(false,"Cây đang có tác dụng phân bón; không thể cộng dồn")
+        val r=get(id) ?: return@transaction ActionResult(false,AppText.text(TextKey.CopyKhongTimThayCay2ef08e))
+        if(!safe(r))return@transaction ActionResult(false,AppText.text(TextKey.CopyDongHoDaLuiChuaTheBonPhanDf5146))
+        if(r.sim.state!=TreeGrowthState.GROWING)return@transaction ActionResult(false,AppText.text(TextKey.CopyKhongDungPhanChoCayTruongThanhHoacKhoHeoC74b0f))
+        if(r.sim.wateredUntil<=clock.now())return@transaction ActionResult(false,AppText.text(TextKey.CopyHayTuoiCayTruocKhiBonPhan26bd2d))
+        if(r.sim.fertilizerEndsAt>clock.now())return@transaction ActionResult(false,AppText.text(TextKey.CopyCayDangCoTacDungPhanBonKhongTheCongDon1a8a0b))
         if(r.sim.lastFertilizedAt>0 && clock.now()<r.sim.lastFertilizedAt+DAY_MS)
-            return@transaction ActionResult(false,"Mỗi cây chỉ dùng phân một lần trong 24 giờ")
+            return@transaction ActionResult(false,AppText.text(TextKey.CopyMoiCayChiDungPhanMotLanTrong24Gio9f8cec))
         val tier=if(tierId=="AUTO")FertilizerTier.entries.firstOrNull{number("SELECT quantity FROM inventory WHERE item=?",it.itemId)>0}
             else FertilizerTier.fromId(tierId)
-        if(tier==null)return@transaction ActionResult(false,"Bạn chưa có phân bón phù hợp")
+        if(tier==null)return@transaction ActionResult(false,AppText.text(TextKey.CopyBanChuaCoPhanBonPhuHopF65443))
         val stock=number("SELECT quantity FROM inventory WHERE item=?",tier.itemId)
-        if(stock<1)return@transaction ActionResult(false,"Đã hết ${tier.label}")
+        if(stock<1)return@transaction ActionResult(false,AppText.text(TextKey.CopyDaHet0Af2b3b,tier.label))
         exec("UPDATE inventory SET quantity=quantity-1 WHERE item=?",tier.itemId)
         save(id,r.sim.copy(fertilizerId=tier.itemId,fertilizerEndsAt=clock.now()+tier.hours*HOUR_MS,lastFertilizedAt=clock.now()),lifecycleProfile(r.species))
         event(id,"FERTILIZE:${tier.itemId}",-1,0)
-        ActionResult(true,"Đã dùng ${tier.label} · ${tier.rate/1000.0}× trong ${tier.hours} giờ khi được tưới")
+        ActionResult(true,AppText.text(TextKey.CopyDaDung01Trong2GioKhiDuocTuoi8de41c,tier.label,tier.rate/1000.0,tier.hours))
     }
     fun saleQuote(id:Long):ActionResult = db.transaction {
-        val r=get(id) ?: return@transaction ActionResult(false,"Cây không còn trong vườn")
-        if(r.sim.state!=TreeGrowthState.MATURE)return@transaction ActionResult(false,"Chỉ bán cây trưởng thành còn sống")
+        val r=get(id) ?: return@transaction ActionResult(false,AppText.text(TextKey.CopyCayKhongConTrongVuon40c7ae))
+        if(r.sim.state!=TreeGrowthState.MATURE)return@transaction ActionResult(false,AppText.text(TextKey.CopyChiBanCayTruongThanhConSong9b1510))
         val nominal=if(r.free)0 else lifecycleProfile(r.species).salePrice
         val earned=number("SELECT COALESCE(SUM(amount),0) FROM wallet WHERE date=? AND amount>0 AND type<>'MIGRATION'",clock.date()).toInt()
         val granted=minOf(nominal,(Balance.DAILY_CAP-earned).coerceAtLeast(0))
-        ActionResult(true,"Giá $nominal xu · Thực nhận $granted xu hôm nay",nominal,granted)
+        ActionResult(true,AppText.text(TextKey.CopyGia0XuThucNhan1XuHomNay197b09,nominal,granted),nominal,granted)
     }
     fun dispose(id:Long,sell:Boolean,key:String):ActionResult = db.transaction {
-        val r=get(id) ?: return@transaction ActionResult(false,"Cây đã được bán hoặc dọn")
-        if(!safe(r))return@transaction ActionResult(false,"Đồng hồ đã lùi; chưa thể thực hiện")
+        val r=get(id) ?: return@transaction ActionResult(false,AppText.text(TextKey.CopyCayDaDuocBanHoacDonAc3091))
+        if(!safe(r))return@transaction ActionResult(false,AppText.text(TextKey.CopyDongHoDaLuiChuaTheThucHienC3bb22))
         if(number("SELECT COUNT(*) FROM tree_dispositions WHERE action_id=? OR tree_id=?",key,id)>0)
-            return@transaction ActionResult(false,"Giao dịch đã được xử lý")
+            return@transaction ActionResult(false,AppText.text(TextKey.CopyGiaoDichDaDuocXuLy1e67a0))
         var nominal=0;var granted=0
         if(sell) {
-            if(r.sim.state!=TreeGrowthState.MATURE)return@transaction ActionResult(false,"Chỉ bán cây trưởng thành còn sống")
+            if(r.sim.state!=TreeGrowthState.MATURE)return@transaction ActionResult(false,AppText.text(TextKey.CopyChiBanCayTruongThanhConSong9b1510))
             nominal=if(r.free)0 else lifecycleProfile(r.species).salePrice
             val receipt=PhaseOneEngine(db,clock).income("sale:$id","TREE_SALE",id.toString(),nominal)
             if(!receipt.success)return@transaction receipt
@@ -151,7 +155,7 @@ class TreeLifecycleEngine(private val db: GameSqlConnection,private val clock: G
         exec("INSERT INTO tree_dispositions VALUES(?,?,?,?,?,?,?)",id,key,kind,clock.now(),r.name,nominal,granted)
         exec("UPDATE trees SET disposition=? WHERE id=?",kind,id)
         exec("UPDATE garden_plots SET tree_id=NULL WHERE tree_id=?",id)
-        ActionResult(true,if(sell)"Đã bán cây · Nhận $granted / $nominal xu. Phần vượt giới hạn không được giữ lại." else "Đã dọn cây · Ô trồng đã trống; không hoàn xu hoặc hạt",nominal,granted)
+        ActionResult(true,if(sell)AppText.text(TextKey.CopyDaBanCayNhan01XuPhanVuotGioiHanKhongDuoc5316e3,granted,nominal) else AppText.text(TextKey.CopyDaDonCayOTrongDaTrongKhongHoanXuHoacHat4e6810),nominal,granted)
     }
     fun dispositions():List<TreeDispositionEvent> = rows("SELECT tree_id,name,kind,at,nominal,granted FROM tree_dispositions ORDER BY at DESC",6).map {
         TreeDispositionEvent(it.long(0),it.string(1),it.string(2),it.long(3),it.int(4),it.int(5))

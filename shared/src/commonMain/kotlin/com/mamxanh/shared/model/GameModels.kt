@@ -1,5 +1,9 @@
 package com.mamxanh.shared.model
 
+import com.mamxanh.shared.localization.TextKey
+
+import com.mamxanh.shared.localization.AppText
+
 import com.mamxanh.shared.time.currentDateKey
 
 data class Task(
@@ -44,16 +48,16 @@ data class Statistics(
 )
 
 enum class TreeWateringResult { WATERED, ALREADY_WATERED, DEAD, CLOCK_CHANGED, TREE_NOT_FOUND }
-val catalog = listOf(
-    Species("succulent", "Sen đá ngọc", "🪴", "Mọng nước, cánh lá xếp tầng xinh xắn", 150),
-    Species("monstera", "Trầu bà lá xẻ", "🌿", "Lá xanh mướt mang không khí trong lành", 200),
-    Species("ficus", "Cây bàng búp", "🌳", "Tán lá tròn trịa đón ánh mặt trời", 500),
-    Species("snake", "Lưỡi hổ xanh", "🎋", "Vươn thẳng mạnh mẽ và kiên cường", 200),
-    Species("cactus", "Xương rồng hoa", "🌵", "Nụ hoa hồng bé xíu nở trên đỉnh", 200),
-    Species("aloe", "Nha đam mọng", "🌱", "Mềm mại, tươi mát suốt bốn mùa", 200),
-    Species("lavender", "Oải hương tím", "🪻", "Hương thơm dịu dàng giúp thư giãn", 200),
-    Species("pilea", "Cỏ đồng tiền", "🪙", "Lá tròn như đồng xu may mắn", 500),
-    Species("cherry", "Đào hồng xuân", "🌸", "Cánh hoa đào rực rỡ ngày xuân", 1200),
-    Species("pine", "Thông xanh biếc", "🌲", "Bền bỉ, xanh ngát quanh năm", 4500),
-    Species("mandarin", "Quýt nắng", "🍊", "Trái ngọt nhỏ mang nắng ấm đến khu vườn", 500)
+val catalog get()= listOf(
+    Species("succulent", AppText.text(TextKey.CopySenDaNgocAba46f), "🪴", AppText.text(TextKey.CopyMongNuocCanhLaXepTangXinhXan371fcf), 150),
+    Species("monstera", AppText.text(TextKey.CopyTrauBaLaXeF22d98), "🌿", AppText.text(TextKey.CopyLaXanhMuotMangKhongKhiTrongLanh7b7c5e), 200),
+    Species("ficus", AppText.text(TextKey.CopyCayBangBupEb6814), "🌳", AppText.text(TextKey.CopyTanLaTronTriaDonAnhMatTroi6377c3), 500),
+    Species("snake", AppText.text(TextKey.CopyLuoiHoXanh998396), "🎋", AppText.text(TextKey.CopyVuonThangManhMeVaKienCuongC241b5), 200),
+    Species("cactus", AppText.text(TextKey.CopyXuongRongHoa723f84), "🌵", AppText.text(TextKey.CopyNuHoaHongBeXiuNoTrenDinhF74815), 200),
+    Species("aloe", AppText.text(TextKey.CopyNhaDamMongD63ca0), "🌱", AppText.text(TextKey.CopyMemMaiTuoiMatSuotBonMua13904b), 200),
+    Species("lavender", AppText.text(TextKey.CopyOaiHuongTim2ffaf9), "🪻", AppText.text(TextKey.CopyHuongThomDiuDangGiupThuGianEcbc41), 200),
+    Species("pilea", AppText.text(TextKey.CopyCoDongTienF85b17), "🪙", AppText.text(TextKey.CopyLaTronNhuDongXuMayManEf4f42), 500),
+    Species("cherry", AppText.text(TextKey.CopyDaoHongXuanC2fd99), "🌸", AppText.text(TextKey.CopyCanhHoaDaoRucRoNgayXuan69657f), 1200),
+    Species("pine", AppText.text(TextKey.CopyThongXanhBiecBb5db6), "🌲", AppText.text(TextKey.CopyBenBiXanhNgatQuanhNam2af5a1), 4500),
+    Species("mandarin", AppText.text(TextKey.CopyQuytNang1c3e1e), "🍊", AppText.text(TextKey.CopyTraiNgotNhoMangNangAmDenKhuVuonAf1fc6), 500)
 )

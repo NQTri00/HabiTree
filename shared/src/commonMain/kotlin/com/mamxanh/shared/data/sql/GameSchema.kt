@@ -1,5 +1,9 @@
 package com.mamxanh.shared.data.sql
 
+import com.mamxanh.shared.localization.TextKey
+
+import com.mamxanh.shared.localization.AppText
+
 /** Shared schema; migrations preserve existing tree identities and player balances. */
 object GameSchema {
     const val VERSION = 7
@@ -20,12 +24,12 @@ object GameSchema {
             connection.execute("INSERT INTO tasks(title,kind,category,reward,frequency,due) VALUES(?,?,?,?,?,'')",
                 listOf(title, kind, category, reward, frequency))
         }
-        task("Đọc hoặc học tập trung 25 phút", "DAILY", "Học tập", 10, "EVERY_DAY")
-        task("Đi bộ hoặc vận động 20 phút", "DAILY", "Sức khỏe", 10, "EVERY_DAY")
-        task("Uống đủ nước", "HABIT", "Sức khỏe", 5, "EVERY_DAY")
-        task("Dọn góc học tập", "DAILY", "Nếp sống", 5, "WEEKDAYS")
-        task("Viết nhật ký 5 phút", "HABIT", "Phát triển bản thân", 5, "EVERY_DAY")
-        task("Hoàn thành một việc quan trọng", "TODO", "Công việc", 20, "ONCE")
+        task(AppText.text(TextKey.CopyDocHoacHocTapTrung25Phut17d4f4), "DAILY", AppText.canonical(TextKey.CopyHocTapA51516), 10, "EVERY_DAY")
+        task(AppText.text(TextKey.CopyDiBoHoacVanDong20PhutAf92a4), "DAILY", AppText.canonical(TextKey.CopySucKhoe071df7), 10, "EVERY_DAY")
+        task(AppText.text(TextKey.CopyUongDuNuoc081b30), "HABIT", AppText.canonical(TextKey.CopySucKhoe071df7), 5, "EVERY_DAY")
+        task(AppText.text(TextKey.CopyDonGocHocTapE45d91), "DAILY", AppText.canonical(TextKey.CopyNepSong8d1a98), 5, "WEEKDAYS")
+        task(AppText.text(TextKey.CopyVietNhatKy5Phut8db8cf), "HABIT", AppText.canonical(TextKey.CopyPhatTrienBanThanFb249c), 5, "EVERY_DAY")
+        task(AppText.text(TextKey.CopyHoanThanhMotViecQuanTrongE90d48), "TODO", AppText.canonical(TextKey.CopyCongViec91d0a9), 20, "ONCE")
         createPlots(connection)
         phaseOne(connection)
         phaseTwo(connection)

@@ -8,6 +8,7 @@ kotlin {
         namespace = "com.mamxanh.shared"
         compileSdk = 36
         minSdk = 24
+        withHostTestBuilder {}.configure {}
         compilerOptions { jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17) }
     }
     listOf(iosArm64(), iosSimulatorArm64()).forEach {

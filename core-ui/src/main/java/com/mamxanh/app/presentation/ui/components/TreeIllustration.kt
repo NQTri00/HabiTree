@@ -1,5 +1,8 @@
 package com.mamxanh.app.presentation.ui.components
 
+import com.mamxanh.app.presentation.ui.design.AppColors
+import com.mamxanh.app.presentation.ui.design.AppOpacity
+
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.ui.Modifier
@@ -32,67 +35,67 @@ fun TreeIllustration(
         val progress = (growth.coerceIn(0, 120) / 120f)
         val mature = progress >= 1f
         val leaf = when (speciesId) {
-            "cherry" -> Color(0xFF4E965A)
-            "orange" -> Color(0xFF43884A)
-            "pine" -> Color(0xFF286C50)
-            "maple" -> Color(0xFFB65A3C)
-            "bamboo" -> Color(0xFF5A9B51)
-            else -> Color(0xFF4E965A)
+            "cherry" -> AppColors.SwatchFF4E965A
+            "orange" -> AppColors.SwatchFF43884A
+            "pine" -> AppColors.SwatchFF286C50
+            "maple" -> AppColors.SwatchFFB65A3C
+            "bamboo" -> AppColors.SwatchFF5A9B51
+            else -> AppColors.SwatchFF4E965A
         }
         val leafLight = when (speciesId) {
-            "cherry" -> Color(0xFF8BCB85)
-            "orange" -> Color(0xFF9BCB63)
-            "pine" -> Color(0xFF75A98A)
-            "maple" -> Color(0xFFE39A57)
-            "bamboo" -> Color(0xFFA5D17D)
-            else -> Color(0xFF8BCB85)
+            "cherry" -> AppColors.SwatchFF8BCB85
+            "orange" -> AppColors.SwatchFF9BCB63
+            "pine" -> AppColors.SwatchFF75A98A
+            "maple" -> AppColors.SwatchFFE39A57
+            "bamboo" -> AppColors.SwatchFFA5D17D
+            else -> AppColors.SwatchFF8BCB85
         }
-        val bark = Color(0xFF80563A)
-        val outline = Color(0xFF493C30)
+        val bark = AppColors.IllustrationBark
+        val outline = AppColors.IllustrationOutline
 
         drawRoundRect(
-            color = Color(0xFFEAF3E7),
+            color = AppColors.SwatchFFEAF3E7,
             size = size,
             cornerRadius = CornerRadius(w * 0.07f)
         )
-        drawCircle(Color(0xFFFFF0C4), radius = min(w, h) * 0.075f, center = Offset(w * 0.79f, h * 0.17f))
+        drawCircle(AppColors.SwatchFFFFF0C4, radius = min(w, h) * 0.075f, center = Offset(w * 0.79f, h * 0.17f))
         drawOval(
-            color = Color(0xFFD7E6D0),
+            color = AppColors.SwatchFFD7E6D0,
             topLeft = Offset(w * 0.08f, groundY - h * 0.025f),
             size = Size(w * 0.84f, h * 0.09f)
         )
 
         // Floating garden island: the tree grows directly from soil, not a flower pot.
         drawOval(
-            color = Color(0xFFB7D5C1),
+            color = AppColors.SwatchFFB7D5C1,
             topLeft = Offset(w * 0.055f, h * 0.665f),
             size = Size(w * 0.89f, h * 0.245f)
         )
         drawOval(
-            color = Color(0xFFC98C4E),
+            color = AppColors.SwatchFFC98C4E,
             topLeft = Offset(w * 0.095f, h * 0.635f),
             size = Size(w * 0.81f, h * 0.235f)
         )
         drawOval(
-            color = Color(0xFFE4B66F),
+            color = AppColors.SwatchFFE4B66F,
             topLeft = Offset(w * 0.17f, h * 0.66f),
             size = Size(w * 0.58f, h * 0.075f)
         )
         // Tiny grass tufts around the island.
         listOf(0.18f, 0.31f, 0.72f, 0.83f).forEachIndexed { index, x ->
             val y = h * (0.72f + (index % 2) * 0.06f)
-            drawLine(Color(0xFF78AD59), Offset(w*x, y), Offset(w*(x-0.025f), y-h*.035f), w*.012f, cap = StrokeCap.Round)
-            drawLine(Color(0xFF78AD59), Offset(w*x, y), Offset(w*(x+0.025f), y-h*.04f), w*.012f, cap = StrokeCap.Round)
+            drawLine(AppColors.SwatchFF78AD59, Offset(w*x, y), Offset(w*(x-0.025f), y-h*.035f), w*.012f, cap = StrokeCap.Round)
+            drawLine(AppColors.SwatchFF78AD59, Offset(w*x, y), Offset(w*(x+0.025f), y-h*.04f), w*.012f, cap = StrokeCap.Round)
         }
 
         // Seed stage: a seed resting just below the soil line.
         if (growth <= 0) {
             drawOval(
-                color = Color(0xFF9A6943),
+                color = AppColors.SwatchFF9A6943,
                 topLeft = Offset(cx - w * 0.035f, groundY - h * 0.035f),
                 size = Size(w * 0.07f, h * 0.045f)
             )
-            drawLine(Color(0xFFD8B28A), Offset(cx - w * 0.01f, groundY - h * 0.028f), Offset(cx + w * 0.012f, groundY - h * 0.006f), w * 0.006f)
+            drawLine(AppColors.SwatchFFD8B28A, Offset(cx - w * 0.01f, groundY - h * 0.028f), Offset(cx + w * 0.012f, groundY - h * 0.006f), w * 0.006f)
         } else {
             val stemHeight = h * (0.055f + 0.40f * progress)
             val topY = groundY - stemHeight
@@ -108,8 +111,8 @@ fun TreeIllustration(
 
             if (progress < 0.10f) {
                 // Two cotyledons on the new sprout.
-                drawLine(Color(0xFF4F914D), Offset(cx, topY + h * 0.018f), Offset(cx - w * 0.075f, topY - h * 0.015f), w * 0.018f, cap = StrokeCap.Round)
-                drawLine(Color(0xFF4F914D), Offset(cx, topY + h * 0.018f), Offset(cx + w * 0.075f, topY - h * 0.015f), w * 0.018f, cap = StrokeCap.Round)
+                drawLine(AppColors.SwatchFF4F914D, Offset(cx, topY + h * 0.018f), Offset(cx - w * 0.075f, topY - h * 0.015f), w * 0.018f, cap = StrokeCap.Round)
+                drawLine(AppColors.SwatchFF4F914D, Offset(cx, topY + h * 0.018f), Offset(cx + w * 0.075f, topY - h * 0.015f), w * 0.018f, cap = StrokeCap.Round)
                 drawOval(leafLight, Offset(cx - w * 0.12f, topY - h * 0.055f), Size(w * 0.12f, h * 0.065f))
                 drawOval(leaf, Offset(cx + w * 0.015f, topY - h * 0.055f), Size(w * 0.12f, h * 0.065f))
             } else {
@@ -139,7 +142,7 @@ fun TreeIllustration(
                     val radius = crownRadius * (if (i % 3 == 0) 0.62f else 0.53f)
                     val center = Offset(cx + p.x * crownRadius, crownY + p.y * crownRadius)
                     drawCircle(if (i % 2 == 0) leaf else leafLight, radius, center)
-                    drawCircle(leaf.copy(alpha = 0.25f), radius, center, style = Stroke(width = w * 0.004f))
+                    drawCircle(leaf.copy(alpha = AppOpacity.Value0_25), radius, center, style = Stroke(width = w * 0.004f))
                 }
 
                 // Species details appear only near maturity.
@@ -149,9 +152,9 @@ fun TreeIllustration(
                         val x = cx + ((i % 4) - 1.5f) * crownRadius * 0.36f
                         val y = crownY + ((i / 4) - 0.25f) * crownRadius * 0.65f
                         when (speciesId) {
-                            "orange" -> drawCircle(Color(0xFFFFA62B), crownRadius * 0.105f, Offset(x, y))
-                            "cherry", "maple" -> drawCircle(Color(0xFFFFD3D9), crownRadius * 0.10f, Offset(x, y))
-                            else -> drawCircle(Color(0xFFB9D7A1), crownRadius * 0.07f, Offset(x, y))
+                            "orange" -> drawCircle(AppColors.SwatchFFFFA62B, crownRadius * 0.105f, Offset(x, y))
+                            "cherry", "maple" -> drawCircle(AppColors.SwatchFFFFD3D9, crownRadius * 0.10f, Offset(x, y))
+                            else -> drawCircle(AppColors.SwatchFFB9D7A1, crownRadius * 0.07f, Offset(x, y))
                         }
                     }
                 }
@@ -163,8 +166,8 @@ fun TreeIllustration(
                         points.forEach { p ->
                             val x = cx + p.x * crownRadius
                             val y = crownY + p.y * crownRadius
-                            drawCircle(Color(0xFFFFD6E0), crownRadius * 0.12f, Offset(x, y))
-                            drawCircle(Color(0xFFFFC857), crownRadius * 0.045f, Offset(x, y))
+                            drawCircle(AppColors.SwatchFFFFD6E0, crownRadius * 0.12f, Offset(x, y))
+                            drawCircle(AppColors.SwatchFFFFC857, crownRadius * 0.045f, Offset(x, y))
                         }
                     }
                     "LANTERNS" -> {
@@ -172,13 +175,13 @@ fun TreeIllustration(
                             val x = cx + side * crownRadius
                             val y = crownY + crownRadius * 0.42f
                             drawLine(outline, Offset(x, y - h * 0.06f), Offset(x, y), w * 0.006f)
-                            drawRoundRect(Color(0xFFFFC857), Offset(x - w * 0.025f, y), Size(w * 0.05f, h * 0.055f), CornerRadius(w * 0.012f))
+                            drawRoundRect(AppColors.SwatchFFFFC857, Offset(x - w * 0.025f, y), Size(w * 0.05f, h * 0.055f), CornerRadius(w * 0.012f))
                         }
                     }
                     "RIBBON" -> {
                         val y = groundY - stemHeight * 0.42f
-                        drawLine(Color(0xFFDB6B72), Offset(cx - w * 0.035f, y), Offset(cx + w * 0.035f, y), w * 0.025f, cap = StrokeCap.Round)
-                        drawCircle(Color(0xFFFFC1C5), w * 0.018f, Offset(cx, y))
+                        drawLine(AppColors.SwatchFFDB6B72, Offset(cx - w * 0.035f, y), Offset(cx + w * 0.035f, y), w * 0.025f, cap = StrokeCap.Round)
+                        drawCircle(AppColors.SwatchFFFFC1C5, w * 0.018f, Offset(cx, y))
                     }
                 }
             }

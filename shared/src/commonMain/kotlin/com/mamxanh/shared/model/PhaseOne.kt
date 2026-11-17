@@ -1,5 +1,9 @@
 package com.mamxanh.shared.model
 
+import com.mamxanh.shared.localization.TextKey
+
+import com.mamxanh.shared.localization.AppText
+
 object Balance {
     const val VERSION = 2
     const val DAILY_CAP = 50
@@ -14,24 +18,24 @@ object Balance {
     fun plot(unlocked: Int) = 400 + (unlocked - GardenPlotPolicy.INITIAL_PLOTS).coerceAtLeast(0) * 200
 }
 data class TaskConfig(
-    val title: String = "", val kind: String = "DAILY", val category: String = "Học tập",
+    val title: String = "", val kind: String = "DAILY", val category: String = AppText.canonical(TextKey.CopyHocTapA51516),
     val description: String = "", val frequency: String = "EVERY_DAY", val days: String = "",
     val due: String = "", val verification: String = "CLICK", val minutes: Int = 5,
     val startMinute: Int = -1, val endMinute: Int = -1, val reminderMinute: Int = -1
 ) {
     val reward get() = Balance.reward(verification, minutes)
     fun error(): String? = when {
-        title.trim().length !in 1..100 -> "Tên việc cần từ 1 đến 100 ký tự"
-        description.length > 500 -> "Mô tả tối đa 500 ký tự"
-        kind !in setOf("HABIT", "DAILY", "TODO") -> "Loại việc không hợp lệ"
-        verification !in setOf("CLICK", "TIMER") -> "Chọn Click hoặc Timer"
-        verification == "TIMER" && minutes !in 5..240 -> "Thời gian từ 5 đến 240 phút"
-        frequency !in setOf("EVERY_DAY","WEEKDAYS","WEEKENDS","CUSTOM","ONCE") -> "Lịch không hợp lệ"
-        frequency == "CUSTOM" && (days.isEmpty() || days.any { it !in '0'..'6' }) -> "Chọn ít nhất một ngày"
-        kind == "TODO" && due.isNotBlank() && !validDate(due) -> "Hạn chót theo YYYY-MM-DD"
-        (startMinute == -1) != (endMinute == -1) -> "Nhập cả giờ bắt đầu và kết thúc"
-        startMinute !in -1..1439 || endMinute !in -1..1439 || reminderMinute !in -1..1439 -> "Giờ không hợp lệ"
-        startMinute >= 0 && startMinute == endMinute -> "Khung giờ phải có độ dài lớn hơn 0"
+        title.trim().length !in 1..100 -> AppText.text(TextKey.CopyTenViecCanTu1Den100KyTuEe458c)
+        description.length > 500 -> AppText.text(TextKey.CopyMoTaToiDa500KyTu1b6c1c)
+        kind !in setOf("HABIT", "DAILY", "TODO") -> AppText.text(TextKey.CopyLoaiViecKhongHopLe591535)
+        verification !in setOf("CLICK", "TIMER") -> AppText.text(TextKey.CopyChonClickHoacTimer4ca463)
+        verification == "TIMER" && minutes !in 5..240 -> AppText.text(TextKey.CopyThoiGianTu5Den240Phut2e8442)
+        frequency !in setOf("EVERY_DAY","WEEKDAYS","WEEKENDS","CUSTOM","ONCE") -> AppText.text(TextKey.CopyLichKhongHopLeE44ee4)
+        frequency == "CUSTOM" && (days.isEmpty() || days.any { it !in '0'..'6' }) -> AppText.text(TextKey.CopyChonItNhatMotNgay87d34b)
+        kind == "TODO" && due.isNotBlank() && !validDate(due) -> AppText.text(TextKey.CopyHanChotTheoYyyyMmDdEd8713)
+        (startMinute == -1) != (endMinute == -1) -> AppText.text(TextKey.CopyNhapCaGioBatDauVaKetThucB4c5b3)
+        startMinute !in -1..1439 || endMinute !in -1..1439 || reminderMinute !in -1..1439 -> AppText.text(TextKey.CopyGioKhongHopLeB9fc9c)
+        startMinute >= 0 && startMinute == endMinute -> AppText.text(TextKey.CopyKhungGioPhaiCoDoDaiLonHon09d5e85)
         else -> null
     }
 }

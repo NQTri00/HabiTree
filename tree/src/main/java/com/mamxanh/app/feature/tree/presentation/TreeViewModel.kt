@@ -1,5 +1,9 @@
 package com.mamxanh.app.feature.tree.presentation
 
+import com.mamxanh.shared.localization.TextKey
+
+import com.mamxanh.shared.localization.AppText
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mamxanh.app.feature.tree.domain.TreeRepository
@@ -33,7 +37,7 @@ class TreeViewModel(private val repository:TreeRepository):ViewModel() {
         viewModelScope.launch {
             try {
                 if(intent is TreeIntent.AskDisposition) {
-                    val quote=withContext(Dispatchers.IO){if(intent.sell)repository.saleQuote(intent.id) else ActionResult(true,"Dọn cây không hoàn xu hoặc hạt")}
+                    val quote=withContext(Dispatchers.IO){if(intent.sell)repository.saleQuote(intent.id) else ActionResult(true,AppText.text(TextKey.CopyDonCayKhongHoanXuHoacHatCdff29))}
                     if(quote.success)_uiState.value=_uiState.value.copy(dispositionId=intent.id,selling=intent.sell,
                         quote=quote,actionKey=java.util.UUID.randomUUID().toString())
                     else effectChannel.send(TreeEffect.Feedback(quote.message))
@@ -44,18 +48,18 @@ class TreeViewModel(private val repository:TreeRepository):ViewModel() {
                         is TreeIntent.Water -> {
                             val result=repository.water(intent.id)
                             ActionResult(result==TreeWateringResult.WATERED,when(result) {
-                                TreeWateringResult.WATERED -> "Đã tưới cây · Cửa sổ tăng trưởng đã bắt đầu"
-                                TreeWateringResult.ALREADY_WATERED -> "Cây đang được tưới; thời gian không cộng dồn"
-                                TreeWateringResult.DEAD -> "Cây đã khô héo vĩnh viễn; chỉ có thể dọn cây"
-                                TreeWateringResult.CLOCK_CHANGED -> "Đồng hồ đã lùi; hãy chờ giờ thực bắt kịp"
-                                TreeWateringResult.TREE_NOT_FOUND -> "Cây không còn trong vườn"
+                                TreeWateringResult.WATERED -> AppText.text(TextKey.CopyDaTuoiCayCuaSoTangTruongDaBatDau1da977)
+                                TreeWateringResult.ALREADY_WATERED -> AppText.text(TextKey.CopyCayDangDuocTuoiThoiGianKhongCongDonA33cd0)
+                                TreeWateringResult.DEAD -> AppText.text(TextKey.CopyCayDaKhoHeoVinhVienChiCoTheDonCay6ddff8)
+                                TreeWateringResult.CLOCK_CHANGED -> AppText.text(TextKey.CopyDongHoDaLuiHayChoGioThucBatKip822584)
+                                TreeWateringResult.TREE_NOT_FOUND -> AppText.text(TextKey.CopyCayKhongConTrongVuon40c7ae)
                             })
                         }
                         is TreeIntent.Fertilize -> repository.applyFertilizer(intent.id,intent.tier)
-                        is TreeIntent.Decorate -> {repository.decorate(intent.id,intent.decoration);ActionResult(true,"Đã cập nhật trang trí")}
+                        is TreeIntent.Decorate -> {repository.decorate(intent.id,intent.decoration);ActionResult(true,AppText.text(TextKey.CopyDaCapNhatTrangTri472665))}
                         TreeIntent.ConfirmDisposition -> pending.dispositionId?.let{repository.dispose(it,pending.selling,pending.actionKey)}
-                            ?: ActionResult(false,"Chọn cây trước")
-                        else -> ActionResult(false,"Không có thao tác")
+                            ?: ActionResult(false,AppText.text(TextKey.CopyChonCayTruoc84691e))
+                        else -> ActionResult(false,AppText.text(TextKey.CopyKhongCoThaoTac432536))
                     }
                 }
                 if(result.success)effectChannel.send(TreeEffect.TreeChanged)

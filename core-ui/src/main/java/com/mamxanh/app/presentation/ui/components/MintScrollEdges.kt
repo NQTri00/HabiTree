@@ -1,5 +1,9 @@
 package com.mamxanh.app.presentation.ui.components
 
+import com.mamxanh.app.presentation.ui.design.AppColors
+import com.mamxanh.app.presentation.ui.design.AppDimensions
+import com.mamxanh.app.presentation.ui.design.AppOpacity
+
 import android.os.Build
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -38,21 +42,21 @@ fun Modifier.mintScrollEdges(canScrollBackward: Boolean, canScrollForward: Boole
     val top = if (blurSupported && canScrollBackward) rememberGraphicsLayer() else null
     val bottom = if (blurSupported && canScrollForward) rememberGraphicsLayer() else null
     return drawWithCache {
-        val edge = minOf(16.dp.toPx(), size.height / 8f)
-        val radius = 2.dp.toPx()
+        val edge = minOf(AppDimensions.Dp16.toPx(), size.height / 8f)
+        val radius = AppDimensions.Dp2.toPx()
         val bandHeight = ceil(edge + radius * 3f).toInt().coerceAtMost(size.height.roundToInt())
         val bandSize = IntSize(size.width.roundToInt(), bandHeight)
         val bottomCaptureY = size.height - bandHeight
         val effect = BlurEffect(radius, radius, TileMode.Clamp)
         top?.renderEffect = effect
         bottom?.renderEffect = effect
-        val maskTop = Brush.verticalGradient(listOf(Color.White.copy(alpha = .9f), Color.Transparent),
+        val maskTop = Brush.verticalGradient(listOf(AppColors.White.copy(alpha = AppOpacity.Value_9), AppColors.Transparent),
             startY = 0f, endY = edge)
-        val maskBottom = Brush.verticalGradient(listOf(Color.Transparent, Color.White.copy(alpha = .9f)),
+        val maskBottom = Brush.verticalGradient(listOf(AppColors.Transparent, AppColors.White.copy(alpha = AppOpacity.Value_9)),
             startY = size.height - edge, endY = size.height)
-        val fog = Color(0xFFE5F2E9).copy(alpha = if (blurSupported) .16f else .35f)
-        val fadeTop = Brush.verticalGradient(listOf(fog, Color.Transparent), startY = 0f, endY = edge)
-        val fadeBottom = Brush.verticalGradient(listOf(Color.Transparent, fog),
+        val fog = AppColors.IllustrationFog.copy(alpha = if (blurSupported) .16f else .35f)
+        val fadeTop = Brush.verticalGradient(listOf(fog, AppColors.Transparent), startY = 0f, endY = edge)
+        val fadeBottom = Brush.verticalGradient(listOf(AppColors.Transparent, fog),
             startY = size.height - edge, endY = size.height)
         val edgePaint = Paint()
         onDrawWithContent {

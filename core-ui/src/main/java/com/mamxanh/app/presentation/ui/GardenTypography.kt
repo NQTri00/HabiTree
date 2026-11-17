@@ -1,5 +1,7 @@
 package com.mamxanh.app.presentation.ui
 
+import com.mamxanh.app.presentation.ui.design.AppTypography
+
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -15,19 +17,19 @@ val GardenFontFamily = FontFamily(
 )
 private val baseTypography = Typography()
 val GardenTypography = Typography(
-    displayLarge=baseTypography.displayLarge.copy(fontFamily=GardenFontFamily,letterSpacing=0.sp),
-    displayMedium=baseTypography.displayMedium.copy(fontFamily=GardenFontFamily,letterSpacing=0.sp),
-    displaySmall=baseTypography.displaySmall.copy(fontFamily=GardenFontFamily,letterSpacing=0.sp),
-    headlineLarge=baseTypography.headlineLarge.copy(fontFamily=GardenFontFamily,letterSpacing=0.sp),
-    headlineMedium=baseTypography.headlineMedium.copy(fontFamily=GardenFontFamily,letterSpacing=0.sp),
-    headlineSmall=baseTypography.headlineSmall.copy(fontFamily=GardenFontFamily,letterSpacing=0.sp),
-    titleLarge=baseTypography.titleLarge.copy(fontFamily=GardenFontFamily,letterSpacing=0.sp),
-    titleMedium=baseTypography.titleMedium.copy(fontFamily=GardenFontFamily,letterSpacing=0.sp),
-    titleSmall=baseTypography.titleSmall.copy(fontFamily=GardenFontFamily,letterSpacing=0.sp),
-    bodyLarge=baseTypography.bodyLarge.copy(fontFamily=GardenFontFamily,letterSpacing=0.sp),
-    bodyMedium=baseTypography.bodyMedium.copy(fontFamily=GardenFontFamily,letterSpacing=0.sp),
-    bodySmall=baseTypography.bodySmall.copy(fontFamily=GardenFontFamily,letterSpacing=0.sp),
-    labelLarge=baseTypography.labelLarge.copy(fontFamily=GardenFontFamily,letterSpacing=0.sp),
-    labelMedium=baseTypography.labelMedium.copy(fontFamily=GardenFontFamily,letterSpacing=0.sp),
-    labelSmall=baseTypography.labelSmall.copy(fontFamily=GardenFontFamily,letterSpacing=0.sp)
+    displayLarge=baseTypography.displayLarge.copy(fontFamily=GardenFontFamily,letterSpacing=AppTypography.Sp0),
+    displayMedium=baseTypography.displayMedium.copy(fontFamily=GardenFontFamily,letterSpacing=AppTypography.Sp0),
+    displaySmall=baseTypography.displaySmall.copy(fontFamily=GardenFontFamily,letterSpacing=AppTypography.Sp0),
+    headlineLarge=baseTypography.headlineLarge.copy(fontFamily=GardenFontFamily,letterSpacing=AppTypography.Sp0),
+    headlineMedium=baseTypography.headlineMedium.copy(fontFamily=GardenFontFamily,letterSpacing=AppTypography.Sp0),
+    headlineSmall=baseTypography.headlineSmall.copy(fontFamily=GardenFontFamily,letterSpacing=AppTypography.Sp0),
+    titleLarge=baseTypography.titleLarge.copy(fontFamily=GardenFontFamily,letterSpacing=AppTypography.Sp0),
+    titleMedium=baseTypography.titleMedium.copy(fontFamily=GardenFontFamily,letterSpacing=AppTypography.Sp0),
+    titleSmall=baseTypography.titleSmall.copy(fontFamily=GardenFontFamily,letterSpacing=AppTypography.Sp0),
+    bodyLarge=baseTypography.bodyLarge.copy(fontFamily=GardenFontFamily,letterSpacing=AppTypography.Sp0),
+    bodyMedium=baseTypography.bodyMedium.copy(fontFamily=GardenFontFamily,letterSpacing=AppTypography.Sp0),
+    bodySmall=baseTypography.bodySmall.copy(fontFamily=GardenFontFamily,letterSpacing=AppTypography.Sp0),
+    labelLarge=baseTypography.labelLarge.copy(fontFamily=GardenFontFamily,letterSpacing=AppTypography.Sp0),
+    labelMedium=baseTypography.labelMedium.copy(fontFamily=GardenFontFamily,letterSpacing=AppTypography.Sp0),
+    labelSmall=baseTypography.labelSmall.copy(fontFamily=GardenFontFamily,letterSpacing=AppTypography.Sp0)
 )

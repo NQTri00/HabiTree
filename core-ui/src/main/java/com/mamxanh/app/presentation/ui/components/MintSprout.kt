@@ -1,5 +1,9 @@
 package com.mamxanh.app.presentation.ui.components
 
+import com.mamxanh.app.presentation.ui.design.AppColors
+import com.mamxanh.app.presentation.ui.design.AppDimensions
+import com.mamxanh.app.presentation.ui.design.AppOpacity
+
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
@@ -20,7 +24,7 @@ fun MintSprout(modifier: Modifier = Modifier) {
     Canvas(modifier) {
         val w = size.width
         val h = size.height
-        drawLine(Color(0xFF468F20), Offset(w * .5f, h * .9f), Offset(w * .5f, h * .42f),
+        drawLine(AppColors.SwatchFF468F20, Offset(w * .5f, h * .9f), Offset(w * .5f, h * .42f),
             size.minDimension * .045f, StrokeCap.Round)
         val left = Path().apply {
             moveTo(w * .50f, h * .60f)
@@ -34,10 +38,10 @@ fun MintSprout(modifier: Modifier = Modifier) {
             cubicTo(w * .95f, h * .36f, w * .80f, h * .58f, w * .51f, h * .54f)
             close()
         }
-        drawPath(left, Brush.linearGradient(listOf(Color(0xFFBFEE57), Color(0xFF459D22)), Offset(w * .1f, h * .2f), Offset(w * .6f, h * .6f)))
-        drawPath(right, Brush.linearGradient(listOf(Color(0xFFD5F67B), Color(0xFF5AAA21)), Offset(w * .6f, h * .1f), Offset(w * .7f, h * .6f)))
-        drawLine(Color(0xFFE8FAB0).copy(alpha = .7f), Offset(w * .5f, h * .58f), Offset(w * .20f, h * .29f), size.minDimension * .018f)
-        drawLine(Color(0xFFE8FAB0).copy(alpha = .7f), Offset(w * .52f, h * .53f), Offset(w * .83f, h * .20f), size.minDimension * .018f)
+        drawPath(left, Brush.linearGradient(listOf(AppColors.SwatchFFBFEE57, AppColors.SwatchFF459D22), Offset(w * .1f, h * .2f), Offset(w * .6f, h * .6f)))
+        drawPath(right, Brush.linearGradient(listOf(AppColors.SwatchFFD5F67B, AppColors.SwatchFF5AAA21), Offset(w * .6f, h * .1f), Offset(w * .7f, h * .6f)))
+        drawLine(AppColors.SwatchFFE8FAB0.copy(alpha = AppOpacity.Value_7), Offset(w * .5f, h * .58f), Offset(w * .20f, h * .29f), size.minDimension * .018f)
+        drawLine(AppColors.SwatchFFE8FAB0.copy(alpha = AppOpacity.Value_7), Offset(w * .52f, h * .53f), Offset(w * .83f, h * .20f), size.minDimension * .018f)
     }
 }
 
@@ -47,21 +51,21 @@ fun MintEmptySprout(modifier: Modifier = Modifier) {
         Canvas(Modifier.matchParentSize()) {
             val w = size.width
             val h = size.height
-            drawOval(Color(0xFFBBE394), Offset(w * .08f, h * .78f), Size(w * .84f, h * .16f))
-            drawOval(Brush.verticalGradient(listOf(Color(0xFFC49664), Color(0xFF925B35)), h * .75f, h * .94f),
+            drawOval(AppColors.SwatchFFBBE394, Offset(w * .08f, h * .78f), Size(w * .84f, h * .16f))
+            drawOval(Brush.verticalGradient(listOf(AppColors.SwatchFFC49664, AppColors.SwatchFF925B35), h * .75f, h * .94f),
                 Offset(w * .23f, h * .75f), Size(w * .54f, h * .16f))
             repeat(5) { index ->
                 val angle = Math.toRadians(-145.0 + index * 27.5)
                 val center = Offset(w * .5f, h * .45f)
                 val inner = size.minDimension * .34f
                 val outer = size.minDimension * .42f
-                drawLine(Color(0xFFFFC827),
+                drawLine(AppColors.SwatchFFFFC827,
                     center + Offset(kotlin.math.cos(angle).toFloat() * inner, kotlin.math.sin(angle).toFloat() * inner),
                     center + Offset(kotlin.math.cos(angle).toFloat() * outer, kotlin.math.sin(angle).toFloat() * outer),
-                    4.dp.toPx(), StrokeCap.Round)
+                    AppDimensions.Dp4.toPx(), StrokeCap.Round)
             }
         }
-        MintSprout(Modifier.fillMaxWidth(.46f).fillMaxHeight(.55f).align(Alignment.Center).offset(y = 12.dp))
+        MintSprout(Modifier.fillMaxWidth(.46f).fillMaxHeight(.55f).align(Alignment.Center).offset(y = AppDimensions.Dp12))
     }
 }
 

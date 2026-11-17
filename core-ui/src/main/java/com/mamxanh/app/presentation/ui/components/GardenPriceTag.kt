@@ -1,5 +1,12 @@
 package com.mamxanh.app.presentation.ui.components
 
+import com.mamxanh.app.presentation.ui.design.AppDimensions
+import com.mamxanh.app.presentation.ui.design.AppTypography
+
+import com.mamxanh.shared.localization.TextKey
+
+import com.mamxanh.shared.localization.AppText
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
@@ -16,11 +23,11 @@ import com.mamxanh.core.ui.R
 
 @Composable
 fun GardenPriceTag(price: Int, modifier: Modifier = Modifier) {
-    GardenBotanicalFrame(modifier.heightIn(min = 30.dp).widthIn(min = 88.dp),
-        contentPadding = PaddingValues(horizontal = 10.dp, vertical = 3.dp),
-        cornerSize = 12.dp, skin = GardenPanelSkin.PRICE) {
-        GardenRichText("$price xu", Modifier.align(Alignment.Center), color = com.mamxanh.app.presentation.ui.Deep,
-            fontSize = 14.sp, lineHeight = 17.sp, fontWeight = FontWeight.Bold)
+    GardenBotanicalFrame(modifier.heightIn(min = AppDimensions.Dp30).widthIn(min = AppDimensions.Dp88),
+        contentPadding = PaddingValues(horizontal = AppDimensions.Dp10, vertical = AppDimensions.Dp3),
+        cornerSize = AppDimensions.Dp12, skin = GardenPanelSkin.PRICE) {
+        GardenRichText(AppText.text(TextKey.Copy0Xu251e68,price), Modifier.align(Alignment.Center), color = com.mamxanh.app.presentation.ui.Deep,
+            fontSize = AppTypography.Sp14, lineHeight = AppTypography.Sp17, fontWeight = FontWeight.Bold)
     }
 }
 

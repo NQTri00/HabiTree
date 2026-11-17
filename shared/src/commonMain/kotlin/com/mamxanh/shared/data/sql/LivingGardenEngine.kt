@@ -1,5 +1,9 @@
 package com.mamxanh.shared.data.sql
 
+import com.mamxanh.shared.localization.TextKey
+
+import com.mamxanh.shared.localization.AppText
+
 import com.mamxanh.shared.model.*
 import com.mamxanh.shared.time.*
 
@@ -18,7 +22,7 @@ class LivingGardenEngine(private val db:GameSqlConnection,private val clock:Game
         exec("INSERT OR IGNORE INTO memory_events(id,type,entity,title,at) VALUES(?,'GARDEN',?,?,?)",id,entity,title,at)
     }
     private fun own(sku:String)=num("SELECT quantity FROM inventory WHERE item=?",sku).toInt()
-    private fun appearance()=GardenAppearance(meta("garden_nickname","Vườn bình yên"),
+    private fun appearance()=GardenAppearance(meta("garden_nickname",AppText.text(TextKey.CopyVuonBinhYenA8fe13)),
         meta("garden_created","0").toLong(),meta("garden_theme","MEADOW"),meta("garden_density","OFF"),
         meta("garden_battery","0")=="1",meta("garden_muted","1")=="1")
     private fun placements()=rows("SELECT id,sku,plot_id,tree_id FROM garden_layout ORDER BY id",4).map {
@@ -54,7 +58,7 @@ class LivingGardenEngine(private val db:GameSqlConnection,private val clock:Game
         goals.filter{it.progress>=it.target && it.unlockedAt==0L}.forEach { goal->
             exec("INSERT OR IGNORE INTO collection_rewards VALUES(?,?,?)",goal.id,clock.now(),goal.reward)
             if(goal.reward.isNotBlank())exec("INSERT OR IGNORE INTO inventory VALUES(?,1)",goal.reward)
-            memory("collection:${goal.id}","Bộ sưu tầm · ${goal.title}")
+            memory("collection:${goal.id}",AppText.text(TextKey.CopyBoSuuTam0C3b9c2,goal.title))
         }
     }
     private fun goals():List<CollectionGoal> {
@@ -64,11 +68,11 @@ class LivingGardenEngine(private val db:GameSqlConnection,private val clock:Game
         val expansion=num("SELECT COUNT(*) FROM garden_sections WHERE id>1 AND unlocked=1").toInt()
         val full=rows("SELECT s.id FROM garden_sections s WHERE NOT EXISTS(SELECT 1 FROM garden_plots p WHERE p.id BETWEEN (s.id-1)*6+1 AND s.id*6 AND (p.unlocked=0 OR p.tree_id IS NULL)) AND (SELECT COUNT(DISTINCT t.species_id) FROM garden_plots p JOIN trees t ON t.id=p.tree_id WHERE p.id BETWEEN (s.id-1)*6+1 AND s.id*6 AND t.disposition='' AND t.life_state<>'DEAD')=6",1).size
         return listOf(
-            CollectionGoal("collector","Trồng 3 loài",distinct,3,""),
-            CollectionGoal("mature3","Nuôi 3 loài trưởng thành",mature,3,"reward_sign"),
-            CollectionGoal("bloom","Cây hoa đầu tiên nở rộ",bloom,1,"reward_petals"),
-            CollectionGoal("expansion","Mở khu vườn mới",expansion,1,"reward_path"),
-            CollectionGoal("section","Một khu với 6 loài khác nhau",full,1,"reward_plaque")
+            CollectionGoal("collector",AppText.text(TextKey.CopyTrong3LoaiBcc325),distinct,3,""),
+            CollectionGoal("mature3",AppText.text(TextKey.CopyNuoi3LoaiTruongThanh6c9d95),mature,3,"reward_sign"),
+            CollectionGoal("bloom",AppText.text(TextKey.CopyCayHoaDauTienNoRo978326),bloom,1,"reward_petals"),
+            CollectionGoal("expansion",AppText.text(TextKey.CopyMoKhuVuonMoi9d81b2),expansion,1,"reward_path"),
+            CollectionGoal("section",AppText.text(TextKey.CopyMotKhuVoi6LoaiKhacNhau96bcc7),full,1,"reward_plaque")
         ).map{it.copy(unlockedAt=num("SELECT at FROM collection_rewards WHERE id=?",it.id))}
     }
     fun snapshot():LivingGardenSnapshot=db.transaction {
@@ -102,24 +106,24 @@ class LivingGardenEngine(private val db:GameSqlConnection,private val clock:Game
                 };ActionResult(true,"")
             }
             is LivingGardenAction.Buy -> {
-                val item=gardenCosmetics.firstOrNull{it.id==action.sku} ?: return@transaction ActionResult(false,"Không tìm thấy vật phẩm")
-                if(item.tier=="Reward")return@transaction ActionResult(false,"Mở khóa qua bộ sưu tầm")
-                if(num("SELECT COUNT(*) FROM garden_receipts WHERE id=?",action.key)>0)return@transaction ActionResult(false,"Giao dịch đã xử lý")
-                if(item.permanent && own(item.id)>0)return@transaction ActionResult(false,"Bạn đã sở hữu")
-                if(!phase.spend(action.key,"COSMETIC",item.id,item.price))return@transaction ActionResult(false,"Chưa đủ xu")
+                val item=gardenCosmetics.firstOrNull{it.id==action.sku} ?: return@transaction ActionResult(false,AppText.text(TextKey.CopyKhongTimThayVatPhamDedf1b))
+                if(item.tier=="Reward")return@transaction ActionResult(false,AppText.text(TextKey.CopyMoKhoaQuaBoSuuTam6250f5))
+                if(num("SELECT COUNT(*) FROM garden_receipts WHERE id=?",action.key)>0)return@transaction ActionResult(false,AppText.text(TextKey.CopyGiaoDichDaXuLyAa0715))
+                if(item.permanent && own(item.id)>0)return@transaction ActionResult(false,AppText.text(TextKey.CopyBanDaSoHuu2d356f))
+                if(!phase.spend(action.key,"COSMETIC",item.id,item.price))return@transaction ActionResult(false,AppText.text(TextKey.CopyChuaDuXuF1444b))
                 exec("INSERT OR REPLACE INTO inventory VALUES(?,?)",item.id,own(item.id)+1)
                 receipt(action.key,"BUY")
-                ActionResult(true,"Đã thêm vào túi; chưa đặt trong vườn")
+                ActionResult(true,AppText.text(TextKey.CopyDaThemVaoTuiChuaDatTrongVuon7c39aa))
             }
             is LivingGardenAction.Layout -> {
-                if(num("SELECT COUNT(*) FROM garden_receipts WHERE id=?",action.key)>0)return@transaction ActionResult(false,"Bản lưu đã xử lý")
-                if(action.expectedVersion!=version())return@transaction ActionResult(false,"Vườn đã thay đổi. Hủy bản nháp rồi mở lại.")
+                if(num("SELECT COUNT(*) FROM garden_receipts WHERE id=?",action.key)>0)return@transaction ActionResult(false,AppText.text(TextKey.CopyBanLuuDaXuLyA65d92))
+                if(action.expectedVersion!=version())return@transaction ActionResult(false,AppText.text(TextKey.CopyVuonDaThayDoiHuyBanNhapRoiMoLai587f3e))
                 val error=validate(action.placements)
                 if(error!=null)return@transaction ActionResult(false,error)
                 val before=placements()
                 // Unknown future entries are retained verbatim; this version may not edit them.
                 if(before.filter{p->gardenCosmetics.none{it.id==p.sku}}.any{it !in action.placements})
-                    return@transaction ActionResult(false,"Giữ nguyên vật phẩm từ phiên bản mới hơn")
+                    return@transaction ActionResult(false,AppText.text(TextKey.CopyGiuNguyenVatPhamTuPhienBanMoiHonC49b8f))
                 exec("DELETE FROM garden_layout")
                 action.placements.forEach{exec("INSERT INTO garden_layout VALUES(?,?,?,?)",it.id,it.sku,it.plotId,it.treeId)}
                 (before+action.placements).map{it.treeId}.filter{it!=0L}.distinct().forEach{id->
@@ -127,56 +131,56 @@ class LivingGardenEngine(private val db:GameSqlConnection,private val clock:Game
                     put("decoration_$id",gardenCosmetics.firstOrNull{it.id==sku}?.art?.ifBlank{"NONE"} ?: "NONE")
                 }
                 bump();receipt(action.key,"LAYOUT")
-                ActionResult(true,"Đã lưu khu vườn")
+                ActionResult(true,AppText.text(TextKey.CopyDaLuuKhuVuonA02d1c))
             }
             is LivingGardenAction.Expand -> {
-                if(num("SELECT COUNT(*) FROM garden_receipts WHERE id=?",action.key)>0)return@transaction ActionResult(false,"Giao dịch đã xử lý")
+                if(num("SELECT COUNT(*) FROM garden_receipts WHERE id=?",action.key)>0)return@transaction ActionResult(false,AppText.text(TextKey.CopyGiaoDichDaXuLyAa0715))
                 val section=rows("SELECT unlocked FROM garden_sections WHERE id=?",1,action.section).firstOrNull()
-                    ?: return@transaction ActionResult(false,"Ngoài giới hạn khu vườn")
-                if(section.int(0)==1 || action.section==1)return@transaction ActionResult(false,"Khu này đã mở")
+                    ?: return@transaction ActionResult(false,AppText.text(TextKey.CopyNgoaiGioiHanKhuVuon3c1d4c))
+                if(section.int(0)==1 || action.section==1)return@transaction ActionResult(false,AppText.text(TextKey.CopyKhuNayDaMo2ff645))
                 if(num("SELECT COUNT(*) FROM garden_sections WHERE id<? AND unlocked=0",action.section)>0)
-                    return@transaction ActionResult(false,"Mở khu liền trước trước")
+                    return@transaction ActionResult(false,AppText.text(TextKey.CopyMoKhuLienTruocTruocA99157))
                 val missing=num("SELECT COUNT(*) FROM garden_plots WHERE id BETWEEN ? AND ? AND unlocked=0",(action.section-1)*6+1,action.section*6).toInt()
                 val unlocked=num("SELECT COUNT(*) FROM garden_plots WHERE unlocked=1").toInt()
                 val price=(0 until missing).sumOf{Balance.plot(unlocked+it)}
-                if(!phase.spend(action.key,"EXPANSION",action.section.toString(),price))return@transaction ActionResult(false,"Chưa đủ xu hoặc giao dịch đã xử lý")
+                if(!phase.spend(action.key,"EXPANSION",action.section.toString(),price))return@transaction ActionResult(false,AppText.text(TextKey.CopyChuaDuXuHoacGiaoDichDaXuLy495f51))
                 exec("UPDATE garden_sections SET unlocked=1 WHERE id=?",action.section)
                 exec("UPDATE garden_plots SET unlocked=1 WHERE id BETWEEN ? AND ?",(action.section-1)*6+1,action.section*6)
                 bump();receipt(action.key,"EXPANSION")
-                memory("expansion:${action.section}","Mở khu vườn ${action.section}")
-                sync();ActionResult(true,"Đã mở khu mới")
+                memory("expansion:${action.section}",AppText.text(TextKey.CopyMoKhuVuon0A2449d,action.section))
+                sync();ActionResult(true,AppText.text(TextKey.CopyDaMoKhuMoiB8cb58))
             }
             is LivingGardenAction.Appearance -> {
                 val a=action.value
                 if(a.nickname.trim().length !in 1..40 || a.density !in setOf("OFF","LOW","NORMAL") ||
-                    a.theme !in setOf("MEADOW","theme_stone","theme_night"))return@transaction ActionResult(false,"Tùy chọn không hợp lệ")
-                if(a.theme!="MEADOW" && own(a.theme)<1)return@transaction ActionResult(false,"Chưa sở hữu chủ đề")
+                    a.theme !in setOf("MEADOW","theme_stone","theme_night"))return@transaction ActionResult(false,AppText.text(TextKey.CopyTuyChonKhongHopLeA00925))
+                if(a.theme!="MEADOW" && own(a.theme)<1)return@transaction ActionResult(false,AppText.text(TextKey.CopyChuaSoHuuChuDe8c023b))
                 put("garden_nickname",a.nickname.trim());put("garden_theme",a.theme);put("garden_density",a.density)
                 put("garden_battery",if(a.batterySaver)1 else 0);put("garden_muted",if(a.muted)1 else 0)
-                ActionResult(true,"Đã lưu diện mạo; tiến trình không thay đổi")
+                ActionResult(true,AppText.text(TextKey.CopyDaLuuDienMaoTienTrinhKhongThayDoiF545f3))
             }
         }
     }
     private fun receipt(key:String,kind:String)=exec("INSERT INTO garden_receipts VALUES(?,?,?)",key,kind,clock.now())
     private fun validate(values:List<GardenPlacement>):String? {
-        if(values.size>200 || values.any{it.id.isBlank()} || values.map{it.id}.distinct().size!=values.size)return "Bản bố trí không hợp lệ"
+        if(values.size>200 || values.any{it.id.isBlank()} || values.map{it.id}.distinct().size!=values.size)return AppText.text(TextKey.CopyBanBoTriKhongHopLeFa60ef)
         val known=values.filter{p->gardenCosmetics.any{it.id==p.sku}}
         val old=placements()
-        if(values.filter{it !in known}.any{it !in old})return "Vật phẩm chưa được hỗ trợ"
-        for((sku,items) in known.groupBy{it.sku})if(items.size>own(sku))return "Không đủ vật phẩm sở hữu"
+        if(values.filter{it !in known}.any{it !in old})return AppText.text(TextKey.CopyVatPhamChuaDuocHoTroB49bc7)
+        for((sku,items) in known.groupBy{it.sku})if(items.size>own(sku))return AppText.text(TextKey.CopyKhongDuVatPhamSoHuuD8c480)
         val slots=mutableSetOf<String>()
         for(p in known) {
             val item=gardenCosmetics.first{it.id==p.sku}
-            if(item.category=="THEME")return "Chọn chủ đề tại Diện mạo"
+            if(item.category=="THEME")return AppText.text(TextKey.CopyChonChuDeTaiDienMaoBff149)
             if(item.slot=="AMBIENT") {
-                if(p.plotId!=0 || p.treeId!=0L)return "Hiệu ứng thuộc toàn vườn"
+                if(p.plotId!=0 || p.treeId!=0L)return AppText.text(TextKey.CopyHieuUngThuocToanVuon0590ae)
             } else {
-                if(num("SELECT COUNT(*) FROM garden_plots WHERE id=? AND unlocked=1",p.plotId)==0L)return "Ô đang khóa hoặc ngoài lưới"
+                if(num("SELECT COUNT(*) FROM garden_plots WHERE id=? AND unlocked=1",p.plotId)==0L)return AppText.text(TextKey.CopyODangKhoaHoacNgoaiLuoiCd42de)
                 if(item.slot=="TREE") {
-                    if(num("SELECT COUNT(*) FROM garden_plots p JOIN trees t ON t.id=p.tree_id WHERE p.id=? AND t.id=? AND t.disposition='' AND t.life_state<>'DEAD'",p.plotId,p.treeId)==0L)return "Phụ kiện cần cây còn sống đúng ô"
-                } else if(p.treeId!=0L)return "Vật phẩm này không gắn lên cây"
+                    if(num("SELECT COUNT(*) FROM garden_plots p JOIN trees t ON t.id=p.tree_id WHERE p.id=? AND t.id=? AND t.disposition='' AND t.life_state<>'DEAD'",p.plotId,p.treeId)==0L)return AppText.text(TextKey.CopyPhuKienCanCayConSongDungO4da152)
+                } else if(p.treeId!=0L)return AppText.text(TextKey.CopyVatPhamNayKhongGanLenCayC204fc)
             }
-            if(!slots.add("${p.plotId}:${item.slot}"))return "Vị trí đã có vật phẩm cùng loại"
+            if(!slots.add("${p.plotId}:${item.slot}"))return AppText.text(TextKey.CopyViTriDaCoVatPhamCungLoaiC6d15a)
         }
         return null
     }

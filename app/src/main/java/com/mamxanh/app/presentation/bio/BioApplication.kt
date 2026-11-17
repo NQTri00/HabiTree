@@ -1,5 +1,14 @@
 package com.mamxanh.app.presentation.bio
 
+import com.mamxanh.app.presentation.ui.design.AppDimensions
+import com.mamxanh.app.presentation.ui.design.AppRadii
+import com.mamxanh.app.presentation.ui.design.AppSpacing
+import com.mamxanh.app.presentation.ui.design.AppTypography
+
+import com.mamxanh.shared.localization.TextKey
+
+import com.mamxanh.shared.localization.AppText
+
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -28,7 +37,7 @@ import org.json.JSONObject
     var plot by mutableStateOf("")
     var onboardingStep by mutableIntStateOf(0)
     var selectedSeed by mutableStateOf("succulent")
-    var selectedCategory by mutableStateOf("Học tập")
+    var selectedCategory by mutableStateOf(AppText.canonical(TextKey.CopyHocTapA51516))
     var selectedTemplates=mutableStateListOf("study25","water")
     var dirty by mutableStateOf(false)
     var pendingRoute by mutableStateOf("tasks")
@@ -52,7 +61,7 @@ import org.json.JSONObject
             val s=JSONObject(raw)
             BioController(s.s("route","home"),s.s("param"),s.s("modal").takeUnless{it=="confirm-import"}.orEmpty()).apply{
                 modalId=s.s("modalId");homeTree=s.s("homeTree","0");quantity=s.i("quantity",1);targetTree=s.s("targetTree");plot=s.s("plot")
-                onboardingStep=s.i("step");selectedSeed=s.s("seed","succulent");selectedCategory=s.s("category","Học tập")
+                onboardingStep=s.i("step");selectedSeed=s.s("seed","succulent");selectedCategory=s.s("category",AppText.canonical(TextKey.CopyHocTapA51516))
                 selectedTemplates.clear();selectedTemplates.addAll(s.a("templates").strings())
                 dirty=s.b("dirty");pendingRoute=s.s("pendingRoute","tasks");pendingParam=s.s("pendingParam");pendingBack=s.b("pendingBack");pendingRoot=s.b("pendingRoot")
                 listOf("tabs" to tabs,"fields" to fields).forEach{(key,destination)->val values=s.o(key);values.keys().forEach{destination[it]=values.s(it)}}
@@ -116,18 +125,18 @@ import org.json.JSONObject
     BioTheme(world,ui.homeTree){
         CompositionLocalProvider(LocalBioExpanded provides (ui.tabs["expanded"]=="true")){
         BoxWithConstraints(modifier.fillMaxSize().background(bp.bg)){
-            val gutter=if(maxWidth<359.dp)16 else if(maxWidth>=400.dp)22 else 20
-            val compactScreen=maxHeight<600.dp
-            val shortScreen=maxHeight<700.dp
-            val topInset=if(maxHeight<600.dp)14 else if(maxWidth<359.dp)16 else 20
+            val gutter=if(maxWidth<AppDimensions.Dp359)16 else if(maxWidth>=AppDimensions.Dp400)22 else 20
+            val compactScreen=maxHeight<AppDimensions.Dp600
+            val shortScreen=maxHeight<AppDimensions.Dp700
+            val topInset=if(maxHeight<AppDimensions.Dp600)14 else if(maxWidth<AppDimensions.Dp359)16 else 20
             Column(Modifier.fillMaxSize()){
-                val title=if(ui.route=="task-new")if(ui.param.isBlank())"Thêm việc"else "Sửa việc"else bioRoutes[ui.route]?:"Mầm Xanh"
+                val title=if(ui.route=="task-new")if(ui.param.isBlank())AppText.text(TextKey.CopyThemViecC371c2)else AppText.text(TextKey.CopySuaViec55ba70)else bioRoutes[ui.route]?:AppText.text(TextKey.CopyMamXanh7d3324)
                 BioHeader(title,world.coins,primary,{ui.back()},{ui.go("more")},showWallet=ui.route!="onboard")
                 if(ui.busy)LinearProgressIndicator(Modifier.fillMaxWidth(),color=bp.deep,trackColor=bp.soft)
                 holders.SaveableStateProvider(ui.route+":"+ui.param){
                     Column(Modifier.weight(1f).fillMaxWidth()){
                         if(ui.route=="onboard")BioOnboard(world,ui,gutter)
-                        else Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState(if(ui.tabs["scrollBottom"]=="true")Int.MAX_VALUE else 0)).padding(start=gutter.dp,end=gutter.dp,top=topInset.dp,bottom=24.dp),verticalArrangement=Arrangement.spacedBy(18.dp)){
+                        else Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState(if(ui.tabs["scrollBottom"]=="true")Int.MAX_VALUE else 0)).padding(start=gutter.dp,end=gutter.dp,top=topInset.dp,bottom=AppDimensions.Dp24),verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp18)){
                             if(world.loading)LinearProgressIndicator(Modifier.fillMaxWidth(),color=bp.deep,trackColor=bp.soft)
                             when(ui.route){
                                 "home"->BioHome(world,ui,shortScreen)
@@ -162,11 +171,11 @@ import org.json.JSONObject
                     else->BioNav(ui.route){if(it=="shop"){ui.targetTree="";ui.plot=""};ui.go(it,root=true)}
                 }
             }
-            if(ui.message.isNotBlank()&&ui.modal.isBlank())BioToast(ui.message,{ui.message=""},Modifier.align(Alignment.BottomCenter).padding(start=15.dp,end=15.dp,bottom=if(ui.route in listOf("onboard","data"))18.dp else 90.dp))
+            if(ui.message.isNotBlank()&&ui.modal.isBlank())BioToast(ui.message,{ui.message=""},Modifier.align(Alignment.BottomCenter).padding(start=AppDimensions.Dp15,end=AppDimensions.Dp15,bottom=if(ui.route in listOf("onboard","data"))AppDimensions.Dp18 else AppDimensions.Dp90))
             if(ui.modal.isNotBlank())CompositionLocalProvider(LocalBioButtonSize provides 13){BioModal(world,ui)}
         }
     }
     }
 }
 
-@Composable internal fun BioToast(message:String,onDismiss:()->Unit,modifier:Modifier=Modifier){BioCard(modifier.fillMaxWidth(),padding=14,radius=14){Row(verticalAlignment=Alignment.CenterVertically){Bt(message,Modifier.weight(1f),size=12);BioIconButton("close",onDismiss)}}}
+@Composable internal fun BioToast(message:String,onDismiss:()->Unit,modifier:Modifier=Modifier){BioCard(modifier.fillMaxWidth(),padding=AppSpacing.Value14,radius=AppRadii.Value14){Row(verticalAlignment=Alignment.CenterVertically){Bt(message,Modifier.weight(1f),size=AppTypography.Size12);BioIconButton("close",onDismiss)}}}

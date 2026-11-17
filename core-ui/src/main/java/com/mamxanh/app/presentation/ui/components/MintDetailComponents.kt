@@ -1,5 +1,13 @@
 package com.mamxanh.app.presentation.ui.components
 
+import com.mamxanh.app.presentation.ui.design.AppColors
+import com.mamxanh.app.presentation.ui.design.AppDimensions
+import com.mamxanh.app.presentation.ui.design.AppTypography
+
+import com.mamxanh.shared.localization.TextKey
+
+import com.mamxanh.shared.localization.AppText
+
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -20,26 +28,26 @@ import com.mamxanh.app.presentation.ui.*
 
 @Composable
 fun MintStatusPill(label: String, modifier: Modifier = Modifier) {
-    Surface(modifier,shape=RoundedCornerShape(50),color=Color(0xFFE4F2EA),contentColor=Green) {
-        Text(label,Modifier.padding(horizontal=6.dp,vertical=3.dp),fontSize=10.sp,lineHeight=13.sp,fontWeight=FontWeight.Medium)
+    Surface(modifier,shape=RoundedCornerShape(50),color=AppColors.SwatchFFE4F2EA,contentColor=Green) {
+        Text(label,Modifier.padding(horizontal=AppDimensions.Dp6,vertical=AppDimensions.Dp3),fontSize=AppTypography.Sp10,lineHeight=AppTypography.Sp13,fontWeight=FontWeight.Medium)
     }
 }
 
 @Composable
 fun MintTreeStatus(stage: String,state: String,water: String) {
-    FlowRow(horizontalArrangement=Arrangement.spacedBy(5.dp),verticalArrangement=Arrangement.spacedBy(5.dp)) {
+    FlowRow(horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp5),verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp5)) {
         MintStatusPill(stage); MintStatusPill(state); MintStatusPill(water)
     }
 }
 
 @Composable
 fun MintMetricStrip(metrics: List<Pair<String,String>>, modifier: Modifier = Modifier) {
-    Row(modifier.fillMaxWidth().height(IntrinsicSize.Min),horizontalArrangement=Arrangement.spacedBy(6.dp)) {
+    Row(modifier.fillMaxWidth().height(IntrinsicSize.Min),horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp6)) {
         metrics.forEach { (label,value) ->
-            GardenBotanicalFrame(Modifier.weight(1f).fillMaxHeight(), contentPadding=PaddingValues(12.dp),cornerSize=18.dp) {
-                Column(Modifier.fillMaxWidth(),horizontalAlignment=Alignment.CenterHorizontally,verticalArrangement=Arrangement.spacedBy(5.dp)) {
-                    Text(value,color=Deep,fontSize=21.sp,lineHeight=26.sp,fontWeight=FontWeight.Bold,textAlign=TextAlign.Center)
-                    Text(label,color=Muted,fontSize=11.sp,lineHeight=16.sp,textAlign=TextAlign.Center)
+            GardenBotanicalFrame(Modifier.weight(1f).fillMaxHeight(), contentPadding=PaddingValues(AppDimensions.Dp12),cornerSize=AppDimensions.Dp18) {
+                Column(Modifier.fillMaxWidth(),horizontalAlignment=Alignment.CenterHorizontally,verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp5)) {
+                    Text(value,color=Deep,fontSize=AppTypography.Sp21,lineHeight=AppTypography.Sp26,fontWeight=FontWeight.Bold,textAlign=TextAlign.Center)
+                    Text(label,color=Muted,fontSize=AppTypography.Sp11,lineHeight=AppTypography.Sp16,textAlign=TextAlign.Center)
                 }
             }
         }
@@ -49,19 +57,19 @@ fun MintMetricStrip(metrics: List<Pair<String,String>>, modifier: Modifier = Mod
 /** Fixed artwork and label slots keep the entire grid aligned at every font scale. */
 @Composable
 fun MintCatalogCard(name: String,value: String,onClick: (() -> Unit)?=null,detail:String="",artwork: @Composable (Modifier)->Unit) {
-    val nameHeight=with(LocalDensity.current){40.sp.toDp()}
+    val nameHeight=with(LocalDensity.current){AppTypography.Sp40.toDp()}
     GardenBotanicalFrame(Modifier.fillMaxWidth().then(if(onClick!=null)
-        Modifier.clickable(role=Role.Button,onClickLabel="Chọn $name",onClick=onClick) else Modifier),
-        contentPadding=PaddingValues(12.dp),cornerSize=20.dp) {
-        Column(Modifier.fillMaxWidth(),horizontalAlignment=Alignment.CenterHorizontally,verticalArrangement=Arrangement.spacedBy(8.dp)) {
-            Box(Modifier.fillMaxWidth().height(100.dp).background(Color(0xFFF0F4E8),RoundedCornerShape(14.dp))){artwork(Modifier.fillMaxSize())}
+        Modifier.clickable(role=Role.Button,onClickLabel=AppText.text(TextKey.CopyChon085cbcf,name),onClick=onClick) else Modifier),
+        contentPadding=PaddingValues(AppDimensions.Dp12),cornerSize=AppDimensions.Dp20) {
+        Column(Modifier.fillMaxWidth(),horizontalAlignment=Alignment.CenterHorizontally,verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp8)) {
+            Box(Modifier.fillMaxWidth().height(AppDimensions.Dp100).background(AppColors.SwatchFFF0F4E8,RoundedCornerShape(AppDimensions.Dp14))){artwork(Modifier.fillMaxSize())}
             Box(Modifier.fillMaxWidth().height(nameHeight),contentAlignment=Alignment.CenterStart) {
-                Text(name,color=Deep,fontSize=12.sp,lineHeight=15.sp,fontWeight=FontWeight.Bold,
+                Text(name,color=Deep,fontSize=AppTypography.Sp12,lineHeight=AppTypography.Sp15,fontWeight=FontWeight.Bold,
                     textAlign=TextAlign.Start,maxLines=2,overflow=TextOverflow.Ellipsis)
             }
-            Text(value,Modifier.fillMaxWidth(),color=Green,fontSize=12.sp,lineHeight=15.sp,fontWeight=FontWeight.Bold,maxLines=1,
+            Text(value,Modifier.fillMaxWidth(),color=Green,fontSize=AppTypography.Sp12,lineHeight=AppTypography.Sp15,fontWeight=FontWeight.Bold,maxLines=1,
                 overflow=TextOverflow.Ellipsis,textAlign=TextAlign.Start)
-            if(detail.isNotBlank())Text(detail,Modifier.fillMaxWidth(),color=Muted,fontSize=12.sp,lineHeight=18.sp)
+            if(detail.isNotBlank())Text(detail,Modifier.fillMaxWidth(),color=Muted,fontSize=AppTypography.Sp12,lineHeight=AppTypography.Sp18)
         }
     }
 }

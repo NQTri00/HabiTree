@@ -1,5 +1,13 @@
 package com.mamxanh.app.presentation.ui.components
 
+import com.mamxanh.app.presentation.ui.design.AppColors
+import com.mamxanh.app.presentation.ui.design.AppDimensions
+import com.mamxanh.app.presentation.ui.design.AppTypography
+
+import com.mamxanh.shared.localization.TextKey
+
+import com.mamxanh.shared.localization.AppText
+
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.background
@@ -22,23 +30,23 @@ import com.mamxanh.app.presentation.ui.*
 
 @Composable
 fun GardenScreenIntro(title:String,eyebrow:String="",subtitle:String="",modifier:Modifier=Modifier){
-    Column(modifier.fillMaxWidth(),verticalArrangement=Arrangement.spacedBy(6.dp)){
-        if(eyebrow.isNotBlank())Text(eyebrow,color=Muted,fontSize=10.sp,lineHeight=15.sp,letterSpacing=2.sp)
-        Text(title,color=Deep,fontSize=26.sp,lineHeight=34.sp,fontWeight=FontWeight.Bold)
-        if(subtitle.isNotBlank())Text(subtitle,color=Muted,fontSize=12.sp,lineHeight=18.sp)
+    Column(modifier.fillMaxWidth(),verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp6)){
+        if(eyebrow.isNotBlank())Text(eyebrow,color=Muted,fontSize=AppTypography.Sp10,lineHeight=AppTypography.Sp15,letterSpacing=AppTypography.Sp2)
+        Text(title,color=Deep,fontSize=AppTypography.Sp26,lineHeight=AppTypography.Sp34,fontWeight=FontWeight.Bold)
+        if(subtitle.isNotBlank())Text(subtitle,color=Muted,fontSize=AppTypography.Sp12,lineHeight=AppTypography.Sp18)
     }
 }
 
 @Composable
 fun GardenNavigationCard(title:String,onClick:()->Unit,subtitle:String="",modifier:Modifier=Modifier,art:GardenArt=GardenArt.SPROUT){
-    GardenBotanicalFrame(modifier.fillMaxWidth().clickable(onClick=onClick),contentPadding=PaddingValues(16.dp),cornerSize=18.dp){
-        Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(12.dp)){
-            Box(Modifier.size(40.dp).background(Pale,RoundedCornerShape(12.dp)),contentAlignment=Alignment.Center){GardenArtwork(art,Modifier.size(24.dp))}
-            Column(Modifier.weight(1f),verticalArrangement=Arrangement.spacedBy(4.dp)){
-                Text(title,color=Deep,fontSize=14.sp,lineHeight=20.sp,fontWeight=FontWeight.SemiBold)
-                if(subtitle.isNotBlank())Text(subtitle,color=Muted,fontSize=12.sp,lineHeight=18.sp)
+    GardenBotanicalFrame(modifier.fillMaxWidth().clickable(onClick=onClick),contentPadding=PaddingValues(AppDimensions.Dp16),cornerSize=AppDimensions.Dp18){
+        Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp12)){
+            Box(Modifier.size(AppDimensions.Dp40).background(Pale,RoundedCornerShape(AppDimensions.Dp12)),contentAlignment=Alignment.Center){GardenArtwork(art,Modifier.size(AppDimensions.Dp24))}
+            Column(Modifier.weight(1f),verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp4)){
+                Text(title,color=Deep,fontSize=AppTypography.Sp14,lineHeight=AppTypography.Sp20,fontWeight=FontWeight.SemiBold)
+                if(subtitle.isNotBlank())Text(subtitle,color=Muted,fontSize=AppTypography.Sp12,lineHeight=AppTypography.Sp18)
             }
-            Text("›",color=Green,fontSize=24.sp)
+            Text("›",color=Green,fontSize=AppTypography.Sp24)
         }
     }
 }
@@ -46,12 +54,12 @@ fun GardenNavigationCard(title:String,onClick:()->Unit,subtitle:String="",modifi
 @Composable
 fun GardenExpandableSection(title:String,modifier:Modifier=Modifier,content:@Composable ColumnScope.()->Unit){
     var expanded by rememberSaveable(title){mutableStateOf(false)}
-    Column(modifier.fillMaxWidth(),verticalArrangement=Arrangement.spacedBy(12.dp)){
-        androidx.compose.material3.HorizontalDivider(color=androidx.compose.ui.graphics.Color(0xFFE4E7DC))
-        Row(Modifier.fillMaxWidth().heightIn(min=48.dp).semantics{stateDescription=if(expanded)"Đã mở" else "Đã thu gọn"}.clickable(role=Role.Button){expanded=!expanded},verticalAlignment=Alignment.CenterVertically){
-            Text(title,Modifier.weight(1f),color=Deep,fontSize=14.sp,fontWeight=FontWeight.SemiBold)
-            Text(if(expanded)"−" else "+",color=Green,fontSize=22.sp)
+    Column(modifier.fillMaxWidth(),verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp12)){
+        androidx.compose.material3.HorizontalDivider(color=AppColors.SwatchFFE4E7DC)
+        Row(Modifier.fillMaxWidth().heightIn(min=AppDimensions.Dp48).semantics{stateDescription=if(expanded)AppText.text(TextKey.CopyDaMo617b34) else AppText.text(TextKey.CopyDaThuGon9b8c90)}.clickable(role=Role.Button){expanded=!expanded},verticalAlignment=Alignment.CenterVertically){
+            Text(title,Modifier.weight(1f),color=Deep,fontSize=AppTypography.Sp14,fontWeight=FontWeight.SemiBold)
+            Text(if(expanded)"−" else "+",color=Green,fontSize=AppTypography.Sp22)
         }
-        if(expanded)Column(Modifier.fillMaxWidth(),verticalArrangement=Arrangement.spacedBy(12.dp),content=content)
+        if(expanded)Column(Modifier.fillMaxWidth(),verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp12),content=content)
     }
 }

@@ -1,5 +1,12 @@
 package com.mamxanh.app.feature.shop.presentation
 
+import com.mamxanh.app.presentation.ui.design.AppDimensions
+import com.mamxanh.app.presentation.ui.design.AppTypography
+
+import com.mamxanh.shared.localization.TextKey
+
+import com.mamxanh.shared.localization.AppText
+
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.*
@@ -36,44 +43,44 @@ fun ShopScreen(state: ShopUiState, onIntent: (ShopIntent) -> Unit, modifier: Mod
     }
     MintBackdrop(modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
-            MintCompactHeader(state.wallet.coins,title="mầm xanh")
-            GardenScreenIntro("Tiệm nhỏ","THÊM MỘT CHÚT XANH",modifier=Modifier.padding(horizontal=24.dp,vertical=12.dp))
+            MintCompactHeader(state.wallet.coins,title=AppText.text(TextKey.CopyMamXanh692a0a))
+            GardenScreenIntro(AppText.text(TextKey.CopyTiemNho87d6e3),AppText.text(TextKey.CopyThemMotChutXanh946fa7),modifier=Modifier.padding(horizontal=AppDimensions.Dp24,vertical=AppDimensions.Dp12))
             MintCatalogTabs(if(state.filter==ShopFilter.ITEMS)0 else 1,
-                {onIntent(ShopIntent.SetFilter(if(it==0)ShopFilter.ITEMS else ShopFilter.SEEDS))},Modifier.padding(horizontal=24.dp,vertical=8.dp))
+                {onIntent(ShopIntent.SetFilter(if(it==0)ShopFilter.ITEMS else ShopFilter.SEEDS))},Modifier.padding(horizontal=AppDimensions.Dp24,vertical=AppDimensions.Dp8))
             if(state.isLoading) LinearProgressIndicator(Modifier.fillMaxWidth())
             BoxWithConstraints(Modifier.weight(1f)) {
                 val fontScale=androidx.compose.ui.platform.LocalDensity.current.fontScale
-                val columns=if(maxWidth>=600.dp)3 else 2
+                val columns=if(maxWidth>=AppDimensions.Dp600)3 else 2
                 key(state.filter) {
                 LazyVerticalGrid(GridCells.Fixed(columns),Modifier.fillMaxSize()
                     .mintScrollEdges(activeGrid.canScrollBackward,activeGrid.canScrollForward),state=activeGrid,
-                    contentPadding=PaddingValues(horizontal=24.dp,vertical=16.dp),horizontalArrangement=Arrangement.spacedBy(14.dp),
-                    verticalArrangement=Arrangement.spacedBy(14.dp)) {
+                    contentPadding=PaddingValues(horizontal=AppDimensions.Dp24,vertical=AppDimensions.Dp16),horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp14),
+                    verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp14)) {
                     if(state.filter == ShopFilter.ITEMS) {
                         items(careProducts,key={it.id}) { product ->
                             val owned=(state.wallet.inventory[product.id] ?: 0)>0
                             ShopProductCard(product.name,
-                                if(product.permanent && owned) if(state.wallet.equippedCan==product.id) "Đang dùng" else "Đã sở hữu" else "${product.price} xu",
+                                if(product.permanent && owned) if(state.wallet.equippedCan==product.id) AppText.text(TextKey.CopyDangDung275ca2) else AppText.text(TextKey.CopyDaSoHuu822625) else AppText.text(TextKey.Copy0Xu251e68,product.price),
                                 {selectedId=product.id}) {
                                 GardenArtwork(if(product.permanent)GardenArt.WATERING_CAN else GardenArt.FERTILIZER,it)
                             }
                         }
                         item(span={GridItemSpan(maxLineSpan)}) {
-                            Text("Bình tưới kéo dài thời gian chăm sóc; không cần mua nước. Phân bón là tiện ích tùy chọn.",color=Muted,fontSize=11.sp)
+                            Text(AppText.text(TextKey.CopyBinhTuoiKeoDaiThoiGianChamSocKhongCanMuaND611f4),color=Muted,fontSize=AppTypography.Sp11)
                         }
                     } else {
                         items(shopCatalog,key={it.id}) { seed ->
-                            ShopProductCard(seed.name,"${seed.price} xu",
+                            ShopProductCard(seed.name,AppText.text(TextKey.Copy0Xu251e68,seed.price),
                                 {selectedId=seed.id}) {PaintedGardenPlant(seed.id,it)}
                         }
                         item(span={GridItemSpan(maxLineSpan)}) {
-                            Text("Exclusive · Sắp ra mắt. Chưa mở bán.",color=Muted,fontSize=11.sp)
+                            Text(AppText.text(TextKey.CopyExclusiveSapRaMatChuaMoBan366438),color=Muted,fontSize=AppTypography.Sp11)
                         }
                     }
-                    item(span={GridItemSpan(maxLineSpan)}) {GardenNavigationCard("Tiệm trang trí",{onLiving("SHOP","")})}
-                    item(span={GridItemSpan(maxLineSpan)}) {GardenNavigationCard("Bách thảo",{onLiving("ENCYCLOPEDIA","")})}
+                    item(span={GridItemSpan(maxLineSpan)}) {GardenNavigationCard(AppText.text(TextKey.CopyTiemTrangTriFbd50e),{onLiving("SHOP","")})}
+                    item(span={GridItemSpan(maxLineSpan)}) {GardenNavigationCard(AppText.text(TextKey.CopyBachThaoF2ed64),{onLiving("ENCYCLOPEDIA","")})}
                     item(span={GridItemSpan(maxLineSpan)}) {
-                        GardenPaintedButton("Ghé Vườn ươm",{onIntent(ShopIntent.OpenGarden)},Modifier.fillMaxWidth().padding(top=8.dp),primary=false)
+                        GardenPaintedButton(AppText.text(TextKey.CopyGheVuonUomCa45c6),{onIntent(ShopIntent.OpenGarden)},Modifier.fillMaxWidth().padding(top=AppDimensions.Dp8),primary=false)
                     }
                 }
                 }
@@ -86,7 +93,7 @@ fun ShopScreen(state: ShopUiState, onIntent: (ShopIntent) -> Unit, modifier: Mod
     }
     state.outcome?.let { outcome ->
         LaunchedEffect(outcome) { selectedId = null }
-        MintFeedback(if(outcome.success) "Đã thêm ${outcome.name} vào túi" else outcome.message,
+        MintFeedback(if(outcome.success) AppText.text(TextKey.CopyDaThem0VaoTuiFe68af,outcome.name) else outcome.message,
             {selectedId=null;onIntent(ShopIntent.DismissOutcome)})
     }
 }

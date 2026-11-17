@@ -1,12 +1,17 @@
 package com.mamxanh.shared.model
 
+import com.mamxanh.shared.localization.TextKey
+
+import com.mamxanh.shared.localization.AppText
+
 const val HOUR_MS = 3_600_000L
 const val DAY_MS = 24 * HOUR_MS
 const val GROWTH_DAY_UNITS = 8 * HOUR_MS * 1000L
 
 enum class TreeGrowthState { GROWING, MATURE, DEAD }
-enum class CareCue(val label: String) {
-    HEALTHY("Khỏe mạnh"), THIRSTY("Cần tưới"), WILTING("Đang héo"), CRITICAL("Cần chăm sóc sớm"), DEAD("Đã khô héo")
+enum class CareCue(private val labelKey: TextKey) {
+    HEALTHY(TextKey.CopyKhoeManh300c3a), THIRSTY(TextKey.CopyCanTuoiA0957f), WILTING(TextKey.CopyDangHeo24d97c), CRITICAL(TextKey.CopyCanChamSocSom4ae8d7), DEAD(TextKey.CopyDaKhoHeoA9c1b9);
+    val label get()=AppText.text(labelKey)
 }
 data class SpeciesLifecycleProfile(
     val id: String, val tier: String, val seedPrice: Int, val stageCount: Int,
@@ -36,21 +41,23 @@ val lifecycleProfiles = listOf(
 )
 fun lifecycleProfile(id: String) = lifecycleProfiles.first { it.id == id }
 
-enum class WateringCanTier(val itemId: String, val label: String, val price: Int, val hours: Int) {
-    BASIC("can_basic","Bình cơ bản",0,8), COPPER("can_copper","Bình đồng",300,12),
-    SILVER("can_silver","Bình bạc",900,18), GOLD("can_gold","Bình vàng",2000,24);
+enum class WateringCanTier(val itemId: String, private val labelKey: TextKey, val price: Int, val hours: Int) {
+    BASIC("can_basic",TextKey.CopyBinhCoBan323b7f,0,8), COPPER("can_copper",TextKey.CopyBinhDong1177c5,300,12),
+    SILVER("can_silver",TextKey.CopyBinhBacDacef3,900,18), GOLD("can_gold",TextKey.CopyBinhVang7af0c3,2000,24);
+    val label get()=AppText.text(labelKey)
     companion object { fun fromId(id: String) = entries.firstOrNull { it.itemId == id } ?: BASIC }
 }
-enum class FertilizerTier(val itemId: String, val label: String, val price: Int, val rate: Int, val hours: Int) {
-    BASIC("fertilizer","Phân cơ bản",35,1100,4), RICH("fertilizer_rich","Phân giàu dưỡng",75,1200,6),
-    PREMIUM("fertilizer_premium","Phân cao cấp",140,1350,8);
+enum class FertilizerTier(val itemId: String, private val labelKey: TextKey, val price: Int, val rate: Int, val hours: Int) {
+    BASIC("fertilizer",TextKey.CopyPhanCoBanEd015b,35,1100,4), RICH("fertilizer_rich",TextKey.CopyPhanGiauDuong4c481b,75,1200,6),
+    PREMIUM("fertilizer_premium",TextKey.CopyPhanCaoCap7d6d08,140,1350,8);
+    val label get()=AppText.text(labelKey)
     companion object { fun fromId(id: String) = entries.firstOrNull { it.itemId == id } }
 }
 data class CareProduct(val id: String,val name: String,val price: Int,val description: String,val permanent: Boolean)
-val careProducts = WateringCanTier.entries.map {
-    CareProduct(it.itemId,it.label,it.price,"Tưới giúp cây phát triển trong ${it.hours} giờ. Dụng cụ dùng lâu dài.",true)
+val careProducts get()= WateringCanTier.entries.map {
+    CareProduct(it.itemId,it.label,it.price,AppText.text(TextKey.CopyTuoiGiupCayPhatTrienTrong0GioDungCuDungLa42bc3f,it.hours),true)
 } + FertilizerTier.entries.map {
-    CareProduct(it.itemId,it.label,it.price,"Tăng tốc ${it.rate / 1000.0}× trong ${it.hours} giờ khi cây được tưới. Mỗi cây dùng một lần trong 24 giờ.",false)
+    CareProduct(it.itemId,it.label,it.price,AppText.text(TextKey.CopyTangToc0Trong1GioKhiCayDuocTuoiMoiCayDunF78504,it.rate / 1000.0,it.hours),false)
 }
 
 /** Safe presentation model: deliberately contains no numeric neglect/death progress. */
@@ -70,15 +77,15 @@ data class TreeStatus(
     val canFertilize get() = state == TreeGrowthState.GROWING && waterActive &&
         sampledAt >= fertilizerEndsAt && sampledAt >= fertilizerAvailableAt
     val percentage get() = (stageProgress.coerceIn(0f, 1f) * 100).toInt()
-    val stageLabel get() = "Giai đoạn ${stageIndex+1}/$stageCount"
-    val stateLabel get() = when(state) { TreeGrowthState.GROWING -> "Đang lớn"; TreeGrowthState.MATURE -> "Trưởng thành"; TreeGrowthState.DEAD -> "Đã khô héo" }
-    val waterLabel get() = if (!alive) "Không thể tưới" else if (waterActive) "Đã tưới" else "Cần tưới"
+    val stageLabel get() = AppText.text(TextKey.CopyGiaiDoan01C0a0f8,stageIndex+1,stageCount)
+    val stateLabel get() = when(state) { TreeGrowthState.GROWING -> AppText.text(TextKey.CopyDangLon40daab); TreeGrowthState.MATURE -> AppText.text(TextKey.CopyTruongThanh8c14d7); TreeGrowthState.DEAD -> AppText.text(TextKey.CopyDaKhoHeoA9c1b9) }
+    val waterLabel get() = if (!alive) AppText.text(TextKey.CopyKhongTheTuoi4bd57f) else if (waterActive) AppText.text(TextKey.CopyDaTuoiDe2042) else AppText.text(TextKey.CopyCanTuoiA0957f)
     val fertilizerLabel get() = if (fertilizerEndsAt > sampledAt)
-        "${FertilizerTier.fromId(fertilizerId)?.label ?: "Phân bón"} đang có tác dụng" else ""
+        AppText.text(TextKey.Copy0DangCoTacDungF8943e,FertilizerTier.fromId(fertilizerId)?.label ?: AppText.text(TextKey.CopyPhanBon29fa19)) else ""
 }
 fun remainingTime(until: Long, now: Long): String {
     val minutes = ((until-now).coerceAtLeast(0)+59_999)/60_000
-    return if(minutes>=60)"${minutes/60} giờ ${minutes%60} phút" else "$minutes phút"
+    return if(minutes>=60)AppText.text(TextKey.Copy0Gio1PhutB72ee2,minutes/60,minutes%60) else AppText.text(TextKey.Copy0Phut2596d2,minutes)
 }
 data class WaterAllSummary(val eligible: Int = 0,val active: Int = 0,val dead: Int = 0,val affected: Int = 0)
 data class TreeDispositionEvent(val treeId: Long,val name: String,val kind: String,val at: Long,val nominal: Int,val granted: Int)

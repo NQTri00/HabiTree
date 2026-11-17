@@ -1,5 +1,12 @@
 package com.mamxanh.app.presentation.ui
 
+import com.mamxanh.app.presentation.ui.design.AppDimensions
+import com.mamxanh.app.presentation.ui.design.AppTypography
+
+import com.mamxanh.shared.localization.TextKey
+
+import com.mamxanh.shared.localization.AppText
+
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
@@ -100,57 +107,57 @@ internal fun DataSettingsContent(bytes:Long,safety:Boolean,busy:Boolean,message:
     MintBackdrop(modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
             Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically) {
-                IconButton(onBack,enabled=!busy){Icon(Icons.AutoMirrored.Rounded.ArrowBack,stringResource(R.string.data_back),Modifier.size(18.dp),tint=Green)}
-                Text(stringResource(R.string.data_title),fontSize=14.sp,fontWeight=FontWeight.Bold,color=Deep)
+                IconButton(onBack,enabled=!busy){Icon(Icons.AutoMirrored.Rounded.ArrowBack,stringResource(R.string.data_back),Modifier.size(AppDimensions.Dp18),tint=Green)}
+                Text(stringResource(R.string.data_title),fontSize=AppTypography.Sp14,fontWeight=FontWeight.Bold,color=Deep)
             }
             val scroll=rememberScrollState()
             Column(Modifier.weight(1f).fillMaxWidth().mintScrollEdges(scroll.canScrollBackward,scroll.canScrollForward)
-                .verticalScroll(scroll).padding(horizontal=24.dp,vertical=12.dp),verticalArrangement=Arrangement.spacedBy(12.dp)) {
+                .verticalScroll(scroll).padding(horizontal=AppDimensions.Dp24,vertical=AppDimensions.Dp12),verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp12)) {
                 if(busy)LinearProgressIndicator(Modifier.fillMaxWidth())
-                if(message.isNotBlank())Text(message,color=Green,fontSize=13.sp,lineHeight=19.sp)
+                if(message.isNotBlank())Text(message,color=Green,fontSize=AppTypography.Sp13,lineHeight=AppTypography.Sp19)
                 if(confirmation>0)DataPanel {
                     Label(if(confirmation>=3)R.string.data_clear else R.string.data_replace)
                     Copy(if(confirmation>=3)R.string.data_clear_warning else if(confirmation==2)R.string.data_safety_note else R.string.data_replace_warning)
                     pending?.let{backup->
-                        Text(stringResource(R.string.data_counts,backup.count("tasks"),backup.count("trees"),backup.count("occurrences")),fontSize=11.sp,color=Deep)
-                        Text(stringResource(R.string.data_created,java.text.SimpleDateFormat("dd/MM/yyyy HH:mm",java.util.Locale.getDefault()).format(java.util.Date(backup.createdAt)),backup.appVersion),fontSize=10.sp,color=Muted)
+                        Text(stringResource(R.string.data_counts,backup.count("tasks"),backup.count("trees"),backup.count("occurrences")),fontSize=AppTypography.Sp11,color=Deep)
+                        Text(stringResource(R.string.data_created,java.text.SimpleDateFormat("dd/MM/yyyy HH:mm",java.util.Locale.getDefault()).format(java.util.Date(backup.createdAt)),backup.appVersion),fontSize=AppTypography.Sp10,color=Muted)
                     }
-                    Row(horizontalArrangement=Arrangement.spacedBy(12.dp)) {
+                    Row(horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp12)) {
                         Action(if(confirmation==4)R.string.data_clear_again else R.string.data_confirm,onConfirm,!busy,Modifier.weight(1f),true)
                         Action(R.string.data_cancel,onCancel,!busy,Modifier.weight(1f))
                     }
                 }
                 DataPanel {
                     Label(R.string.data_backup)
-                    Text(stringResource(R.string.data_size,(bytes/1024).toString()),fontSize=10.sp,color=Muted)
-                    Row(horizontalArrangement=Arrangement.spacedBy(12.dp)) {
+                    Text(stringResource(R.string.data_size,(bytes/1024).toString()),fontSize=AppTypography.Sp10,color=Muted)
+                    Row(horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp12)) {
                         Action(R.string.data_export,onExport,!busy,Modifier.weight(1f),primary=true)
                         Action(R.string.data_import,onImport,!busy,Modifier.weight(1f))
                     }
-                    GardenExpandableSection("Quyền riêng tư của bản sao"){Copy(R.string.data_warning)}
+                    GardenExpandableSection(AppText.text(TextKey.CopyQuyenRiengTuCuaBanSaoF03d3e)){Copy(R.string.data_warning)}
                 }
                 if(safety)Action(R.string.data_recover,onRecover,!busy)
                 Action(R.string.data_clear,onClear,!busy)
                 GardenExpandableSection(stringResource(R.string.data_about)) {Copy(R.string.data_privacy);Copy(R.string.data_policy);Copy(R.string.data_accessibility)
-                    Text(stringResource(R.string.data_version,BuildConfig.VERSION_NAME,BuildConfig.VERSION_CODE,GameSchema.VERSION),fontSize=10.sp,color=Muted)
-                    Text("Kotlin · AndroidX · Koin · Ktor · SQLDelight\nApache 2.0",fontSize=12.sp,lineHeight=17.sp,color=Muted)
+                    Text(stringResource(R.string.data_version,BuildConfig.VERSION_NAME,BuildConfig.VERSION_CODE,GameSchema.VERSION),fontSize=AppTypography.Sp10,color=Muted)
+                    Text(AppText.text(TextKey.LegalTechnologyCredits),fontSize=AppTypography.Sp12,lineHeight=AppTypography.Sp17,color=Muted)
                     Action(R.string.data_licenses,{showLicense=!showLicense},!busy)
-                    if(showLicense)Text(license,fontSize=12.sp,lineHeight=17.sp,color=Deep)
+                    if(showLicense)Text(license,fontSize=AppTypography.Sp12,lineHeight=AppTypography.Sp17,color=Deep)
                 }
-                GardenExpandableSection("Chẩn đoán"){Copy(R.string.data_diagnostics_note);Action(R.string.data_diagnostics,onDiagnostics,!busy)}
+                GardenExpandableSection(AppText.text(TextKey.CopyChanDoan906791)){Copy(R.string.data_diagnostics_note);Action(R.string.data_diagnostics,onDiagnostics,!busy)}
             }
         }
     }
 }
 @Composable private fun DataPanel(content:@Composable ColumnScope.()->Unit) {
-    GardenBotanicalFrame(Modifier.fillMaxWidth(),contentPadding=PaddingValues(18.dp),cornerSize=22.dp) {
-        Column(verticalArrangement=Arrangement.spacedBy(12.dp),content=content)
+    GardenBotanicalFrame(Modifier.fillMaxWidth(),contentPadding=PaddingValues(AppDimensions.Dp18),cornerSize=AppDimensions.Dp22) {
+        Column(verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp12),content=content)
     }
 }
-@Composable private fun Label(id:Int){Text(stringResource(id),fontSize=15.sp,lineHeight=21.sp,color=Deep,fontWeight=FontWeight.Bold)}
-@Composable private fun Copy(id:Int){Text(stringResource(id),fontSize=13.sp,lineHeight=19.sp,color=Muted)}
+@Composable private fun Label(id:Int){Text(stringResource(id),fontSize=AppTypography.Sp15,lineHeight=AppTypography.Sp21,color=Deep,fontWeight=FontWeight.Bold)}
+@Composable private fun Copy(id:Int){Text(stringResource(id),fontSize=AppTypography.Sp13,lineHeight=AppTypography.Sp19,color=Muted)}
 @Composable private fun Action(id:Int,onClick:()->Unit,enabled:Boolean,modifier:Modifier=Modifier,primary:Boolean=false) {
-    Box(modifier.heightIn(min=48.dp),contentAlignment=Alignment.Center) {
+    Box(modifier.heightIn(min=AppDimensions.Dp48),contentAlignment=Alignment.Center) {
         MintDialogAction(stringResource(id),onClick,Modifier.fillMaxWidth(),primary=primary,enabled=enabled,destructive=id==R.string.data_clear)
     }
 }
