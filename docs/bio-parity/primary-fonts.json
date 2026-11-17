@@ -1,0 +1,17 @@
+﻿[
+    {
+        "font":  "be_vietnam_pro_regular.ttf",
+        "identical":  true,
+        "sha256":  "CD1EF6E9D7DB28AD5CDB88A65CCBE693870E60D340B791F349D248342B4FE4C3"
+    },
+    {
+        "font":  "be_vietnam_pro_semibold.ttf",
+        "identical":  true,
+        "sha256":  "BD8E27EB02720B9D91E59E4F10A90878643219F25CE6A8D9A4F06A8A88D3BB71"
+    },
+    {
+        "font":  "be_vietnam_pro_bold.ttf",
+        "identical":  true,
+        "sha256":  "7F738FE5C43C8872807B20E2D30D42163618DE8A4DAF7F48A939ADAC32C16847"
+    }
+]

@@ -60,13 +60,13 @@ fun InventoryScreen(
         Column(Modifier.fillMaxSize()) {
             Row(Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 4.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                horizontalArrangement = Arrangement.spacedBy(14.dp)) {
                 IconButton(onClick = onBack) {
                     Icon(Icons.AutoMirrored.Rounded.ArrowBack, "Quay lại", tint = Deep)
                 }
                 Icon(Icons.Rounded.Inventory2, null, tint = Green, modifier = Modifier.size(16.dp))
                 Text("Túi đồ", Modifier.weight(1f), color = Deep,
-                    fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                    fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
                 IconButton({onLiving("INVENTORY","")}){Icon(Icons.Rounded.Palette,"Trang trí đã sở hữu",Modifier.size(18.dp),tint=Green)}
                 GardenBotanicalFrame(contentPadding = PaddingValues(5.dp)) {
                     GardenRichText("🪙 ${state.coins}", color = Deep, fontSize = 13.sp)
@@ -74,7 +74,7 @@ fun InventoryScreen(
             }
             MintCatalogTabs(if (tab == InventoryTab.ITEMS) 0 else 1,
                 { tab = if (it == 0) InventoryTab.ITEMS else InventoryTab.SEEDS },
-                Modifier.padding(horizontal = 10.dp, vertical = 3.dp))
+                Modifier.padding(horizontal = 24.dp, vertical = 8.dp))
             if (targetPlotId != null && tab == InventoryTab.SEEDS) Text(
                 "Chọn hạt để gieo tại ô " + targetPlotId.toString().padStart(2, '0'),
                 Modifier.padding(horizontal = 10.dp, vertical = 3.dp),
@@ -82,15 +82,15 @@ fun InventoryScreen(
             if (state.isLoading) LinearProgressIndicator(Modifier.fillMaxWidth())
             BoxWithConstraints(Modifier.weight(1f)) {
             val fontScale=androidx.compose.ui.platform.LocalDensity.current.fontScale
-            val columnCount=if(maxWidth<340.dp && fontScale>1.2f)2 else if(maxWidth>=600.dp)(maxWidth.value/140).toInt() else 3
+            val columnCount=if(maxWidth>=600.dp)3 else 2
             key(tab) {
             LazyVerticalGrid(
                 columns = GridCells.Fixed(columnCount),
                 state = activeGrid,
                 modifier = Modifier.fillMaxSize().mintScrollEdges(activeGrid.canScrollBackward, activeGrid.canScrollForward),
-                contentPadding = PaddingValues(10.dp),
-                horizontalArrangement = Arrangement.spacedBy(6.dp),
-                verticalArrangement = Arrangement.spacedBy(6.dp)
+                contentPadding = PaddingValues(horizontal=24.dp,vertical=16.dp),
+                horizontalArrangement = Arrangement.spacedBy(14.dp),
+                verticalArrangement = Arrangement.spacedBy(14.dp)
             ) {
                 if (tab == InventoryTab.ITEMS) {
                     items(state.items.filter { it.count > 0 }, key = { it.id }) { product ->
@@ -112,12 +112,15 @@ fun InventoryScreen(
                     if (ownedSeeds.isEmpty() && !state.isLoading) item(span = { GridItemSpan(maxLineSpan) }) {
                         Column(Modifier.fillMaxWidth().padding(vertical = 16.dp),
                             horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                            verticalArrangement = Arrangement.spacedBy(14.dp)) {
                             GardenArtwork(GardenArt.SEED, Modifier.size(48.dp))
                             Text("Chưa có hạt trong túi", color = Deep, fontWeight = FontWeight.Bold)
                             Text("Ghé tiệm để chọn hạt đầu tiên.", color = Muted)
                         }
                     }
+                }
+                item(span = { GridItemSpan(maxLineSpan) }) {
+                    GardenNavigationCard("Trang trí của bạn",{onLiving("INVENTORY","")},art=GardenArt.RIBBON)
                 }
                 item(span = { GridItemSpan(maxLineSpan) }) {
                     GardenPaintedButton("Ghé tiệm", onOpenShop,
@@ -135,7 +138,7 @@ private fun InventoryCard(
     name: String, quantity: String, onClick: (() -> Unit)? = null,
     artwork: @Composable (Modifier) -> Unit
 ) {
-    MintCatalogCard(name,quantity,onClick,artwork)
+    MintCatalogCard(name,quantity,onClick,artwork=artwork)
 }
 
 @Preview(widthDp = 360, heightDp = 640)

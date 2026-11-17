@@ -1,0 +1,963 @@
+{
+  "state": {
+    "coins": 620,
+    "earned": 24,
+    "claimed": false,
+    "trees": [
+      {
+        "id": 1,
+        "species": "cherry",
+        "name": "Đào hồng xuân",
+        "progress": 46,
+        "stage": 4,
+        "state": "growing",
+        "watered": false,
+        "plot": 1,
+        "planted": "2026-11-01",
+        "decor": "tree_flowers"
+      },
+      {
+        "id": 2,
+        "species": "lavender",
+        "name": "Oải hương dịu",
+        "progress": 24,
+        "stage": 2,
+        "state": "growing",
+        "watered": true,
+        "plot": 2,
+        "planted": "2026-11-04"
+      },
+      {
+        "id": 3,
+        "species": "mandarin",
+        "name": "Quýt nắng",
+        "progress": 100,
+        "stage": 9,
+        "state": "mature",
+        "watered": false,
+        "plot": 3,
+        "planted": "2026-10-12"
+      }
+    ],
+    "tasks": [
+      {
+        "id": 1,
+        "title": "Đọc 10 trang sách",
+        "category": "Học tập",
+        "kind": "HABIT",
+        "verification": "CLICK",
+        "minutes": 5,
+        "frequency": "EVERY_DAY",
+        "done": false,
+        "lifecycle": "ACTIVE",
+        "streak": 4
+      },
+      {
+        "id": 2,
+        "title": "Học tập trung",
+        "category": "Học tập",
+        "kind": "HABIT",
+        "verification": "TIMER",
+        "minutes": 25,
+        "frequency": "WEEKDAYS",
+        "done": false,
+        "lifecycle": "ACTIVE",
+        "streak": 3
+      },
+      {
+        "id": 3,
+        "title": "Uống đủ nước",
+        "category": "Sức khỏe",
+        "kind": "DAILY",
+        "verification": "CLICK",
+        "minutes": 5,
+        "frequency": "EVERY_DAY",
+        "done": true,
+        "lifecycle": "ACTIVE",
+        "streak": 5
+      },
+      {
+        "id": 4,
+        "title": "Dọn góc học tập",
+        "category": "Việc nhà",
+        "kind": "TODO",
+        "verification": "CLICK",
+        "minutes": 5,
+        "frequency": "ONCE",
+        "done": false,
+        "lifecycle": "ACTIVE",
+        "streak": 0
+      }
+    ],
+    "inventory": {
+      "cherry": 2,
+      "pine": 1,
+      "succulent": 1,
+      "can_basic": 1,
+      "can_copper": 1,
+      "fertilizer": 2,
+      "fertilizer_rich": 1
+    },
+    "equipped": "can_basic",
+    "owned": {
+      "ground_moss": 1,
+      "accent_lantern": 1,
+      "border_wood": 1,
+      "tree_flowers": 1
+    },
+    "unlocked": 5,
+    "sections": 1,
+    "placements": [
+      {
+        "sku": "ground_moss",
+        "plot": 1
+      },
+      {
+        "sku": "accent_lantern",
+        "plot": 1
+      },
+      {
+        "sku": "border_wood",
+        "plot": 2
+      }
+    ],
+    "appearance": {
+      "nickname": "Vườn bình yên",
+      "theme": "MEADOW",
+      "density": "OFF",
+      "battery": false
+    },
+    "settings": {
+      "paused": true,
+      "treeReminders": false,
+      "breakPrompts": false,
+      "reducedMotion": false,
+      "quietStart": "22:00",
+      "quietEnd": "07:00"
+    },
+    "reminders": {},
+    "templates": [],
+    "tickets": 1,
+    "reflection": "",
+    "notes": {},
+    "rest": [],
+    "protected": [],
+    "memories": [
+      {
+        "id": "m1",
+        "title": "Một mầm xanh mới",
+        "type": "TREE",
+        "entity": 1,
+        "date": "12/11 · 08:45"
+      },
+      {
+        "id": "m2",
+        "title": "Hoàn thành tuần đầu",
+        "type": "TASK",
+        "entity": 1,
+        "date": "11/11 · 19:20"
+      }
+    ],
+    "focusHistory": [],
+    "onboard": {
+      "step": 0,
+      "seed": "succulent",
+      "category": "Học tập",
+      "chosen": [
+        "study25",
+        "water"
+      ],
+      "remind": false
+    },
+    "homeTreeId": 1
+  },
+  "catalog": {
+    "species": [
+      {
+        "id": "succulent",
+        "name": "Sen đá ngọc",
+        "description": "Mọng nước, cánh lá xếp tầng xinh xắn",
+        "tier": "Common",
+        "price": 200,
+        "stages": 6,
+        "days": 14,
+        "sale": 40
+      },
+      {
+        "id": "monstera",
+        "name": "Trầu bà lá xẻ",
+        "description": "Lá xanh mướt mang không khí trong lành",
+        "tier": "Common",
+        "price": 200,
+        "stages": 6,
+        "days": 14,
+        "sale": 40
+      },
+      {
+        "id": "ficus",
+        "name": "Cây bàng búp",
+        "description": "Tán lá tròn trịa đón ánh mặt trời",
+        "tier": "Rare",
+        "price": 900,
+        "stages": 9,
+        "days": 44,
+        "sale": 180
+      },
+      {
+        "id": "snake",
+        "name": "Lưỡi hổ xanh",
+        "description": "Vươn thẳng mạnh mẽ và kiên cường",
+        "tier": "Common",
+        "price": 200,
+        "stages": 6,
+        "days": 14,
+        "sale": 40
+      },
+      {
+        "id": "cactus",
+        "name": "Xương rồng hoa",
+        "description": "Nụ hoa hồng bé xíu nở trên đỉnh",
+        "tier": "Common",
+        "price": 200,
+        "stages": 6,
+        "days": 14,
+        "sale": 40
+      },
+      {
+        "id": "aloe",
+        "name": "Nha đam mọng",
+        "description": "Mềm mại, tươi mát suốt bốn mùa",
+        "tier": "Common",
+        "price": 200,
+        "stages": 6,
+        "days": 14,
+        "sale": 40
+      },
+      {
+        "id": "lavender",
+        "name": "Oải hương tím",
+        "description": "Hương thơm dịu dàng giúp thư giãn",
+        "tier": "Common",
+        "price": 200,
+        "stages": 6,
+        "days": 14,
+        "sale": 40
+      },
+      {
+        "id": "pilea",
+        "name": "Cỏ đồng tiền",
+        "description": "Lá tròn như đồng xu may mắn",
+        "tier": "Rare",
+        "price": 900,
+        "stages": 9,
+        "days": 44,
+        "sale": 180
+      },
+      {
+        "id": "cherry",
+        "name": "Đào hồng xuân",
+        "description": "Cánh hoa đào rực rỡ ngày xuân",
+        "tier": "Rare",
+        "price": 900,
+        "stages": 9,
+        "days": 44,
+        "sale": 180
+      },
+      {
+        "id": "pine",
+        "name": "Thông xanh biếc",
+        "description": "Bền bỉ, xanh ngát quanh năm",
+        "tier": "Legendary",
+        "price": 4500,
+        "stages": 12,
+        "days": 127,
+        "sale": 900
+      },
+      {
+        "id": "mandarin",
+        "name": "Quýt nắng",
+        "description": "Trái ngọt nhỏ mang nắng ấm đến khu vườn",
+        "tier": "Rare",
+        "price": 900,
+        "stages": 9,
+        "days": 44,
+        "sale": 180
+      }
+    ],
+    "cosmetics": [
+      {
+        "id": "ground_grass",
+        "name": "Thảm cỏ",
+        "category": "GROUND",
+        "price": 100,
+        "reward": false,
+        "permanent": true
+      },
+      {
+        "id": "ground_moss",
+        "name": "Rêu mềm",
+        "category": "GROUND",
+        "price": 250,
+        "reward": false,
+        "permanent": true
+      },
+      {
+        "id": "border_wood",
+        "name": "Hàng rào gỗ",
+        "category": "BORDER",
+        "price": 150,
+        "reward": false,
+        "permanent": true
+      },
+      {
+        "id": "accent_lantern",
+        "name": "Đèn vườn",
+        "category": "ACCENT",
+        "price": 300,
+        "reward": false,
+        "permanent": false
+      },
+      {
+        "id": "accent_stone",
+        "name": "Đá bình yên",
+        "category": "ACCENT",
+        "price": 250,
+        "reward": false,
+        "permanent": true
+      },
+      {
+        "id": "tree_ribbon",
+        "name": "Nơ dịu dàng",
+        "category": "TREE",
+        "price": 150,
+        "reward": false,
+        "permanent": true
+      },
+      {
+        "id": "tree_flowers",
+        "name": "Vòng hoa",
+        "category": "TREE",
+        "price": 200,
+        "reward": false,
+        "permanent": true
+      },
+      {
+        "id": "tree_lantern",
+        "name": "Đèn nhỏ",
+        "category": "TREE",
+        "price": 300,
+        "reward": false,
+        "permanent": true
+      },
+      {
+        "id": "ambient_lights",
+        "name": "Ánh đom đóm",
+        "category": "AMBIENT",
+        "price": 700,
+        "reward": false,
+        "permanent": true
+      },
+      {
+        "id": "theme_stone",
+        "name": "Sân đá",
+        "category": "THEME",
+        "price": 1500,
+        "reward": false,
+        "permanent": true
+      },
+      {
+        "id": "theme_night",
+        "name": "Vườn đêm",
+        "category": "THEME",
+        "price": 1500,
+        "reward": false,
+        "permanent": true
+      },
+      {
+        "id": "reward_sign",
+        "name": "Biển nhà vườn",
+        "category": "ACCENT",
+        "price": 0,
+        "reward": true,
+        "permanent": true
+      },
+      {
+        "id": "reward_petals",
+        "name": "Cánh hoa",
+        "category": "AMBIENT",
+        "price": 0,
+        "reward": true,
+        "permanent": true
+      },
+      {
+        "id": "reward_path",
+        "name": "Lối đá",
+        "category": "BORDER",
+        "price": 0,
+        "reward": true,
+        "permanent": true
+      },
+      {
+        "id": "reward_plaque",
+        "name": "Bảng sưu tầm",
+        "category": "ACCENT",
+        "price": 0,
+        "reward": true,
+        "permanent": true
+      }
+    ],
+    "templates": [
+      {
+        "id": "study25",
+        "title": "Học tập trung 25 phút",
+        "category": "Học tập",
+        "effort": "25 phút",
+        "verification": "TIMER",
+        "minutes": 25,
+        "frequency": "EVERY_DAY",
+        "start": "",
+        "end": ""
+      },
+      {
+        "id": "review15",
+        "title": "Ôn lại bài cũ",
+        "category": "Học tập",
+        "effort": "15 phút",
+        "verification": "TIMER",
+        "minutes": 15,
+        "frequency": "EVERY_DAY",
+        "start": "",
+        "end": ""
+      },
+      {
+        "id": "read20",
+        "title": "Đọc sách",
+        "category": "Học tập",
+        "effort": "20 phút",
+        "verification": "TIMER",
+        "minutes": 20,
+        "frequency": "EVERY_DAY",
+        "start": "",
+        "end": ""
+      },
+      {
+        "id": "words",
+        "title": "Học 10 từ vựng mới",
+        "category": "Học tập",
+        "effort": "10 từ",
+        "verification": "CLICK",
+        "minutes": 5,
+        "frequency": "EVERY_DAY",
+        "start": "",
+        "end": ""
+      },
+      {
+        "id": "evening",
+        "title": "Học buổi tối",
+        "category": "Học tập",
+        "effort": "25 phút",
+        "verification": "TIMER",
+        "minutes": 25,
+        "frequency": "EVERY_DAY",
+        "start": "18:00",
+        "end": "23:00"
+      },
+      {
+        "id": "walk20",
+        "title": "Đi bộ nhẹ nhàng",
+        "category": "Sức khỏe",
+        "effort": "20 phút",
+        "verification": "TIMER",
+        "minutes": 20,
+        "frequency": "EVERY_DAY",
+        "start": "",
+        "end": ""
+      },
+      {
+        "id": "stretch5",
+        "title": "Giãn cơ",
+        "category": "Sức khỏe",
+        "effort": "5 phút",
+        "verification": "TIMER",
+        "minutes": 5,
+        "frequency": "EVERY_DAY",
+        "start": "",
+        "end": ""
+      },
+      {
+        "id": "water",
+        "title": "Uống đủ nước",
+        "category": "Sức khỏe",
+        "effort": "Trong ngày",
+        "verification": "CLICK",
+        "minutes": 5,
+        "frequency": "EVERY_DAY",
+        "start": "",
+        "end": ""
+      },
+      {
+        "id": "fruit",
+        "title": "Ăn thêm rau hoặc trái cây",
+        "category": "Sức khỏe",
+        "effort": "Một phần",
+        "verification": "CLICK",
+        "minutes": 5,
+        "frequency": "EVERY_DAY",
+        "start": "",
+        "end": ""
+      },
+      {
+        "id": "brush-am",
+        "title": "Đánh răng buổi sáng",
+        "category": "Nếp sống",
+        "effort": "06:00–09:00",
+        "verification": "CLICK",
+        "minutes": 5,
+        "frequency": "EVERY_DAY",
+        "start": "06:00",
+        "end": "09:00"
+      },
+      {
+        "id": "brush-pm",
+        "title": "Đánh răng buổi tối",
+        "category": "Nếp sống",
+        "effort": "18:00–23:00",
+        "verification": "CLICK",
+        "minutes": 5,
+        "frequency": "EVERY_DAY",
+        "start": "18:00",
+        "end": "23:00"
+      },
+      {
+        "id": "bed",
+        "title": "Dọn giường, gấp chăn",
+        "category": "Việc nhà",
+        "effort": "3 phút",
+        "verification": "CLICK",
+        "minutes": 5,
+        "frequency": "EVERY_DAY",
+        "start": "",
+        "end": ""
+      },
+      {
+        "id": "dishes",
+        "title": "Rửa chén sau bữa ăn",
+        "category": "Việc nhà",
+        "effort": "10 phút",
+        "verification": "CLICK",
+        "minutes": 5,
+        "frequency": "EVERY_DAY",
+        "start": "",
+        "end": ""
+      },
+      {
+        "id": "room",
+        "title": "Dọn phòng cuối tuần",
+        "category": "Việc nhà",
+        "effort": "20 phút",
+        "verification": "CLICK",
+        "minutes": 5,
+        "frequency": "WEEKENDS",
+        "start": "",
+        "end": ""
+      },
+      {
+        "id": "prepare",
+        "title": "Chuẩn bị cặp sách cho ngày mai",
+        "category": "Học tập",
+        "effort": "5 phút",
+        "verification": "CLICK",
+        "minutes": 5,
+        "frequency": "EVERY_DAY",
+        "start": "",
+        "end": ""
+      }
+    ]
+  },
+  "products": [
+    {
+      "id": "can_basic",
+      "name": "Bình cơ bản",
+      "price": 0,
+      "hours": 8,
+      "permanent": true
+    },
+    {
+      "id": "can_copper",
+      "name": "Bình đồng",
+      "price": 300,
+      "hours": 12,
+      "permanent": true
+    },
+    {
+      "id": "can_silver",
+      "name": "Bình bạc",
+      "price": 900,
+      "hours": 18,
+      "permanent": true
+    },
+    {
+      "id": "can_gold",
+      "name": "Bình vàng",
+      "price": 2000,
+      "hours": 24,
+      "permanent": true
+    },
+    {
+      "id": "fertilizer",
+      "name": "Phân cơ bản",
+      "price": 35,
+      "rate": 1.1,
+      "hours": 4
+    },
+    {
+      "id": "fertilizer_rich",
+      "name": "Phân giàu dưỡng",
+      "price": 75,
+      "rate": 1.2,
+      "hours": 6
+    },
+    {
+      "id": "fertilizer_premium",
+      "name": "Phân cao cấp",
+      "price": 140,
+      "rate": 1.35,
+      "hours": 8
+    }
+  ],
+  "icons": {
+    "leaf": "M20 4C9 2 3 7 5 15c6 5 15 0 15-11ZM5 20 16 9",
+    "home": "m3 10 9-7 9 7M5 9v11h5v-6h4v6h5V9",
+    "tasks": "M8 4h12v17H4V4h4M8 2h8v5H8ZM8 12l2 2 5-5M8 18h8",
+    "garden": "M12 20v-8M12 13C2 14 2 4 3 3c7 0 10 3 9 10Zm0 2c0-9 5-10 10-10 0 8-4 11-10 10Z",
+    "shop": "M3 9h18l-2-6H5L3 9Zm1 0v12h16V9M9 21v-8h6v8M3 9c0 4 4 4 4 0 0 4 5 4 5 0 0 4 5 4 5 0 0 4 4 4 4 0",
+    "book": "M12 5C7 2 3 3 3 3v16s5-1 9 2c4-3 9-2 9-2V3s-4-1-9 2Zm0 0v16",
+    "back": "m14 5-7 7 7 7",
+    "next": "m9 5 7 7-7 7",
+    "plus": "M12 5v14M5 12h14",
+    "check": "m5 12 4 4L19 6",
+    "close": "m6 6 12 12M6 18 18 6",
+    "coin": "M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm-2 5h4m-2 0v10m-2 0h4",
+    "water": "M12 2C8 8 4 11 5 16c1 7 13 7 14 0 1-5-3-8-7-14ZM9 16c0 2 1 3 3 3",
+    "bag": "M5 7h14l2 14H3L5 7Zm3 0V5a4 4 0 0 1 8 0v2",
+    "settings": "m9 3-1 3-3 1-2 3 2 3v3l3 1 1 4h5l1-4 3-1v-3l2-3-2-3-3-1-1-3H9Zm3 5a4 4 0 1 0 0 8 4 4 0 0 0 0-8",
+    "clock": "M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 4v6l4 2",
+    "play": "m8 4 12 8-12 8V4Z",
+    "pause": "M7 4v16M17 4v16",
+    "gift": "M3 8h18v5H3V8Zm2 5v8h14v-8M12 8v13M12 8C5 9 5 1 9 3l3 5Zm0 0c7 1 7-7 3-5l-3 5Z",
+    "chart": "M4 20V10M12 20V4M20 20v-7",
+    "spark": "m12 2 3 7 7 3-7 3-3 7-3-7-7-3 7-3 3-7Z",
+    "edit": "m16 3 5 5-12 12-6 1 1-6L16 3ZM13 6l5 5",
+    "grid": "M3 3h7v7H3V3Zm11 0h7v7h-7V3ZM3 14h7v7H3v-7Zm11 0h7v7h-7v-7",
+    "lock": "M5 10h14v11H5V10Zm3 0V6a4 4 0 0 1 8 0v4m-4 4v3",
+    "undo": "M8 4 3 9l5 5M3 9h10a7 7 0 0 1 0 14",
+    "refresh": "M20 7A9 9 0 1 0 21 15M20 2v6h-6",
+    "download": "M12 3v12m-5-5 5 5 5-5M4 17v4h16v-4",
+    "upload": "M12 15V3m-5 5 5-5 5 5M4 17v4h16v-4",
+    "trash": "M3 6h18M9 6V3h6v3M6 6l1 15h10l1-15M10 10v7m4-7v7",
+    "award": "M12 3a6 6 0 1 0 0 12 6 6 0 0 0 0-12ZM8 14 6 22l6-3 6 3-2-8",
+    "calendar": "M3 5h18v16H3V5Zm4-3v6m10-6v6M3 10h18",
+    "bell": "M5 16V9a7 7 0 0 1 14 0v7l2 2H3l2-2Zm4 5h6",
+    "more": "M5 12h.01M12 12h.01M19 12h.01",
+    "moon": "M20 15A9 9 0 0 1 9 3a9 9 0 1 0 11 12Z",
+    "sun": "M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10ZM12 1v2m0 18v2M1 12h2m18 0h2M4 4l2 2m12 12 2 2M4 20l2-2M18 6l2-2",
+    "info": "M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 9v6m0-10v.01",
+    "fertilizer": "M6 3h12l-2 4 4 14H4L8 7 6 3Zm2 4h8m-4 4v7m0-3-3-2m3 4 3-3"
+  },
+  "palettes": {
+    "cherry": {
+      "name": "Sắc anh đào",
+      "hue": 339,
+      "accent": "#f4c7d8",
+      "soft": "#f6e3eb",
+      "bg": "#eee8eb",
+      "deep": "#71354f",
+      "muted": "#705f68"
+    },
+    "lavender": {
+      "name": "Sắc oải hương",
+      "hue": 268,
+      "accent": "#ddd0f2",
+      "soft": "#eee7f7",
+      "bg": "#ece8f0",
+      "deep": "#56416f",
+      "muted": "#685f73"
+    },
+    "mandarin": {
+      "name": "Sắc quýt nắng",
+      "hue": 30,
+      "accent": "#f5d0a6",
+      "soft": "#fae9d6",
+      "bg": "#f0e9e0",
+      "deep": "#724824",
+      "muted": "#726454"
+    },
+    "succulent": {
+      "name": "Sắc sen đá",
+      "hue": 139,
+      "accent": "#cee3c4",
+      "soft": "#e7efdf",
+      "bg": "#e8ede4",
+      "deep": "#3e5c3c",
+      "muted": "#606b5c"
+    },
+    "pine": {
+      "name": "Sắc rừng thông",
+      "hue": 162,
+      "accent": "#c3e0d2",
+      "soft": "#e1eee7",
+      "bg": "#e5ede8",
+      "deep": "#345b4a",
+      "muted": "#5a6b62"
+    },
+    "monstera": {
+      "name": "Sắc lá mới",
+      "hue": 166,
+      "accent": "#bfe2d7",
+      "soft": "#dfeee8",
+      "bg": "#e4ede8",
+      "deep": "#305c50",
+      "muted": "#586c64"
+    },
+    "ficus": {
+      "name": "Sắc tán xanh",
+      "hue": 132,
+      "accent": "#d0e1c0",
+      "soft": "#e9efdf",
+      "bg": "#e9ede4",
+      "deep": "#405b35",
+      "muted": "#626c59"
+    },
+    "snake": {
+      "name": "Sắc nắng lá",
+      "hue": 77,
+      "accent": "#e1e6b7",
+      "soft": "#eff0dd",
+      "bg": "#ededdf",
+      "deep": "#535d2d",
+      "muted": "#686c50"
+    },
+    "cactus": {
+      "name": "Sắc hoa xương rồng",
+      "hue": 350,
+      "accent": "#f0ccd0",
+      "soft": "#f7e5e6",
+      "bg": "#eee7e8",
+      "deep": "#743b48",
+      "muted": "#735f64"
+    },
+    "aloe": {
+      "name": "Sắc nha đam",
+      "hue": 145,
+      "accent": "#c5e3c8",
+      "soft": "#e1efe2",
+      "bg": "#e5ede5",
+      "deep": "#365d40",
+      "muted": "#5b6d60"
+    },
+    "pilea": {
+      "name": "Sắc đồng tiền",
+      "hue": 91,
+      "accent": "#d9e6b9",
+      "soft": "#ecf0df",
+      "bg": "#eaedde",
+      "deep": "#4c5c30",
+      "muted": "#626c53"
+    }
+  },
+  "records": [
+    {
+      "id": "succulent",
+      "seeds": 1,
+      "planted": 0,
+      "discovered": true,
+      "highest": 0,
+      "mature": false,
+      "bloom": false,
+      "status": "Có hạt",
+      "firstPlanted": "Chưa ghi nhận",
+      "firstMatured": "Chưa ghi nhận"
+    },
+    {
+      "id": "monstera",
+      "seeds": 0,
+      "planted": 0,
+      "discovered": false,
+      "highest": 0,
+      "mature": false,
+      "bloom": false,
+      "status": "Chưa khám phá",
+      "firstPlanted": "Chưa ghi nhận",
+      "firstMatured": "Chưa ghi nhận"
+    },
+    {
+      "id": "ficus",
+      "seeds": 0,
+      "planted": 0,
+      "discovered": false,
+      "highest": 0,
+      "mature": false,
+      "bloom": false,
+      "status": "Chưa khám phá",
+      "firstPlanted": "Chưa ghi nhận",
+      "firstMatured": "Chưa ghi nhận"
+    },
+    {
+      "id": "snake",
+      "seeds": 0,
+      "planted": 0,
+      "discovered": false,
+      "highest": 0,
+      "mature": false,
+      "bloom": false,
+      "status": "Chưa khám phá",
+      "firstPlanted": "Chưa ghi nhận",
+      "firstMatured": "Chưa ghi nhận"
+    },
+    {
+      "id": "cactus",
+      "seeds": 0,
+      "planted": 0,
+      "discovered": false,
+      "highest": 0,
+      "mature": false,
+      "bloom": false,
+      "status": "Chưa khám phá",
+      "firstPlanted": "Chưa ghi nhận",
+      "firstMatured": "Chưa ghi nhận"
+    },
+    {
+      "id": "aloe",
+      "seeds": 0,
+      "planted": 0,
+      "discovered": false,
+      "highest": 0,
+      "mature": false,
+      "bloom": false,
+      "status": "Chưa khám phá",
+      "firstPlanted": "Chưa ghi nhận",
+      "firstMatured": "Chưa ghi nhận"
+    },
+    {
+      "id": "lavender",
+      "seeds": 0,
+      "planted": 1,
+      "discovered": true,
+      "highest": 2,
+      "mature": false,
+      "bloom": false,
+      "status": "Đã trồng",
+      "firstPlanted": "2026-11-04",
+      "firstMatured": "Chưa ghi nhận"
+    },
+    {
+      "id": "pilea",
+      "seeds": 0,
+      "planted": 0,
+      "discovered": false,
+      "highest": 0,
+      "mature": false,
+      "bloom": false,
+      "status": "Chưa khám phá",
+      "firstPlanted": "Chưa ghi nhận",
+      "firstMatured": "Chưa ghi nhận"
+    },
+    {
+      "id": "cherry",
+      "seeds": 2,
+      "planted": 1,
+      "discovered": true,
+      "highest": 4,
+      "mature": false,
+      "bloom": false,
+      "status": "Đã trồng",
+      "firstPlanted": "2026-11-01",
+      "firstMatured": "Chưa ghi nhận"
+    },
+    {
+      "id": "pine",
+      "seeds": 1,
+      "planted": 0,
+      "discovered": true,
+      "highest": 0,
+      "mature": false,
+      "bloom": false,
+      "status": "Có hạt",
+      "firstPlanted": "Chưa ghi nhận",
+      "firstMatured": "Chưa ghi nhận"
+    },
+    {
+      "id": "mandarin",
+      "seeds": 0,
+      "planted": 1,
+      "discovered": true,
+      "highest": 9,
+      "mature": true,
+      "bloom": false,
+      "status": "Trưởng thành",
+      "firstPlanted": "2026-10-12",
+      "firstMatured": "12/11/2026"
+    }
+  ],
+  "goals": [
+    {
+      "id": "collector",
+      "title": "Trồng 3 loài",
+      "n": 3,
+      "target": 3,
+      "reward": "",
+      "unlocked": false
+    },
+    {
+      "id": "mature3",
+      "title": "Nuôi 3 loài trưởng thành",
+      "n": 1,
+      "target": 3,
+      "reward": "reward_sign",
+      "unlocked": false
+    },
+    {
+      "id": "bloom",
+      "title": "Cây hoa đầu tiên nở rộ",
+      "n": 0,
+      "target": 1,
+      "reward": "reward_petals",
+      "unlocked": false
+    }
+  ],
+  "statistics": {
+    "total": 1,
+    "today": 1,
+    "week": 1,
+    "streak": 5,
+    "treeCount": 3,
+    "recentDailyCompletions": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1
+    ]
+  },
+  "phase": {
+    "required": 4,
+    "completed": 1,
+    "streak": 5,
+    "canClaim": false
+  },
+  "date": "2026-11-17",
+  "review": {
+    "scheduled": 15,
+    "completed": 10,
+    "previousRate": 60,
+    "focusMinutes": 45,
+    "earned": 40,
+    "spent": 0,
+    "careDays": 3,
+    "milestones": 0,
+    "consistent": "Học tập",
+    "improve": "Nếp sống"
+  }
+}

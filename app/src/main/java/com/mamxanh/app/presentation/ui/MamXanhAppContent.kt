@@ -53,10 +53,10 @@ fun MamXanhAppContent(
     val walletState = shop
     val statistics = stats
     val wallet = shop.wallet
-    MaterialTheme(colorScheme = GardenColorScheme, typography = GardenTypography) {
+    MaterialTheme(colorScheme = GardenColorScheme, typography = GardenTypography, shapes = GardenShapes) {
         Scaffold(
             modifier = modifier,
-            containerColor = Color(0xFFE9F7F2),
+            containerColor = Cream,
             bottomBar = {
                 if(!hideNavigation)GardenTrailBar(app.destination, {
                     onEngagement("",0)
@@ -125,7 +125,7 @@ fun MamXanhAppContent(
                             modifier = Modifier,
                             sharedTreeModifier = treeSharedModifier,
                             coins = wallet.coins,
-                            onOpenDecorations={onLiving("ARRANGE","")},
+                            onOpenDecorations={onLiving("INVENTORY","")},
                             onOpenGarden = {
                                 onTreeIntent(TreeIntent.SetPanelExpanded(false))
                                 onAppIntent(AppIntent.Navigate(AppDestination.GARDEN))
@@ -144,6 +144,7 @@ fun MamXanhAppContent(
                                 fertilizerCount = com.mamxanh.shared.model.FertilizerTier.entries.sumOf { wallet.inventory[it.itemId] ?: 0 }, modifier = Modifier,
                                 sharedTreeModifier = treeSharedModifier,
                                 onWeeklyReview={onEngagement("REVIEW",0)},
+                                onJourney={onEngagement("MORE",0)},
                                 taskTitle = tasks.tasks.firstOrNull { !it.doneToday && !it.finished }?.title ?: "Mọi việc đã xong hôm nay",
                                 canClaimBonus = tasks.canClaimDailyBonus && !tasks.isDailyBonusClaimed,
                                 onTaskAction = { id,timer ->

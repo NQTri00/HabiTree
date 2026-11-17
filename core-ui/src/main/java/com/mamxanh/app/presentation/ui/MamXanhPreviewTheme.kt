@@ -14,6 +14,7 @@ fun MamXanhPreviewTheme(content: @Composable () -> Unit) {
     MaterialTheme(
         colorScheme = GardenColorScheme,
         typography = GardenTypography,
+        shapes = GardenShapes,
         content = content
     )
 }

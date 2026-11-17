@@ -105,9 +105,9 @@ internal fun DataSettingsContent(bytes:Long,safety:Boolean,busy:Boolean,message:
             }
             val scroll=rememberScrollState()
             Column(Modifier.weight(1f).fillMaxWidth().mintScrollEdges(scroll.canScrollBackward,scroll.canScrollForward)
-                .verticalScroll(scroll).padding(horizontal=10.dp,vertical=4.dp),verticalArrangement=Arrangement.spacedBy(6.dp)) {
+                .verticalScroll(scroll).padding(horizontal=24.dp,vertical=12.dp),verticalArrangement=Arrangement.spacedBy(12.dp)) {
                 if(busy)LinearProgressIndicator(Modifier.fillMaxWidth())
-                if(message.isNotBlank())Text(message,color=Green,fontSize=11.sp,lineHeight=15.sp)
+                if(message.isNotBlank())Text(message,color=Green,fontSize=13.sp,lineHeight=19.sp)
                 if(confirmation>0)DataPanel {
                     Label(if(confirmation>=3)R.string.data_clear else R.string.data_replace)
                     Copy(if(confirmation>=3)R.string.data_clear_warning else if(confirmation==2)R.string.data_safety_note else R.string.data_replace_warning)
@@ -115,42 +115,43 @@ internal fun DataSettingsContent(bytes:Long,safety:Boolean,busy:Boolean,message:
                         Text(stringResource(R.string.data_counts,backup.count("tasks"),backup.count("trees"),backup.count("occurrences")),fontSize=11.sp,color=Deep)
                         Text(stringResource(R.string.data_created,java.text.SimpleDateFormat("dd/MM/yyyy HH:mm",java.util.Locale.getDefault()).format(java.util.Date(backup.createdAt)),backup.appVersion),fontSize=10.sp,color=Muted)
                     }
-                    Row(horizontalArrangement=Arrangement.spacedBy(6.dp)) {
+                    Row(horizontalArrangement=Arrangement.spacedBy(12.dp)) {
                         Action(if(confirmation==4)R.string.data_clear_again else R.string.data_confirm,onConfirm,!busy,Modifier.weight(1f),true)
                         Action(R.string.data_cancel,onCancel,!busy,Modifier.weight(1f))
                     }
                 }
                 DataPanel {
-                    Label(R.string.data_backup);Copy(R.string.data_warning)
+                    Label(R.string.data_backup)
                     Text(stringResource(R.string.data_size,(bytes/1024).toString()),fontSize=10.sp,color=Muted)
-                    Row(horizontalArrangement=Arrangement.spacedBy(6.dp)) {
-                        Action(R.string.data_export,onExport,!busy,Modifier.weight(1f))
+                    Row(horizontalArrangement=Arrangement.spacedBy(12.dp)) {
+                        Action(R.string.data_export,onExport,!busy,Modifier.weight(1f),primary=true)
                         Action(R.string.data_import,onImport,!busy,Modifier.weight(1f))
                     }
-                    if(safety)Action(R.string.data_recover,onRecover,!busy)
-                    Action(R.string.data_clear,onClear,!busy)
+                    GardenExpandableSection("Quyền riêng tư của bản sao"){Copy(R.string.data_warning)}
                 }
-                DataPanel {Label(R.string.data_about);Copy(R.string.data_privacy);Copy(R.string.data_policy);Copy(R.string.data_accessibility)
+                if(safety)Action(R.string.data_recover,onRecover,!busy)
+                Action(R.string.data_clear,onClear,!busy)
+                GardenExpandableSection(stringResource(R.string.data_about)) {Copy(R.string.data_privacy);Copy(R.string.data_policy);Copy(R.string.data_accessibility)
                     Text(stringResource(R.string.data_version,BuildConfig.VERSION_NAME,BuildConfig.VERSION_CODE,GameSchema.VERSION),fontSize=10.sp,color=Muted)
-                    Text("Kotlin · AndroidX · Koin · Ktor · SQLDelight\nApache 2.0",fontSize=10.sp,lineHeight=14.sp,color=Muted)
+                    Text("Kotlin · AndroidX · Koin · Ktor · SQLDelight\nApache 2.0",fontSize=12.sp,lineHeight=17.sp,color=Muted)
                     Action(R.string.data_licenses,{showLicense=!showLicense},!busy)
-                    if(showLicense)Text(license,fontSize=10.sp,lineHeight=14.sp,color=Deep)
+                    if(showLicense)Text(license,fontSize=12.sp,lineHeight=17.sp,color=Deep)
                 }
-                DataPanel {Copy(R.string.data_diagnostics_note);Action(R.string.data_diagnostics,onDiagnostics,!busy)}
+                GardenExpandableSection("Chẩn đoán"){Copy(R.string.data_diagnostics_note);Action(R.string.data_diagnostics,onDiagnostics,!busy)}
             }
         }
     }
 }
 @Composable private fun DataPanel(content:@Composable ColumnScope.()->Unit) {
-    GardenBotanicalFrame(Modifier.fillMaxWidth(),contentPadding=PaddingValues(10.dp),cornerSize=14.dp) {
-        Column(verticalArrangement=Arrangement.spacedBy(6.dp),content=content)
+    GardenBotanicalFrame(Modifier.fillMaxWidth(),contentPadding=PaddingValues(18.dp),cornerSize=22.dp) {
+        Column(verticalArrangement=Arrangement.spacedBy(12.dp),content=content)
     }
 }
-@Composable private fun Label(id:Int){Text(stringResource(id),fontSize=12.sp,lineHeight=16.sp,color=Deep,fontWeight=FontWeight.Bold)}
-@Composable private fun Copy(id:Int){Text(stringResource(id),fontSize=11.sp,lineHeight=15.sp,color=Muted)}
+@Composable private fun Label(id:Int){Text(stringResource(id),fontSize=15.sp,lineHeight=21.sp,color=Deep,fontWeight=FontWeight.Bold)}
+@Composable private fun Copy(id:Int){Text(stringResource(id),fontSize=13.sp,lineHeight=19.sp,color=Muted)}
 @Composable private fun Action(id:Int,onClick:()->Unit,enabled:Boolean,modifier:Modifier=Modifier,primary:Boolean=false) {
     Box(modifier.heightIn(min=48.dp),contentAlignment=Alignment.Center) {
-        MintDialogAction(stringResource(id),onClick,Modifier.fillMaxWidth(),primary=primary,enabled=enabled)
+        MintDialogAction(stringResource(id),onClick,Modifier.fillMaxWidth(),primary=primary,enabled=enabled,destructive=id==R.string.data_clear)
     }
 }
 @Preview(name="Data settings · full document",locale="vi",widthDp=360,heightDp=1000,device="spec:width=360dp,height=1000dp,dpi=160")

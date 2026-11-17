@@ -27,13 +27,13 @@ fun GardenPlantPortrait(
         } else {
             PaintedGardenPlant(speciesId, Modifier.fillMaxSize())
         }
-        when (decoration) {
-            "LANTERNS" -> GardenArtwork(GardenArt.LANTERN,
-                Modifier.offset(maxWidth * .72f, maxHeight * .36f).width(maxWidth * .15f).height(maxHeight * .24f))
-            "RIBBON" -> GardenArtwork(GardenArt.RIBBON,
-                Modifier.offset(maxWidth * .42f, maxHeight * .62f).width(maxWidth * .20f).height(maxHeight * .14f))
-            "FLOWERS" -> GardenArtwork(GardenArt.FLOWERS,
-                Modifier.offset(maxWidth * .12f, maxHeight * .55f).width(maxWidth * .30f).height(maxHeight * .20f))
+        if(decoration!="NONE"&&decoration.isNotBlank()){
+            val art=when(decoration){"LANTERNS"->GardenArt.LANTERN;"RIBBON"->GardenArt.RIBBON;else->GardenArt.FLOWERS}
+            androidx.compose.material3.Surface(Modifier.align(androidx.compose.ui.Alignment.TopEnd).padding(top=35.dp,end=8.dp).size(30.dp),
+                shape=androidx.compose.foundation.shape.CircleShape,color=androidx.compose.ui.graphics.Color(0xFFF7E5E2)){
+                GardenArtwork(art,Modifier.padding(5.dp))
+            }
+
         }
         }
     }

@@ -1,6 +1,7 @@
 package com.mamxanh.app.presentation.ui.components
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -35,10 +36,10 @@ fun MintTreeStatus(stage: String,state: String,water: String) {
 fun MintMetricStrip(metrics: List<Pair<String,String>>, modifier: Modifier = Modifier) {
     Row(modifier.fillMaxWidth().height(IntrinsicSize.Min),horizontalArrangement=Arrangement.spacedBy(6.dp)) {
         metrics.forEach { (label,value) ->
-            Surface(Modifier.weight(1f).fillMaxHeight(),shape=RoundedCornerShape(10.dp),color=Color(0xFFF0F7F2)) {
-                Column(Modifier.padding(horizontal=6.dp,vertical=4.dp),horizontalAlignment=Alignment.CenterHorizontally) {
-                    Text(value,color=Deep,fontSize=12.sp,lineHeight=15.sp,fontWeight=FontWeight.Bold,textAlign=TextAlign.Center)
-                    Text(label,color=Muted,fontSize=10.sp,lineHeight=13.sp,textAlign=TextAlign.Center)
+            GardenBotanicalFrame(Modifier.weight(1f).fillMaxHeight(), contentPadding=PaddingValues(12.dp),cornerSize=18.dp) {
+                Column(Modifier.fillMaxWidth(),horizontalAlignment=Alignment.CenterHorizontally,verticalArrangement=Arrangement.spacedBy(5.dp)) {
+                    Text(value,color=Deep,fontSize=21.sp,lineHeight=26.sp,fontWeight=FontWeight.Bold,textAlign=TextAlign.Center)
+                    Text(label,color=Muted,fontSize=11.sp,lineHeight=16.sp,textAlign=TextAlign.Center)
                 }
             }
         }
@@ -47,19 +48,20 @@ fun MintMetricStrip(metrics: List<Pair<String,String>>, modifier: Modifier = Mod
 
 /** Fixed artwork and label slots keep the entire grid aligned at every font scale. */
 @Composable
-fun MintCatalogCard(name: String,value: String,onClick: (() -> Unit)?=null,artwork: @Composable (Modifier)->Unit) {
-    val nameHeight=with(LocalDensity.current){30.sp.toDp()}
+fun MintCatalogCard(name: String,value: String,onClick: (() -> Unit)?=null,detail:String="",artwork: @Composable (Modifier)->Unit) {
+    val nameHeight=with(LocalDensity.current){40.sp.toDp()}
     GardenBotanicalFrame(Modifier.fillMaxWidth().then(if(onClick!=null)
         Modifier.clickable(role=Role.Button,onClickLabel="Chọn $name",onClick=onClick) else Modifier),
-        contentPadding=PaddingValues(5.dp),cornerSize=13.dp) {
-        Column(Modifier.fillMaxWidth(),horizontalAlignment=Alignment.CenterHorizontally,verticalArrangement=Arrangement.spacedBy(2.dp)) {
-            artwork(Modifier.fillMaxWidth().height(28.dp))
-            Box(Modifier.fillMaxWidth().height(nameHeight),contentAlignment=Alignment.BottomCenter) {
+        contentPadding=PaddingValues(12.dp),cornerSize=20.dp) {
+        Column(Modifier.fillMaxWidth(),horizontalAlignment=Alignment.CenterHorizontally,verticalArrangement=Arrangement.spacedBy(8.dp)) {
+            Box(Modifier.fillMaxWidth().height(100.dp).background(Color(0xFFF0F4E8),RoundedCornerShape(14.dp))){artwork(Modifier.fillMaxSize())}
+            Box(Modifier.fillMaxWidth().height(nameHeight),contentAlignment=Alignment.CenterStart) {
                 Text(name,color=Deep,fontSize=12.sp,lineHeight=15.sp,fontWeight=FontWeight.Bold,
-                    textAlign=TextAlign.Center,maxLines=2,overflow=TextOverflow.Ellipsis)
+                    textAlign=TextAlign.Start,maxLines=2,overflow=TextOverflow.Ellipsis)
             }
-            Text(value,color=Green,fontSize=12.sp,lineHeight=15.sp,fontWeight=FontWeight.Bold,maxLines=1,
-                overflow=TextOverflow.Ellipsis,textAlign=TextAlign.Center)
+            Text(value,Modifier.fillMaxWidth(),color=Green,fontSize=12.sp,lineHeight=15.sp,fontWeight=FontWeight.Bold,maxLines=1,
+                overflow=TextOverflow.Ellipsis,textAlign=TextAlign.Start)
+            if(detail.isNotBlank())Text(detail,Modifier.fillMaxWidth(),color=Muted,fontSize=12.sp,lineHeight=18.sp)
         }
     }
 }

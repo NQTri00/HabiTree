@@ -36,24 +36,19 @@ fun ShopScreen(state: ShopUiState, onIntent: (ShopIntent) -> Unit, modifier: Mod
     }
     MintBackdrop(modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
-            MintCompactHeader(state.wallet.coins)
-            Row(Modifier.fillMaxWidth().padding(horizontal=10.dp,vertical=3.dp),
-                verticalAlignment=Alignment.CenterVertically) {
-                MintCatalogTabs(if(state.filter == ShopFilter.ITEMS) 0 else 1,
-                    {onIntent(ShopIntent.SetFilter(if(it==0)ShopFilter.ITEMS else ShopFilter.SEEDS))},
-                    Modifier.weight(1f))
-                IconButton({onLiving("SHOP","")}){Icon(Icons.Rounded.Palette,"Trang trí",Modifier.size(18.dp),tint=Green)}
-                IconButton({onLiving("ENCYCLOPEDIA","")}){Icon(Icons.AutoMirrored.Rounded.MenuBook,"Bách thảo",Modifier.size(18.dp),tint=Green)}
-            }
+            MintCompactHeader(state.wallet.coins,title="mầm xanh")
+            GardenScreenIntro("Tiệm nhỏ","THÊM MỘT CHÚT XANH",modifier=Modifier.padding(horizontal=24.dp,vertical=12.dp))
+            MintCatalogTabs(if(state.filter==ShopFilter.ITEMS)0 else 1,
+                {onIntent(ShopIntent.SetFilter(if(it==0)ShopFilter.ITEMS else ShopFilter.SEEDS))},Modifier.padding(horizontal=24.dp,vertical=8.dp))
             if(state.isLoading) LinearProgressIndicator(Modifier.fillMaxWidth())
             BoxWithConstraints(Modifier.weight(1f)) {
                 val fontScale=androidx.compose.ui.platform.LocalDensity.current.fontScale
-                val columns=if(maxWidth<340.dp && fontScale>1.2f) 2 else if(maxWidth>=600.dp) (maxWidth.value/140).toInt() else 3
+                val columns=if(maxWidth>=600.dp)3 else 2
                 key(state.filter) {
                 LazyVerticalGrid(GridCells.Fixed(columns),Modifier.fillMaxSize()
                     .mintScrollEdges(activeGrid.canScrollBackward,activeGrid.canScrollForward),state=activeGrid,
-                    contentPadding=PaddingValues(10.dp),horizontalArrangement=Arrangement.spacedBy(6.dp),
-                    verticalArrangement=Arrangement.spacedBy(6.dp)) {
+                    contentPadding=PaddingValues(horizontal=24.dp,vertical=16.dp),horizontalArrangement=Arrangement.spacedBy(14.dp),
+                    verticalArrangement=Arrangement.spacedBy(14.dp)) {
                     if(state.filter == ShopFilter.ITEMS) {
                         items(careProducts,key={it.id}) { product ->
                             val owned=(state.wallet.inventory[product.id] ?: 0)>0
@@ -75,6 +70,8 @@ fun ShopScreen(state: ShopUiState, onIntent: (ShopIntent) -> Unit, modifier: Mod
                             Text("Exclusive · Sắp ra mắt. Chưa mở bán.",color=Muted,fontSize=11.sp)
                         }
                     }
+                    item(span={GridItemSpan(maxLineSpan)}) {GardenNavigationCard("Tiệm trang trí",{onLiving("SHOP","")})}
+                    item(span={GridItemSpan(maxLineSpan)}) {GardenNavigationCard("Bách thảo",{onLiving("ENCYCLOPEDIA","")})}
                     item(span={GridItemSpan(maxLineSpan)}) {
                         GardenPaintedButton("Ghé Vườn ươm",{onIntent(ShopIntent.OpenGarden)},Modifier.fillMaxWidth().padding(top=8.dp),primary=false)
                     }
@@ -96,7 +93,7 @@ fun ShopScreen(state: ShopUiState, onIntent: (ShopIntent) -> Unit, modifier: Mod
 
 @Composable
 private fun ShopProductCard(name:String,price:String,onClick:()->Unit,art: @Composable (Modifier) -> Unit) {
-    MintCatalogCard(name,price,onClick,art)
+    MintCatalogCard(name,price,onClick,detail=com.mamxanh.shared.model.catalog.firstOrNull{it.name==name}?.tier?:"",artwork=art)
 }
 @Preview(widthDp=360,heightDp=640)
 @Composable
@@ -106,3 +103,7 @@ fun ShopScreenPreview(){MamXanhPreviewTheme{ShopScreen(ShopUiState(ShopWallet(12
     MamXanhPreviewTheme { background?.invoke(); PurchaseConfirmation(shopCatalog.first().id,ShopUiState(isLoading=false),{},onBuy={_,_->}) }
 }
 @Composable fun ShopSeedDetailLargeTextPreview(){ShopSeedDetailDialogPreview()}
+@androidx.compose.ui.tooling.preview.Preview(widthDp=414,heightDp=1100,device="spec:width=414dp,height=1100dp,dpi=160")
+@Composable fun ShopWebDesignPreview(){MamXanhPreviewTheme{ShopScreen(ShopUiState(ShopWallet(620,emptyMap()),false),{})}}
+@androidx.compose.ui.tooling.preview.Preview(widthDp=414,heightDp=1100,device="spec:width=414dp,height=1100dp,dpi=160")
+@Composable fun CareShopWebDesignPreview(){MamXanhPreviewTheme{ShopScreen(ShopUiState(ShopWallet(620,emptyMap()),false,filter=ShopFilter.ITEMS),{})}}

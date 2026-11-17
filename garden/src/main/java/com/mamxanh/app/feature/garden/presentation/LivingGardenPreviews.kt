@@ -39,8 +39,6 @@ private fun fixture()=LivingGardenUiState(
 @Composable private fun CompactScreenPreview(state:LivingGardenUiState) {
     MamXanhPreviewTheme {LivingGardenScreen(state,{_,_->},{},{},{_,_->},{},{},{},{},{},{},{},true,{},false)}
 }
-@Preview(name="Arrange · compact full section",widthDp=360,heightDp=640,device="spec:width=360dp,height=640dp,dpi=160")
-@Composable fun GardenArrangeDocumentPreview(){val s=fixture();CompactScreenPreview(s.copy(route="ARRANGE",selected="ground_moss",draft=s.snapshot.placements))}
 @Preview(name="Decorations · complete catalog",widthDp=360,heightDp=720,device="spec:width=360dp,height=720dp,dpi=160")
 @Composable fun CosmeticCatalogDocumentPreview(){CompactScreenPreview(fixture().copy(route="SHOP"))}
 @Preview(name="Decoration detail · complete content",widthDp=320,heightDp=440,fontScale=1.3f,device="spec:width=320dp,height=440dp,dpi=160")

@@ -20,13 +20,13 @@ import com.mamxanh.app.presentation.ui.*
 import com.mamxanh.app.presentation.ui.components.*
 
 @Composable internal fun GardenCaption(text:String,modifier:Modifier=Modifier) {
-    Text(text,modifier,color=Muted,fontSize=10.sp,lineHeight=14.sp)
+    Text(text,modifier,color=Muted,fontSize=12.sp,lineHeight=18.sp)
 }
 @Composable internal fun GardenHeading(text:String,modifier:Modifier=Modifier) {
-    Text(text,modifier,color=Deep,fontSize=12.sp,lineHeight=16.sp,fontWeight=FontWeight.Bold)
+    Text(text,modifier,color=Deep,fontSize=19.sp,lineHeight=25.sp,fontWeight=FontWeight.Bold)
 }
 @Composable internal fun GardenPanel(modifier:Modifier=Modifier,content:@Composable ColumnScope.()->Unit) {
-    Column(modifier.fillMaxWidth().mintDepth(RoundedCornerShape(14.dp),MintDepth.card,2.dp).padding(10.dp),
+    Column(modifier.fillMaxWidth().mintDepth(RoundedCornerShape(22.dp),MintDepth.card,6.dp).padding(18.dp),
         verticalArrangement=Arrangement.spacedBy(6.dp),content=content)
 }
 /** Small visual control inside an accessible touch target; no default purple Material chips. */
@@ -34,10 +34,10 @@ import com.mamxanh.app.presentation.ui.components.*
     enabled:Boolean=true,icon:ImageVector?=null) {
     Box(modifier.heightIn(min=48.dp).alpha(if(enabled)1f else .45f)
         .selectable(selected,enabled=enabled,role=Role.RadioButton,onClick=onClick),contentAlignment=Alignment.Center) {
-        Row(Modifier.mintDepth(RoundedCornerShape(10.dp),if(selected)MintDepth.primary else MintDepth.secondary,if(selected)2.dp else 0.dp)
-            .padding(horizontal=9.dp,vertical=6.dp),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(4.dp)) {
+        Row(Modifier.mintDepth(RoundedCornerShape(15.dp),if(selected)MintDepth.primary else MintDepth.secondary,if(selected)2.dp else 0.dp)
+            .padding(horizontal=14.dp,vertical=12.dp),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(4.dp)) {
             if(icon!=null)Icon(icon,null,Modifier.size(13.dp),tint=if(selected)Color.White else Green)
-            Text(label,color=if(selected)Color.White else Deep,fontSize=10.sp,lineHeight=13.sp,fontWeight=FontWeight.SemiBold,
+            Text(label,color=if(selected)Color.White else Deep,fontSize=11.sp,lineHeight=15.sp,fontWeight=FontWeight.SemiBold,
                 maxLines=1,overflow=TextOverflow.Ellipsis)
         }
     }
@@ -46,10 +46,10 @@ import com.mamxanh.app.presentation.ui.components.*
     primary:Boolean=false,enabled:Boolean=true,icon:ImageVector?=null) {
     Box(modifier.heightIn(min=48.dp).alpha(if(enabled)1f else .4f)
         .clickable(enabled=enabled,role=Role.Button,onClick=onClick),contentAlignment=Alignment.Center) {
-        Row(Modifier.mintDepth(RoundedCornerShape(10.dp),if(primary)MintDepth.primary else MintDepth.secondary,if(primary)2.dp else 0.dp)
+        Row(Modifier.mintDepth(RoundedCornerShape(15.dp),if(primary)MintDepth.primary else MintDepth.secondary,if(primary)2.dp else 0.dp)
             .padding(horizontal=10.dp,vertical=7.dp),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(5.dp)) {
             if(icon!=null)Icon(icon,null,Modifier.size(14.dp),tint=if(primary)Color.White else Green)
-            Text(label,color=if(primary)Color.White else Green,fontSize=11.sp,lineHeight=14.sp,fontWeight=FontWeight.SemiBold)
+            Text(label,color=if(primary)Color.White else Green,fontSize=13.sp,lineHeight=19.sp,fontWeight=FontWeight.SemiBold)
         }
     }
 }

@@ -17,7 +17,7 @@ class LivingGardenViewModel(private val storage:GameStorage,private val saved:Sa
     private val restored=saved.get<ArrayList<String>>("layout_draft")?.mapNotNull {
         val p=it.split('|');if(p.size==4)GardenPlacement(p[0],p[1],p[2].toInt(),p[3].toLong())else null
     }
-    private val _state=MutableStateFlow(LivingGardenUiState(route=saved["living_route"] ?: "",
+    private val _state=MutableStateFlow(LivingGardenUiState(route=(saved.get<String>("living_route") ?: "").let{if(it=="ARRANGE")"STUDIO" else it},
         selected=saved["living_selected"] ?: "",draft=restored,draftVersion=saved["layout_version"] ?: 0L))
     val state=_state.asStateFlow()
     private val history=mutableListOf<List<GardenPlacement>>()
@@ -44,7 +44,8 @@ class LivingGardenViewModel(private val storage:GameStorage,private val saved:Sa
         saved["living_backstack"]=stack
         show(previous?.get(0) ?: "",previous?.getOrNull(1) ?: "")
     }
-    private fun show(route:String,selected:String="") {
+    private fun show(requestedRoute:String,selected:String="") {
+        val route=if(requestedRoute=="ARRANGE")"STUDIO" else requestedRoute
         saved["living_route"]=route;saved["living_selected"]=selected
         _state.value=_state.value.copy(route=route,selected=selected,message="")
         if(route.isNotBlank()) {

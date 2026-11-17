@@ -38,18 +38,18 @@ fun GardenTextField(
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     errorMessage: String? = null
 ) {
-    Box(modifier.heightIn(min = 44.dp), contentAlignment = Alignment.Center) {
+    Box(modifier.heightIn(min = 48.dp), contentAlignment = Alignment.Center) {
         Box(Modifier.matchParentSize().background(
-            MintDepth.diagonal(if (errorMessage == null) listOf(Color(0xFFE5F2EA), Color.White)
+            MintDepth.diagonal(if (errorMessage == null) listOf(Color.White, Color.White)
                 else listOf(Color(0xFFFFE1DB), Color(0xFFFFF5F2))), RoundedCornerShape(14.dp))
-            .border(1.5.dp, if (errorMessage == null) Color(0xFFBED6CB) else Color(0xFFB73D32), RoundedCornerShape(14.dp)))
+            .border(1.5.dp, if (errorMessage == null) Color(0xFFE4E7DC) else Color(0xFFB73D32), RoundedCornerShape(14.dp)))
         BasicTextField(value, onValueChange,
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 7.dp).semantics {
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 12.dp).semantics {
                 contentDescription = description
                 errorMessage?.let { error(it) }
             },
             singleLine = true, keyboardOptions = keyboardOptions,
-            textStyle = MaterialTheme.typography.bodyLarge.copy(color = Deep, fontSize = 12.sp, lineHeight = 16.sp, fontWeight = FontWeight.Bold),
+            textStyle = MaterialTheme.typography.bodyLarge.copy(color = Deep, fontSize = 14.sp, lineHeight = 20.sp, fontWeight = FontWeight.Normal),
             cursorBrush = SolidColor(Green),
             decorationBox = { inner ->
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -65,7 +65,7 @@ fun GardenTextField(
 
 @Composable
 fun GardenFieldButton(text: String, onClick: () -> Unit, modifier: Modifier = Modifier) {
-    Box(modifier.heightIn(min = 44.dp).clickable(role = Role.Button, onClick = onClick), contentAlignment = Alignment.Center) {
+    Box(modifier.heightIn(min = 48.dp).clickable(role = Role.Button, onClick = onClick), contentAlignment = Alignment.Center) {
         Box(Modifier.matchParentSize().mintDepth(RoundedCornerShape(14.dp), MintDepth.secondary, 2.dp))
         Row(Modifier.fillMaxWidth().padding(horizontal = 8.dp, vertical = 6.dp), verticalAlignment = Alignment.CenterVertically) {
             GardenRichText(text, Modifier.weight(1f), color = Deep, fontSize = 12.sp, fontWeight = FontWeight.Bold)
@@ -76,7 +76,7 @@ fun GardenFieldButton(text: String, onClick: () -> Unit, modifier: Modifier = Mo
 
 @Composable
 fun GardenChoiceChip(text: String, selected: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
-    Box(modifier.heightIn(min = 44.dp).selectable(selected, role = Role.RadioButton, onClick = onClick), contentAlignment = Alignment.Center) {
+    Box(modifier.heightIn(min = 48.dp).selectable(selected, role = Role.RadioButton, onClick = onClick), contentAlignment = Alignment.Center) {
         Box(Modifier.matchParentSize().mintDepth(RoundedCornerShape(50),
             if (selected) MintDepth.primary else MintDepth.secondary, if (selected) 4.dp else 1.dp))
         GardenRichText(text, color = if (selected) Color(0xFFFFFFFF) else Deep, fontSize = 11.sp, lineHeight = 14.sp,

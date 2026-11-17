@@ -1,6 +1,7 @@
 package com.mamxanh.app.presentation.ui.components
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.background
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -20,21 +21,21 @@ import com.mamxanh.app.presentation.ui.Green
 /** Shared category tabs for the shop catalog and owned inventory. */
 @Composable
 fun MintCatalogTabs(selectedIndex: Int, onSelect: (Int) -> Unit, modifier: Modifier = Modifier) {
-    Row(modifier.fillMaxWidth().height(IntrinsicSize.Min).selectableGroup(),
+    Row(modifier.fillMaxWidth().height(IntrinsicSize.Min).background(com.mamxanh.app.presentation.ui.Pale,RoundedCornerShape(15.dp)).padding(4.dp).selectableGroup(),
         horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        listOf("Vật phẩm" to GardenArt.FERTILIZER, "Hạt giống" to GardenArt.SEED)
-            .forEachIndexed { index, (label, art) ->
+        listOf(1 to "Hạt giống", 0 to "Chăm sóc")
+            .forEach { (index, label) ->
                 Box(Modifier.weight(1f).heightIn(min = 48.dp)
                     .selectable(selectedIndex == index, role = Role.Tab, onClick = { onSelect(index) }),
                     contentAlignment = Alignment.Center) {
                     Row(Modifier.fillMaxWidth()
-                        .mintDepth(RoundedCornerShape(12.dp), if(selectedIndex == index) MintDepth.primary else MintDepth.card, 3.dp)
+                        .mintDepth(RoundedCornerShape(12.dp), if(selectedIndex == index) MintDepth.card else MintDepth.hint, 3.dp)
                         .padding(horizontal = 8.dp, vertical = 6.dp),
                         horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterHorizontally),
                         verticalAlignment = Alignment.CenterVertically) {
-                        GardenArtwork(art, Modifier.size(18.dp))
-                        Text(label, color = if(selectedIndex == index) Color.White else Deep,
-                            fontWeight = FontWeight.Bold, fontSize = 11.sp, lineHeight = 14.sp)
+
+                        Text(label, color = if(selectedIndex == index) com.mamxanh.app.presentation.ui.Green else com.mamxanh.app.presentation.ui.Muted,
+                            fontWeight = FontWeight.Bold, fontSize = 13.sp, lineHeight = 18.sp)
                     }
                 }
             }

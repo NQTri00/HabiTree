@@ -41,10 +41,10 @@ fun LivingGardenScreen(state:LivingGardenUiState,onOpen:(String,String)->Unit,on
     onSelect:(String)->Unit,onPlace:(Int,String?)->Unit,onRemove:(String)->Unit,onUndo:()->Unit,onSave:()->Unit,onCancel:()->Unit,
     onTree:(Long)->Unit,onSeedShop:()->Unit,onMemories:()->Unit,reducedMotion:Boolean,onReducedMotion:(Boolean)->Unit,
     active:Boolean,modifier:Modifier=Modifier,onPlant:(Int)->Unit={},onBack:()->Unit={onOpen("","")}) {
-    val arranging=state.route=="ARRANGE"
-    val title=when(state.route){"SHOP"->"Tiệm trang trí";"INVENTORY"->"Trang trí của bạn";"ARRANGE"->"Sắp xếp";"ENCYCLOPEDIA"->"Bách thảo";"SPECIES"->"Hồ sơ loài";"APPEARANCE"->"Diện mạo";"DETAIL"->"Trang trí";"EXPANSION"->"Mở khu vườn";else->state.snapshot.appearance.nickname}
+    val arranging=false
+    val title=when(state.route){"SHOP"->"Tiệm trang trí";"INVENTORY"->"Trang trí của bạn";"ARRANGE"->"Góc vườn";"ENCYCLOPEDIA"->"Bách thảo";"SPECIES"->"Hồ sơ loài";"APPEARANCE"->"Diện mạo";"DETAIL"->"Trang trí";"EXPANSION"->"Mở khu vườn";else->state.snapshot.appearance.nickname}
     MintBackdrop(modifier.fillMaxSize()) {
-        ProvideTextStyle(TextStyle(fontSize=11.sp,lineHeight=15.sp,color=Deep)) {
+        ProvideTextStyle(MaterialTheme.typography.bodyMedium.copy(fontSize=13.sp,lineHeight=19.sp,color=Deep)) {
             Column(Modifier.fillMaxSize()) {
                 Row(Modifier.fillMaxWidth().padding(horizontal=4.dp),verticalAlignment=Alignment.CenterVertically) {
                     IconButton({if(arranging)onCancel() else onBack()}) {
@@ -60,14 +60,14 @@ fun LivingGardenScreen(state:LivingGardenUiState,onOpen:(String,String)->Unit,on
                     }
                 }
                 if(state.loading || state.busy)LinearProgressIndicator(Modifier.fillMaxWidth().height(2.dp))
-                if(state.message.isNotBlank())Text(state.message,Modifier.fillMaxWidth().padding(horizontal=12.dp,vertical=3.dp),color=Green,fontSize=10.sp,lineHeight=14.sp)
+                if(state.message.isNotBlank())Text(state.message,Modifier.fillMaxWidth().padding(horizontal=12.dp,vertical=3.dp),color=Green,fontSize=12.sp,lineHeight=17.sp)
                 when(state.route) {
                     "STUDIO","ARRANGE"->GardenStudio(state,onOpen,onSelect,onPlace,onRemove,onTree,onPlant,reducedMotion,active)
                     "SHOP","INVENTORY"->CosmeticCatalog(state,onOpen)
                     else->key(state.route,state.selected) {
                         val scroll=rememberScrollState()
                         Column(Modifier.weight(1f).fillMaxWidth().mintScrollEdges(scroll.canScrollBackward,scroll.canScrollForward)
-                            .verticalScroll(scroll).padding(horizontal=10.dp,vertical=4.dp),verticalArrangement=Arrangement.spacedBy(6.dp)) {
+                            .verticalScroll(scroll).padding(horizontal=24.dp,vertical=12.dp),verticalArrangement=Arrangement.spacedBy(12.dp)) {
                             when(state.route) {
                                 "EXPANSION"->ExpansionContent(state,onAct)
                                 "DETAIL"->CosmeticDetail(state,onOpen,onAct)
@@ -88,121 +88,45 @@ fun LivingGardenScreen(state:LivingGardenUiState,onOpen:(String,String)->Unit,on
 private fun ColumnScope.GardenStudio(state:LivingGardenUiState,onOpen:(String,String)->Unit,onSelect:(String)->Unit,
     onPlace:(Int,String?)->Unit,onRemove:(String)->Unit,onTree:(Long)->Unit,onPlant:(Int)->Unit,
     reducedMotion:Boolean,active:Boolean) {
-    val arranging=state.route=="ARRANGE"
-    val values=if(arranging)state.draft ?: state.snapshot.placements else state.snapshot.placements
-    var moving by rememberSaveable(arranging){mutableStateOf(
-        values.firstOrNull{it.sku==state.selected}?.id.takeIf{arranging && values.count{it.sku==state.selected}>=(state.snapshot.owned[state.selected] ?: 0)})}
     var section by rememberSaveable{mutableIntStateOf(1)}
     val current=state.snapshot.sections.firstOrNull{it.id==section}
-    if(!arranging)Row(Modifier.fillMaxWidth().padding(horizontal=6.dp),horizontalArrangement=Arrangement.spacedBy(4.dp)) {
-        listOf("Sắp xếp" to "ARRANGE","Bách thảo" to "ENCYCLOPEDIA","Diện mạo" to "APPEARANCE","Tiệm" to "SHOP").forEach{(label,route)->
-            GardenPill(label,false,{onOpen(route,"")},Modifier.weight(1f))
+    Column(Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(horizontal=24.dp,vertical=12.dp),verticalArrangement=Arrangement.spacedBy(18.dp)) {
+        GardenScreenIntro(state.snapshot.appearance.nickname,"KHÔNG GIAN CỦA BẠN")
+        GardenNavigationCard("Bách thảo",{onOpen("ENCYCLOPEDIA","")},art=GardenArt.BOOK)
+        Row(Modifier.horizontalScroll(rememberScrollState()),horizontalArrangement=Arrangement.spacedBy(8.dp)){
+            state.snapshot.sections.forEach{s->GardenPill("Khu ${s.id}",section==s.id,{section=s.id},icon=if(s.unlocked)null else Icons.Rounded.Lock)}
         }
-    }
-    Row(Modifier.fillMaxWidth().padding(horizontal=8.dp).horizontalScroll(rememberScrollState()),
-        horizontalArrangement=Arrangement.spacedBy(6.dp),verticalAlignment=Alignment.CenterVertically) {
-        state.snapshot.sections.forEach{s->
-            GardenPill("Khu ${s.id}",section==s.id,{section=s.id},icon=if(s.unlocked) null else Icons.Rounded.Lock)
-        }
-    }
-    if(arranging) {
-        Row(Modifier.fillMaxWidth().padding(horizontal=8.dp).horizontalScroll(rememberScrollState()),
-            horizontalArrangement=Arrangement.spacedBy(5.dp),verticalAlignment=Alignment.CenterVertically) {
-            gardenCosmetics.filter{it.category!="THEME" && (state.snapshot.owned[it.id] ?: 0)>0}.forEach{item->
-                val copies=values.filter{it.sku==item.id}
-                val owned=state.snapshot.owned[item.id] ?: 0
-                GardenPill("${item.name} ×$owned",state.selected==item.id,{
-                    moving=if(copies.size>=owned)copies.firstOrNull()?.id else null
-                    onSelect(item.id)
-                })
-            }
-            GardenCompactAction("Thêm",{onOpen("SHOP","")},icon=Icons.Rounded.Add)
-        }
-        val copies=values.filter{it.sku==state.selected}
-        if(copies.isNotEmpty())Row(Modifier.fillMaxWidth().padding(horizontal=8.dp).horizontalScroll(rememberScrollState()),
-            horizontalArrangement=Arrangement.spacedBy(5.dp),verticalAlignment=Alignment.CenterVertically) {
-            copies.forEach{p->GardenPill(if(p.plotId==0)"Toàn vườn" else "Ô ${p.plotId}",moving==p.id,{moving=p.id},icon=Icons.Rounded.OpenWith)}
-            if(moving!=null)GardenCompactAction("Cất",{moving?.let(onRemove);moving=null},icon=Icons.Rounded.Inventory2)
-            if(copies.size<(state.snapshot.owned[state.selected] ?: 0))GardenCompactAction("Đặt thêm",{moving=null},icon=Icons.Rounded.Add)
-        }
-        if(gardenCosmetics.firstOrNull{it.id==state.selected}?.slot=="AMBIENT")
-            GardenCompactAction("Đặt cho toàn vườn",{onPlace(0,moving);moving=null},Modifier.padding(horizontal=8.dp))
-        GardenCaption(if(moving!=null)"Chọn ô để di chuyển · Hủy bằng nút quay lại" else "Chọn đồ trang trí, rồi chạm ô muốn đặt",
-            Modifier.padding(horizontal=12.dp,vertical=2.dp))
-    }
-    val grid=rememberLazyGridState()
-    val colors=when(state.snapshot.appearance.theme){"theme_stone"->listOf(Color(0xFFF0F2ED),Color(0xFFDDE5DC));"theme_night"->listOf(Color(0xFFDCE9E5),Color(0xFFAFC6BF));else->listOf(Color(0xFFEAF6EB),Color(0xFFD5EBD6))}
-    BoxWithConstraints(Modifier.weight(1f).fillMaxWidth().background(MintDepth.diagonal(colors))) {
-        val columns=if(maxWidth<340.dp || LocalDensity.current.fontScale>1.25f)2 else maxOf(3,(maxWidth.value/120).toInt())
-        LazyVerticalGrid(GridCells.Fixed(columns),Modifier.fillMaxSize().mintScrollEdges(grid.canScrollBackward,grid.canScrollForward),
-            state=grid,contentPadding=PaddingValues(8.dp),horizontalArrangement=Arrangement.spacedBy(6.dp),verticalArrangement=Arrangement.spacedBy(6.dp)) {
-            if(current!=null && !current.unlocked)item(span={GridItemSpan(maxLineSpan)}) {
-                GardenPanel {
-                    Row(verticalAlignment=Alignment.CenterVertically) {
-                        Column(Modifier.weight(1f)){GardenHeading("Khu ${current.id} · 6 ô");GardenCaption("${current.price} xu · Chỉ mở rộng diện tích")}
-                        if(!arranging)GardenCompactAction("Xem mở khu",{onOpen("EXPANSION",current.id.toString())},icon=Icons.Rounded.Add)
-                    }
-                }
-            }
-            items(state.garden.plots.filter{it.id in (current?.plots ?: emptyList())},key={it.id}) { plot->
-                val tree=state.garden.trees.firstOrNull{it.id==plot.treeId}
-                val placed=values.filter{it.plotId==plot.id}
-                val selected=gardenCosmetics.firstOrNull{it.id==(values.firstOrNull{it.id==moving}?.sku ?: state.selected)}
-                val copyAvailable=selected!=null && (moving!=null || values.count{it.sku==selected.id}<(state.snapshot.owned[selected.id] ?: 0))
-                val valid=copyAvailable && selected!=null && selected.slot!="THEME" && plot.isUnlocked &&
-                    (selected.slot!="TREE" || tree?.status?.alive==true) &&
-                    placed.none{it.id!=moving && gardenCosmetics.firstOrNull{g->g.id==it.sku}?.slot==selected.slot}
-                val shape=RoundedCornerShape(12.dp)
-                Column(Modifier.fillMaxWidth().mintDepth(shape,if(arranging && valid)MintDepth.hint else MintDepth.card,2.dp)
-                    .combinedClickable(onClick={
-                        if(arranging) {
-                            if(selected==null && placed.isNotEmpty()){moving=placed.first().id;onSelect(placed.first().sku)}
-                            else {onPlace(plot.id,moving);if(valid)moving=null}
-                        } else if(tree!=null)onTree(tree.id) else if(plot.isUnlocked)onPlant(plot.id)
-                    },onLongClick={
-                        if(!arranging)onOpen("ARRANGE",placed.firstOrNull()?.sku ?: "")
-                        else placed.firstOrNull()?.let{moving=it.id;onSelect(it.sku)}
-                    }).padding(5.dp),horizontalAlignment=Alignment.CenterHorizontally,verticalArrangement=Arrangement.spacedBy(2.dp)) {
-                    Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween,verticalAlignment=Alignment.CenterVertically) {
-                        Text("Ô ${plot.id.toString().padStart(2,'0')}",fontSize=9.sp,lineHeight=12.sp,color=Muted)
-                        if(!plot.isUnlocked)Icon(Icons.Rounded.Lock,null,Modifier.size(11.dp),tint=Muted)
-                        else if(arranging && valid)Icon(Icons.Rounded.AddCircleOutline,null,Modifier.size(12.dp),tint=Green)
-                    }
-                    val ground=placed.firstOrNull{gardenCosmetics.firstOrNull{g->g.id==it.sku}?.slot=="GROUND"}
-                    Box(Modifier.fillMaxWidth().height(40.dp).clip(RoundedCornerShape(8.dp))
-                        .background(if(ground?.sku=="ground_moss")Color(0xFFC5DDB6) else if(ground!=null)Color(0xFFD2E8C2) else Color.Transparent),
-                        contentAlignment=Alignment.Center) {
-                        if(tree!=null)GardenPlantPortrait(tree.speciesId,placed.firstOrNull{it.treeId==tree.id}?.let{p->gardenCosmetics.firstOrNull{it.id==p.sku}?.art} ?: "NONE",
-                            Modifier.fillMaxSize(),withered=!tree.status.alive)
-                        else Icon(if(plot.isUnlocked)Icons.Rounded.Add else Icons.Rounded.Lock,null,Modifier.size(22.dp),tint=Green.copy(alpha=.5f))
-                        if(placed.any{gardenCosmetics.firstOrNull{g->g.id==it.sku}?.slot=="BORDER"})Box(Modifier.matchParentSize().border(1.dp,Color(0xFFA69372),RoundedCornerShape(8.dp)))
-                        placed.firstOrNull{gardenCosmetics.firstOrNull{g->g.id==it.sku}?.slot=="ACCENT"}?.let{p->
-                            gardenCosmetics.firstOrNull{it.id==p.sku}?.let{CosmeticArtwork(it,Modifier.align(Alignment.BottomEnd).size(19.dp))}
+        if(current!=null&&!current.unlocked)GardenPanel{
+            GardenHeading("Khu $section đang khóa")
+            GardenCaption("${current.price} xu · Thêm 6 ô")
+            GardenPaintedButton("Xem mở khu",{onOpen("EXPANSION",section.toString())},Modifier.fillMaxWidth())
+        }else {
+            state.garden.plots.filter{it.id in (current?.plots?:emptyList())}.chunked(2).forEach{row->
+                Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.spacedBy(14.dp)){
+                    row.forEach{plot->
+                        val tree=state.garden.trees.firstOrNull{it.id==plot.treeId}
+                        val placed=state.snapshot.placements.filter{it.plotId==plot.id}
+                        GardenBotanicalFrame(Modifier.weight(1f).clickable{if(tree!=null)onTree(tree.id) else if(plot.isUnlocked)onPlant(plot.id)},contentPadding=PaddingValues(12.dp),cornerSize=20.dp){
+                            Column(Modifier.fillMaxWidth(),verticalArrangement=Arrangement.spacedBy(8.dp)){
+                                GardenCaption(plot.id.toString().padStart(2,'0'))
+                                Box(Modifier.fillMaxWidth().height(84.dp).background(Pale,RoundedCornerShape(14.dp)),contentAlignment=Alignment.Center){
+                                    if(tree!=null)GardenPlantPortrait(tree.speciesId,tree.decoration,Modifier.fillMaxSize(),withered=!tree.status.alive)
+                                    else Icon(if(plot.isUnlocked)Icons.Rounded.Add else Icons.Rounded.Lock,null,tint=Green)
+                                }
+                                Text(tree?.name?:if(plot.isUnlocked)"Gieo cây" else "Chưa mở",color=Deep,fontSize=13.sp,lineHeight=18.sp,fontWeight=FontWeight.SemiBold)
+                                if(tree!=null){MintProgress(tree.status.stageProgress,Modifier.fillMaxWidth());GardenCaption("${tree.status.percentage}%");GardenCaption(tree.status.waterLabel)}
+                                else GardenCaption(if(plot.isUnlocked)"Một khởi đầu mới" else "Ô đang khóa")
+                                if(placed.isNotEmpty())GardenCaption("${placed.size} trang trí")
+                            }
                         }
                     }
-                    val nameHeight=with(LocalDensity.current){24.sp.toDp()}
-                    Box(Modifier.fillMaxWidth().height(nameHeight),contentAlignment=Alignment.Center) {
-                        Text(tree?.name ?: if(plot.isUnlocked)"Ô trống" else "Chưa mở",color=Deep,fontSize=10.sp,lineHeight=12.sp,
-                            fontWeight=FontWeight.SemiBold,maxLines=2,overflow=TextOverflow.Ellipsis,textAlign=TextAlign.Center)
-                    }
-                    if(tree!=null)PlotProgress(tree.status.stageProgress,"${tree.status.percentage}%")
-                    else Spacer(Modifier.height(with(LocalDensity.current){12.sp.toDp()}))
-                    Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(2.dp)) {
-                        Text(tree?.status?.waterLabel ?: if(plot.isUnlocked)"Chạm để gieo" else "Ô đang khóa",Modifier.weight(1f),
-                            color=Muted,fontSize=9.sp,lineHeight=12.sp,maxLines=1,overflow=TextOverflow.Ellipsis)
-                        placed.take(2).forEach{p->gardenCosmetics.firstOrNull{it.id==p.sku}?.let{CosmeticArtwork(it,Modifier.size(9.dp))}}
-                        if(placed.isNotEmpty())Text(placed.size.toString(),fontSize=9.sp,lineHeight=12.sp,color=Green)
-                    }
-                }
-            }
-            item(span={GridItemSpan(maxLineSpan)}) {
-                Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(5.dp)) {
-                    GardenCaption(if(arranging)"Bản nháp · Lưu để áp dụng" else "Nhấn giữ một ô để sắp xếp")
-                    values.filter{it.plotId==0}.forEach{p->gardenCosmetics.firstOrNull{it.id==p.sku}?.let{CosmeticArtwork(it,Modifier.size(14.dp))}}
+                    if(row.size==1)Spacer(Modifier.weight(1f))
                 }
             }
         }
-        if(active && state.snapshot.appearance.particlesEnabled(reducedMotion) && values.any{it.plotId==0})GardenParticles(state.snapshot.appearance.density=="LOW")
+        GardenNavigationCard("Tiệm trang trí",{onOpen("SHOP","")},art=GardenArt.SHOP)
+        GardenNavigationCard("Trang trí của bạn",{onOpen("INVENTORY","")},art=GardenArt.SEED)
+        GardenNavigationCard("Diện mạo",{onOpen("APPEARANCE","")},art=GardenArt.LANTERN)
     }
 }
 
@@ -221,15 +145,20 @@ private fun ColumnScope.GardenStudio(state:LivingGardenUiState,onOpen:(String,St
 }
 
 @Composable private fun ColumnScope.CosmeticCatalog(state:LivingGardenUiState,onOpen:(String,String)->Unit) {
+    Row(Modifier.fillMaxWidth().padding(horizontal=24.dp,vertical=12.dp).background(Pale,RoundedCornerShape(15.dp)).padding(4.dp)) {
+        listOf("SHOP" to "Tiệm trang trí","INVENTORY" to "Đã sở hữu").forEach{(route,label)->
+            Box(Modifier.weight(1f).heightIn(min=48.dp).background(if(state.route==route)Color.White else Pale,RoundedCornerShape(12.dp)).clickable{onOpen(route,"")},contentAlignment=Alignment.Center){Text(label,color=if(state.route==route)Green else Muted,fontSize=12.sp)}
+        }
+    }
     var filter by rememberSaveable{mutableStateOf("ALL")}
     Row(Modifier.fillMaxWidth().padding(horizontal=8.dp).horizontalScroll(rememberScrollState()),horizontalArrangement=Arrangement.spacedBy(5.dp)) {
         (listOf("ALL")+gardenCosmetics.map{it.category}.distinct()).forEach{category->GardenPill(if(category=="ALL")"Tất cả" else categoryName(category),filter==category,{filter=category})}
     }
     val grid=rememberLazyGridState()
     BoxWithConstraints(Modifier.weight(1f)) {
-        val columns=if(maxWidth<340.dp && LocalDensity.current.fontScale>1.2f)2 else maxOf(3,(maxWidth.value/120).toInt())
+        val columns=if(maxWidth>=600.dp)3 else 2
         LazyVerticalGrid(GridCells.Fixed(columns),Modifier.fillMaxSize().mintScrollEdges(grid.canScrollBackward,grid.canScrollForward),state=grid,
-            contentPadding=PaddingValues(8.dp),horizontalArrangement=Arrangement.spacedBy(6.dp),verticalArrangement=Arrangement.spacedBy(6.dp)) {
+            contentPadding=PaddingValues(horizontal=24.dp,vertical=16.dp),horizontalArrangement=Arrangement.spacedBy(12.dp),verticalArrangement=Arrangement.spacedBy(12.dp)) {
             val items=gardenCosmetics.filter{(filter=="ALL" || it.category==filter) && (state.route!="INVENTORY" || (state.snapshot.owned[it.id] ?: 0)>0)}
             items(items,key={it.id}){item->
                 SmallCatalogTile(item.name,if((state.snapshot.owned[item.id] ?: 0)>0)"Sở hữu · ${state.snapshot.owned[item.id]}" else if(item.tier=="Reward")"Quà sưu tầm" else "${item.price} xu",
@@ -240,53 +169,44 @@ private fun ColumnScope.GardenStudio(state:LivingGardenUiState,onOpen:(String,St
     }
 }
 @Composable private fun SmallCatalogTile(name:String,value:String,onClick:()->Unit,art:@Composable (Modifier)->Unit) {
-    Column(Modifier.fillMaxWidth().mintDepth(RoundedCornerShape(12.dp),MintDepth.card,2.dp).clickable(onClick=onClick).padding(5.dp),
-        horizontalAlignment=Alignment.CenterHorizontally,verticalArrangement=Arrangement.spacedBy(2.dp)) {
-        art(Modifier.size(24.dp))
-        val nameHeight=with(LocalDensity.current){22.sp.toDp()}
-        Box(Modifier.fillMaxWidth().height(nameHeight),contentAlignment=Alignment.Center) {
-            Text(name,color=Deep,fontSize=10.sp,lineHeight=11.sp,fontWeight=FontWeight.SemiBold,maxLines=2,overflow=TextOverflow.Ellipsis,textAlign=TextAlign.Center)
+    GardenBotanicalFrame(Modifier.fillMaxWidth().clickable(onClick=onClick),contentPadding=PaddingValues(12.dp),cornerSize=20.dp) {
+        Column(Modifier.fillMaxWidth(),verticalArrangement=Arrangement.spacedBy(10.dp)) {
+            Box(Modifier.fillMaxWidth().height(100.dp).background(Pale,RoundedCornerShape(14.dp)),contentAlignment=Alignment.Center){art(Modifier.size(44.dp))}
+            Text(name,Modifier.heightIn(min=32.dp),color=Deep,fontSize=12.sp,lineHeight=16.sp,fontWeight=FontWeight.SemiBold,maxLines=2,overflow=TextOverflow.Ellipsis)
+            Text(value,color=Green,fontSize=12.sp,lineHeight=18.sp)
         }
-        Text(value,color=Green,fontSize=9.sp,lineHeight=12.sp,fontWeight=FontWeight.Bold,maxLines=1,overflow=TextOverflow.Ellipsis)
     }
 }
 
 @Composable internal fun CosmeticDetail(state:LivingGardenUiState,onOpen:(String,String)->Unit,onAct:(LivingGardenAction)->Unit) {
-    val item=gardenCosmetics.firstOrNull{it.id==state.selected} ?: run{GardenCaption("Vật phẩm chưa được hỗ trợ.");return}
-    val owned=state.snapshot.owned[item.id] ?: 0
-    GardenPanel {
-        Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(10.dp)) {
-            CosmeticArtwork(item,Modifier.size(42.dp))
-            Column(Modifier.weight(1f)){GardenHeading(item.name);GardenCaption("${categoryName(item.category)} · ${item.footprint} · ${item.tier}")}
-            Text(if(item.tier=="Reward")"Quà tặng" else "${item.price} xu",color=Green,fontSize=11.sp,fontWeight=FontWeight.Bold)
-        }
-        Box(Modifier.fillMaxWidth().height(76.dp).background(MintDepth.diagonal(listOf(Color(0xFFEAF2E3),Color(0xFFD4E7CF))),RoundedCornerShape(10.dp)),contentAlignment=Alignment.Center) {
-            GardenPlantPortrait("succulent",if(item.slot=="TREE")item.art else "NONE",Modifier.size(70.dp))
-            if(item.slot!="TREE")CosmeticArtwork(item,Modifier.align(Alignment.BottomEnd).padding(8.dp).size(26.dp))
-        }
-        GardenCaption(when(item.slot){"TREE"->"Một phụ kiện cho mỗi cây còn sống";"AMBIENT","THEME"->"Diện mạo toàn vườn · Chỉ trang trí";else->"Một vị trí ${categoryName(item.slot).lowercase()} trên ô đã mở"})
-        Row(Modifier.fillMaxWidth()) {
-            GardenFact("Đã sở hữu",owned.toString(),Modifier.weight(1f))
-            GardenFact("Đang đặt",state.snapshot.placements.count{it.sku==item.id}.toString(),Modifier.weight(1f))
+    val item=gardenCosmetics.firstOrNull{it.id==state.selected}?:run{GardenCaption("Vật phẩm chưa được hỗ trợ.");return}
+    val owned=state.snapshot.owned[item.id]?:0
+    GardenBotanicalFrame(Modifier.fillMaxWidth(),contentPadding=PaddingValues(28.dp),cornerSize=28.dp,skin=GardenPanelSkin.HINT){
+        Column(Modifier.fillMaxWidth(),horizontalAlignment=Alignment.CenterHorizontally,verticalArrangement=Arrangement.spacedBy(16.dp)){
+            MintStatusPill(categoryName(item.category))
+            CosmeticArtwork(item,Modifier.size(86.dp))
+            Text(item.name,color=Deep,fontSize=26.sp,lineHeight=34.sp,fontWeight=FontWeight.Bold,textAlign=TextAlign.Center)
+            GardenCaption(if(item.tier=="Reward")"Quà sưu tầm" else "${item.price} xu")
         }
     }
-    if(item.tier=="Reward")GardenCaption("Mở khóa qua mục tiêu sưu tầm.")
-    else if(!item.permanent || owned==0) {
+    MintMetricStrip(listOf("Đã sở hữu" to owned.toString(),"Đang đặt" to state.snapshot.placements.count{it.sku==item.id}.toString()))
+    GardenExpandableSection("Vị trí & cách dùng"){
+        GardenCaption("${categoryName(item.category)} · ${item.footprint} · ${item.tier}")
+        GardenCaption("Chỉ trang trí; không đổi tốc độ cây. Mua để cất vào túi.")
+    }
+    if(item.tier=="Reward")GardenNavigationCard("Mở khóa qua sưu tầm",{onOpen("ENCYCLOPEDIA","")})
+    else if(!item.permanent||owned==0){
+        GardenPaintedButton("Mua · ${item.price} xu",{onAct(LivingGardenAction.Buy(item.id,newKey()))},Modifier.fillMaxWidth(),enabled=!state.busy&&state.snapshot.coins>=item.price)
         val days=ceil((item.price-state.snapshot.coins).coerceAtLeast(0)/state.snapshot.earningRate.coerceAtLeast(1.0)).toInt()
-        GardenCaption("Ước tính $days ngày để đủ xu · ${if(state.snapshot.estimatedRate)"tham khảo 40 xu/ngày" else "theo thu nhập 7 ngày"}")
+        GardenCaption("Ước tính $days ngày · ${if(state.snapshot.estimatedRate)"tham khảo 40 xu/ngày" else "theo thu nhập 7 ngày"}")
     }
-    Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.spacedBy(8.dp)) {
-        if(item.tier!="Reward" && (!item.permanent || owned==0))GardenCompactAction("Mua · ${item.price} xu",{onAct(LivingGardenAction.Buy(item.id,newKey()))},
-            Modifier.weight(1f),primary=true,enabled=!state.busy && state.snapshot.coins>=item.price,icon=Icons.Rounded.Add)
-        if(owned>0)GardenCompactAction(if(item.slot=="THEME")"Chọn chủ đề" else "Đặt trong vườn",
-            {onOpen(if(item.slot=="THEME")"APPEARANCE" else "ARRANGE",item.id)},Modifier.weight(1f),primary=true,icon=Icons.Rounded.Check)
-    }
-    GardenCaption("Mua để cất vào túi; di chuyển không mất xu.")
+    if(owned>0&&item.slot=="THEME")GardenPaintedButton("Chọn chủ đề",{onOpen("APPEARANCE",item.id)},Modifier.fillMaxWidth(),primary=false)
 }
 
 @Composable internal fun Encyclopedia(state:LivingGardenUiState,onOpen:(String,String)->Unit) {
     val records=state.snapshot.species
     val discovered=records.count{it.discoveredAt>0}
+    GardenScreenIntro("Mỗi loài, một câu chuyện.")
     GardenPanel {
         Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically) {
             GardenHeading("Bộ sưu tầm",Modifier.weight(1f));Text("$discovered/${catalog.size} · ${discovered*100/catalog.size}%",color=Green,fontSize=11.sp,fontWeight=FontWeight.Bold)
@@ -296,8 +216,8 @@ private fun ColumnScope.GardenStudio(state:LivingGardenUiState,onOpen:(String,St
     }
     BoxWithConstraints(Modifier.fillMaxWidth()) {
         val columns=if(maxWidth<340.dp || LocalDensity.current.fontScale>1.25f)2 else 3
-        Column(verticalArrangement=Arrangement.spacedBy(6.dp)) {
-            catalog.chunked(columns).forEach{row->Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.spacedBy(6.dp)) {
+        Column(verticalArrangement=Arrangement.spacedBy(12.dp)) {
+            catalog.chunked(columns).forEach{row->Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.spacedBy(12.dp)) {
                 row.forEach{s->
                     val r=records.firstOrNull{it.id==s.id} ?: SpeciesRecord(s.id)
                     Box(Modifier.weight(1f)) {
@@ -314,7 +234,7 @@ private fun ColumnScope.GardenStudio(state:LivingGardenUiState,onOpen:(String,St
         GardenHeading("Dấu mốc sưu tầm")
         state.snapshot.goals.forEachIndexed{index,goal->
             if(index>0)HorizontalDivider(color=Green.copy(alpha=.08f))
-            Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(8.dp)) {
+            Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(16.dp)) {
                 val reward=gardenCosmetics.firstOrNull{it.id==goal.reward}
                 if(reward!=null)CosmeticArtwork(reward,Modifier.size(22.dp))
                 else Icon(Icons.Rounded.WorkspacePremium,null,Modifier.size(22.dp),tint=Green)
@@ -333,23 +253,25 @@ private fun ColumnScope.GardenStudio(state:LivingGardenUiState,onOpen:(String,St
 @Composable internal fun SpeciesDetail(state:LivingGardenUiState,onTree:(Long)->Unit,onShop:()->Unit) {
     val s=catalog.firstOrNull{it.id==state.selected} ?: run{GardenCaption("Loài chưa được hỗ trợ.");return}
     val r=state.snapshot.species.firstOrNull{it.id==s.id} ?: SpeciesRecord(s.id)
-    GardenPanel {
-        Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(10.dp)) {
-            if(r.discoveredAt>0)GardenPlantPortrait(s.id,"NONE",Modifier.size(72.dp))
-            else Icon(Icons.Rounded.Spa,null,Modifier.size(54.dp),tint=Green.copy(alpha=.4f))
-            Column(Modifier.weight(1f),verticalArrangement=Arrangement.spacedBy(4.dp)) {GardenHeading(s.name);GardenCaption("${s.tier} · ${r.status}");GardenCaption(s.description)}
+    GardenBotanicalFrame(Modifier.fillMaxWidth(),skin=GardenPanelSkin.HINT,contentPadding=PaddingValues(18.dp),cornerSize=28.dp) {
+        Column(Modifier.fillMaxWidth(),horizontalAlignment=Alignment.CenterHorizontally,verticalArrangement=Arrangement.spacedBy(8.dp)) {
+            MintStatusPill("${s.tier} · ${r.status}")
+            if(r.discoveredAt>0)GardenPlantPortrait(s.id,"NONE",Modifier.fillMaxWidth().height(220.dp))
+            else Box(Modifier.fillMaxWidth().height(220.dp),contentAlignment=Alignment.Center){Icon(Icons.Rounded.Spa,null,Modifier.size(72.dp),tint=Green)}
+            Text(s.name,color=Deep,fontSize=26.sp,lineHeight=34.sp,fontWeight=FontWeight.Bold)
+            GardenCaption(s.description)
         }
     }
-    GardenPanel {
+    Column(verticalArrangement=Arrangement.spacedBy(12.dp)) {
         Row(Modifier.fillMaxWidth()){GardenHeading("Các giai đoạn",Modifier.weight(1f));GardenCaption("${(r.highestStage+1).coerceAtLeast(0)}/${s.formCount}")}
-        val columns=if(LocalDensity.current.fontScale>1.2f)3 else 4
+        val columns=3
         s.profile.stageThresholds.indices.toList().chunked(columns).forEach{row->
             Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.spacedBy(5.dp)) {
                 row.forEach{index->
                     Column(Modifier.weight(1f).background(if(index<=r.highestStage)Color(0xFFEDF5E9) else Color(0xFFF0F4EF),RoundedCornerShape(9.dp))
                         .padding(vertical=4.dp),horizontalAlignment=Alignment.CenterHorizontally,verticalArrangement=Arrangement.spacedBy(2.dp)) {
-                        if(index<=r.highestStage)GardenPlantPortrait(s.id,"NONE",Modifier.size(32.dp))
-                        else Box(Modifier.size(32.dp),contentAlignment=Alignment.Center){Icon(Icons.Rounded.Lock,null,Modifier.size(14.dp),tint=Muted.copy(alpha=.55f))}
+                        if(index<=r.highestStage)GardenPlantPortrait(s.id,"NONE",Modifier.size(64.dp))
+                        else Box(Modifier.size(64.dp),contentAlignment=Alignment.Center){Icon(Icons.Rounded.Lock,null,Modifier.size(14.dp),tint=Muted.copy(alpha=.55f))}
                         Text((index+1).toString(),color=Muted,fontSize=9.sp,lineHeight=12.sp)
                     }
                 };repeat(columns-row.size){Spacer(Modifier.weight(1f))}
@@ -357,24 +279,15 @@ private fun ColumnScope.GardenStudio(state:LivingGardenUiState,onOpen:(String,St
         }
     }
     GardenPanel {
-        GardenHeading("Ghi chép cá nhân")
-        Row(Modifier.fillMaxWidth()) {
-            GardenFact("Đã trồng","${r.planted} cây",Modifier.weight(1f))
-            GardenFact("Trong túi","${r.ownedSeeds} hạt",Modifier.weight(1f))
-            GardenFact("Đang sống","${r.living} cây",Modifier.weight(1f))
+        listOf("Đã trồng" to r.planted.toString(),"Trong túi" to r.ownedSeeds.toString(),"Đang sống" to r.living.toString(),"Trồng đầu tiên" to dateLabel(r.firstPlanted),"Trưởng thành đầu" to dateLabel(r.firstMatured),"Cây cao nhất đang sống" to if(r.tallestStage>=0)"${r.tallestStage+1}/${s.formCount}" else "Chưa ghi nhận").forEachIndexed{index,(label,value)->
+            if(index>0)HorizontalDivider(color=Color(0xFFE4E7DC))
+            Row(Modifier.fillMaxWidth().padding(vertical=8.dp),horizontalArrangement=Arrangement.spacedBy(12.dp)){Text(label,Modifier.weight(1f),color=Muted,fontSize=12.sp);Text(value,color=Deep,fontSize=12.sp)}
         }
-        HorizontalDivider(color=Green.copy(alpha=.08f))
-        Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.spacedBy(8.dp)) {
-            GardenFact("Trồng đầu tiên",dateLabel(r.firstPlanted),Modifier.weight(1f))
-            GardenFact("Trưởng thành đầu",dateLabel(r.firstMatured),Modifier.weight(1f))
-        }
-        GardenCaption(if(r.tallestStage>=0)"Cây cao nhất đang sở hữu · giai đoạn ${r.tallestStage+1}/${s.formCount}" else "Chưa có cây sống đang sở hữu")
     }
-    GardenCaption("Bình tưới: 8 / 12 / 18 / 24 giờ · Phân bón dùng khi cây đang lớn và đã tưới; không cộng dồn.")
-    FlowRow(horizontalArrangement=Arrangement.spacedBy(6.dp)) {
-        state.garden.trees.filter{it.speciesId==s.id}.forEach{tree->GardenCompactAction(tree.name,{onTree(tree.id)},icon=Icons.Rounded.Park)}
-        GardenCompactAction("Tìm hạt",onShop,primary=true,icon=Icons.Rounded.Storefront)
-    }
+    GardenExpandableSection("Chăm sóc loài"){GardenCaption("Bình tưới: 8 / 12 / 18 / 24 giờ · Phân bón dùng khi cây đang lớn và đã tưới; không cộng dồn.")}
+    state.garden.trees.filter{it.speciesId==s.id}.forEach{tree->GardenNavigationCard(tree.name,{onTree(tree.id)})}
+    GardenPaintedButton("Tìm hạt",onShop,Modifier.fillMaxWidth())
+
 }
 
 @Composable internal fun AppearanceContent(state:LivingGardenUiState,reducedMotion:Boolean,onReducedMotion:(Boolean)->Unit,
@@ -384,76 +297,89 @@ private fun ColumnScope.GardenStudio(state:LivingGardenUiState,onOpen:(String,St
     var theme by rememberSaveable{mutableStateOf(initial.theme)}
     var density by rememberSaveable{mutableStateOf(initial.density)}
     var battery by rememberSaveable{mutableStateOf(initial.batterySaver)}
+    GardenCaption("Từ ${dateLabel(initial.createdAt)}")
+    GardenTextField(nickname,{nickname=it.take(40)},"Tên vườn")
+    MintMetricStrip(listOf("Loài cây" to state.garden.trees.map{it.speciesId}.distinct().size.toString(),"Trưởng thành" to state.garden.trees.count{it.status.state==TreeGrowthState.MATURE}.toString(),"Trang trí" to state.snapshot.placements.size.toString()))
+    GardenChoice("Chủ đề",theme,(listOf("MEADOW" to "Đồng cỏ")+gardenCosmetics.filter{it.category=="THEME"}.map{it.id to it.name}),{theme=it}){it=="MEADOW"||(state.snapshot.owned[it]?:0)>0}
+    GardenChoice("Hạt bay",density,listOf("OFF" to "Tắt","LOW" to "Ít","NORMAL" to "Vừa"),{density=it})
     GardenPanel {
-        GardenHeading("Khu vườn của bạn")
-        GardenTextField(nickname,{nickname=it.take(40)},"Tên vườn")
-        Row(Modifier.fillMaxWidth()) {
-            GardenFact("Loài cây",state.garden.trees.map{it.speciesId}.distinct().size.toString(),Modifier.weight(1f))
-            GardenFact("Trưởng thành",state.garden.trees.count{it.status.state==TreeGrowthState.MATURE}.toString(),Modifier.weight(1f))
-            GardenFact("Trang trí",state.snapshot.placements.size.toString(),Modifier.weight(1f))
-        }
-        GardenCaption("Từ ${dateLabel(initial.createdAt)}")
-    }
-    GardenPanel {
-        GardenHeading("Chủ đề")
-        FlowRow(horizontalArrangement=Arrangement.spacedBy(5.dp)) {
-            (listOf("MEADOW")+gardenCosmetics.filter{it.category=="THEME"}.map{it.id}).forEach{id->
-                val owned=id=="MEADOW" || (state.snapshot.owned[id] ?: 0)>0
-                GardenPill(if(id=="MEADOW")"Đồng cỏ" else gardenCosmetics.first{it.id==id}.name,theme==id,{theme=id},
-                    enabled=owned,icon=if(!owned)Icons.Rounded.Lock else null)
-            }
-        }
-        HorizontalDivider(color=Green.copy(alpha=.08f))
-        GardenHeading("Hạt bay")
-        Row(horizontalArrangement=Arrangement.spacedBy(5.dp)) {
-            listOf("OFF" to "Tắt","LOW" to "Ít","NORMAL" to "Vừa").forEach{(id,name)->GardenPill(name,density==id,{density=id})}
-        }
         SettingToggle("Tiết kiệm pin",battery,{battery=it},Icons.Rounded.BatterySaver)
+        HorizontalDivider(color=Color(0xFFE4E7DC))
         SettingToggle("Giảm chuyển động",reducedMotion,onReducedMotion,Icons.Rounded.MotionPhotosOff)
-        GardenCaption("Giảm chuyển động hoặc tiết kiệm pin sẽ tắt hạt bay. Âm thanh đang tắt.")
     }
-    Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.spacedBy(8.dp)) {
-        GardenCompactAction("Lưu diện mạo",{onAct(LivingGardenAction.Appearance(initial.copy(nickname=nickname,theme=theme,density=density,batterySaver=battery,muted=true)))},
-            Modifier.weight(1f),primary=true,enabled=!state.busy && nickname.isNotBlank(),icon=Icons.Rounded.Check)
-        GardenCompactAction("Kỷ niệm",onMemories,Modifier.weight(1f),icon=Icons.Rounded.History)
+    GardenCaption("Giảm chuyển động hoặc tiết kiệm pin tắt hạt bay. Âm thanh tắt.")
+    GardenPaintedButton("Lưu diện mạo",{onAct(LivingGardenAction.Appearance(initial.copy(nickname=nickname,theme=theme,density=density,batterySaver=battery,muted=true)))},Modifier.fillMaxWidth(),enabled=!state.busy&&nickname.isNotBlank())
+    GardenNavigationCard("Kỷ niệm",onMemories,art=GardenArt.JOURNAL)
+}
+
+@Composable private fun GardenChoice(label:String,value:String,options:List<Pair<String,String>>,onChange:(String)->Unit,enabled:(String)->Boolean={true}) {
+    var expanded by remember{mutableStateOf(false)}
+    Column(verticalArrangement=Arrangement.spacedBy(6.dp)) {
+        GardenCaption(label)
+        Box {
+            GardenPaintedButton((options.firstOrNull{it.first==value}?.second?:value)+"  ⌄",{expanded=true},Modifier.fillMaxWidth(),primary=false)
+            DropdownMenu(expanded,{expanded=false}){options.forEach{(id,name)->DropdownMenuItem(text={Text(name)},onClick={onChange(id);expanded=false},enabled=enabled(id))}}
+        }
     }
 }
 @Composable private fun SettingToggle(label:String,checked:Boolean,onChecked:(Boolean)->Unit,icon:androidx.compose.ui.graphics.vector.ImageVector) {
     Row(Modifier.fillMaxWidth().heightIn(min=48.dp).clickable{onChecked(!checked)},verticalAlignment=Alignment.CenterVertically,
-        horizontalArrangement=Arrangement.spacedBy(8.dp)) {
+        horizontalArrangement=Arrangement.spacedBy(16.dp)) {
         Icon(icon,null,Modifier.size(16.dp),tint=Green)
-        Text(label,Modifier.weight(1f),color=Deep,fontSize=11.sp,lineHeight=15.sp)
+        Text(label,Modifier.weight(1f),color=Deep,fontSize=13.sp,lineHeight=19.sp)
         Switch(checked,onChecked,Modifier.graphicsLayer(scaleX=.75f,scaleY=.75f),
             colors=SwitchDefaults.colors(checkedTrackColor=Green,uncheckedTrackColor=Color(0xFFDCE9DF),uncheckedBorderColor=Color(0xFFB7CFC0)))
     }
 }
 @Composable private fun ExpansionContent(state:LivingGardenUiState,onAct:(LivingGardenAction)->Unit) {
     val section=state.snapshot.sections.firstOrNull{it.id==state.selected.toIntOrNull()} ?: return
-    GardenPanel {
-        Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(8.dp)) {
-            Icon(Icons.Rounded.GridView,null,Modifier.size(24.dp),tint=Green)
-            Column(Modifier.weight(1f)){GardenHeading("Khu vườn ${section.id}");GardenCaption("Thêm 6 ô · Giữ nguyên cây hiện có")}
-        }
-        Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.spacedBy(5.dp)) {
-            section.plots.forEach{id->Box(Modifier.weight(1f).height(34.dp).background(Color(0xFFEDF5E9),RoundedCornerShape(7.dp)),contentAlignment=Alignment.Center){
-                Text(id.toString().padStart(2,'0'),color=Muted,fontSize=10.sp)
-            }}
-        }
-        Row(Modifier.fillMaxWidth()) {
-            GardenFact("Giá mở khu","${section.price} xu",Modifier.weight(1f))
-            GardenFact("Ví hiện tại","${state.snapshot.coins} xu",Modifier.weight(1f))
-        }
-        GardenCompactAction("Mở khu · ${section.price} xu",{onAct(LivingGardenAction.Expand(section.id,newKey()))},Modifier.align(Alignment.End),
-            primary=true,enabled=!state.busy && !section.unlocked && state.snapshot.coins>=section.price,icon=Icons.Rounded.Add)
-        if(state.snapshot.coins<section.price)GardenCaption("Cần thêm ${section.price-state.snapshot.coins} xu")
+    Column(Modifier.fillMaxWidth().padding(vertical=24.dp),horizontalAlignment=Alignment.CenterHorizontally,verticalArrangement=Arrangement.spacedBy(10.dp)) {
+        Icon(Icons.Rounded.GridView,null,Modifier.size(44.dp),tint=Green)
+        Text("Khu vườn ${section.id}",color=Deep,fontSize=26.sp,lineHeight=34.sp,fontWeight=FontWeight.Bold)
+        GardenCaption("Thêm 6 ô · Giữ nguyên cây hiện có")
     }
+    section.plots.chunked(3).forEach{row->Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.spacedBy(10.dp)){row.forEach{id->
+        GardenBotanicalFrame(Modifier.weight(1f),contentPadding=PaddingValues(18.dp),cornerSize=18.dp){Text(id.toString(),Modifier.fillMaxWidth(),textAlign=TextAlign.Center,color=Deep,fontSize=14.sp)}
+    }}}
+    MintMetricStrip(listOf("Giá mở khu" to "${section.price} xu","Ví hiện tại" to "${state.snapshot.coins} xu"))
+    GardenPaintedButton("Mở khu · ${section.price} xu",{onAct(LivingGardenAction.Expand(section.id,newKey()))},Modifier.fillMaxWidth(),enabled=!state.busy&&!section.unlocked&&state.snapshot.coins>=section.price)
+    if(state.snapshot.coins<section.price)GardenCaption("Cần thêm ${section.price-state.snapshot.coins} xu")
 }
 
 @Preview(name="Compact appearance · owner refresh",widthDp=360,heightDp=620,device="spec:width=360dp,height=620dp,dpi=160")
 @Composable fun CompactAppearanceOwnerPreview() {
-    MamXanhPreviewTheme {ProvideTextStyle(TextStyle(fontSize=11.sp,lineHeight=15.sp)) {
-        Column(Modifier.fillMaxWidth().padding(10.dp),verticalArrangement=Arrangement.spacedBy(6.dp)) {
+    MamXanhPreviewTheme {ProvideTextStyle(TextStyle(fontSize=13.sp,lineHeight=19.sp)) {
+        Column(Modifier.fillMaxWidth().padding(10.dp),verticalArrangement=Arrangement.spacedBy(12.dp)) {
             AppearanceContent(LivingGardenUiState(loading=false),false,{}, {}, {})
         }
     }}
 }
+
+private fun webComparisonGardenState()=LivingGardenUiState(loading=false,route="STUDIO",selected="accent_lantern",
+ snapshot=LivingGardenSnapshot(coins=620,owned=mapOf("accent_lantern" to 1),species=listOf(SpeciesRecord("cherry",discoveredAt=1,highestStage=3,planted=1,firstPlanted=1793494800000,ownedSeeds=2,living=1,tallestStage=3),SpeciesRecord("pine",discoveredAt=1,highestStage=2,planted=1,living=1),SpeciesRecord("succulent",discoveredAt=1,highestStage=5,planted=1,firstMatured=1)),sections=(1..4).map{GardenSection(it,((it-1)*6+1..it*6).toList(),it==1,5400)}),
+ garden=Garden(trees=listOf(Tree(1,"cherry","Đào hồng xuân",45,"2026-11-01",status=TreeStatus(stageIndex=3,stageCount=9,stageProgress=.46f)),Tree(2,"pine","Thông nhỏ",24,"2026-11-04")),plots=(1..24).map{GardenPlot(it,it<=5,if(it<=2)it.toLong()else null)}))
+@Preview(widthDp=414,heightDp=1000,device="spec:width=414dp,height=1000dp,dpi=160")
+@Composable
+fun StudioWebDesignPreview(){MamXanhPreviewTheme{LivingGardenScreen(webComparisonGardenState(),{_,_->},{},{},{_,_->},{},{},{},{},{},{},{},false,{},true)}}
+@Preview(widthDp=414,heightDp=1000,device="spec:width=414dp,height=1000dp,dpi=160")
+@Composable
+fun CosmeticWebDesignPreview(){MamXanhPreviewTheme{MintBackdrop{Column(Modifier.padding(24.dp),verticalArrangement=Arrangement.spacedBy(18.dp)){CosmeticDetail(webComparisonGardenState(),{_,_->},{})}}}}
+
+
+@Preview(widthDp=414,heightDp=1400,device="spec:width=414dp,height=1400dp,dpi=160")
+@Composable fun DecorShopWebDesignPreview(){MamXanhPreviewTheme{LivingGardenScreen(webComparisonGardenState().copy(route="SHOP",selected=""),{_,_->},{},{},{_,_->},{},{},{},{},{},{},{},false,{},true)}}
+
+@Preview(widthDp=414,heightDp=1400,device="spec:width=414dp,height=1400dp,dpi=160")
+@Composable fun DecorInventoryWebDesignPreview(){MamXanhPreviewTheme{LivingGardenScreen(webComparisonGardenState().copy(route="INVENTORY",selected=""),{_,_->},{},{},{_,_->},{},{},{},{},{},{},{},false,{},true)}}
+
+@Preview(widthDp=414,heightDp=1400,device="spec:width=414dp,height=1400dp,dpi=160")
+@Composable fun EncyclopediaWebDesignPreview(){MamXanhPreviewTheme{LivingGardenScreen(webComparisonGardenState().copy(route="ENCYCLOPEDIA",selected=""),{_,_->},{},{},{_,_->},{},{},{},{},{},{},{},false,{},true)}}
+
+@Preview(widthDp=414,heightDp=1400,device="spec:width=414dp,height=1400dp,dpi=160")
+@Composable fun SpeciesWebDesignPreview(){MamXanhPreviewTheme{LivingGardenScreen(webComparisonGardenState().copy(route="SPECIES",selected="cherry"),{_,_->},{},{},{_,_->},{},{},{},{},{},{},{},false,{},true)}}
+
+@Preview(widthDp=414,heightDp=1400,device="spec:width=414dp,height=1400dp,dpi=160")
+@Composable fun AppearanceWebDesignPreview(){MamXanhPreviewTheme{LivingGardenScreen(webComparisonGardenState().copy(route="APPEARANCE",selected=""),{_,_->},{},{},{_,_->},{},{},{},{},{},{},{},false,{},true)}}
+
+@Preview(widthDp=414,heightDp=1400,device="spec:width=414dp,height=1400dp,dpi=160")
+@Composable fun ExpansionWebDesignPreview(){MamXanhPreviewTheme{LivingGardenScreen(webComparisonGardenState().copy(route="EXPANSION",selected="2"),{_,_->},{},{},{_,_->},{},{},{},{},{},{},{},false,{},true)}}

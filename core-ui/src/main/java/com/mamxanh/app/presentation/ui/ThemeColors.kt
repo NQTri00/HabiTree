@@ -1,24 +1,28 @@
 package com.mamxanh.app.presentation.ui
 import androidx.compose.ui.graphics.Color
 import androidx.compose.material3.lightColorScheme
+import androidx.compose.ui.unit.dp
 
-val Green = Color(0xFF356B45)
-val Deep = Color(0xFF203D2B)
-val Pale = Color(0xFFE6F1E5)
-val Cream = Color(0xFFF7F6EE)
-val Gold = Color(0xFFFFE8A8)
-val Muted = Color(0xFF718075)
+val Green = Color(0xFF315C3C)
+val Deep = Color(0xFF23382B)
+val Pale = Color(0xFFEBF0DF)
+val Cream = Color(0xFFF7F8F2)
+val Gold = Color(0xFFF3E8C9)
+val Muted = Color(0xFF626B60)
 
 val GardenColorScheme = lightColorScheme(
-    primary = Color(0xFF08753D), onPrimary = Color.White,
-    secondary = Color(0xFF5A9B35), onSecondary = Color.White,
-    tertiary = Color(0xFF467F63), background = Color(0xFFE9F7F2), onBackground = Deep,
-    surface = Color(0xFFF9FDFB), onSurface = Deep,
-    surfaceVariant = Color(0xFFE5F1E9), onSurfaceVariant = Muted,
+    primary = Color(0xFF315C3C), onPrimary = Color.White,
+    primaryContainer = Pale, onPrimaryContainer = Deep,
+    secondary = Green, onSecondary = Color.White,
+    secondaryContainer = Pale, onSecondaryContainer = Deep,
+    tertiaryContainer = Gold, onTertiaryContainer = Deep,
+    tertiary = Color(0xFF467F63), background = Color(0xFFF7F8F2), onBackground = Deep,
+    surface = Color(0xFFFFFFFF), onSurface = Deep,
+    surfaceVariant = Color(0xFFEBF0DF), onSurfaceVariant = Muted,
     surfaceContainerLowest = Color.White, surfaceContainerLow = Color(0xFFF5FBF7),
     surfaceContainer = Color(0xFFF0F8F3), surfaceContainerHigh = Color(0xFFEDF6F0),
-    surfaceContainerHighest = Color(0xFFE5F1E9),
-    outline = Color(0xFF9DB8A9), outlineVariant = Color(0xFFD3E3D9)
+    surfaceContainerHighest = Color(0xFFEBF0DF),
+    outline = Color(0xFF9DB8A9), outlineVariant = Color(0xFFE4E7DC)
 )
 
 // Farm Concept Colors (Image 1)
@@ -54,3 +58,5 @@ val ShopPriceGold = Color(0xFFFDB737)
 val AwningRed = Color(0xFFE68172)
 val AwningCream = Color(0xFFFFF6EB)
 
+
+val GardenShapes = androidx.compose.material3.Shapes(small=androidx.compose.foundation.shape.RoundedCornerShape(24.dp))

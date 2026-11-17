@@ -22,14 +22,7 @@ import com.mamxanh.app.presentation.ui.*
 /** Content-sized mint material, independent of document height and bitmap aspect ratio. */
 @Composable
 fun MintBackdrop(modifier: Modifier = Modifier, content: @Composable BoxScope.() -> Unit) {
-    Box(modifier.drawWithCache {
-        val base = MintDepth.diagonal(listOf(Color(0xFFF0FBF5), Color(0xFFC9E7D7), Color(0xFFE6F3DF)))
-        val daylight = Brush.radialGradient(listOf(Color.White.copy(alpha = .72f), Color.Transparent),
-            center = Offset(size.width * .12f, size.height * .08f), radius = size.maxDimension * .65f)
-        val warmth = Brush.radialGradient(listOf(Color(0xFFFFF1CE).copy(alpha = .38f), Color.Transparent),
-            center = Offset(size.width, size.height * .8f), radius = size.maxDimension * .55f)
-        onDrawBehind { drawRect(base); drawRect(daylight); drawRect(warmth) }
-    }, content = content)
+    Box(modifier.background(Cream), content = content)
 }
 
 @Composable
@@ -48,8 +41,8 @@ fun MintHeader(title: String, coins: Int, modifier: Modifier = Modifier) {
 @Composable
 fun MintProgress(value: Float, modifier: Modifier = Modifier) {
     LinearProgressIndicator(progress = { value.coerceIn(0f, 1f) },
-        modifier = modifier.height(8.dp).clip(RoundedCornerShape(50)),
-        color = Color(0xFF8BD329), trackColor = Color(0xFFBCD5C6), drawStopIndicator = {})
+        modifier = modifier.height(5.dp).clip(RoundedCornerShape(50)),
+        color = Color(0xFF315C3C), trackColor = Color(0xFFD8DFCE), drawStopIndicator = {})
 }
 
 @Composable

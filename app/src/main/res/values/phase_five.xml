@@ -3,8 +3,8 @@
     <string name="data_title">Dữ liệu &amp; ứng dụng</string>
     <string name="data_back">Quay lại tùy chọn</string>
     <string name="data_backup">Sao lưu</string>
-    <string name="data_export">Xuất bản sao</string>
-    <string name="data_import">Khôi phục từ tệp</string>
+    <string name="data_export">Xuất tệp</string>
+    <string name="data_import">Khôi phục</string>
     <string name="data_recover">Bản an toàn gần nhất</string>
     <string name="data_warning">Bản sao không mã hóa, có thể chứa lịch sử và ghi chú riêng tư. Chỉ chia sẻ với người bạn tin cậy.</string>
     <string name="data_replace">Thay toàn bộ dữ liệu</string>

@@ -73,12 +73,6 @@ fun MamXanhApp(
     }
     val context = androidx.compose.ui.platform.LocalContext.current
     val engagement by engagementVm.state.collectAsStateWithLifecycle()
-    var permissionExplanation by remember { mutableStateOf(false) }
-    val requestPrefs=remember(context){context.getSharedPreferences("engagement_permissions",android.content.Context.MODE_PRIVATE)}
-    val permission=androidx.activity.compose.rememberLauncherForActivityResult(
-        androidx.activity.result.contract.ActivityResultContracts.RequestPermission()) { granted ->
-        appVm.dispatch(AppIntent.ShowMessage(if(granted)"Đã bật quyền thông báo" else "Thông báo đang tắt. Việc và bộ đếm vẫn hoạt động."))
-    }
     LaunchedEffect(tasks.tasks,engagement.snapshot.settings,engagement.snapshot.reminders,
         gardenState.garden.trees.map{Triple(it.id,it.status.wateredUntil,it.status.alive)}) {
         kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
@@ -201,82 +195,9 @@ fun MamXanhApp(
         }
     }
 
-    val canGoBack = living.route.isNotBlank() || engagement.route.isNotBlank() || app.inventoryOpen || app.selectedTreeId != null || app.backStack.isNotEmpty()
-    BackHandler(enabled = canGoBack) {
-        if(living.route=="ARRANGE")livingVm.cancel()
-        else if(living.route.isNotBlank())livingVm.back()
-        else if(engagement.route=="DATA")engagementVm.open("SETTINGS")
-        else if(engagement.route.isNotBlank())engagementVm.open("")
-        else if (app.inventoryOpen) appVm.dispatch(AppIntent.Back)
-        else if (app.selectedTreeId != null) treeVm.dispatch(TreeIntent.Back) else appVm.dispatch(AppIntent.Back)
-    }
-    if(permissionExplanation) {
-        val activity=context as? android.app.Activity
-        val granted=android.os.Build.VERSION.SDK_INT<33 ||
-            context.checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS)==android.content.pm.PackageManager.PERMISSION_GRANTED
-        val rationale=android.os.Build.VERSION.SDK_INT>=33 &&
-            activity?.shouldShowRequestPermissionRationale(android.Manifest.permission.POST_NOTIFICATIONS)==true
-        val settings=granted || requestPrefs.getBoolean("requested",false) && !rationale
-        com.mamxanh.app.presentation.ui.components.MintDialog("Nhắc việc tùy chọn",
-            {permissionExplanation=false},if(settings)"Mở cài đặt" else "Tiếp tục",{
-                permissionExplanation=false
-                if(settings)context.startActivity(android.content.Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                    android.net.Uri.fromParts("package",context.packageName,null)))
-                else {
-                    requestPrefs.edit().putBoolean("requested",true).apply()
-                    if(android.os.Build.VERSION.SDK_INT>=33)permission.launch(android.Manifest.permission.POST_NOTIFICATIONS)
-                }
-            }) {
-            Text("Thông báo chỉ nhắc những việc bạn đã chọn, tôn trọng giờ yên lặng và có thể tắt bất cứ lúc nào. Từ chối vẫn dùng được mọi việc và phiên tập trung.")
-        }
-    }
-    MamXanhAppContent(
-        state = app,
-        dashboard = dashboard,
-        tasks = tasks,
-        garden = gardenState,
-        shop = walletState,
-        stats = statistics,
-        treeState = treeState,
-        onAppIntent = appVm::dispatch,
-        onHomeIntent = homeVm::dispatch,
-        onTasksIntent = tasksVm::dispatch,
-        onGardenIntent = gardenVm::dispatch,
-        onShopIntent = shopVm::dispatch,
-        onStatsIntent = statsVm::dispatch,
-        onTreeIntent = treeVm::dispatch,
-        onEngagement = engagementVm::open,
-        onDiscoveredSpecies=livingVm::discover,
-        onLiving={route,id->
-            if(route.isNotBlank())engagementVm.open("")
-            livingVm.open(route,id)
-        },
-        livingContent=if(living.route.isBlank())null else { contentModifier->
-            LivingGardenScreen(living,livingVm::open,livingVm::act,livingVm::select,livingVm::place,livingVm::remove,
-                livingVm::undo,livingVm::save,livingVm::cancel,
-                onTree={livingVm.open("");appVm.dispatch(AppIntent.OpenTree(it))},
-                onSeedShop={livingVm.open("");shopVm.dispatch(ShopIntent.SetFilter(ShopFilter.SEEDS));appVm.dispatch(AppIntent.Navigate(AppDestination.SHOP))},
-                onMemories={livingVm.open("");engagementVm.open("TIMELINE")},
-                reducedMotion=engagement.snapshot.settings.reducedMotion,
-                onReducedMotion={engagementVm.act(com.mamxanh.shared.model.EngagementAction.Settings(engagement.snapshot.settings.copy(reducedMotion=it)))},
-                active=livingActive,modifier=contentModifier,onBack=livingVm::back,
-                onPlant={plot->livingVm.open("");appVm.dispatch(AppIntent.OpenInventory(plot))})
-        },
-        hideNavigation=engagement.route in setOf("ONBOARD","DATA"),
-        reducedMotion=engagement.snapshot.settings.reducedMotion,
-        engagementContent=if(engagement.route.isBlank())null else { contentModifier ->
-            if(engagement.route=="DATA")DataSettingsScreen(storage,
-                onBack={engagementVm.open("SETTINGS")},
-                onReplaced={livingVm.resetAfterRestore();appVm.resetAfterRestore()},
-                modifier=contentModifier)
-            else EngagementScreen(engagement,engagementVm::open,engagementVm::act,engagementVm::adjust,
-                onPermission={permissionExplanation=true},
-                onEntity={event->
-                    if(event.type.startsWith("TREE") && gardenState.garden.trees.any{it.id==event.entity}) {
-                        engagementVm.open("");appVm.dispatch(AppIntent.OpenTree(event.entity))
-                    } else if(!event.type.startsWith("TREE") && tasks.tasks.any{it.id==event.entity})engagementVm.open("INSIGHTS",event.entity)
-                    else appVm.dispatch(AppIntent.ShowMessage("Mục này đã được lưu trong lịch sử."))
-                },onDismissMessage=engagementVm::dismissMessage,modifier=contentModifier)
-        }
-    )
+    com.mamxanh.app.presentation.bio.BioNativeHost(storage,
+        externalTree=app.selectedTreeId,externalRoute=engagement.route,externalTask=engagement.selectedTask,onExternalHandled={
+            if(app.selectedTreeId!=null)appVm.dispatch(AppIntent.Back)
+            if(engagement.route.isNotBlank())engagementVm.open("")
+        })
 }

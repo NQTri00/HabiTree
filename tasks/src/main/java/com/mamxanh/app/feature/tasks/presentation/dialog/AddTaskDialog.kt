@@ -39,9 +39,8 @@ fun AddTaskDialog(onDismiss: ()->Unit,onSave: (TaskConfig)->Unit,
                         if(error.isEmpty())onSave(c)
 
     },cancelLabel="Hủy") {
-                    Text("Việc mới là tùy chọn hôm nay. Thay đổi lịch áp dụng từ ngày mai; lịch sử được giữ lại.")
+                    Text("Việc mới là tùy chọn hôm nay. Lịch mới từ ngày mai.",color=com.mamxanh.app.presentation.ui.Muted)
                     TaskInput(values[0],{update(0,it.take(100))},"Tên việc (1–100)",Modifier.fillMaxWidth())
-                    TaskInput(values[3],{update(3,it.take(500))},"Mô tả (tối đa 500)",Modifier.fillMaxWidth())
                     TaskChoices("Loại",listOf("HABIT" to "Thói quen","DAILY" to "Hằng ngày","TODO" to "Một lần"),values[1]){update(1,it)}
                     TaskChoices("Nhóm",listOf("Học tập","Sức khỏe","Nếp sống","Việc nhà","Cá nhân").map{it to it},values[2]){update(2,it)}
                     if(values[1]!="TODO") {
@@ -59,11 +58,14 @@ fun AddTaskDialog(onDismiss: ()->Unit,onSave: (TaskConfig)->Unit,
                     } else TaskInput(values[6],{update(6,it)},"Hạn chót (YYYY-MM-DD, tùy chọn)",Modifier.fillMaxWidth())
                     TaskChoices("Xác nhận",listOf("CLICK" to "Click","TIMER" to "Timer"),values[7]){update(7,it)}
                     if(values[7]=="TIMER")TaskInput(values[8],{update(8,it.filter(Char::isDigit).take(3))},"Phút hoạt động (5–240)",Modifier.fillMaxWidth())
+                    GardenExpandableSection("Thêm chi tiết") {
+                    TaskInput(values[3],{update(3,it.take(500))},"Mô tả (tối đa 500)",Modifier.fillMaxWidth())
                     Text("Khung giờ tùy chọn · HH:mm. Kết thúc sớm hơn bắt đầu nghĩa là qua đêm.")
                     TaskInput(values[9],{update(9,it)},"Bắt đầu (HH:mm)",Modifier.fillMaxWidth())
                     TaskInput(values[10],{update(10,it)},"Kết thúc (HH:mm)",Modifier.fillMaxWidth())
                     TaskInput(values[11],{update(11,it)},"Nhắc việc (HH:mm, tùy chọn)",Modifier.fillMaxWidth())
                     Text("Thông báo cần quyền hệ thống; từ chối quyền vẫn lưu được việc.")
+                    }
                     Text("Thưởng: ${Balance.reward(values[7],values[8].toIntOrNull() ?: 5)} xu · Tổng tối đa ${Balance.DAILY_CAP} xu/ngày")
                     if(error.isNotEmpty())Text(error,color=MaterialTheme.colorScheme.error)
     }
@@ -94,3 +96,5 @@ private fun TaskChoices(title: String,options: List<Pair<String,String>>,value: 
         }
     }
 }
+@androidx.compose.ui.tooling.preview.Preview(widthDp=414,heightDp=1100,device="spec:width=414dp,height=1100dp,dpi=160")
+@Composable fun TaskFormWebDesignPreview(){com.mamxanh.app.presentation.ui.MamXanhPreviewTheme{AddTaskDialog({},{})}}

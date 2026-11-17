@@ -12,6 +12,9 @@ import androidx.compose.ui.layout.ContentScale
 import com.mamxanh.core.ui.R
 import com.mamxanh.app.presentation.ui.components.GardenChoiceChip
 import com.mamxanh.app.presentation.ui.components.GardenBotanicalFrame
+import com.mamxanh.app.presentation.ui.components.GardenNavigationCard
+import com.mamxanh.app.presentation.ui.components.GardenScreenIntro
+import com.mamxanh.app.presentation.ui.components.GardenPanelSkin
 import com.mamxanh.app.presentation.ui.components.GardenRichText as Text
 import com.mamxanh.app.presentation.ui.components.GardenArt
 import com.mamxanh.app.presentation.ui.components.GardenArtwork
@@ -66,30 +69,32 @@ fun TasksScreen(state: TasksUiState, onIntent: (TasksIntent) -> Unit, modifier: 
     onEngagement: (String,Long)->Unit = {_,_->}) {
     val listState = rememberLazyListState()
     // Completion updates a row in place; moving the first visible key would move the viewport too.
-    val filtered = state.tasks.filter { it.lifecycle == "ACTIVE" && (it.scheduledToday || it.doneToday || it.finished) }
+    var selectedFilter by rememberSaveable { mutableStateOf("ACTIVE") }
+    val filtered = state.tasks.filter { it.lifecycle == selectedFilter && (selectedFilter!="ACTIVE" || it.scheduledToday || it.doneToday || it.finished) }
         .sortedBy { it.id }
     val done = state.phase.completed
     MintBackdrop(modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
-            MintCompactHeader(coins, title = "Việc nhỏ")
-            Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceEvenly) {
-                TextButton(onClick={onEngagement("FOCUS",0)}){Text("Tập trung",fontSize=11.sp,color=Green)}
-                TextButton(onClick={onEngagement("TEMPLATES",0)}){Text("Việc mẫu",fontSize=11.sp,color=Green)}
-                TextButton(onClick={onEngagement("INSIGHTS",0)}){Text("Nhịp thói quen",fontSize=11.sp,color=Green)}
+            MintCompactHeader(coins, title = "mầm xanh")
+            GardenScreenIntro("Việc hôm nay","TỪNG CHÚT MỘT",modifier=Modifier.padding(horizontal=24.dp,vertical=12.dp))
+            GardenBotanicalFrame(Modifier.padding(horizontal=24.dp).fillMaxWidth(),skin=GardenPanelSkin.HINT,contentPadding=PaddingValues(16.dp)) {
+                Column(verticalArrangement=Arrangement.spacedBy(12.dp)) {
+                    Text("$done/${state.phase.required} việc bắt buộc đã xong",color=Deep,fontSize=14.sp,fontWeight=FontWeight.SemiBold)
+                    MintProgress(done.toFloat()/state.phase.required.coerceAtLeast(1),Modifier.fillMaxWidth())
+                }
             }
-            GardenBotanicalFrame(Modifier.padding(horizontal = 12.dp).fillMaxWidth(),
-                contentPadding = PaddingValues(6.dp)) {
-                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    GardenArtwork(GardenArt.SPROUT, Modifier.size(20.dp))
-                    Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                        Text("Đã hoàn thành $done / ${state.phase.required} việc bắt buộc", color = Deep, fontWeight = FontWeight.Bold, fontSize = 12.sp)
-                        MintProgress(done.toFloat() / state.phase.required.coerceAtLeast(1), Modifier.fillMaxWidth())
-                    }
+            Row(Modifier.padding(horizontal=24.dp,vertical=12.dp),horizontalArrangement=Arrangement.spacedBy(12.dp)) {
+                GardenPaintedButton("Tập trung",{onEngagement("FOCUS",0)},Modifier.weight(1f),primary=false)
+                GardenPaintedButton("Việc mẫu",{onEngagement("TEMPLATES",0)},Modifier.weight(1f),primary=false)
+            }
+            Row(Modifier.padding(horizontal=24.dp),horizontalArrangement=Arrangement.spacedBy(8.dp)) {
+                listOf("ACTIVE" to "Hôm nay","PAUSED" to "Tạm dừng","ARCHIVED" to "Lưu trữ").forEach{(id,label)->
+                    GardenChoiceChip(label,selectedFilter==id,{selectedFilter=id},Modifier.weight(1f))
                 }
             }
             LazyColumn(Modifier.weight(1f).mintScrollEdges(listState.canScrollBackward, listState.canScrollForward),
-                state = listState, contentPadding = PaddingValues(10.dp),
-                verticalArrangement = Arrangement.spacedBy(5.dp)) {
+                state = listState, contentPadding = PaddingValues(horizontal=24.dp,vertical=16.dp),
+                verticalArrangement = Arrangement.spacedBy(14.dp)) {
                 if(state.isLoading && state.tasks.isEmpty()) item { LinearProgressIndicator(Modifier.fillMaxWidth()) }
                 if(!state.isLoading && filtered.isEmpty()) item {
                     Column(Modifier.fillMaxWidth().padding(vertical = 12.dp), horizontalAlignment = Alignment.CenterHorizontally,
@@ -106,16 +111,17 @@ fun TasksScreen(state: TasksUiState, onIntent: (TasksIntent) -> Unit, modifier: 
                     val session = state.phase.sessions.firstOrNull { it.taskId == task.id }
                     TaskCard(task, { onIntent(TasksIntent.Complete(task.id)) },
                         { onIntent(TasksIntent.Timer(task.id, if (session?.running == true) "PAUSE" else "START")) },
-                        readOnly = task.finished, session = session, busy = state.busy)
+                        readOnly = task.finished, session = session, busy = state.busy, onOpen={onIntent(TasksIntent.Detail(task.id))})
                     if(task.availability.isNotEmpty()) Text(task.availability,color=Muted,fontSize=12.sp)
                 }
+                item {GardenNavigationCard("Nhịp thói quen",{onEngagement("INSIGHTS",0)})}
                 if(state.phase.required > 0) item {
                     DailyRewardCard(state.canClaimDailyBonus && !state.isLoading && !state.busy,
                         { onIntent(TasksIntent.ClaimBonus) }, state.isDailyBonusClaimed)
                 }
             }
             GardenPaintedButton("+ Thêm việc", { onIntent(TasksIntent.ShowAddDialog) },
-                Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 2.dp))
+                Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 12.dp))
         }
     }
     if (state.isAddingTask) AddTaskDialog(
@@ -130,7 +136,7 @@ fun TasksScreen(state: TasksUiState, onIntent: (TasksIntent) -> Unit, modifier: 
 @Composable
 private fun TaskQuestHeader(done: Int, total: Int, progress: Float, allComplete: Boolean, onAddTask: () -> Unit) {
     GardenBotanicalFrame(Modifier.fillMaxWidth()) {
-        Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
+        Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
             Text("Đã hoàn thành $done / $total việc", fontWeight = FontWeight.Bold, color = Deep)
             MintProgress(progress, Modifier.fillMaxWidth())
         }
@@ -147,7 +153,7 @@ private fun DailyRewardCard(canClaim: Boolean, onClaim: () -> Unit, claimed: Boo
                 border = BorderStroke(1.dp, Color(0xFFC8C7B7))) {
                 Row(Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(5.dp)) {
+                    horizontalArrangement = Arrangement.spacedBy(14.dp)) {
                     Surface(shape = CircleShape, color = Color(0xFF939C80), modifier = Modifier.size(20.dp)) {
                         Icon(Icons.Rounded.Check, null, tint = Color(0xFFFFF9E9), modifier = Modifier.padding(5.dp))
                     }
@@ -189,14 +195,14 @@ private fun TaskFilterSearchArtwork() {
 
 @Composable
 private fun TaskCard(task: Task, onComplete: () -> Unit, onTimer: () -> Unit, readOnly: Boolean = false,
-    session: com.mamxanh.shared.model.TimerSession? = null, busy: Boolean = false) {
+    session: com.mamxanh.shared.model.TimerSession? = null, busy: Boolean = false, onOpen: ()->Unit = {}) {
     val done = task.doneToday || readOnly
     val timer = task.config.verification == "TIMER"
     Column {
         Row(Modifier.fillMaxWidth().heightIn(min = 48.dp)
-            .mintDepth(RoundedCornerShape(12.dp), if (done) MintDepth.hint else MintDepth.card, 4.dp)
-            .clickable(enabled = !timer && !done && !busy && task.available, onClick = onComplete)
-            .padding(horizontal = 6.dp, vertical = 2.dp), verticalAlignment = Alignment.CenterVertically) {
+            .mintDepth(RoundedCornerShape(18.dp), if (done) MintDepth.hint else MintDepth.card, 4.dp)
+            .clickable(onClick = onOpen)
+            .padding(horizontal = 12.dp, vertical = 14.dp), verticalAlignment = Alignment.CenterVertically) {
             GardenArtwork(when {
                 task.title.contains("bộ", ignoreCase = true) -> GardenArt.BOOTS
                 task.title.contains("nước", ignoreCase = true) -> GardenArt.GLASS
@@ -205,10 +211,10 @@ private fun TaskCard(task: Task, onComplete: () -> Unit, onTimer: () -> Unit, re
                 task.title.contains("Chuẩn bị", ignoreCase = true) -> GardenArt.CALENDAR
                 task.category.contains("Học", ignoreCase = true) -> GardenArt.BOOK
                 else -> GardenArt.SPROUT
-            }, Modifier.size(20.dp, 28.dp))
+            }, Modifier.size(30.dp, 36.dp))
             Column(Modifier.weight(1f).padding(horizontal = 3.dp)) {
                 Text(task.title, color = Deep, fontSize = 12.sp, fontWeight = FontWeight.Bold)
-                if (!done) Text(task.category, color = Color(0xFF80562C), fontSize = 12.sp)
+                if (!done) Text(task.category, color = Muted, fontSize = 12.sp)
                 if (task.kind == "TODO" && task.due.isNotBlank()) Text("Hạn: " + task.due, color = Muted, fontSize = 11.sp)
                 if (done) Text("Đã xong", color = Green, fontSize = 12.sp)
                 else if (timer) {
@@ -217,17 +223,14 @@ private fun TaskCard(task: Task, onComplete: () -> Unit, onTimer: () -> Unit, re
                         color = Green, fontSize = 12.sp)
                 }
             }
-            if (!readOnly) GardenBotanicalFrame(contentPadding = PaddingValues(horizontal = 5.dp, vertical = 3.dp),
-                cornerSize = 9.dp, skin = com.mamxanh.app.presentation.ui.components.GardenPanelSkin.PRICE) {
-                Text("🪙+${task.reward} xu", color = Deep, fontSize = 11.sp, lineHeight = 14.sp, fontWeight = FontWeight.Bold)
-            }
+            if (!readOnly) Text("+${task.reward}", color = Green, fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
             IconButton(onClick = if (timer) onTimer else onComplete,
-                enabled = !done && !busy && (task.available || session?.running == true),
+                enabled = !done && !busy && task.lifecycle=="ACTIVE" && (task.available || session?.running == true),
                 modifier = Modifier.size(48.dp).semantics {
                     contentDescription = when { done -> "Đã hoàn thành"; timer && session?.running == true -> "Tạm dừng bộ đếm"; timer -> "Bắt đầu bộ đếm"; else -> "Hoàn thành nhiệm vụ" }
                 }) {
                 Surface(shape = CircleShape, color = if (done) Color(0xFF7B9D3D) else Color.Transparent,
-                    border = if (done) null else BorderStroke(1.5.dp,Color(0xFF9B7854)), modifier = Modifier.size(24.dp)) {
+                    border = if (done) null else BorderStroke(1.dp,Color(0xFF9FAF93)), modifier = Modifier.size(32.dp)) {
                     if (done) Icon(Icons.Rounded.Check, null, tint = Color(0xFFFFF5DC), modifier = Modifier.padding(3.dp))
                     else if (timer) Icon(if (session?.running == true) Icons.Rounded.Pause else Icons.Rounded.PlayArrow,
                         null, tint = Green, modifier = Modifier.padding(2.dp))

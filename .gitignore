@@ -11,3 +11,11 @@
 *.keystore
 *.mamxanh
 /signing.properties
+
+# Local UI verification diagnostics and recovery copies
+/docs/bio-parity/*.log
+/docs/bio-parity/*.jfr
+/docs/bio-parity/*threads*.txt
+/docs/bio-parity/*.kt.txt
+/docs/bio-parity/*.patch
+/docs/bio-parity/PROGRESS.md

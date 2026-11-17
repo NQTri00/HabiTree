@@ -17,13 +17,13 @@ import androidx.compose.ui.unit.dp
 
 /** One light direction and elevation palette for all live mint surfaces. */
 object MintDepth {
-    val card = listOf(Color.White, Color(0xFFF4FCF7), Color(0xFFE0F1E7))
-    val hint = listOf(Color(0xFFF5FCEB), Color(0xFFE5F3D9), Color(0xFFD3E9C3))
-    val price = listOf(Color(0xFFFFFCEB), Color(0xFFFFF0BE), Color(0xFFEFD791))
-    val primary = listOf(Color(0xFF237F4F), Color(0xFF146C40), Color(0xFF075432))
-    val secondary = listOf(Color.White, Color(0xFFEDF8F1), Color(0xFFD8EDE1))
-    val bar = listOf(Color(0xFFFEFFFE), Color(0xFFF1FAF5), Color(0xFFDCEEE3))
-    val shadow = Color(0xFF1E543D)
+    val card = listOf(Color.White, Color.White, Color(0xFFFEFFFC))
+    val hint = listOf(Color(0xFFEBF0DF), Color(0xFFEBF0DF))
+    val price = listOf(Color(0xFFFFF9E9), Color(0xFFF3E8C9))
+    val primary = listOf(Color(0xFF315C3C), Color(0xFF315C3C))
+    val secondary = listOf(Color.White, Color.White)
+    val bar = listOf(Color(0xFFF7F8F2), Color(0xFFF7F8F2))
+    val shadow = Color(0xFF23382B)
 
     /** A true 45° light direction, independent of a card or button's aspect ratio. */
     fun diagonal(colors: List<Color>): Brush = object : ShaderBrush() {
@@ -43,8 +43,8 @@ fun Modifier.mintDepth(
     elevation: Dp = 6.dp
 ): Modifier = shadow(
     elevation = elevation, shape = shape, clip = false,
-    ambientColor = MintDepth.shadow.copy(alpha = .45f),
-    spotColor = MintDepth.shadow.copy(alpha = .70f)
+    ambientColor = MintDepth.shadow.copy(alpha = .12f),
+    spotColor = MintDepth.shadow.copy(alpha = .20f)
 ).background(MintDepth.diagonal(colors), shape)
     .border(1.dp, MintDepth.diagonal(listOf(Color.White.copy(alpha = .96f),
-        Color(0xFFAACDBA).copy(alpha = .65f))), shape)
+        Color(0xFFE4E7DC))), shape)

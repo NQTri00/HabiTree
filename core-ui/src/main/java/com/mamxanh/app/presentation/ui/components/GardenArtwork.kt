@@ -6,6 +6,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.*
+import androidx.compose.material3.Icon
+import com.mamxanh.app.presentation.ui.Green
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -27,12 +31,26 @@ enum class GardenArt {
 
 @Composable
 fun GardenArtwork(art: GardenArt, modifier: Modifier = Modifier) {
-    when (art) {
-        GardenArt.SPROUT -> MintSprout(modifier)
-        GardenArt.WATERING_CAN -> GardenSourceImage(R.drawable.simple_tools, modifier)
-        GardenArt.SEED -> GardenSourceImage(R.drawable.simple_seed, modifier)
-        else -> SimpleGardenArt(art, modifier)
+    val vector=when(art){
+        GardenArt.WATERING_CAN,GardenArt.DROP,GardenArt.GLASS->Icons.Outlined.WaterDrop
+        GardenArt.FERTILIZER,GardenArt.SEED,GardenArt.NUT->Icons.Outlined.Yard
+        GardenArt.BOOK,GardenArt.JOURNAL->Icons.Outlined.MenuBook
+        GardenArt.CHECKLIST,GardenArt.CHECKED_TASK->Icons.Outlined.FactCheck
+        GardenArt.SHOP->Icons.Outlined.Storefront
+        GardenArt.TREE->Icons.Outlined.Park
+        GardenArt.COIN->Icons.Outlined.MonetizationOn
+        GardenArt.CALENDAR->Icons.Outlined.CalendarToday
+        GardenArt.PENCIL->Icons.Outlined.Edit
+        GardenArt.CATEGORY->Icons.Outlined.GridView
+        GardenArt.LANTERN->Icons.Outlined.LightMode
+        GardenArt.RIBBON->Icons.Outlined.CardGiftcard
+        GardenArt.FLOWERS->Icons.Outlined.FilterVintage
+        GardenArt.BOOTS->Icons.Outlined.DirectionsWalk
+        GardenArt.BROOM->Icons.Outlined.CleaningServices
+        GardenArt.PUMP->Icons.Outlined.Air
+        GardenArt.SPROUT,GardenArt.NATURAL->Icons.Outlined.Spa
     }
+    Box(modifier,contentAlignment=Alignment.Center){Icon(vector,null,Modifier.fillMaxSize().padding(2.dp),tint=Green)}
 }
 
 @Composable

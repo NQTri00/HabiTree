@@ -2,6 +2,7 @@ package com.mamxanh.app.feature.stats.presentation
 
 import com.mamxanh.app.presentation.ui.components.GardenRichText as Text
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -41,25 +42,15 @@ fun StatsScreen(state: StatsUiState, onIntent: (StatsIntent) -> Unit, modifier: 
     }
     MintBackdrop(modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
-            MintCompactHeader(s.coins, title="Nhật ký", titleSize=14.sp)
-            androidx.compose.foundation.layout.FlowRow(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceEvenly) {
-                listOf("FOCUS" to "Tập trung","REVIEW" to "Nhìn lại tuần","ACHIEVEMENTS" to "Dấu mốc",
-                    "TIMELINE" to "Kỷ niệm","SETTINGS" to "Tùy chọn").forEach{(route,label)->
-                    TextButton(onClick={onEngagement(route)}){Text(label,fontSize=11.sp,color=Green)}
-                }
-            }
+            MintCompactHeader(s.coins,title="mầm xanh")
+            GardenScreenIntro("Nhật ký xanh","NHỮNG ĐIỀU ĐÃ LỚN LÊN","Mỗi bước nhỏ đều được ghi nhận.",Modifier.padding(horizontal=24.dp,vertical=12.dp))
             LazyColumn(Modifier.weight(1f).mintScrollEdges(listState.canScrollBackward, listState.canScrollForward),
-                state = listState, contentPadding = PaddingValues(10.dp),
-                verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                state = listState, contentPadding = PaddingValues(horizontal=24.dp,vertical=16.dp),
+                verticalArrangement = Arrangement.spacedBy(18.dp)) {
                 item {
-                    GardenBotanicalFrame(Modifier.fillMaxWidth()) {
-                        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                            JourneyCard("✓", "Việc đã xong", s.total.toString(), "", Modifier.weight(1f))
-                            VerticalDivider(Modifier.height(30.dp))
-                            JourneyCard("🌱", "Cây trong vườn", s.treeCount.toString(), "", Modifier.weight(1f))
-                        }
-                    }
+                    MintMetricStrip(listOf("Việc hoàn thành" to s.total.toString(),"Cây trong vườn" to s.treeCount.toString()))
                 }
+
                 item {
                     GardenBotanicalFrame(Modifier.fillMaxWidth(), contentPadding = PaddingValues(8.dp)) {
                         Column {
@@ -77,19 +68,9 @@ fun StatsScreen(state: StatsUiState, onIntent: (StatsIntent) -> Unit, modifier: 
                         }
                     }
                 }
-                if(!firstUse) item {
-                    GardenBotanicalFrame(Modifier.fillMaxWidth(), contentPadding = PaddingValues(8.dp)) {
-                        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                            Text("Tuần này", color = Deep, fontSize = 12.sp, fontWeight = FontWeight.Bold)
-                            listOf("☑ ${s.week} việc hoàn thành", "🌱 ${s.today} việc hôm nay",
-                                "📅 ${s.streak} ngày đều đặn", "🪙 ${s.coins} xu trong túi").forEachIndexed { index, text ->
-                                if(index > 0) HorizontalDivider(color = Color(0xFFE0EAE5))
-                                Row(Modifier.fillMaxWidth().heightIn(min = 24.dp), verticalAlignment = Alignment.CenterVertically) {
-                                    Text(text, Modifier.weight(1f), color = Deep, fontSize = 11.sp)
-                                }
-                            }
-                        }
-                    }
+                if(!firstUse)item {MintMetricStrip(listOf("Tuần này" to s.week.toString(),"Hôm nay" to s.today.toString(),"Chuỗi ngày" to s.streak.toString()))}
+                items(listOf("REVIEW" to "Nhìn lại tuần","ACHIEVEMENTS" to "Dấu mốc","TIMELINE" to "Kỷ niệm","FOCUS" to "Tập trung","SETTINGS" to "Tùy chọn")){(route,label)->
+                    GardenNavigationCard(label,{onEngagement(route)},art=when(route){"REVIEW"->GardenArt.CALENDAR;"ACHIEVEMENTS"->GardenArt.RIBBON;"TIMELINE"->GardenArt.JOURNAL;"FOCUS"->GardenArt.LANTERN;else->GardenArt.CATEGORY})
                 }
                 item {
                     if(firstUse) GardenBotanicalFrame(Modifier.fillMaxWidth(), skin = GardenPanelSkin.HINT) {

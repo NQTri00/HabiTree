@@ -26,7 +26,7 @@ import com.mamxanh.shared.model.*
 @Composable
 internal fun TreeDetailTabs(selected: Int, onSelect: (Int)->Unit) {
     Row(Modifier.fillMaxWidth().selectableGroup()
-        .background(Color(0xFFEAF3ED),RoundedCornerShape(12.dp)).padding(3.dp),
+        .background(Pale,RoundedCornerShape(15.dp)).padding(4.dp),
         horizontalArrangement=Arrangement.spacedBy(3.dp)) {
         listOf("Chăm sóc","Trang trí","Thông tin").forEachIndexed { index,label ->
             Box(Modifier.weight(1f).heightIn(min=48.dp)
@@ -37,7 +37,7 @@ internal fun TreeDetailTabs(selected: Int, onSelect: (Int)->Unit) {
                     shadowElevation=if(selected==index)2.dp else 0.dp) {
                     Column(Modifier.padding(vertical=6.dp),horizontalAlignment=Alignment.CenterHorizontally,
                         verticalArrangement=Arrangement.spacedBy(4.dp)) {
-                        Text(label,color=if(selected==index)Green else Muted,fontSize=11.sp,lineHeight=14.sp,
+                        Text(label,color=if(selected==index)Green else Muted,fontSize=13.sp,lineHeight=19.sp,
                             fontWeight=if(selected==index)FontWeight.Bold else FontWeight.Medium,textAlign=TextAlign.Center)
                         Box(Modifier.width(16.dp).height(2.dp)
                             .background(if(selected==index)Green else Color.Transparent,RoundedCornerShape(50)))
@@ -53,23 +53,23 @@ internal fun TreeDetailTabs(selected: Int, onSelect: (Int)->Unit) {
 internal fun TreeDetailSectionContent(tree: Tree, selected: Int, inventory: Map<String,Int>,
     busy: Boolean, onIntent: (TreeIntent)->Unit, onOpenDecorations:()->Unit={}) {
     val status=tree.status
-    Column(Modifier.fillMaxWidth(),verticalArrangement=Arrangement.spacedBy(8.dp)) {
+    Column(Modifier.fillMaxWidth(),verticalArrangement=Arrangement.spacedBy(16.dp)) {
         when(selected) {
             0 -> {
-                Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(8.dp)) {
+                Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(16.dp)) {
                     GardenArtwork(GardenArt.WATERING_CAN,Modifier.size(24.dp))
                     Column(Modifier.weight(1f)) {
-                        Text(status.waterLabel,color=Deep,fontSize=12.sp,lineHeight=16.sp,fontWeight=FontWeight.SemiBold)
-                        Text(status.cue.label,color=Muted,fontSize=11.sp,lineHeight=14.sp)
+                        Text(status.waterLabel,color=Deep,fontSize=15.sp,lineHeight=21.sp,fontWeight=FontWeight.SemiBold)
+                        Text(status.cue.label,color=Muted,fontSize=13.sp,lineHeight=19.sp)
                     }
-                    MintStatusPill(status.stateLabel)
+                    GardenPaintedButton(if(status.waterActive)"Đã tưới" else "Tưới",{onIntent(TreeIntent.Water(tree.id))},enabled=status.canWater&&!busy)
                 }
                 if(status.fertilizerLabel.isNotBlank())MintStatusPill(status.fertilizerLabel)
                 if(status.state==TreeGrowthState.GROWING) {
                     HorizontalDivider(color=Color(0xFFE2ECE5))
-                    Text("Dinh dưỡng",color=Deep,fontSize=12.sp,lineHeight=16.sp,fontWeight=FontWeight.Bold)
+                    Text("Dinh dưỡng",color=Deep,fontSize=15.sp,lineHeight=21.sp,fontWeight=FontWeight.Bold)
                     Text(if(!status.waterActive)"Tưới cây trước khi bón phân." else "Chọn một loại phân trong túi.",
-                        color=Muted,fontSize=11.sp,lineHeight=15.sp)
+                        color=Muted,fontSize=13.sp,lineHeight=19.sp)
                     Column(verticalArrangement=Arrangement.spacedBy(4.dp)) {
                         FertilizerTier.entries.forEach { tier ->
                             val count=inventory[tier.itemId] ?: 0
@@ -77,20 +77,20 @@ internal fun TreeDetailSectionContent(tree: Tree, selected: Int, inventory: Map<
                             Surface(Modifier.fillMaxWidth().heightIn(min=48.dp)
                                 .clickable(enabled=available,role=Role.Button,onClick={
                                     onIntent(TreeIntent.Fertilize(tree.id,tier.itemId))
-                                }),shape=RoundedCornerShape(10.dp),color=Color(0xFFF0F6F2),
+                                }),shape=RoundedCornerShape(18.dp),color=Color.White,shadowElevation=4.dp,
                                 border=BorderStroke(1.dp,Color(0xFFE2ECE5))) {
-                                Row(Modifier.padding(horizontal=8.dp,vertical=5.dp),verticalAlignment=Alignment.CenterVertically,
-                                    horizontalArrangement=Arrangement.spacedBy(8.dp)) {
+                                Row(Modifier.padding(horizontal=14.dp,vertical=14.dp),verticalAlignment=Alignment.CenterVertically,
+                                    horizontalArrangement=Arrangement.spacedBy(16.dp)) {
                                     GardenArtwork(GardenArt.FERTILIZER,Modifier.size(24.dp))
                                     Column(Modifier.weight(1f)) {
-                                        Text(tier.label,color=Deep,fontSize=11.sp,lineHeight=14.sp,fontWeight=FontWeight.SemiBold)
-                                        Text("Trong túi: $count",color=Muted,fontSize=10.sp,lineHeight=13.sp)
+                                        Text(tier.label,color=Deep,fontSize=13.sp,lineHeight=19.sp,fontWeight=FontWeight.SemiBold)
+                                        Text("Trong túi: $count",color=Muted,fontSize=11.sp,lineHeight=16.sp)
                                     }
                                     Text("${tier.rate/1000.0}×",color=Green,fontSize=11.sp,fontWeight=FontWeight.Bold)
                                     Surface(shape=RoundedCornerShape(8.dp),color=if(available)Green else Color(0xFFE1EBE5)) {
                                         Text(if(available)"Bón" else if(count==0)"Hết" else "Chờ",
                                             Modifier.padding(horizontal=8.dp,vertical=4.dp),
-                                            color=if(available)Color.White else Muted,fontSize=10.sp,lineHeight=13.sp)
+                                            color=if(available)Color.White else Muted,fontSize=11.sp,lineHeight=16.sp)
                                     }
                                 }
                             }
@@ -98,28 +98,28 @@ internal fun TreeDetailSectionContent(tree: Tree, selected: Int, inventory: Map<
                     }
                     TextButton(onClick={onIntent(TreeIntent.OpenFertilizerShop)},enabled=!busy,
                         contentPadding=PaddingValues(horizontal=4.dp)) {
-                        Text("Bổ sung vật phẩm  ›",color=Green,fontSize=11.sp,lineHeight=14.sp)
+                        Text("Bổ sung vật phẩm  ›",color=Green,fontSize=13.sp,lineHeight=19.sp)
                     }
                 } else Text(if(status.alive)"Cây đã trưởng thành. Tiếp tục tưới để giữ cây khỏe mạnh."
                     else "Cây đã khô héo và không thể hồi phục.",color=Muted,fontSize=11.sp,lineHeight=16.sp)
             }
             1 -> {
-                Text("Điểm tô cho cây",color=Deep,fontSize=12.sp,lineHeight=16.sp,fontWeight=FontWeight.Bold)
-                Text("Phụ kiện thuộc túi đồ; di chuyển hoặc cất lại không mất xu.",color=Muted,fontSize=11.sp,lineHeight=15.sp)
-                if(status.alive)GardenPaintedButton("Sắp xếp phụ kiện",onOpenDecorations,Modifier.fillMaxWidth(),primary=false,enabled=!busy)
-                else Text("Không thể trang trí cây đã khô héo.",color=Muted,fontSize=11.sp,lineHeight=15.sp)
+                Text("Điểm tô cho cây",color=Deep,fontSize=15.sp,lineHeight=21.sp,fontWeight=FontWeight.Bold)
+                Text("Xem các phụ kiện trong túi đồ.",color=Muted,fontSize=13.sp,lineHeight=19.sp)
+                if(status.alive)GardenPaintedButton("Trang trí của bạn",onOpenDecorations,Modifier.fillMaxWidth(),primary=false,enabled=!busy)
+                else Text("Không thể trang trí cây đã khô héo.",color=Muted,fontSize=13.sp,lineHeight=19.sp)
             }
             else -> {
-                Text("Hồ sơ cây",color=Deep,fontSize=12.sp,lineHeight=16.sp,fontWeight=FontWeight.Bold)
+                Text("Hồ sơ cây",color=Deep,fontSize=15.sp,lineHeight=21.sp,fontWeight=FontWeight.Bold)
                 val species=catalog.first { it.id==tree.speciesId }
-                Column(Modifier.fillMaxWidth().background(Color(0xFFF0F6F2),RoundedCornerShape(10.dp))
-                    .padding(horizontal=10.dp)) {
+                Column(Modifier.fillMaxWidth().mintDepth(RoundedCornerShape(22.dp),MintDepth.card,6.dp)
+                    .padding(18.dp)) {
                     listOf("Loài" to species.name,"Giai đoạn" to "${status.stageIndex+1} / ${status.stageCount}",
                         "Phát triển" to "${status.percentage}%","Ngày trồng" to tree.planted).forEachIndexed { index,(label,value) ->
                         if(index>0)HorizontalDivider(color=Color(0xFFE2ECE5))
                         Row(Modifier.fillMaxWidth().padding(vertical=8.dp),horizontalArrangement=Arrangement.spacedBy(12.dp)) {
-                            Text(label,Modifier.weight(.4f),color=Muted,fontSize=11.sp,lineHeight=15.sp)
-                            Text(value,Modifier.weight(.6f),color=Deep,fontSize=11.sp,lineHeight=15.sp,
+                            Text(label,Modifier.weight(.4f),color=Muted,fontSize=13.sp,lineHeight=19.sp)
+                            Text(value,Modifier.weight(.6f),color=Deep,fontSize=13.sp,lineHeight=19.sp,
                                 fontWeight=FontWeight.Medium,textAlign=TextAlign.End)
                         }
                     }
@@ -131,11 +131,11 @@ internal fun TreeDetailSectionContent(tree: Tree, selected: Int, inventory: Map<
         Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween,verticalAlignment=Alignment.CenterVertically) {
             if(status.state==TreeGrowthState.MATURE)TextButton(onClick={onIntent(TreeIntent.AskDisposition(tree.id,true))},
                 enabled=!busy,contentPadding=PaddingValues(horizontal=4.dp)) {
-                Text("Bán cây",color=Green,fontSize=11.sp,lineHeight=14.sp)
+                Text("Bán cây",color=Green,fontSize=13.sp,lineHeight=19.sp)
             } else Spacer(Modifier.weight(1f))
             TextButton(onClick={onIntent(TreeIntent.AskDisposition(tree.id,false))},enabled=!busy,
                 contentPadding=PaddingValues(horizontal=4.dp)) {
-                Text("Dọn cây",color=Muted,fontSize=11.sp,lineHeight=14.sp)
+                Text("Dọn cây",color=Muted,fontSize=13.sp,lineHeight=19.sp)
             }
         }
     }
@@ -147,8 +147,8 @@ private fun sectionPreviewTree()=Tree(1,"cherry","Đào hồng xuân",45,"2026-1
 @Composable
 private fun SectionDocument(selected: Int) {
     MamXanhPreviewTheme {
-        Column(Modifier.fillMaxWidth().background(Color(0xFFF7FCF8)).padding(12.dp),
-            verticalArrangement=Arrangement.spacedBy(8.dp)) {
+                Column(Modifier.fillMaxWidth().background(Cream).padding(24.dp),
+            verticalArrangement=Arrangement.spacedBy(16.dp)) {
             TreeDetailTabs(selected,{})
             TreeDetailSectionContent(sectionPreviewTree(),selected,mapOf("fertilizer" to 2,"fertilizer_rich" to 1),false,{})
         }

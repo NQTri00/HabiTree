@@ -35,10 +35,10 @@ fun mintTreeHeroHeight(speciesId: String = "", availableWidth: Dp? = null): Dp {
 }
 
 @Composable
-fun MintCompactHeader(coins: Int, title: String = "Mầm Xanh", titleSize: androidx.compose.ui.unit.TextUnit = 14.sp,
+fun MintCompactHeader(coins: Int, title: String = "Mầm Xanh", titleSize: androidx.compose.ui.unit.TextUnit = 17.sp,
     actions: @Composable RowScope.()->Unit = {}) {
-    Row(Modifier.fillMaxWidth().mintDepth(androidx.compose.foundation.shape.RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp), MintDepth.bar, 3.dp)
-        .heightIn(min = 36.dp).padding(horizontal = 10.dp, vertical = 2.dp),
+    Row(Modifier.fillMaxWidth()
+        .heightIn(min = 56.dp).padding(horizontal = 24.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         GardenArtwork(GardenArt.SPROUT, Modifier.size(16.dp))
         Text(title, Modifier.weight(1f), fontSize = titleSize, lineHeight = titleSize * 1.2f, fontWeight = FontWeight.Bold, color = Deep)

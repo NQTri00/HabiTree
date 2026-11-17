@@ -3,8 +3,8 @@
     <string name="data_title">Data &amp; app</string>
     <string name="data_back">Back to settings</string>
     <string name="data_backup">Backup</string>
-    <string name="data_export">Export backup</string>
-    <string name="data_import">Restore from file</string>
+    <string name="data_export">Export file</string>
+    <string name="data_import">Restore</string>
     <string name="data_recover">Latest safety copy</string>
     <string name="data_warning">Backups are unencrypted and may contain private history and notes. Share only with people you trust.</string>
     <string name="data_replace">Replace all data</string>
