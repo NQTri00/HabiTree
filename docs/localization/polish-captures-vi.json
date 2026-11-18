@@ -1,61 +1,61 @@
 {
   "language": "vi",
-  "collectedAt": "2026-11-18T00:09:32.292Z",
+  "collectedAt": "2026-11-18T07:06:57.097Z",
   "captures": [
     {
       "name": "audit-large-text-home",
       "width": 375,
       "height": 812,
-      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-070704\\com\\mamxanh\\app\\presentation\\bio\\BioAuditLargeTextHomePreviewViKt\\BioAuditLargeTextHomePreviewVi_0.png",
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-140545\\com\\mamxanh\\app\\presentation\\bio\\BioAuditLargeTextHomePreviewViKt\\BioAuditLargeTextHomePreviewVi_0.png",
       "preview": "BioAuditLargeTextHomePreviewVi"
     },
     {
       "name": "home-320",
       "width": 320,
       "height": 640,
-      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-070704\\com\\mamxanh\\app\\presentation\\bio\\BioHome320PreviewViKt\\BioHome320PreviewVi_0.png",
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-140545\\com\\mamxanh\\app\\presentation\\bio\\BioHome320PreviewViKt\\BioHome320PreviewVi_0.png",
       "preview": "BioHome320PreviewVi"
     },
     {
       "name": "home-lavender-full",
       "width": 375,
       "height": 1143,
-      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-070704\\com\\mamxanh\\app\\presentation\\bio\\BioHomeLavenderFullPreviewViKt\\BioHomeLavenderFullPreviewVi_0.png",
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-140545\\com\\mamxanh\\app\\presentation\\bio\\BioHomeLavenderFullPreviewViKt\\BioHomeLavenderFullPreviewVi_0.png",
       "preview": "BioHomeLavenderFullPreviewVi"
     },
     {
       "name": "home-lavender",
       "width": 375,
       "height": 812,
-      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-070704\\com\\mamxanh\\app\\presentation\\bio\\BioHomeLavenderPreviewViKt\\BioHomeLavenderPreviewVi_0.png",
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-140545\\com\\mamxanh\\app\\presentation\\bio\\BioHomeLavenderPreviewViKt\\BioHomeLavenderPreviewVi_0.png",
       "preview": "BioHomeLavenderPreviewVi"
     },
     {
       "name": "home",
       "width": 375,
       "height": 812,
-      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-070704\\com\\mamxanh\\app\\presentation\\bio\\BioHomePreviewViKt\\BioHomePreviewVi_0.png",
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-140545\\com\\mamxanh\\app\\presentation\\bio\\BioHomePreviewViKt\\BioHomePreviewVi_0.png",
       "preview": "BioHomePreviewVi"
     },
     {
       "name": "popup-seed-buy",
       "width": 375,
       "height": 812,
-      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-070704\\com\\mamxanh\\app\\presentation\\bio\\BioPopupSeedBuyPreviewViKt\\BioPopupSeedBuyPreviewVi_0.png",
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-140545\\com\\mamxanh\\app\\presentation\\bio\\BioPopupSeedBuyPreviewViKt\\BioPopupSeedBuyPreviewVi_0.png",
       "preview": "BioPopupSeedBuyPreviewVi"
     },
     {
       "name": "tree",
       "width": 375,
       "height": 812,
-      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-070704\\com\\mamxanh\\app\\presentation\\bio\\BioTreePreviewViKt\\BioTreePreviewVi_0.png",
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-140545\\com\\mamxanh\\app\\presentation\\bio\\BioTreePreviewViKt\\BioTreePreviewVi_0.png",
       "preview": "BioTreePreviewVi"
     },
     {
       "name": "home-watered",
       "width": 375,
       "height": 812,
-      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-070704\\com\\mamxanh\\app\\presentation\\bio\\BioWateredHomeViPreviewKt\\BioWateredHomeViPreview_0.png",
+      "source": "E:\\Workspace\\mamxanh-redesign\\native-bio-headless\\batch-20261118-140545\\com\\mamxanh\\app\\presentation\\bio\\BioWateredHomeViPreviewKt\\BioWateredHomeViPreview_0.png",
       "preview": "BioWateredHomeViPreview"
     }
   ]

@@ -5,7 +5,7 @@
 - The public name is **HabiTree** in both languages, including the header and Android app label. The application ID stays `com.mamxanh.app`, preserving update compatibility and saved data.
 - Shared touch controls no longer paint a rectangular ripple/state-layer background. Presses use a small content-scale response without changing layout bounds. Raised card shadows remain; keyboard focus has a visible underline.
 - Saved default species names now follow the selected language at the presentation boundary. Existing Vietnamese defaults display as English species names in English mode, and vice versa. Custom nicknames and database values are preserved.
-- The English watering action is **Watered**. Adjacent Home actions share their measured height, preventing a longer label from making one button taller than Decorate/Trang trí.
+- The English watering action reads **Water**, then **Watered**. Adjacent Home actions share their measured height, preventing a longer label from making one button taller than Decorate/Trang trí.
 - The new HabiTree mark combines leaves with circuit-style roots. Eleven light launcher palettes come from the same tree palettes used by the app. The header uses the matching mark and theme color.
 - Changing the main tree updates the launcher alias to its species palette. Android 13+ updates component states atomically; older versions enable the replacement before disabling the previous alias. Updates run off the UI thread and request that Android keep the application running.
 
@@ -30,7 +30,11 @@ The preceding web reference was checked for the retained Home layout and raised 
 - Debug APK assembly passed.
 - Fifteen resource, design-token and launcher-resource checks passed. These include palette consistency and exactly one enabled launcher alias by default.
 - Eleven shared Kotlin tests passed, including preservation of custom nicknames and translation of saved default plant names in both directions.
-- APK v2 signature verification passed. Packaged labels are HabiTree for default, English and Vietnamese configurations. The compiled manifest contains the enabled default launcher alias targeting the existing MainActivity.
-- APK: **248,792,164 bytes**. SHA-256: `72b76eeedde9bf19e18a687fe459014789662243d0511adf9e088497b91b97f0`.
+- APK v2 signature verification passed. Packaged labels are HabiTree for default, English and Vietnamese configurations. The compiled manifest contains the default launcher alias targeting a short-lived entry activity that hands off to MainActivity.
+- APK size, SHA-256 and capture hashes are recorded in the accompanying verification JSON.
 
-Live taps and launcher switching have not been tested on an authorized device: the available emulator is unauthorized. Launcher refresh timing can vary. Android's system themed-icon setting can replace application colors with wallpaper/system colors; the regular colored icon follows the main tree palette. See [Android adaptive icons](https://developer.android.com/develop/ui/compose/system/icon_design_adaptive), [activity aliases](https://developer.android.com/guide/topics/manifest/activity-alias-element) and [interaction indications](https://developer.android.com/develop/ui/compose/touch-input/user-interactions/handling-interactions).
+The Android 15 runtime review exposed a task identity issue when changing launcher aliases and a SQLite lock when reminders opened a second connection. The launcher entry now transfers task identity to MainActivity. Reminder and UI callers share a database helper, and the Android shell avoids refreshing unused screens and polling idle task timers.
+
+On the runtime build, switching from cherry to lavender and then mandarin kept MainActivity open. The launcher showed one orange HabiTree icon. Both languages showed single-line watered actions and equal adjacent button heights. An actual held press produced no rectangular overlay. A custom nickname remained visible after changing languages, and notification links opened the correct tree, focus or insights screen. The focus timer counted down and paused. Temporary CPU contention during system boot affected earlier emulator attempts.
+
+Android themed icons may use wallpaper colors. The app supplies the tree palette for the regular colored icon. See [Android adaptive icons](https://developer.android.com/develop/ui/compose/system/icon_design_adaptive).

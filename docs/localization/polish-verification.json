@@ -1,5 +1,5 @@
 {
-  "verifiedAt": "2026-11-18T00:16:51.643740+00:00",
+  "verifiedAt": "2026-11-18T07:18:55.313563+00:00",
   "resourceAndIconChecks": 15,
   "hostTests": [
     {
@@ -18,8 +18,8 @@
     }
   ],
   "apk": {
-    "bytes": 248792164,
-    "sha256": "72b76eeedde9bf19e18a687fe459014789662243d0511adf9e088497b91b97f0",
+    "bytes": 249408646,
+    "sha256": "433c83bad200b5979c3da9ed9ffae72d233b696eb527c791c3250e98b2c8bfd9",
     "signatureSchemeV2Verified": true
   },
   "originalComposeCaptures": {
@@ -28,13 +28,13 @@
         "name": "audit-large-text-home",
         "width": 375,
         "height": 812,
-        "sha256": "f8f5e194575bd18bf01ec1f3af5a127129fe379fa8419f122768089776205517"
+        "sha256": "a89aea7117a68be3b868946e6aba4b211e7aff1e95b01fcbb4766d7aad0d7abc"
       },
       {
         "name": "home-320",
         "width": 320,
         "height": 640,
-        "sha256": "91b68f057d3ee020188c3820f005e9a908492335df08ba13543db3caafd70bf8"
+        "sha256": "7f3832e331be2586ec959610e1015d3c370f7f2e40dee27456d3a8c9f666c31f"
       },
       {
         "name": "home-lavender-full",
@@ -52,7 +52,7 @@
         "name": "home",
         "width": 375,
         "height": 812,
-        "sha256": "76b536a11a63a95fac21dbc56fcb4ae59dd51c0bc48313f52ff12ac812ab8aba"
+        "sha256": "6aaa6120484132e5293ad3ce23ac5366ec9c9598cf18d7054c8efee5d08a9d04"
       },
       {
         "name": "launcher-icons-circle",
@@ -76,7 +76,7 @@
         "name": "touch-feedback",
         "width": 375,
         "height": 812,
-        "sha256": "09aeddcb677d38742f61cb8f48b252747efae3a48a98db6e638af4b8409de165"
+        "sha256": "0700e8485661e72513f035ce5e140ae065f48deb854d209db0880e008d125499"
       },
       {
         "name": "tree",
@@ -142,6 +142,134 @@
       }
     ]
   },
-  "deviceInteractionVerified": false,
-  "launcherSwitchingVerifiedOnDevice": false
+  "deviceInteractionVerified": true,
+  "launcherSwitchingVerifiedOnDevice": true,
+  "liveVerification": {
+    "device": "HabiTreeLive35",
+    "api": 35,
+    "launcher": "Pixel Launcher",
+    "apkSha256": "433c83bad200b5979c3da9ed9ffae72d233b696eb527c791c3250e98b2c8bfd9",
+    "priorRuntimeApkSha256": "2043d50a11024724ec2f4ba62e6db1329dd1d80c21913e233aec095cd8c1eb47",
+    "priorRuntimeBuildDifference": "The release shortens the English Water tree label to Water. The resource ID and Android runtime code match.",
+    "checks": {
+      "languageSwitching": {
+        "status": "pass",
+        "details": "Switched Vietnamese to English and English to Vietnamese in Settings. Route and saved balance persisted."
+      },
+      "defaultPlantNames": {
+        "status": "pass",
+        "details": "Vietnamese-created cherry showed Spring cherry in English. English-created lavender showed O\u1ea3i h\u01b0\u01a1ng t\u00edm in Vietnamese."
+      },
+      "customNicknames": {
+        "status": "pass",
+        "details": "Sunny remained Sunny in both languages."
+      },
+      "wateringAlignment": {
+        "status": "pass",
+        "details": "Water and Watered fit on one line. Watered was disabled with top and bottom edges matching Decorate. The Vietnamese state also aligned."
+      },
+      "heldPress": {
+        "status": "pass",
+        "details": "Actual touchscreen down/up on Decorate showed scaled content without a rectangular overlay and opened the tree view on release."
+      },
+      "localeRestart": {
+        "status": "pass",
+        "details": "Vietnamese persisted through a force-stop and relaunch."
+      },
+      "mainTreeIconSwitching": {
+        "status": "pass",
+        "details": "Cherry, lavender and mandarin resolved to their own launcher aliases. MainActivity stayed open and the process survived the palette changes."
+      },
+      "launcherRestart": {
+        "status": "pass",
+        "details": "Relaunching the lavender alias restored the selected lavender tree."
+      },
+      "notificationNavigationAndFocus": {
+        "status": "pass",
+        "details": "Tree, timer task and non-timer task destinations opened from notification intents. The focus timer counted down and paused."
+      }
+    },
+    "captures": [
+      {
+        "file": "release-vi-restart.png",
+        "description": "Vietnamese and lavender retained after process restart",
+        "apkSha256": "433c83bad200b5979c3da9ed9ffae72d233b696eb527c791c3250e98b2c8bfd9",
+        "width": 720,
+        "height": 1280,
+        "sha256": "183133ab34d897a359a93ac2ad3b7d53c3a9d80d2964cd839a3ecb7dee5327b2"
+      },
+      {
+        "file": "release-settings-en.png",
+        "description": "English selection applied while keeping the Settings screen",
+        "apkSha256": "433c83bad200b5979c3da9ed9ffae72d233b696eb527c791c3250e98b2c8bfd9",
+        "width": 720,
+        "height": 1280,
+        "sha256": "32554cf1db66607accb49c5f09af41fcddbae5ebcd4022e2ece5ff0ffc6aa503"
+      },
+      {
+        "file": "release-en-water.png",
+        "description": "Single-line Water action next to Decorate",
+        "apkSha256": "433c83bad200b5979c3da9ed9ffae72d233b696eb527c791c3250e98b2c8bfd9",
+        "width": 720,
+        "height": 1280,
+        "sha256": "fdda578ebe3545f674106ffd82f334fc2f277ddd988db330773d04f25c280a15"
+      },
+      {
+        "file": "release-en-watered.png",
+        "description": "Disabled Watered action aligned with Decorate",
+        "apkSha256": "433c83bad200b5979c3da9ed9ffae72d233b696eb527c791c3250e98b2c8bfd9",
+        "width": 720,
+        "height": 1280,
+        "sha256": "ca13a0b1ef304c8aee1603331cd2fd93e0d2d1869f0227f59e4e96d2799003f0"
+      },
+      {
+        "file": "release-held-press.png",
+        "description": "Held Decorate press without a rectangular overlay",
+        "apkSha256": "433c83bad200b5979c3da9ed9ffae72d233b696eb527c791c3250e98b2c8bfd9",
+        "width": 720,
+        "height": 1280,
+        "sha256": "185935ee701b4b649b2a66929df603c30c436133d90ed5a04e7909116ac9cc6e"
+      },
+      {
+        "file": "final-vi-watered.png",
+        "description": "Vietnamese watered state and localized lavender default",
+        "apkSha256": "2043d50a11024724ec2f4ba62e6db1329dd1d80c21913e233aec095cd8c1eb47",
+        "width": 720,
+        "height": 1280,
+        "sha256": "1eb105ccb8ec150571ad13b47d391c925c858a5b5234eca632d1ad7dbb40f8de"
+      },
+      {
+        "file": "final-en-nickname.png",
+        "description": "Mandarin nickname Sunny in English",
+        "apkSha256": "2043d50a11024724ec2f4ba62e6db1329dd1d80c21913e233aec095cd8c1eb47",
+        "width": 720,
+        "height": 1280,
+        "sha256": "97ee236289f41df305aef49d2bfec2c1498eaa02574b8c000c53a9cb881b1658"
+      },
+      {
+        "file": "final-vi-nickname.png",
+        "description": "Mandarin nickname Sunny in Vietnamese",
+        "apkSha256": "2043d50a11024724ec2f4ba62e6db1329dd1d80c21913e233aec095cd8c1eb47",
+        "width": 720,
+        "height": 1280,
+        "sha256": "2a66df291f2637c62ae114fe496da13ebcc631c9803296e0b87cd9e575a9beb4"
+      },
+      {
+        "file": "final-launcher-mandarin.png",
+        "description": "Orange HabiTree icon in Pixel Launcher",
+        "apkSha256": "2043d50a11024724ec2f4ba62e6db1329dd1d80c21913e233aec095cd8c1eb47",
+        "width": 720,
+        "height": 1280,
+        "sha256": "823ddc85d505bb7fa523b6c92088f14830ad248eb124e62831af9c0371e9916e"
+      },
+      {
+        "file": "final-focus-paused.png",
+        "description": "Focus timer paused after countdown",
+        "apkSha256": "2043d50a11024724ec2f4ba62e6db1329dd1d80c21913e233aec095cd8c1eb47",
+        "width": 720,
+        "height": 1280,
+        "sha256": "b0384914a834aed561659632c938976591f3f360f8322490a5e08ff1ab384174"
+      }
+    ]
+  }
 }
