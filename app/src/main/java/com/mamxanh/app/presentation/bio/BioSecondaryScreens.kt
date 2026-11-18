@@ -1,5 +1,8 @@
 package com.mamxanh.app.presentation.bio
 
+import com.mamxanh.app.feature.stats.presentation.StatisticsBars
+import com.mamxanh.app.presentation.ui.design.*
+
 import com.mamxanh.app.presentation.ui.design.AppColors
 import com.mamxanh.app.presentation.ui.design.AppDimensions
 import com.mamxanh.app.presentation.ui.design.AppIcons
@@ -49,7 +52,7 @@ internal fun bioDates(date:String,count:Int):List<String>{val format=SimpleDateF
     var note by rememberSaveable{mutableStateOf(review.s("reflection",world.state.s("reflection")))}
     Bt(AppText.text(TextKey.CopyTuanTuA3719d)+bioDisplayDate(review.s("start","2026-11-16")),size=AppTypography.Size11,mono=true,tint=bp.muted,spacing=AppTypography.Tracking1_2);Bt(AppText.text(TextKey.CopyTuanCuaBanC82d43),size=AppTypography.Size27,bold=true,spacing=AppTypography.TrackingMinus1)
     BioMetrics(listOf(AppText.text(TextKey.CopyHoanThanh5eb36f) to "${review.i("completed")}/${review.i("scheduled")}",AppText.text(TextKey.CopyTyLeE86c12) to if(review.i("scheduled")>0)"${review.i("completed")*100/review.i("scheduled")}%"else "—",AppText.text(TextKey.CopyTapTrung964002) to "${review.i("focusMinutes")}′"))
-    BioCard(Modifier.fillMaxWidth()){Bt(AppText.text(TextKey.Copy7NgayGanNhat442aa3),size=AppTypography.Size13,semi=true);Spacer(Modifier.height(AppDimensions.Dp8));BioBars(world);Spacer(Modifier.height(AppDimensions.Dp14));Bt(if(review.has("previousRate"))AppText.text(TextKey.CopyTuanTruoc0SoLieuDenHomNay87b0c8,review.i("previousRate"))else AppText.text(TextKey.CopyChuaDuDuLieuSoSanh24d4ce),size=AppTypography.Size12,tint=bp.muted)}
+    BioCard(Modifier.fillMaxWidth()){Bt(AppText.text(TextKey.Copy7NgayGanNhat442aa3),size=AppTypography.Size13,semi=true);Spacer(Modifier.height(AppDimensions.Dp8));StatisticsBars(world.statisticsDailyCompletions(),world.statisticsDayLabels());Spacer(Modifier.height(AppDimensions.Dp14));Bt(if(review.has("previousRate"))AppText.text(TextKey.CopyTuanTruoc0SoLieuDenHomNay87b0c8,review.i("previousRate"))else AppText.text(TextKey.CopyChuaDuDuLieuSoSanh24d4ce),size=AppTypography.Size12,tint=bp.muted)}
     BioDetails(AppText.text(TextKey.CopyNhungDieuDaLam9f52b2)){BioFacts(listOf(AppText.text(TextKey.CopyXuNhanChi548b91) to "${review.i("earned")} / ${review.i("spent")}",AppText.text(TextKey.CopyChamCayFff511) to AppText.text(TextKey.Copy0Ngay45fa48,review.i("careDays")),AppText.text(TextKey.CopyMocTruongThanhB6cf90) to review.i("milestones").toString(),AppText.text(TextKey.CopyDeuDanNhat2e2e31) to AppText.category(review.s("consistent",AppText.text(TextKey.CopyChuaDuDuLieu414142))),AppText.text(TextKey.CopyCoTheDieuChinhC73bca) to AppText.category(review.s("improve",AppText.text(TextKey.CopyChuaDuDuLieu414142)))))}
     BioField(AppText.text(TextKey.CopyMotDieuMuonNho455aad),note,{note=it.take(2000)},multiline=true,placeholder=AppText.text(TextKey.CopyTuanNayMinhE6de5c))
     BioButton(AppText.text(TextKey.CopyLuuSuyNgam18cdd3),{ui.send("reflection",mapOf("note" to note,"week" to review.s("start")))},Modifier.fillMaxWidth())

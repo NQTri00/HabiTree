@@ -1,5 +1,7 @@
 package com.mamxanh.app.presentation.bio
 
+import com.mamxanh.app.presentation.ui.design.*
+
 import com.mamxanh.app.presentation.ui.design.AppDimensions
 import com.mamxanh.app.presentation.ui.design.AppIcons
 import com.mamxanh.app.presentation.ui.design.AppTypography

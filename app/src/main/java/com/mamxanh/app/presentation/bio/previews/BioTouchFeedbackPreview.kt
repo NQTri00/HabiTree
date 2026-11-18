@@ -1,5 +1,7 @@
 package com.mamxanh.app.presentation.bio
 
+import com.mamxanh.app.presentation.ui.design.*
+
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.background

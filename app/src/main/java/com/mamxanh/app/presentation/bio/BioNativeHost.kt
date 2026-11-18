@@ -1,5 +1,7 @@
 package com.mamxanh.app.presentation.bio
 
+import com.mamxanh.app.presentation.ui.design.bioLocale
+
 import com.mamxanh.shared.localization.TextKey
 
 import com.mamxanh.shared.localization.AppText

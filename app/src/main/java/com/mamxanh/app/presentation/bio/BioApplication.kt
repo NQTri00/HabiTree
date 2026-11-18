@@ -1,5 +1,7 @@
 package com.mamxanh.app.presentation.bio
 
+import com.mamxanh.app.presentation.ui.design.*
+
 import com.mamxanh.app.presentation.ui.design.AppDimensions
 import com.mamxanh.app.presentation.ui.design.AppRadii
 import com.mamxanh.app.presentation.ui.design.AppSpacing
@@ -10,6 +12,9 @@ import com.mamxanh.shared.localization.TextKey
 import com.mamxanh.shared.localization.AppText
 
 import androidx.activity.compose.BackHandler
+import com.mamxanh.app.feature.stats.presentation.StatisticsLink
+import com.mamxanh.app.feature.stats.presentation.StatisticsScreen
+import com.mamxanh.app.feature.stats.presentation.StatisticsScreenState
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.togetherWith
@@ -63,7 +68,7 @@ import androidx.compose.ui.unit.*
                                             "garden"->BioGarden(world,ui)
                                             "shop","inventory"->BioCatalog(world,ui,ui.route=="inventory")
                                             "tree"->BioTree(world,ui,compactScreen)
-                                            "stats"->BioStats(world,ui)
+                                            "stats"->BioStatisticsRoute(world,ui)
                                             "task"->BioTaskDetail(world,ui)
                                             "task-new"->BioTaskForm(world,ui)
                                             "focus"->BioFocus(world,ui)
@@ -102,3 +107,44 @@ import androidx.compose.ui.unit.*
 }
 
 @Composable internal fun BioToast(message:String,onDismiss:()->Unit,modifier:Modifier=Modifier){BioCard(modifier.fillMaxWidth(),padding=AppSpacing.Value14,radius=AppRadii.Value14){Row(verticalAlignment=Alignment.CenterVertically){Bt(message,Modifier.weight(1f),size=AppTypography.Size12);BioIconButton("close",onDismiss)}}}
+
+
+@Composable
+private fun BioStatisticsRoute(world: BioWorld, ui: BioController) {
+    val statistics = world.data.o("statistics")
+    StatisticsScreen(
+        state = StatisticsScreenState(
+            total = statistics.i("total"),
+            treeCount = world.trees.size,
+            week = statistics.i("week"),
+            today = statistics.i("today"),
+            streak = statistics.i("streak"),
+            dailyCompletions = world.statisticsDailyCompletions(),
+            dayLabels = world.statisticsDayLabels(),
+        ),
+        onNavigate = { link ->
+            val route = when (link) {
+                StatisticsLink.Review -> BioRoute.REVIEW
+                StatisticsLink.Achievements -> BioRoute.ACHIEVEMENTS
+                StatisticsLink.Timeline -> BioRoute.TIMELINE
+                StatisticsLink.Focus -> BioRoute.FOCUS
+                StatisticsLink.Settings -> BioRoute.SETTINGS
+                StatisticsLink.More -> BioRoute.MORE
+            }
+            ui.go(route.id)
+        },
+        onRefresh = { ui.send("refresh") },
+    )
+}
+
+internal fun BioWorld.statisticsDayLabels(): List<String> = bioDates(data.s("date"), 7).map { date ->
+        val calendar = java.util.Calendar.getInstance().apply {
+            time = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US).parse(date)!!
+        }
+        bioWeekday(calendar.get(java.util.Calendar.DAY_OF_WEEK))
+    }
+
+internal fun BioWorld.statisticsDailyCompletions(): List<Int> {
+    val daily = data.o("statistics").a("recentDailyCompletions")
+    return List(7) { daily.optInt(it).coerceAtLeast(0) }
+}

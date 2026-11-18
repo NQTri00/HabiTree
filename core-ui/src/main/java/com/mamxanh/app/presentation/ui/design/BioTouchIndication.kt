@@ -1,4 +1,4 @@
-package com.mamxanh.app.presentation.bio
+package com.mamxanh.app.presentation.ui.design
 
 import androidx.compose.foundation.IndicationNodeFactory
 import androidx.compose.foundation.interaction.FocusInteraction
@@ -19,7 +19,7 @@ import com.mamxanh.app.presentation.ui.design.AppInteraction
 import kotlinx.coroutines.launch
 
 /** Touch feedback without a ripple/state-layer rectangle behind rounded controls. */
-internal data class BioTouchIndication(
+data class BioTouchIndication(
     val focusColor: Color,
     // Initial states let real Compose previews inspect the same drawing code deterministically.
     val initiallyPressed: Boolean = false,

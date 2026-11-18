@@ -17,10 +17,6 @@ internal fun JSONObject.a(key:String)=optJSONArray(key)?:JSONArray()
 internal fun JSONArray.objects()=(0 until length()).mapNotNull{optJSONObject(it)}
 internal fun JSONArray.strings()=(0 until length()).map{optString(it)}
 internal fun bioTier(value:String)=when(value.lowercase()){"common"->AppText.text(TextKey.CopyPhoBien961e77);"rare"->AppText.text(TextKey.CopyHiem82557a);"legendary"->AppText.text(TextKey.CopyHuyenThoai538bf1);else->value}
-internal fun bioDisplayDate(value:String):String {
-    if(!Regex("\\d{4}-\\d{2}-\\d{2}").matches(value))return value
-    return runCatching { bioDateFormat().format(bioIsoDateFormat().parse(value)!!) }.getOrDefault(value)
-}
 internal fun json(vararg pairs:Pair<String,Any?>)=JSONObject().apply{pairs.forEach{(k,v)->put(k,v)}}
 
 internal data class BioWorld(val data:JSONObject, val loading:Boolean=false, val native:Boolean=false) {

@@ -1,4 +1,4 @@
-package com.mamxanh.app.presentation.bio
+package com.mamxanh.app.presentation.ui.design
 
 import android.content.Context
 import androidx.compose.runtime.Composable
@@ -10,9 +10,9 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import java.io.DataInputStream
 
-internal data class BioMonoFont(val family:FontFamily,val exact:Boolean)
+data class BioMonoFont(val family:FontFamily,val exact:Boolean)
 
-internal val LocalBioMonoFont=staticCompositionLocalOf{BioMonoFont(FontFamily.Monospace,false)}
+val LocalBioMonoFont=staticCompositionLocalOf{BioMonoFont(FontFamily.Monospace,false)}
 
 private fun hasFontData(context:Context,id:Int):Boolean {
     if(id==0)return false
@@ -22,7 +22,7 @@ private fun hasFontData(context:Context,id:Int):Boolean {
     }}.getOrDefault(false)
 }
 
-@Composable internal fun rememberBioMonoFont():BioMonoFont {
+@Composable fun rememberBioMonoFont():BioMonoFont {
     val context=LocalContext.current
     return remember(context){
         val regular=context.resources.getIdentifier("consolas_regular","font",context.packageName)

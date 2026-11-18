@@ -1,5 +1,7 @@
 package com.mamxanh.app.presentation.bio
 
+import com.mamxanh.app.presentation.ui.design.*
+
 import com.mamxanh.app.presentation.ui.design.AppColors
 import com.mamxanh.app.presentation.ui.design.AppDimensions
 import com.mamxanh.app.presentation.ui.design.AppIcons
@@ -185,18 +187,4 @@ internal fun accessoryIcon(id:String)=when(id){"tree_ribbon"->"gift";"tree_lante
     Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween){if(t.s("state")=="mature")BioTextAction(AppText.text(TextKey.CopyBanCay5210c7),{ui.show("sell",t.s("id"))});BioTextAction(AppText.text(TextKey.CopyDonCayE3d410),{ui.show("remove",t.s("id"))},"trash",AppColors.Danger,iconFirst=true)}
 }
 
-@Composable internal fun BioBars(world:BioWorld){
-    val values=world.data.o("statistics").a("recentDailyCompletions").let{a->(0 until 7).map{a.optInt(it).coerceAtLeast(0)}};val max=maxOf(1,values.maxOrNull()?:0)
-    val labels=bioDates(world.data.s("date"),7).map{date->val calendar=java.util.Calendar.getInstance().apply{time=java.text.SimpleDateFormat("yyyy-MM-dd",java.util.Locale.US).parse(date)!!};val day=calendar.get(java.util.Calendar.DAY_OF_WEEK);bioWeekday(day)}
-    Row(Modifier.fillMaxWidth().height(AppDimensions.Dp112),horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp10),verticalAlignment=Alignment.Bottom){values.forEachIndexed{i,value->Column(Modifier.weight(1f).semantics(mergeDescendants=true){contentDescription=AppText.text(TextKey.Copy01ViecHoanThanh0bc363,labels[i],value)},horizontalAlignment=Alignment.CenterHorizontally){Bt(value.toString(),size=AppTypography.Size12,tint=bp.muted);Spacer(Modifier.height(AppDimensions.Dp4));Box(Modifier.width(AppDimensions.Dp24).height((value.toFloat()/max*66).dp).background(if(i==6)bp.deep else bp.accent,RoundedCornerShape(topStart=AppDimensions.Dp6,topEnd=AppDimensions.Dp6)));HorizontalDivider(color=bp.line,thickness=AppDimensions.Dp1);Spacer(Modifier.height(AppDimensions.Dp5));Bt(labels[i],size=AppTypography.Size12,tint=bp.muted)}}}
-}
-@Composable internal fun ColumnScope.BioStats(world:BioWorld,ui:BioController){
-    val stats=world.data.o("statistics")
-    BioIntro(AppText.text(TextKey.CopyNhatKyXanhAa1337),AppText.text(TextKey.CopyNhungDieuDaLonLen2c3892),AppText.text(TextKey.CopyMoiBuocNhoDeuDuocGhiNhanB0ce5b),{BioIconButton("settings",{ui.go("settings")})})
-    BioMetrics(listOf(AppText.text(TextKey.CopyViecHoanThanhE0966b) to stats.i("total").toString(),AppText.text(TextKey.CopyCayTrongVuon6565bb) to world.trees.size.toString()))
-    BioCard(Modifier.fillMaxWidth()){Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically){Bt(AppText.text(TextKey.Copy7NgayVuaQua66a783),Modifier.weight(1f),size=AppTypography.Size17,bold=true);BioIconButton("refresh",{ui.send("refresh")})};BioBars(world)}
-    BioCard(Modifier.fillMaxWidth(),bp.soft,padding=AppSpacing.Value18){BioMetrics(listOf(AppText.text(TextKey.CopyTuanNayCc1611) to stats.i("week").toString(),AppText.text(TextKey.CopyHomNayE6747a) to stats.i("today").toString(),AppText.text(TextKey.CopyChuoiNgay5ad2e6) to stats.i("streak").toString()))}
-    Column(verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp12)){listOf(Triple("review","calendar",AppText.text(TextKey.CopyNhinLaiTuanFf3f0c)),Triple("achievements","award",AppText.text(TextKey.CopyDauMocDffd66)),Triple("timeline","book",AppText.text(TextKey.CopyKyNiemE3e113)),Triple("focus","clock",AppText.text(TextKey.CopyTapTrung964002)),Triple("settings","settings",AppText.text(TextKey.CopyTuyChon598c1b)),Triple("more","grid",AppText.text(TextKey.CopyHanhTrinh566b59))).forEach{(r,i,t)->BioLink(t,i,{ui.go(r)})}}
-    Bt(AppText.text(TextKey.CopyLuuTrenThietBiKhongCanTaiKhoan3ade82),Modifier.fillMaxWidth(),size=AppTypography.Size11,tint=bp.muted,align=TextAlign.Center)
-}
 @Composable internal fun ColumnScope.BioMore(ui:BioController){BioIntro(AppText.text(TextKey.CopyThemMotChut006e8b),AppText.text(TextKey.CopyTheoNhipCuaBan5a2ada));Column(verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp12)){listOf(Triple("focus","clock",AppText.text(TextKey.CopyTapTrung964002)),Triple("templates","plus",AppText.text(TextKey.CopyViecMau535dc1)),Triple("review","calendar",AppText.text(TextKey.CopyNhinLaiTuanFf3f0c)),Triple("achievements","award",AppText.text(TextKey.CopyDauMocDffd66)),Triple("timeline","book",AppText.text(TextKey.CopyKyNiemE3e113)),Triple("insights","chart",AppText.text(TextKey.CopyNhipThoiQuen1b8324)),Triple("encyclopedia","book",AppText.text(TextKey.CopyBachThaoF2ed64)),Triple("settings","settings",AppText.text(TextKey.CopyTuyChonNhacViecA44d85)),Triple("data","download",AppText.text(TextKey.CopyDuLieuUngDung9843b7))).forEach{(r,i,t)->BioLink(t,i,{ui.go(r)})}}}

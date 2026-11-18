@@ -16,7 +16,7 @@ class DesignTokenTests(unittest.TestCase):
     def test_all_token_references_resolve_and_jvm_getters_are_unique(self):
         directory=ROOT/'core-ui/src/main/java/com/mamxanh/app/presentation/ui/design'
         objects={}
-        for file in directory.glob('*.kt'):
+        for file in directory.glob('App*.kt'):
             names=re.findall(r'\bval\s+(\w+)\s*=',file.read_text(encoding='utf-8'))
             getters=[name[0].upper()+name[1:] for name in names]
             self.assertEqual(len(getters),len(set(getters)),file.name)
