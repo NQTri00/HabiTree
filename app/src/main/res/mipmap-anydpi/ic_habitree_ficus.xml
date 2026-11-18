@@ -1,0 +1,8 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="108dp" android:height="108dp" android:viewportWidth="108" android:viewportHeight="108"><path android:fillColor="@color/launcher_ficus_background" android:pathData="M24,4 H84 Q104,4 104,24 V84 Q104,104 84,104 H24 Q4,104 4,84 V24 Q4,4 24,4 Z" />
+    <path android:fillColor="@color/launcher_ficus_ink" android:pathData="M54,26 C67,31 67,40 54,49 C41,40 41,31 54,26 Z" />
+    <path android:fillColor="@color/launcher_ficus_ink" android:pathData="M29,41 C44,37 53,44 53,58 C38,60 30,53 29,41 Z" />
+    <path android:fillColor="@color/launcher_ficus_ink" android:pathData="M79,41 C64,37 55,44 55,58 C70,60 78,53 79,41 Z" />
+    <path android:fillColor="@android:color/transparent" android:strokeColor="@color/launcher_ficus_ink" android:strokeWidth="4" android:strokeLineCap="round" android:strokeLineJoin="round" android:pathData="M54,48 V73 M54,62 L40,50 M54,62 L68,50 M39,80 V73 H69 V80" />
+    <path android:fillColor="@android:color/transparent" android:strokeColor="@color/launcher_ficus_ink" android:strokeWidth="2.5" android:pathData="M39,77 A3,3 0,1 0,39,83 A3,3 0,1 0,39,77 M69,77 A3,3 0,1 0,69,83 A3,3 0,1 0,69,77" />
+
+</vector>

@@ -1,0 +1,54 @@
+[
+  {
+    "name": "home",
+    "preview": "BioHomePreviewVi",
+    "web": "home.png",
+    "source": "app/src/main/java/com/mamxanh/app/presentation/bio/previews/localization/BioHomePreviewVi.kt"
+  },
+  {
+    "name": "tree",
+    "preview": "BioTreePreviewVi",
+    "web": "tree.png",
+    "source": "app/src/main/java/com/mamxanh/app/presentation/bio/previews/localization/BioTreePreviewVi.kt"
+  },
+  {
+    "name": "popup-seed-buy",
+    "preview": "BioPopupSeedBuyPreviewVi",
+    "web": "popup-seed-buy.png",
+    "source": "app/src/main/java/com/mamxanh/app/presentation/bio/previews/localization/BioPopupSeedBuyPreviewVi.kt"
+  },
+  {
+    "name": "home-lavender",
+    "preview": "BioHomeLavenderPreviewVi",
+    "web": "home-lavender.png",
+    "source": "app/src/main/java/com/mamxanh/app/presentation/bio/previews/localization/BioHomeLavenderPreviewVi.kt"
+  },
+  {
+    "name": "home-320",
+    "preview": "BioHome320PreviewVi",
+    "web": "home-320.png",
+    "source": "app/src/main/java/com/mamxanh/app/presentation/bio/previews/localization/BioHome320PreviewVi.kt"
+  },
+  {
+    "name": "home-lavender-full",
+    "preview": "BioHomeLavenderFullPreviewVi",
+    "web": "home-lavender-full.png",
+    "source": "app/src/main/java/com/mamxanh/app/presentation/bio/previews/localization/BioHomeLavenderFullPreviewVi.kt",
+    "width": 375,
+    "height": 1143
+  },
+  {
+    "name": "audit-large-text-home",
+    "preview": "BioAuditLargeTextHomePreviewVi",
+    "source": "app/src/main/java/com/mamxanh/app/presentation/bio/previews/localization/BioAuditLargeTextHomePreviewVi.kt",
+    "nativeOnly": true,
+    "web": null,
+    "width": 375,
+    "height": 812
+  },
+  {
+    "name": "home-watered",
+    "preview": "BioWateredHomeViPreview",
+    "source": "app/src/main/java/com/mamxanh/app/presentation/bio/previews/BioWateredHomeViPreview.kt"
+  }
+]

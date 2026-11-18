@@ -1,0 +1,147 @@
+{
+  "verifiedAt": "2026-11-18T00:16:51.643740+00:00",
+  "resourceAndIconChecks": 15,
+  "hostTests": [
+    {
+      "name": "com.mamxanh.shared.AppTextTest",
+      "tests": "7",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "com.mamxanh.shared.BackupCodecTest",
+      "tests": "4",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    }
+  ],
+  "apk": {
+    "bytes": 248792164,
+    "sha256": "72b76eeedde9bf19e18a687fe459014789662243d0511adf9e088497b91b97f0",
+    "signatureSchemeV2Verified": true
+  },
+  "originalComposeCaptures": {
+    "en": [
+      {
+        "name": "audit-large-text-home",
+        "width": 375,
+        "height": 812,
+        "sha256": "f8f5e194575bd18bf01ec1f3af5a127129fe379fa8419f122768089776205517"
+      },
+      {
+        "name": "home-320",
+        "width": 320,
+        "height": 640,
+        "sha256": "91b68f057d3ee020188c3820f005e9a908492335df08ba13543db3caafd70bf8"
+      },
+      {
+        "name": "home-lavender-full",
+        "width": 375,
+        "height": 1143,
+        "sha256": "94110580e325316965c986d4e644b20ac345bbf8c3c8b4a130fe2f515e3f5eef"
+      },
+      {
+        "name": "home-lavender",
+        "width": 375,
+        "height": 812,
+        "sha256": "90fa9a4f5bd2ea08c36fdebd4b7a71a09f9d965f172fdb543e19037251061543"
+      },
+      {
+        "name": "home",
+        "width": 375,
+        "height": 812,
+        "sha256": "76b536a11a63a95fac21dbc56fcb4ae59dd51c0bc48313f52ff12ac812ab8aba"
+      },
+      {
+        "name": "launcher-icons-circle",
+        "width": 375,
+        "height": 812,
+        "sha256": "f25c223a805cc4eb70aa2f683b1752aa17184efef918125a27dfc4ecf1294ae1"
+      },
+      {
+        "name": "launcher-icons-square",
+        "width": 375,
+        "height": 812,
+        "sha256": "03ce8aa7936e2d680eaafa4d077a10fc18efdacb25f84279172312fa8c812357"
+      },
+      {
+        "name": "popup-seed-buy",
+        "width": 375,
+        "height": 812,
+        "sha256": "75b2559ddcf2560f10dd550a5ac731a02a3c0ded59bfde0dc7bb59056ac3b882"
+      },
+      {
+        "name": "touch-feedback",
+        "width": 375,
+        "height": 812,
+        "sha256": "09aeddcb677d38742f61cb8f48b252747efae3a48a98db6e638af4b8409de165"
+      },
+      {
+        "name": "tree",
+        "width": 375,
+        "height": 812,
+        "sha256": "055e27a73c18291203ad6661895a3ca4f9e831b22dd48300ba8a5e365f429150"
+      },
+      {
+        "name": "home-watered",
+        "width": 375,
+        "height": 812,
+        "sha256": "5d6ef98cf88d8b92bdf442e607396a1eb8a7412d5f7d7f73de0e6d2d0cee643a"
+      }
+    ],
+    "vi": [
+      {
+        "name": "audit-large-text-home",
+        "width": 375,
+        "height": 812,
+        "sha256": "9dcc9e8c715db5d5a01e6dce3b6f4d033515917f549d5700900b6b40d563389a"
+      },
+      {
+        "name": "home-320",
+        "width": 320,
+        "height": 640,
+        "sha256": "2254b60d268bc409e42dca879de62adb61449348e6547ba2edd74a13ae8aaf0e"
+      },
+      {
+        "name": "home-lavender-full",
+        "width": 375,
+        "height": 1143,
+        "sha256": "0a94af31563060a420c2851d675dcfba9d431918cdba73cc314a87e715767442"
+      },
+      {
+        "name": "home-lavender",
+        "width": 375,
+        "height": 812,
+        "sha256": "d82dea2035e6db13efc6acd352ad8d58f359b24ccebcffcaed6a82c8e933b305"
+      },
+      {
+        "name": "home",
+        "width": 375,
+        "height": 812,
+        "sha256": "876f8754a46dd917b5d1cfe06f5ae585abf29696e696c4dab51acf6f0d5b313c"
+      },
+      {
+        "name": "popup-seed-buy",
+        "width": 375,
+        "height": 812,
+        "sha256": "c457a3ecc411b9b8e212dd144e021622c4aa98a90e76ca5db68c189cf33dfc88"
+      },
+      {
+        "name": "tree",
+        "width": 375,
+        "height": 812,
+        "sha256": "e5d4060aefd007f3c1248a82722639f5144a5c2e0a17d7486c965db2407753f2"
+      },
+      {
+        "name": "home-watered",
+        "width": 375,
+        "height": 812,
+        "sha256": "09f0a900b72445b8c502e50aa168bf03d4d962aa5994cfee82ccfdea2cc1b94b"
+      }
+    ]
+  },
+  "deviceInteractionVerified": false,
+  "launcherSwitchingVerifiedOnDevice": false
+}

@@ -14,6 +14,7 @@ import com.mamxanh.shared.localization.TextKey
 import com.mamxanh.shared.localization.AppText
 
 import androidx.compose.foundation.*
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -54,7 +55,10 @@ internal fun color(hex:String)=Color(android.graphics.Color.parseColor(hex))
     val palette=BioPalette(accent,soft,bg,deep,muted,line,hue)
     val monoFont=rememberBioMonoFont()
     CompositionLocalProvider(LocalBioPalette provides palette,LocalBioMonoFont provides monoFont) {
-        MaterialTheme(colorScheme=lightColorScheme(primary=deep,onPrimary=AppColors.White,primaryContainer=accent,onPrimaryContainer=palette.ink,background=bg,surface=palette.surface,onSurface=palette.ink,outline=line),typography=GardenTypography,content=content)
+        MaterialTheme(colorScheme=lightColorScheme(primary=deep,onPrimary=AppColors.White,primaryContainer=accent,onPrimaryContainer=palette.ink,background=bg,surface=palette.surface,onSurface=palette.ink,outline=line),typography=GardenTypography){
+            val touchIndication=remember(deep){BioTouchIndication(deep)}
+            CompositionLocalProvider(LocalIndication provides touchIndication,content=content)
+        }
     }
 }
 @Composable internal fun Bt(text:String,modifier:Modifier=Modifier,size:Int=AppTypography.Size14,tint:Color=bp.ink,bold:Boolean=false,semi:Boolean=false,mono:Boolean=false,line:Float=size*(if(size>=AppThemeEffects.LargeTextThreshold)AppThemeEffects.LargeLineHeight else AppThemeEffects.BodyLineHeight),spacing:Float=AppTypography.Tracking0,align:TextAlign?=null,maxLines:Int=Int.MAX_VALUE) {
@@ -97,13 +101,13 @@ internal fun Modifier.bioLift(shape:Shape,tint:Color)=drawBehind{
         canvas.nativeCanvas.drawPath(path,paint)
     }
 }
-@Composable internal fun BioCard(modifier:Modifier=Modifier,tint:Color=bp.surface,padding:Int=AppSpacing.Value18,radius:Int=AppRadii.Value22,onClick:(()->Unit)?=null,borderColor:Color?=null,content:@Composable ColumnScope.()->Unit) {
+@Composable internal fun BioCard(modifier:Modifier=Modifier,tint:Color=bp.surface,padding:Int=AppSpacing.Value18,radius:Int=AppRadii.Value22,onClick:(()->Unit)?=null,borderColor:Color?=null,interactionSource:MutableInteractionSource?=null,content:@Composable ColumnScope.()->Unit) {
     val shape=bioShape(radius)
-    Column(modifier.bioLift(shape,bp.deep).background(tint,shape).border(AppDimensions.Dp1,borderColor?:AppColors.White.copy(alpha=AppOpacity.Value_8),shape).then(if(onClick!=null)Modifier.clickable(onClick=onClick)else Modifier).padding((padding+1).dp),content=content)
+    Column(modifier.bioLift(shape,bp.deep).background(tint,shape).border(AppDimensions.Dp1,borderColor?:AppColors.White.copy(alpha=AppOpacity.Value_8),shape).then(if(onClick!=null)Modifier.clickable(interactionSource=interactionSource,indication=LocalIndication.current,onClick=onClick)else Modifier).padding((padding+1).dp),content=content)
 }
-@Composable internal fun BioButton(label:String,onClick:()->Unit,modifier:Modifier=Modifier,icon:String="",secondary:Boolean=false,enabled:Boolean=true,danger:Boolean=false,labelSize:Int=LocalBioButtonSize.current) {
+@Composable internal fun BioButton(label:String,onClick:()->Unit,modifier:Modifier=Modifier,icon:String="",secondary:Boolean=false,enabled:Boolean=true,danger:Boolean=false,labelSize:Int=LocalBioButtonSize.current,interactionSource:MutableInteractionSource?=null) {
     val shape=bioShape(AppRadii.Value14);val fill=if(danger)AppColors.SwatchFFF7DFDF else if(secondary)AppColors.White.copy(alpha=AppOpacity.Value_8) else bp.accent
-    Row(modifier.heightIn(min=AppDimensions.Dp48).alpha(if(enabled)AppOpacity.Value1 else AppOpacity.Value_48).shadow(if(enabled)AppDimensions.Dp2 else AppDimensions.Dp0,shape,ambientColor=bp.deep.copy(alpha=AppOpacity.Value_08),spotColor=bp.deep.copy(alpha=AppOpacity.Value_08)).background(fill,shape).border(AppDimensions.Dp1,if(danger)AppColors.SwatchFFE2B8B8 else if(secondary)bp.line else lerp(bp.accent,bp.deep,AppThemeEffects.ButtonOutlineBlend),shape).clickable(enabled=enabled,role=Role.Button,onClick=onClick).padding(horizontal=if(LocalBioButtonSize.current==13)AppDimensions.Dp8 else if(LocalConfiguration.current.screenWidthDp<AppThemeEffects.CompactWidth)AppDimensions.Dp10 else AppDimensions.Dp18,vertical=AppDimensions.Dp10),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.Center) {
+    Row(modifier.heightIn(min=AppDimensions.Dp48).alpha(if(enabled)AppOpacity.Value1 else AppOpacity.Value_48).shadow(if(enabled)AppDimensions.Dp2 else AppDimensions.Dp0,shape,ambientColor=bp.deep.copy(alpha=AppOpacity.Value_08),spotColor=bp.deep.copy(alpha=AppOpacity.Value_08)).background(fill,shape).border(AppDimensions.Dp1,if(danger)AppColors.SwatchFFE2B8B8 else if(secondary)bp.line else lerp(bp.accent,bp.deep,AppThemeEffects.ButtonOutlineBlend),shape).clickable(interactionSource=interactionSource,indication=LocalIndication.current,enabled=enabled,role=Role.Button,onClick=onClick).padding(horizontal=if(LocalBioButtonSize.current==13)AppDimensions.Dp8 else if(LocalConfiguration.current.screenWidthDp<AppThemeEffects.CompactWidth)AppDimensions.Dp10 else AppDimensions.Dp18,vertical=AppDimensions.Dp10),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.Center) {
         if(icon.isNotBlank()){Bi(icon,tint=if(danger)AppColors.SwatchFF8C363B else bp.ink,size=AppIcons.Size18);Spacer(Modifier.width(AppDimensions.Dp8))}
         Bt(label,size=labelSize,semi=true,tint=if(danger)AppColors.SwatchFF8C363B else bp.ink,align=TextAlign.Center)
     }
@@ -127,7 +131,7 @@ internal fun Modifier.bioLift(shape:Shape,tint:Color)=drawBehind{
 @Composable internal fun BioHeader(title:String,coins:Int,primary:Boolean,onBack:()->Unit,onMore:()->Unit,showWallet:Boolean=true) {
     Column(Modifier.fillMaxWidth()){
         Row(Modifier.fillMaxWidth().height(AppDimensions.Dp71).padding(start=if(LocalConfiguration.current.screenWidthDp<AppThemeEffects.CompactWidth)AppDimensions.Dp14 else AppDimensions.Dp20,end=if(LocalConfiguration.current.screenWidthDp<AppThemeEffects.CompactWidth)AppDimensions.Dp14 else AppDimensions.Dp20,top=AppDimensions.Dp10,bottom=AppDimensions.Dp8),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp4)) {
-            if(primary){Row(Modifier.weight(1f),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp7)){Bi("leaf");Bt(AppText.text(TextKey.CopyMamXanh692a0a),size=AppTypography.Size18,bold=true,spacing=AppTypography.TrackingMinus_7);Box(Modifier.padding(bottom=AppDimensions.Dp15).size(AppDimensions.Dp5).background(bp.deep,RoundedCornerShape(50)))}}
+            if(primary){Row(Modifier.weight(1f),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp7)){Bi("brand");Bt(AppText.text(TextKey.CopyMamXanh692a0a),size=AppTypography.Size18,bold=true,spacing=AppTypography.TrackingMinus_7);Box(Modifier.padding(bottom=AppDimensions.Dp15).size(AppDimensions.Dp5).background(bp.deep,RoundedCornerShape(50)))}}
             else{BioIconButton("back",onBack);Bt(title,Modifier.weight(1f),size=AppTypography.Size15,semi=true,maxLines=1)}
             if(showWallet)Row(Modifier.background(AppColors.SwatchFFFFFDF5,RoundedCornerShape(AppDimensions.Dp30)).border(AppDimensions.Dp1,AppColors.SwatchFFD8D0BD,RoundedCornerShape(AppDimensions.Dp30)).padding(horizontal=AppDimensions.Dp10,vertical=AppDimensions.Dp7),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp5)){Bi("coin",size=AppIcons.Size15,tint=AppColors.SwatchFF765F27);Bt(coins.toString(),size=AppTypography.Size12,mono=true)}
             if(primary)BioIconButton("more",onMore)

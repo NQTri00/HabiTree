@@ -1,0 +1,5 @@
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <background android:drawable="@color/launcher_succulent_background" />
+    <foreground android:drawable="@drawable/ic_habitree_foreground_succulent" />
+    <monochrome android:drawable="@drawable/ic_habitree_monochrome" />
+</adaptive-icon>

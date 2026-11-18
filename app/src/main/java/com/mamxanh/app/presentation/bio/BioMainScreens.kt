@@ -63,9 +63,9 @@ internal fun accessoryIcon(id:String)=when(id){"tree_ribbon"->"gift";"tree_lante
         if(home){Spacer(Modifier.height(AppDimensions.Dp13));if(LocalDensity.current.fontScale>1.2f)Column(verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp10)){
             BioButton(if(t.b("watered"))AppText.text(TextKey.CopyDaTuoiDe2042) else AppText.text(TextKey.CopyTuoiCay0990f6),{ui.send("water:"+t.s("id"))},Modifier.fillMaxWidth(),"water",enabled=!t.b("watered")&&!dead&&!ui.busy)
             BioButton(AppText.text(TextKey.CopyTrangTriD48231),{ui.act("bio-tree-decor:"+t.s("id"))},Modifier.fillMaxWidth(),"spark",secondary=true,enabled=!dead&&!ui.busy)
-        }else Row(horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp10)){
-            BioButton(if(t.b("watered"))AppText.text(TextKey.CopyDaTuoiDe2042) else AppText.text(TextKey.CopyTuoiCay0990f6),{ui.send("water:"+t.s("id"))},Modifier.weight(1f),"water",enabled=!t.b("watered")&&!dead&&!ui.busy,labelSize=if(narrow)12 else 14)
-            BioButton(AppText.text(TextKey.CopyTrangTriD48231),{ui.act("bio-tree-decor:"+t.s("id"))},Modifier.weight(1f),"spark",secondary=true,enabled=!dead&&!ui.busy,labelSize=if(narrow)12 else 14)
+        }else Row(Modifier.height(IntrinsicSize.Min),horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp10)){
+            BioButton(if(t.b("watered"))AppText.text(TextKey.CopyDaTuoiDe2042) else AppText.text(TextKey.CopyTuoiCay0990f6),{ui.send("water:"+t.s("id"))},Modifier.weight(1f).fillMaxHeight(),"water",enabled=!t.b("watered")&&!dead&&!ui.busy,labelSize=if(narrow)12 else 14)
+            BioButton(AppText.text(TextKey.CopyTrangTriD48231),{ui.act("bio-tree-decor:"+t.s("id"))},Modifier.weight(1f).fillMaxHeight(),"spark",secondary=true,enabled=!dead&&!ui.busy,labelSize=if(narrow)12 else 14)
         }}
     }
 }

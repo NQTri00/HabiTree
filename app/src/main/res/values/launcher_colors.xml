@@ -1,0 +1,24 @@
+<resources>
+    <color name="launcher_cherry_background">#f4c7d8</color>
+    <color name="launcher_cherry_ink">#71354f</color>
+    <color name="launcher_lavender_background">#ddd0f2</color>
+    <color name="launcher_lavender_ink">#56416f</color>
+    <color name="launcher_mandarin_background">#f5d0a6</color>
+    <color name="launcher_mandarin_ink">#724824</color>
+    <color name="launcher_succulent_background">#cee3c4</color>
+    <color name="launcher_succulent_ink">#3e5c3c</color>
+    <color name="launcher_pine_background">#c3e0d2</color>
+    <color name="launcher_pine_ink">#345b4a</color>
+    <color name="launcher_monstera_background">#bfe2d7</color>
+    <color name="launcher_monstera_ink">#305c50</color>
+    <color name="launcher_ficus_background">#d0e1c0</color>
+    <color name="launcher_ficus_ink">#405b35</color>
+    <color name="launcher_snake_background">#e1e6b7</color>
+    <color name="launcher_snake_ink">#535d2d</color>
+    <color name="launcher_cactus_background">#f0ccd0</color>
+    <color name="launcher_cactus_ink">#743b48</color>
+    <color name="launcher_aloe_background">#c5e3c8</color>
+    <color name="launcher_aloe_ink">#365d40</color>
+    <color name="launcher_pilea_background">#d9e6b9</color>
+    <color name="launcher_pilea_ink">#4c5c30</color>
+</resources>

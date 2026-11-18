@@ -1,15 +1,16 @@
 const fs = require('fs');
 const path = require('path');
 const language = process.argv[2];
+const polish = process.argv[3] === 'polish';
 if (!['vi', 'en'].includes(language)) throw Error('Choose vi or en.');
-const bytes = fs.readFileSync(path.join(__dirname, `render-${language}.log`));
+const bytes = fs.readFileSync(path.join(__dirname, `${polish?'polish':'render'}-${language}.log`));
 const log = bytes.toString(bytes[0] === 255 && bytes[1] === 254 ? 'utf16le' : 'utf8');
 const marker = log.match(/(?:^|\r?\n)\{\s*"success"/);
 if (!marker) throw Error('The renderer has not returned a final result.');
 const result = JSON.parse(log.slice(log.indexOf('{', marker.index), log.lastIndexOf('}') + 1));
 if (!result.success) throw Error(result.globalError || 'Rendering failed.');
-const jobs = JSON.parse(fs.readFileSync(path.join(__dirname, `preview-jobs-${language}.json`), 'utf8'));
-const output = `E:/Workspace/mamxanh-redesign/localization-review/${language}`;
+const jobs = JSON.parse(fs.readFileSync(path.join(__dirname, `${polish?'polish-jobs':'preview-jobs'}-${language}.json`), 'utf8'));
+const output = `E:/Workspace/mamxanh-redesign/${polish?'habitree-polish-review':'localization-review'}/${language}`;
 fs.mkdirSync(output, {recursive: true});
 const captures = [];
 for (const rendered of result.results) {
@@ -30,5 +31,5 @@ for (const rendered of result.results) {
   captures.push({name: job.name, width, height, source: rendered.imagePath, preview: job.preview});
 }
 if (captures.length !== jobs.length) throw Error(`Expected ${jobs.length} captures, got ${captures.length}.`);
-fs.writeFileSync(path.join(__dirname, `captures-${language}.json`), JSON.stringify({language, collectedAt: new Date().toISOString(), captures}, null, 2));
+fs.writeFileSync(path.join(__dirname, `${polish?'polish-captures':'captures'}-${language}.json`), JSON.stringify({language, collectedAt: new Date().toISOString(), captures}, null, 2));
 console.log(`Collected ${captures.length} original ${language} Compose images.`);

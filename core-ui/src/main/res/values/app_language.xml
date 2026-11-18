@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name" translatable="false">Mầm Xanh</string>
+    <string name="app_name" translatable="false">HabiTree</string>
     <string name="app_language_title">Ngôn ngữ</string>
     <string name="app_language_description">Đổi ngôn ngữ ứng dụng. Tên và ghi chú bạn nhập được giữ nguyên.</string>
     <string name="app_language_vi" translatable="false">Tiếng Việt</string>

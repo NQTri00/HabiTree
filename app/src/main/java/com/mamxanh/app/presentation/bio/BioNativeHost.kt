@@ -36,7 +36,7 @@ private fun clock(value:String):Int{if(value.isBlank())return -1;val m=Regex("^(
 private fun nativeWorld(storage:GameStorage,reference:BioWorld,service:BackupService):BioWorld {
     val data=JSONObject(reference.data.toString());val g=storage.garden();val tasks=storage.tasks();val e=storage.engagementSnapshot();val living=storage.livingGarden();val statistics=storage.statistics();val phase=storage.phaseSnapshot()
     val now=System.currentTimeMillis();val today=date(now)
-    val trees=g.trees.map{t->val decoration=living.placements.firstOrNull{it.treeId==t.id&&gardenCosmetics.any{c->c.id==it.sku&&c.slot=="TREE"}}?.sku.orEmpty();json("id" to t.id,"species" to t.speciesId,"name" to t.name,"plot" to (g.plots.firstOrNull{it.treeId==t.id}?.id?:0),"state" to t.status.state.name.lowercase(),"stage" to t.status.stageIndex+1,"progress" to t.status.percentage,"watered" to t.status.waterActive,"planted" to t.planted,"decor" to decoration,"canFertilize" to t.status.canFertilize,"fertilized" to t.status.fertilizerId)}
+    val trees=g.trees.map{t->val decoration=living.placements.firstOrNull{it.treeId==t.id&&gardenCosmetics.any{c->c.id==it.sku&&c.slot=="TREE"}}?.sku.orEmpty();json("id" to t.id,"species" to t.speciesId,"name" to AppText.plantName(t.speciesId,t.name),"plot" to (g.plots.firstOrNull{it.treeId==t.id}?.id?:0),"state" to t.status.state.name.lowercase(),"stage" to t.status.stageIndex+1,"progress" to t.status.percentage,"watered" to t.status.waterActive,"planted" to t.planted,"decor" to decoration,"canFertilize" to t.status.canFertilize,"fertilized" to t.status.fertilizerId)}
     val taskJson=tasks.map{t->json("id" to t.id,"title" to t.title,"kind" to t.kind,"category" to t.category,"verification" to t.config.verification,"minutes" to t.config.minutes,"frequency" to t.frequency,"description" to t.config.description,"days" to t.config.days,"due" to t.due,"start" to clockLabel(t.config.startMinute),"end" to clockLabel(t.config.endMinute),"reminder" to clockLabel(t.config.reminderMinute),"done" to t.doneToday,"finished" to t.finished,"lifecycle" to t.lifecycle,"scheduledToday" to t.scheduledToday,"available" to t.available,"availability" to t.availability,"streak" to t.streak,"lastDone" to t.lastDone,"history" to array(t.history.map{json("date" to it.date,"nominal" to it.nominal,"granted" to it.granted)}))}
     val focus=e.focus.firstOrNull{it.state in listOf("RUNNING","PAUSED","BREAK")}
     val reminders=JSONObject().apply{e.reminders.forEach{put(it.taskId.toString(),json("mode" to it.mode,"minute" to clockLabel(it.minute),"followUp" to it.followUp))}}
@@ -62,6 +62,10 @@ private fun nativeWorld(storage:GameStorage,reference:BioWorld,service:BackupSer
     val ui=rememberSaveable(saver=BioController.Saver){BioController().apply{homeTree=prefs.getLong("home_tree_id",0).toString()}}
     var world by remember{mutableStateOf(BioWorld(JSONObject(reference.data.toString()).apply{put("state",json("coins" to 0,"trees" to JSONArray(),"tasks" to JSONArray(),"inventory" to JSONObject(),"owned" to JSONObject(),"settings" to JSONObject()))},loading=true,native=true))}
     var pending by remember{mutableStateOf<GameBackup?>(null)}
+    val homeSpecies=world.tree(ui.homeTree)?.s("species").orEmpty()
+    LaunchedEffect(homeSpecies,world.loading){
+        if(!world.loading)withContext(Dispatchers.IO){HabiTreeLauncherIcon.update(context.applicationContext,homeSpecies)}
+    }
     suspend fun refresh(){world=withContext(Dispatchers.IO){nativeWorld(storage,reference,service)};if(world.trees.none{it.s("id")==ui.homeTree})ui.homeTree=world.trees.firstOrNull()?.s("id")?:"0"}
     LaunchedEffect(storage){storage.changes.collect{refresh();if(!world.state.b("onboarded",true)&&ui.route=="home")ui.go("onboard",root=true)}}
     LaunchedEffect(externalTree){externalTree?.let{ui.go("tree",it.toString());onExternalHandled()}}

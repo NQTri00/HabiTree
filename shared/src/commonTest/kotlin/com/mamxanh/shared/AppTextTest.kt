@@ -10,6 +10,17 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 
 class AppTextTest {
+    @Test fun defaultPlantNamesFollowTheLanguageWithoutChangingCustomNicknames() {
+        val key=TextKey.CopyDaoHongXuanC2fd99
+        val vietnamese=AppText.forLanguage(key,AppLanguage.Vietnamese)
+        val english=AppText.forLanguage(key,AppLanguage.English)
+        AppText.language=AppLanguage.English
+        assertEquals(english,AppText.plantName("cherry",vietnamese))
+        assertEquals("My balcony tree",AppText.plantName("cherry","My balcony tree"))
+        assertEquals(vietnamese,AppText.plantName("pine",vietnamese))
+        AppText.language=AppLanguage.Vietnamese
+        assertEquals(vietnamese,AppText.plantName("cherry",english))
+    }
     @AfterTest fun resetLanguage() { AppText.language = AppLanguage.Vietnamese }
 
     @Test fun categoryIdsRemainCompatibleWhenLanguageChanges() {

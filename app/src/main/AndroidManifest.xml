@@ -5,15 +5,112 @@
         android:name=".MamXanhApplication"
         android:allowBackup="true"
         android:label="@string/app_name"
+        android:icon="@mipmap/ic_habitree_succulent"
         android:localeConfig="@xml/locales_config"
         android:supportsRtl="true"
         android:theme="@android:style/Theme.Material.Light.NoActionBar">
         <activity android:name=".MainActivity" android:exported="true"
             android:windowSoftInputMode="adjustResize">
+
+        </activity>
+        <activity-alias android:name=".launcher.Icon_cherry"
+            android:targetActivity=".MainActivity" android:exported="true"
+            android:enabled="false"
+            android:label="@string/app_name" android:icon="@mipmap/ic_habitree_cherry">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
+        </activity-alias>
+        <activity-alias android:name=".launcher.Icon_lavender"
+            android:targetActivity=".MainActivity" android:exported="true"
+            android:enabled="false"
+            android:label="@string/app_name" android:icon="@mipmap/ic_habitree_lavender">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+        <activity-alias android:name=".launcher.Icon_mandarin"
+            android:targetActivity=".MainActivity" android:exported="true"
+            android:enabled="false"
+            android:label="@string/app_name" android:icon="@mipmap/ic_habitree_mandarin">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+        <activity-alias android:name=".launcher.Icon_succulent"
+            android:targetActivity=".MainActivity" android:exported="true"
+            android:enabled="true"
+            android:label="@string/app_name" android:icon="@mipmap/ic_habitree_succulent">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+        <activity-alias android:name=".launcher.Icon_pine"
+            android:targetActivity=".MainActivity" android:exported="true"
+            android:enabled="false"
+            android:label="@string/app_name" android:icon="@mipmap/ic_habitree_pine">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+        <activity-alias android:name=".launcher.Icon_monstera"
+            android:targetActivity=".MainActivity" android:exported="true"
+            android:enabled="false"
+            android:label="@string/app_name" android:icon="@mipmap/ic_habitree_monstera">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+        <activity-alias android:name=".launcher.Icon_ficus"
+            android:targetActivity=".MainActivity" android:exported="true"
+            android:enabled="false"
+            android:label="@string/app_name" android:icon="@mipmap/ic_habitree_ficus">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+        <activity-alias android:name=".launcher.Icon_snake"
+            android:targetActivity=".MainActivity" android:exported="true"
+            android:enabled="false"
+            android:label="@string/app_name" android:icon="@mipmap/ic_habitree_snake">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+        <activity-alias android:name=".launcher.Icon_cactus"
+            android:targetActivity=".MainActivity" android:exported="true"
+            android:enabled="false"
+            android:label="@string/app_name" android:icon="@mipmap/ic_habitree_cactus">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+        <activity-alias android:name=".launcher.Icon_aloe"
+            android:targetActivity=".MainActivity" android:exported="true"
+            android:enabled="false"
+            android:label="@string/app_name" android:icon="@mipmap/ic_habitree_aloe">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+        <activity-alias android:name=".launcher.Icon_pilea"
+            android:targetActivity=".MainActivity" android:exported="true"
+            android:enabled="false"
+            android:label="@string/app_name" android:icon="@mipmap/ic_habitree_pilea">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
     </application>
 </manifest>

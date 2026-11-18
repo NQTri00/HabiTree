@@ -35,7 +35,8 @@ class CatalogTests(unittest.TestCase):
             self.assertEqual(expected,{entry.attrib['name'] for entry in xml.getroot()})
         for file in (ROOT/'app/src/main/res/values').glob('*.xml'):
             english=ROOT/'app/src/main/res/values-en'/file.name
-            base={entry.attrib['name'] for entry in ET.parse(file).getroot() if entry.attrib.get('translatable')!='false'}
+            base={entry.attrib['name'] for entry in ET.parse(file).getroot() if entry.tag in {'string','plurals','string-array'} and entry.attrib.get('translatable')!='false'}
+            if not base:continue
             translated={entry.attrib['name'] for entry in ET.parse(english).getroot()}
             self.assertTrue(base.issubset(translated),file.name)
 

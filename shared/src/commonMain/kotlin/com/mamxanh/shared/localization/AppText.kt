@@ -7,9 +7,29 @@ enum class AppLanguage(val tag:String) {
 }
 
 object AppText {
+    private val plantNames = mapOf(
+        "succulent" to TextKey.CopySenDaNgocAba46f,
+        "monstera" to TextKey.CopyTrauBaLaXeF22d98,
+        "ficus" to TextKey.CopyCayBangBupEb6814,
+        "snake" to TextKey.CopyLuoiHoXanh998396,
+        "cactus" to TextKey.CopyXuongRongHoa723f84,
+        "aloe" to TextKey.CopyNhaDamMongD63ca0,
+        "lavender" to TextKey.CopyOaiHuongTim2ffaf9,
+        "pilea" to TextKey.CopyCoDongTienF85b17,
+        "cherry" to TextKey.CopyDaoHongXuanC2fd99,
+        "pine" to TextKey.CopyThongXanhBiecBb5db6,
+        "mandarin" to TextKey.CopyQuytNang1c3e1e,
+    )
     private val placeholder=Regex("\\{(\\d+)\\}")
     /** One app language per process; Android applies configuration recreation when changed. */
     var language:AppLanguage=AppLanguage.Vietnamese
+
+    /** Translate a saved default species name, never an arbitrary custom nickname. */
+    fun plantName(speciesId:String,savedName:String):String {
+        val key=plantNames[speciesId]?:return savedName
+        val isDefault=savedName.isBlank()||AppLanguage.entries.any{savedName==forLanguage(key,it)}
+        return if(isDefault)text(key)else savedName
+    }
 
     fun text(key:TextKey,vararg arguments:Any?):String=forLanguage(key,language,*arguments)
     fun canonical(key:TextKey,vararg arguments:Any?):String=GeneratedCopy.storageValues[key.ordinal].ifEmpty{forLanguage(key,AppLanguage.Vietnamese,*arguments)}

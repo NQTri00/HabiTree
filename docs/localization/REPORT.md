@@ -1,5 +1,7 @@
 # English / Vietnamese implementation and visual review
 
+Historical checkpoint `39d1e83`. See [the HabiTree polish follow-up](POLISH-REPORT.md) for the subsequent branding, icon, plant-name and touch-feedback changes.
+
 Status: implementation, final bilingual image review, build and APK signature verification completed.
 
 ## Result

@@ -12,7 +12,7 @@
     <string name="copy_bat_dau_b3cacc" formatted="false">Start</string>
     <string name="copy_them_viec_c371c2" formatted="false">Add task</string>
     <string name="copy_sua_viec_55ba70" formatted="false">Edit task</string>
-    <string name="copy_mam_xanh_7d3324" formatted="false">Mầm Xanh</string>
+    <string name="copy_mam_xanh_7d3324" formatted="false">HabiTree</string>
     <string name="copy_chon_ngay_d724ec" formatted="false">Choose date</string>
     <string name="copy_xoa_57435a" formatted="false">Clear</string>
     <string name="copy_chon_gio_b73bd9" formatted="false">Choose time</string>
@@ -24,7 +24,7 @@
     <string name="copy_mo_tui_do_f3f7f9" formatted="false">Open inventory</string>
     <string name="copy_tuy_chon_598c1b" formatted="false">Settings</string>
     <string name="copy_lam_moi_b4c613" formatted="false">Refresh</string>
-    <string name="copy_mam_xanh_692a0a" formatted="false">mầm xanh</string>
+    <string name="copy_mam_xanh_692a0a" formatted="false">HabiTree</string>
     <string name="copy_hom_nay_e6747a" formatted="false">Today</string>
     <string name="copy_viec_818768" formatted="false">Tasks</string>
     <string name="copy_vuon_9e4c10" formatted="false">Garden</string>
@@ -155,7 +155,7 @@
     <string name="copy_kho_heo_bf546a" formatted="false">Withered</string>
     <string name="copy_du_nuoc_c17aa8" formatted="false">Watered</string>
     <string name="copy_can_tuoi_a0957f" formatted="false">Needs water</string>
-    <string name="copy_da_tuoi_de2042" formatted="false">Already watered</string>
+    <string name="copy_da_tuoi_de2042" formatted="false">Watered</string>
     <string name="copy_tuoi_cay_0990f6" formatted="false">Water tree</string>
     <string name="copy_trang_tri_d48231" formatted="false">Decorate</string>
     <string name="copy_mot_nhip_xanh_4e8208" formatted="false">A LITTLE GREEN RHYTHM</string>

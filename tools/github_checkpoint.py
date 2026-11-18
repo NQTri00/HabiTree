@@ -20,6 +20,9 @@ def main():
     parser.add_argument('--inspect',action='store_true')
     parser.add_argument('--apk',type=Path)
     parser.add_argument('--evidence',type=Path)
+    parser.add_argument('--tag-prefix',default='android-bilingual')
+    parser.add_argument('--title',default='Android checkpoint — English / Vietnamese')
+    parser.add_argument('--notes-file',type=Path)
     args=parser.parse_args()
     token=credentials()
     headers={'Authorization':'Bearer '+token,'Accept':'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28','User-Agent':'HabiTree-checkpoint'}
@@ -41,11 +44,12 @@ def main():
     if not branch:raise SystemExit('Check out the authorized branch before publishing.')
     remote=subprocess.check_output(['git','ls-remote','origin','refs/heads/'+branch],cwd=ROOT,text=True).split()[0]
     if remote!=commit:raise SystemExit('Push this checkpoint before uploading its APK.')
-    tag='android-bilingual-'+commit[:8]
+    tag=args.tag_prefix+'-'+commit[:8]
     releases=request('https://api.github.com/repos/'+REPO+'/releases?per_page=100')
     release=next((item for item in releases if item['tag_name']==tag),None)
     if release is None:
-        body={'tag_name':tag,'target_commitish':commit,'name':'Android checkpoint — English / Vietnamese','body':'Saved English/Vietnamese language selection, shared copy resources and design tokens.\n\nDebug APK for testing. See docs/localization/REPORT.md at this commit for validation and limitations.','prerelease':True,'draft':False}
+        notes=args.notes_file.read_text(encoding='utf-8') if args.notes_file else 'Saved English/Vietnamese language selection, shared copy resources and design tokens.\n\nDebug APK for testing. See docs/localization/REPORT.md at this commit for validation and limitations.'
+        body={'tag_name':tag,'target_commitish':commit,'name':args.title,'body':notes,'prerelease':True,'draft':False}
         release=request('https://api.github.com/repos/'+REPO+'/releases',json.dumps(body).encode(),{'Content-Type':'application/json'})
     uploaded=[]
     verified={}

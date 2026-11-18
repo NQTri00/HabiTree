@@ -67,8 +67,8 @@
     "source": "app/src/main/java/com/mamxanh/app/presentation/bio/BioApplication.kt"
   },
   "copy_mam_xanh_7d3324": {
-    "vi": "Mầm Xanh",
-    "en": "Mầm Xanh",
+    "vi": "HabiTree",
+    "en": "HabiTree",
     "canonical": false,
     "source": "app/src/main/java/com/mamxanh/app/presentation/bio/BioApplication.kt"
   },
@@ -139,8 +139,8 @@
     "source": "app/src/main/java/com/mamxanh/app/presentation/bio/BioDesign.kt"
   },
   "copy_mam_xanh_692a0a": {
-    "vi": "mầm xanh",
-    "en": "mầm xanh",
+    "vi": "HabiTree",
+    "en": "HabiTree",
     "canonical": false,
     "source": "app/src/main/java/com/mamxanh/app/presentation/bio/BioDesign.kt"
   },
@@ -930,7 +930,7 @@
   },
   "copy_da_tuoi_de2042": {
     "vi": "Đã tưới",
-    "en": "Already watered",
+    "en": "Watered",
     "canonical": false,
     "source": "app/src/main/java/com/mamxanh/app/presentation/bio/BioMainScreens.kt"
   },
