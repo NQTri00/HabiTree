@@ -1258,7 +1258,7 @@ internal object GeneratedCopy {
         "Watered",
         "Needs water",
         "Watered",
-        "Water tree",
+        "Water",
         "Decorate",
         "A LITTLE GREEN RHYTHM",
         "New day, new growth.",

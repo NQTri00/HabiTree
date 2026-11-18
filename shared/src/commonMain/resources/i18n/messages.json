@@ -936,7 +936,7 @@
   },
   "copy_tuoi_cay_0990f6": {
     "vi": "Tưới cây",
-    "en": "Water tree",
+    "en": "Water",
     "canonical": false,
     "source": "app/src/main/java/com/mamxanh/app/presentation/bio/BioMainScreens.kt"
   },

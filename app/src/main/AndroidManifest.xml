@@ -13,8 +13,11 @@
             android:windowSoftInputMode="adjustResize">
 
         </activity>
+        <activity android:name=".LauncherActivity" android:exported="false"
+            android:relinquishTaskIdentity="true"
+            android:theme="@android:style/Theme.NoDisplay" />
         <activity-alias android:name=".launcher.Icon_cherry"
-            android:targetActivity=".MainActivity" android:exported="true"
+            android:targetActivity=".LauncherActivity" android:exported="true"
             android:enabled="false"
             android:label="@string/app_name" android:icon="@mipmap/ic_habitree_cherry">
             <intent-filter>
@@ -23,7 +26,7 @@
             </intent-filter>
         </activity-alias>
         <activity-alias android:name=".launcher.Icon_lavender"
-            android:targetActivity=".MainActivity" android:exported="true"
+            android:targetActivity=".LauncherActivity" android:exported="true"
             android:enabled="false"
             android:label="@string/app_name" android:icon="@mipmap/ic_habitree_lavender">
             <intent-filter>
@@ -32,7 +35,7 @@
             </intent-filter>
         </activity-alias>
         <activity-alias android:name=".launcher.Icon_mandarin"
-            android:targetActivity=".MainActivity" android:exported="true"
+            android:targetActivity=".LauncherActivity" android:exported="true"
             android:enabled="false"
             android:label="@string/app_name" android:icon="@mipmap/ic_habitree_mandarin">
             <intent-filter>
@@ -41,7 +44,7 @@
             </intent-filter>
         </activity-alias>
         <activity-alias android:name=".launcher.Icon_succulent"
-            android:targetActivity=".MainActivity" android:exported="true"
+            android:targetActivity=".LauncherActivity" android:exported="true"
             android:enabled="true"
             android:label="@string/app_name" android:icon="@mipmap/ic_habitree_succulent">
             <intent-filter>
@@ -50,7 +53,7 @@
             </intent-filter>
         </activity-alias>
         <activity-alias android:name=".launcher.Icon_pine"
-            android:targetActivity=".MainActivity" android:exported="true"
+            android:targetActivity=".LauncherActivity" android:exported="true"
             android:enabled="false"
             android:label="@string/app_name" android:icon="@mipmap/ic_habitree_pine">
             <intent-filter>
@@ -59,7 +62,7 @@
             </intent-filter>
         </activity-alias>
         <activity-alias android:name=".launcher.Icon_monstera"
-            android:targetActivity=".MainActivity" android:exported="true"
+            android:targetActivity=".LauncherActivity" android:exported="true"
             android:enabled="false"
             android:label="@string/app_name" android:icon="@mipmap/ic_habitree_monstera">
             <intent-filter>
@@ -68,7 +71,7 @@
             </intent-filter>
         </activity-alias>
         <activity-alias android:name=".launcher.Icon_ficus"
-            android:targetActivity=".MainActivity" android:exported="true"
+            android:targetActivity=".LauncherActivity" android:exported="true"
             android:enabled="false"
             android:label="@string/app_name" android:icon="@mipmap/ic_habitree_ficus">
             <intent-filter>
@@ -77,7 +80,7 @@
             </intent-filter>
         </activity-alias>
         <activity-alias android:name=".launcher.Icon_snake"
-            android:targetActivity=".MainActivity" android:exported="true"
+            android:targetActivity=".LauncherActivity" android:exported="true"
             android:enabled="false"
             android:label="@string/app_name" android:icon="@mipmap/ic_habitree_snake">
             <intent-filter>
@@ -86,7 +89,7 @@
             </intent-filter>
         </activity-alias>
         <activity-alias android:name=".launcher.Icon_cactus"
-            android:targetActivity=".MainActivity" android:exported="true"
+            android:targetActivity=".LauncherActivity" android:exported="true"
             android:enabled="false"
             android:label="@string/app_name" android:icon="@mipmap/ic_habitree_cactus">
             <intent-filter>
@@ -95,7 +98,7 @@
             </intent-filter>
         </activity-alias>
         <activity-alias android:name=".launcher.Icon_aloe"
-            android:targetActivity=".MainActivity" android:exported="true"
+            android:targetActivity=".LauncherActivity" android:exported="true"
             android:enabled="false"
             android:label="@string/app_name" android:icon="@mipmap/ic_habitree_aloe">
             <intent-filter>
@@ -104,7 +107,7 @@
             </intent-filter>
         </activity-alias>
         <activity-alias android:name=".launcher.Icon_pilea"
-            android:targetActivity=".MainActivity" android:exported="true"
+            android:targetActivity=".LauncherActivity" android:exported="true"
             android:enabled="false"
             android:label="@string/app_name" android:icon="@mipmap/ic_habitree_pilea">
             <intent-filter>

@@ -24,6 +24,10 @@ import com.mamxanh.shared.data.GameStorage
 import com.mamxanh.shared.data.sql.*
 import com.mamxanh.shared.model.*
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.repeatOnLifecycle
 import org.json.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -67,7 +71,18 @@ private fun nativeWorld(storage:GameStorage,reference:BioWorld,service:BackupSer
         if(!world.loading)withContext(Dispatchers.IO){HabiTreeLauncherIcon.update(context.applicationContext,homeSpecies)}
     }
     suspend fun refresh(){world=withContext(Dispatchers.IO){nativeWorld(storage,reference,service)};if(world.trees.none{it.s("id")==ui.homeTree})ui.homeTree=world.trees.firstOrNull()?.s("id")?:"0"}
-    LaunchedEffect(storage){storage.changes.collect{refresh();if(!world.state.b("onboarded",true)&&ui.route=="home")ui.go("onboard",root=true)}}
+    val lifecycleOwner=LocalLifecycleOwner.current
+    LaunchedEffect(storage,lifecycleOwner){
+        lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED){
+            merge(storage.changes.map{Unit},flow{while(currentCoroutineContext().isActive){delay(15_000);emit(Unit)}})
+                .conflate().collect{refresh();if(!world.state.b("onboarded",true)&&ui.route=="home")ui.go("onboard",root=true)}
+        }
+    }
+    // Schedule from the displayed snapshot, without loading unused screen ViewModels.
+    LaunchedEffect(world.loading,world.trees.map{listOf(it.s("id"),it.s("state"),it.b("watered").toString())},
+        world.tasks.map{it.toString()},world.state.o("settings").toString(),world.state.o("reminders").toString()){
+        if(!world.loading)withContext(Dispatchers.IO){com.mamxanh.app.data.TaskReminders.schedule(context.applicationContext,emptyList())}
+    }
     LaunchedEffect(externalTree){externalTree?.let{ui.go("tree",it.toString());onExternalHandled()}}
     LaunchedEffect(externalRoute,externalTask){if(externalTask>0&&externalRoute in listOf("FOCUS","INSIGHTS")){ui.go(externalRoute.lowercase(),externalTask.toString());onExternalHandled()}}
     fun fileOperation(action:()->Unit){if(ui.busy)return;ui.busy=true;scope.launch{try{withContext(Dispatchers.IO){action()};refresh();ui.result(BioResult(true,AppText.text(TextKey.CopyDaLuuDuLieuD8a848)))}catch(_:Exception){ui.result(BioResult(false,AppText.text(TextKey.CopyKhongTheXuLyTepDuLieuHienTaiGiuNguyenAa333d)))}}}

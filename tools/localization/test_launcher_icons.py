@@ -11,8 +11,12 @@ class LauncherIconTests(unittest.TestCase):
         self.assertEqual(set(palettes),{alias.attrib[ANDROID+'name'].split('Icon_')[-1] for alias in aliases})
         self.assertEqual(1,sum(alias.attrib[ANDROID+'enabled']=='true' for alias in aliases))
         self.assertIsNone(application.find('activity').find('intent-filter'))
+        entry=next(activity for activity in application.findall('activity') if activity.attrib[ANDROID+'name']=='.LauncherActivity')
+        self.assertEqual('false',entry.attrib[ANDROID+'exported'])
+        self.assertEqual('true',entry.attrib[ANDROID+'relinquishTaskIdentity'])
+        self.assertIsNone(entry.find('intent-filter'))
         for alias in aliases:
-            self.assertEqual('.MainActivity',alias.attrib[ANDROID+'targetActivity'])
+            self.assertEqual('.LauncherActivity',alias.attrib[ANDROID+'targetActivity'])
 
     def test_icon_colors_match_the_actual_tree_theme_palettes(self):
         palettes=json.loads((ROOT/'app/src/main/assets/bio_reference.json').read_text(encoding='utf-8'))['palettes']

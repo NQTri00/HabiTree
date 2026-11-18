@@ -29,7 +29,7 @@ class TasksViewModel(private val repository: TaskRepository,private val savedSta
             withContext(Dispatchers.IO) { repository.snapshot().sessions.filter { it.running }.forEach { repository.timer(it.taskId,"PAUSE") } }
             while(isActive) {
                 delay(1000)
-                if(foreground) {
+                if(foreground && _uiState.value.phase.sessions.any { it.running }) {
                     val completed = withContext(Dispatchers.IO) {
                         repository.snapshot().sessions.filter { it.running }.mapNotNull { session ->
                             repository.timer(session.taskId,"TICK")
