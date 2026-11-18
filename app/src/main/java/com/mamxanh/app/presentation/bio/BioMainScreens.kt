@@ -1,6 +1,19 @@
 package com.mamxanh.app.presentation.bio
 
 import com.mamxanh.app.presentation.ui.design.*
+import com.mamxanh.app.feature.garden.presentation.BioGardenScreen
+import com.mamxanh.app.feature.garden.presentation.GardenAction
+import com.mamxanh.app.feature.garden.presentation.GardenDisplayPlot
+import com.mamxanh.app.feature.garden.presentation.GardenDisplayState
+import com.mamxanh.app.feature.garden.presentation.GardenDisplayTree
+import com.mamxanh.app.feature.home.presentation.BioHomeScreen
+import com.mamxanh.app.feature.home.presentation.HomeScreenAction
+import com.mamxanh.app.feature.home.presentation.HomeScreenState
+import com.mamxanh.app.feature.tasks.presentation.TaskListAction
+import com.mamxanh.app.feature.tasks.presentation.TaskListItem
+import com.mamxanh.app.feature.tasks.presentation.TaskListRow
+import com.mamxanh.app.feature.tasks.presentation.TaskListScreen
+import com.mamxanh.app.feature.tasks.presentation.TaskListState
 
 import com.mamxanh.app.presentation.ui.design.AppColors
 import com.mamxanh.app.presentation.ui.design.AppDimensions
@@ -72,76 +85,7 @@ internal fun accessoryIcon(id:String)=when(id){"tree_ribbon"->"gift";"tree_lante
     }
 }
 
-@Composable internal fun ColumnScope.BioHome(world:BioWorld,ui:BioController,short:Boolean){
-    val narrow=LocalConfiguration.current.screenWidthDp<359;val tree=world.tree(ui.homeTree);val date=world.data.s("date").split('-').takeLast(2).reversed().joinToString("-")
-    val landscape=LocalConfiguration.current.screenHeightDp<500
-    Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.Top,horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp14)){
-        Column(Modifier.weight(1f)){if(!landscape){Bt(AppText.text(TextKey.CopyMotNhipXanh4e8208),size=AppTypography.Size10,tint=bp.muted,mono=true,spacing=AppTypography.Tracking1_8);Spacer(Modifier.height(AppDimensions.Dp7))};Bt(AppText.text(TextKey.CopyNgayMoiMamMoi236a07),size=if(narrow||landscape)22 else 25,line=if(narrow||landscape)28.6f else 32.5f,bold=true,spacing=AppTypography.TrackingMinus1)}
-        Box(Modifier.padding(top=if(landscape)AppDimensions.Dp0 else AppDimensions.Dp19).background(AppColors.White.copy(alpha=AppOpacity.Value_25),RoundedCornerShape(AppDimensions.Dp8)).border(AppDimensions.Dp1,bp.line,RoundedCornerShape(AppDimensions.Dp8)).padding(horizontal=AppDimensions.Dp10,vertical=AppDimensions.Dp9)){Bt(date,size=AppTypography.Size11,tint=bp.muted,mono=true,line=AppTypography.LineHeight14_3)}
-    }
-    if(tree!=null)BioHero(world,ui,tree,true,short)else BioEmpty(AppText.text(TextKey.CopyBatDauBangMotMamXanhCd3b5c),AppText.text(TextKey.CopyMotHatNhoMotChutMoiNgayBcf756),action=AppText.text(TextKey.CopyGieoCayDauTienAfd3c1),onClick={ui.show("seed-picker")})
-    BioSection(AppText.text(TextKey.CopyViecTiepTheoEa34c3),AppText.text(TextKey.CopyXemTatCa44aeb8)){ui.go("tasks")}
-    val next=world.tasks.firstOrNull{!it.b("done")&&!it.b("finished")&&it.s("lifecycle","ACTIVE")=="ACTIVE"&&it.b("scheduledToday",true)}
-    if(next!=null)BioTaskRow(next,ui)else BioLink(AppText.text(TextKey.CopyMotViecNhoHomNay3c953f),"plus",{ui.go("task-new")})
-    val phase=world.data.o("phase")
-    BioMetrics(listOf(AppText.text(TextKey.CopyViecHomNay22a0a4) to "${phase.i("completed")}/${phase.i("required")}",AppText.text(TextKey.CopyXuHomNay0c44ed) to "${world.state.i("earned")}/50",AppText.text(TextKey.CopyNgayDeuDan31b8f2) to phase.i("streak").toString()))
-    if(phase.b("canClaim")&&!world.state.b("claimed"))BioReward(world,ui)
-    Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp10)){
-        listOf(Triple("plus",AppText.text(TextKey.CopyThemViecC371c2),"go:task-new"),Triple("garden",AppText.text(TextKey.CopyGieoCay31adde),"bio-seed-picker"),Triple("spark",AppText.text(TextKey.CopyPhuKien0852d7),"bio-accessory-shop")).forEach{(icon,title,action)->Column(Modifier.weight(1f).heightIn(min=AppDimensions.Dp76).background(AppColors.White.copy(alpha=AppOpacity.Value_25),bioShape(AppRadii.Value14)).border(AppDimensions.Dp1,bp.line,bioShape(AppRadii.Value14)).clickable{ui.act(action)}.padding(AppDimensions.Dp10),horizontalAlignment=Alignment.CenterHorizontally,verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp7)){Bi(icon);Bt(title,size=AppTypography.Size11,tint=bp.deep,align=TextAlign.Center)}}
-    }
-    BioLink(AppText.text(TextKey.CopyNhinLaiTuanFf3f0c),"calendar",{ui.go("review")},AppText.text(TextKey.CopyNhungDieuNhoDaLonLen882792))
-}
-
-@Composable internal fun BioTaskRow(task:JSONObject,ui:BioController){
-    val done=task.b("done")||task.b("finished");val timer=task.s("verification")=="TIMER"
-    BioCard(Modifier.fillMaxWidth(),padding=AppSpacing.Value14,radius=AppRadii.Value22,tint=if(done)lerp(AppColors.White,bp.soft,.7f)else bp.surface){
-        Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp12)){
-            Box(Modifier.size(AppDimensions.Dp38).background(bp.soft,bioShape(AppRadii.Value12)),contentAlignment=Alignment.Center){Bi(if(timer)"clock" else if(task.s("category")==AppText.canonical(TextKey.CopySucKhoe071df7))"water" else "book")}
-            Column(Modifier.weight(1f).heightIn(min=AppDimensions.Dp48).clickable{ui.go("task",task.s("id"))},verticalArrangement=Arrangement.Center){
-                if(done)Text(task.s("title"),color=bp.muted,fontFamily=com.mamxanh.app.presentation.ui.GardenFontFamily,fontSize=AppTypography.Sp13,fontWeight=androidx.compose.ui.text.font.FontWeight.SemiBold,textDecoration=androidx.compose.ui.text.style.TextDecoration.LineThrough)
-                else Bt(task.s("title"),size=AppTypography.Size14,line=AppTypography.LineHeight21,semi=true)
-                Bt(if(done)AppText.text(TextKey.CopyDaXong565e93) else AppText.category(task.s("category"))+(if(timer)AppText.text(TextKey.Copy0PhutC0bcb0,task.i("minutes"))else ""),size=AppTypography.Size11,tint=bp.muted)
-            }
-            Bt("+${taskReward(task)}",size=AppTypography.Size10,tint=AppColors.SwatchFF946A0E)
-            Box(Modifier.size(AppDimensions.Dp48).background(if(done)bp.deep else bp.soft.copy(alpha=AppOpacity.Value_45),RoundedCornerShape(50)).border(AppDimensions.Dp1,if(done)bp.deep else bp.control,RoundedCornerShape(50)).semantics{contentDescription=if(done)AppText.text(TextKey.CopyDaHoanThanh1911fc)+task.s("title")else if(timer)AppText.text(TextKey.CopyTapTrung71ae4b)+task.s("title")else AppText.text(TextKey.CopyHoanThanhF183ae)+task.s("title")}.clickable(enabled=!done&&task.s("lifecycle","ACTIVE")=="ACTIVE"&&!ui.busy,role=Role.Button){if(timer)ui.go("focus",task.s("id"))else ui.send("complete:"+task.s("id"))},contentAlignment=Alignment.Center){Bi(if(timer&&!done)"play"else "check",tint=if(done)AppColors.White else bp.deep)}
-        }
-    }
-}
 @Composable internal fun BioReward(world:BioWorld,ui:BioController){BioCard(Modifier.fillMaxWidth(),AppColors.RewardSurface,padding=AppSpacing.Value14,radius=AppRadii.Value18){Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp12)){Bi("gift",tint=bp.ink);Column(Modifier.weight(1f)){Bt(AppText.text(TextKey.CopyThuongHomNayC015c6),size=AppTypography.Size12,semi=true);Bt(AppText.text(TextKey.Copy8Xu3a7892),size=AppTypography.Size11)};BioButton(if(world.state.b("claimed"))AppText.text(TextKey.CopyDaNhan1d62ad) else AppText.text(TextKey.CopyNhan8518f2),{ui.send("claim")},enabled=world.data.o("phase").b("canClaim")&&!world.state.b("claimed"))}}}
-
-@Composable internal fun ColumnScope.BioTasks(world:BioWorld,ui:BioController){
-    val filter=ui.tabs["taskFilter"]?:"today"
-    BioIntro(when(filter){"paused"->AppText.text(TextKey.CopyViecTamDungB756a3);"archived"->AppText.text(TextKey.CopyViecLuuTru911d4f);else->AppText.text(TextKey.CopyViecHomNay22a0a4)},AppText.text(TextKey.CopyTungChutMot238966),action={BioIconButton("plus",{ui.go("task-new")})})
-    val phase=world.data.o("phase")
-    if(filter=="today")BioCard(Modifier.fillMaxWidth(),bp.soft,padding=AppSpacing.Value18){Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp12)){Bt(AppText.text(TextKey.Copy01ViecDaXongCf7a5d,phase.i("completed"),phase.i("required")),Modifier.weight(1f),size=AppTypography.Size14,semi=true);BioTag(AppText.text(TextKey.Copy0Xu7c2391,world.state.i("earned")),"spark")};Spacer(Modifier.height(AppDimensions.Dp12));BioProgress(if(phase.i("required")>0)phase.i("completed").toFloat()/phase.i("required")else 0f)}
-    Row(horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp12)){BioButton(AppText.text(TextKey.CopyTapTrung964002),{ui.go("focus")},Modifier.weight(1f),"clock",true);BioButton(AppText.text(TextKey.CopyViecMau535dc1),{ui.go("templates")},Modifier.weight(1f),"plus",true)}
-    BioChips(listOf("today" to AppText.text(TextKey.CopyHomNayE6747a),"paused" to AppText.text(TextKey.TabPaused),"archived" to AppText.text(TextKey.CopyLuuTru7e7c5f)),filter){ui.tabs["taskFilter"]=it}
-    val list=world.tasks.filter{it.s("lifecycle","ACTIVE")==when(filter){"paused"->"PAUSED";"archived"->"ARCHIVED";else->"ACTIVE"}}
-    Column(verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp12)){if(list.isEmpty())BioEmpty(when(filter){"paused"->AppText.text(TextKey.CopyKhongCoViecTamDung074795);"archived"->AppText.text(TextKey.CopyChuaCoViecLuuTru3a7d32);else->AppText.text(TextKey.CopyChuaCoViecE6f37e)},if(filter=="today")AppText.text(TextKey.CopyBatDauBangMotViecVuaSucA10a5a)else AppText.text(TextKey.CopyCacViecCuaBanVanOHomNayB04085),"tasks",if(filter=="today")AppText.text(TextKey.CopyThemViecC371c2)else AppText.text(TextKey.CopyVeHomNay08154e),{if(filter=="today")ui.go("task-new")else ui.tabs["taskFilter"]="today"})else list.forEach{BioTaskRow(it,ui)}}
-    if(list.isNotEmpty()&&filter=="today"){BioReward(world,ui);BioButton(AppText.text(TextKey.CopyThemViecC371c2),{ui.go("task-new")},Modifier.fillMaxWidth(),"plus")}
-    BioLink(AppText.text(TextKey.CopyNhipThoiQuen1b8324),"chart",{ui.go("insights")})
-}
-
-@Composable internal fun ColumnScope.BioGarden(world:BioWorld,ui:BioController){
-    val open=world.state.i("unlocked",5);BioIntro(AppText.text(TextKey.CopyVuonCuaBanAd1c1b),AppText.text(TextKey.CopyTungMamDangLon4a30e9),AppText.text(TextKey.Copy0Cay1OTrong964022,world.trees.size,world.emptyPlots().size),{BioIconButton("bag",{ui.go("inventory")})})
-    Row(horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp10)){BioButton(AppText.text(TextKey.CopyTuoiTatCa3d814a),{ui.show("water-all")},Modifier.weight(1f),"water",enabled=world.trees.any{!it.b("watered")&&it.s("state")!="dead"});BioButton(AppText.text(TextKey.CopyGieoCay31adde),{ui.show("seed-picker")},Modifier.weight(1f),"plus",true)}
-    val filter=ui.tabs["gardenFilter"]?:"all";BioChips(listOf("all" to AppText.text(TextKey.CopyTatCa49c73a),"thirsty" to AppText.text(TextKey.CopyCanTuoiA0957f),"growing" to AppText.text(TextKey.CopyDangLon40daab),"mature" to AppText.text(TextKey.CopyTruongThanh8c14d7)),filter){ui.tabs["gardenFilter"]=it}
-    val plots=(1..open).filter{p->val t=world.trees.firstOrNull{it.i("plot")==p};filter=="all"||t!=null&&(filter==t.s("state")||filter=="thirsty"&&!t.b("watered")&&t.s("state")!="dead")}.toMutableList();if(filter=="all"&&open<24)plots.add(open+1)
-    val plotLine=bp.line
-    BioGrid(plots.size){index,modifier->val plot=plots[index];val t=world.trees.firstOrNull{it.i("plot")==plot};val locked=plot>open
-        BioCard(modifier,padding=AppSpacing.Value12,onClick={if(t!=null)ui.go("tree",t.s("id"))else if(locked)ui.show("unlock",plot.toString())else{ui.plot=plot.toString();ui.show("seed-picker")}}){
-            Box(Modifier.fillMaxWidth().height(if(t==null&&!locked)AppDimensions.Dp110 else AppDimensions.Dp105).background(if(locked)AppColors.Transparent else bp.soft,bioShape(AppRadii.Value14)),contentAlignment=Alignment.Center){
-                if(t!=null)BioPlant(t.s("species"),Modifier.fillMaxSize(),t.s("state")=="dead")else Bi("plus",size=AppIcons.Size28)
-                if(!locked)Bt(String.format("%02d",plot),Modifier.align(Alignment.TopStart).padding(AppDimensions.Dp6),size=AppTypography.Size10,tint=bp.muted,mono=true)
-                if(t==null&&!locked)Canvas(Modifier.fillMaxSize()){drawRoundRect(plotLine,cornerRadius=androidx.compose.ui.geometry.CornerRadius(AppDimensions.Dp14.toPx()),style=androidx.compose.ui.graphics.drawscope.Stroke(AppDimensions.Dp1.toPx(),pathEffect=PathEffect.dashPathEffect(floatArrayOf(AppDimensions.Dp3.toPx(),AppDimensions.Dp3.toPx()))))}
-            }
-            Spacer(Modifier.height(AppDimensions.Dp25));Bt(t?.s("name")?:if(locked)AppText.text(TextKey.CopyThemOTrong9979ac) else AppText.text(TextKey.CopyGieoCay31adde),size=AppTypography.Size13,semi=true)
-            if(t!=null){Spacer(Modifier.height(AppDimensions.Dp6));BioProgress(t.i("progress")/100f);Bt("${t.i("progress")}% · ${treeState(t)}",size=AppTypography.Size10,tint=bp.muted);Spacer(Modifier.height(AppDimensions.Dp16));Bt(if(t.s("state")=="dead")AppText.text(TextKey.CopyKhoHeoBf546a)else if(t.b("watered"))AppText.text(TextKey.CopyDaTuoiDe2042)else AppText.text(TextKey.CopyCanTuoiA0957f),size=AppTypography.Size10,tint=bp.muted)}else Bt(if(locked)AppText.text(TextKey.Copy0Xu251e68,400+(open-5).coerceAtLeast(0)*200)else AppText.text(TextKey.CopyMotKhoiDauMoi280995),size=AppTypography.Size10,tint=bp.muted)
-        }
-    }
-    if(plots.isEmpty())BioEmpty(AppText.text(TextKey.CopyChuaCoCayODay1f9b1f),AppText.text(TextKey.CopyChonBoLocKhacDeXem6bf49e))
-    BioLink(AppText.text(TextKey.CopyBachThaoF2ed64),"book",{ui.go("encyclopedia")},AppText.text(TextKey.Copy0LoaiCay921e87,world.species.size))
-}
 
 @Composable internal fun BioProduct(world:BioWorld,ui:BioController,item:JSONObject,modifier:Modifier=Modifier,inventory:Boolean=false,target:String="",encyclopedia:Boolean=false){
     val id=item.s("id");val seed=world.species.any{it.s("id")==id};val accessory=item.s("category")=="TREE";val owned=world.owned(id)>0;val equipped=world.trees.any{it.s("decor")==id};val known=world.record(id).b("discovered")||world.record(id).i("planted")>0||world.count(id)>0
@@ -188,3 +132,149 @@ internal fun accessoryIcon(id:String)=when(id){"tree_ribbon"->"gift";"tree_lante
 }
 
 @Composable internal fun ColumnScope.BioMore(ui:BioController){BioIntro(AppText.text(TextKey.CopyThemMotChut006e8b),AppText.text(TextKey.CopyTheoNhipCuaBan5a2ada));Column(verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp12)){listOf(Triple("focus","clock",AppText.text(TextKey.CopyTapTrung964002)),Triple("templates","plus",AppText.text(TextKey.CopyViecMau535dc1)),Triple("review","calendar",AppText.text(TextKey.CopyNhinLaiTuanFf3f0c)),Triple("achievements","award",AppText.text(TextKey.CopyDauMocDffd66)),Triple("timeline","book",AppText.text(TextKey.CopyKyNiemE3e113)),Triple("insights","chart",AppText.text(TextKey.CopyNhipThoiQuen1b8324)),Triple("encyclopedia","book",AppText.text(TextKey.CopyBachThaoF2ed64)),Triple("settings","settings",AppText.text(TextKey.CopyTuyChonNhacViecA44d85)),Triple("data","download",AppText.text(TextKey.CopyDuLieuUngDung9843b7))).forEach{(r,i,t)->BioLink(t,i,{ui.go(r)})}}}
+
+
+@Composable
+internal fun BioHome(world: BioWorld, ui: BioController, short: Boolean) {
+    val tree = world.tree(ui.homeTree)
+    val next = world.tasks.firstOrNull {
+        !it.b("done") && !it.b("finished") && it.s("lifecycle", "ACTIVE") == "ACTIVE" &&
+            it.b("scheduledToday", true)
+    }
+    val phase = world.data.o("phase")
+    BioHomeScreen(
+        state = HomeScreenState(
+            date = world.data.s("date").split('-').takeLast(2).reversed().joinToString("-"),
+            completed = phase.i("completed"),
+            required = phase.i("required"),
+            earned = world.state.i("earned"),
+            streak = phase.i("streak"),
+        ),
+        onAction = { action ->
+            when (action) {
+                HomeScreenAction.PickSeed -> ui.show("seed-picker")
+                HomeScreenAction.ViewTasks -> ui.go("tasks")
+                HomeScreenAction.AddTask -> ui.go("task-new")
+                HomeScreenAction.BrowseSeeds -> ui.act("bio-seed-picker")
+                HomeScreenAction.BrowseAccessories -> ui.act("bio-accessory-shop")
+                HomeScreenAction.Review -> ui.go("review")
+            }
+        },
+        tree = if (tree != null) { { BioHero(world, ui, tree, true, short) } } else null,
+        nextTask = if (next != null) { { BioTaskRow(next, ui) } } else null,
+        reward = if (phase.b("canClaim") && !world.state.b("claimed")) {
+            { BioReward(world, ui) }
+        } else null,
+    )
+}
+
+
+private fun JSONObject.toTaskListItem() = TaskListItem(
+    id = s("id"),
+    title = s("title"),
+    category = s("category"),
+    minutes = i("minutes"),
+    reward = taskReward(this),
+    done = b("done") || b("finished"),
+    timer = s("verification") == "TIMER",
+    active = s("lifecycle", "ACTIVE") == "ACTIVE",
+)
+
+private fun BioController.completeTask(id: String, timer: Boolean) {
+    if (timer) go("focus", id) else send("complete:$id")
+}
+
+@Composable
+internal fun BioTaskRow(task: JSONObject, ui: BioController) {
+    val item = task.toTaskListItem()
+    TaskListRow(item, ui.busy, { ui.go("task", item.id) }, { ui.completeTask(item.id, item.timer) })
+}
+
+@Composable
+internal fun BioTasks(world: BioWorld, ui: BioController) {
+    val filter = ui.tabs["taskFilter"] ?: "today"
+    val lifecycle = when (filter) {
+        "paused" -> "PAUSED"
+        "archived" -> "ARCHIVED"
+        else -> "ACTIVE"
+    }
+    val phase = world.data.o("phase")
+    TaskListScreen(
+        state = TaskListState(
+            filter = filter,
+            items = world.tasks.filter { it.s("lifecycle", "ACTIVE") == lifecycle }.map { it.toTaskListItem() },
+            completed = phase.i("completed"),
+            required = phase.i("required"),
+            earned = world.state.i("earned"),
+            busy = ui.busy,
+        ),
+        onAction = { action ->
+            when (action) {
+                TaskListAction.Add -> ui.go("task-new")
+                TaskListAction.Focus -> ui.go("focus")
+                TaskListAction.Templates -> ui.go("templates")
+                TaskListAction.Insights -> ui.go("insights")
+                is TaskListAction.Filter -> ui.tabs["taskFilter"] = action.value
+                is TaskListAction.Open -> ui.go("task", action.id)
+                is TaskListAction.Complete -> ui.completeTask(action.id, action.timer)
+            }
+        },
+        reward = { BioReward(world, ui) },
+    )
+}
+
+
+@Composable
+internal fun BioGarden(world: BioWorld, ui: BioController) {
+    val open = world.state.i("unlocked", 5)
+    val filter = ui.tabs["gardenFilter"] ?: "all"
+    fun thirsty(tree: JSONObject) = !tree.b("watered") && tree.s("state") != "dead"
+    val trees = world.trees
+    val byPlot = trees.groupBy { it.i("plot") }
+    val plots = buildList {
+        for (plot in 1..open) {
+            val tree = byPlot[plot]?.firstOrNull()
+            if (filter != "all" && (tree == null ||
+                    (filter != tree.s("state") && !(filter == "thirsty" && thirsty(tree))))) continue
+            val displayTree = tree?.let {
+                GardenDisplayTree(
+                    id = it.s("id"),
+                    species = it.s("species"),
+                    name = it.s("name"),
+                    progress = it.i("progress"),
+                    stageLabel = treeState(it),
+                    dead = it.s("state") == "dead",
+                    watered = it.b("watered"),
+                )
+            }
+            add(GardenDisplayPlot(plot, displayTree))
+        }
+        if (filter == "all" && open < 24) {
+            add(GardenDisplayPlot(open + 1, price = 400 + (open - 5).coerceAtLeast(0) * 200))
+        }
+    }
+    BioGardenScreen(
+        state = GardenDisplayState(filter, trees.size, world.emptyPlots().size, world.species.size, trees.any(::thirsty), plots),
+        onAction = { action ->
+            when (action) {
+                GardenAction.Inventory -> ui.go("inventory")
+                GardenAction.WaterAll -> ui.show("water-all")
+                GardenAction.PickSeed -> ui.show("seed-picker")
+                GardenAction.Encyclopedia -> ui.go("encyclopedia")
+                is GardenAction.Filter -> ui.tabs["gardenFilter"] = action.value
+                is GardenAction.Plot -> {
+                    val plot = action.value
+                    val tree = plot.tree
+                    when {
+                        tree != null -> ui.go("tree", tree.id)
+                        plot.price != null -> ui.show("unlock", plot.number.toString())
+                        else -> {
+                            ui.plot = plot.number.toString()
+                            ui.show("seed-picker")
+                        }
+                    }
+                }
+            }
+        },
+    )
+}
