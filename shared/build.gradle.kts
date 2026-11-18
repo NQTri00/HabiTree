@@ -15,17 +15,16 @@ kotlin {
         it.binaries.framework {
             baseName = "MamXanhShared"
             isStatic = true
+            export(project(":core-network"))
         }
     }
     sourceSets {
         commonMain.dependencies {
             implementation(libs.koin.core)
-            api(libs.ktor.client.core)
+            api(project(":core-network"))
         }
         commonTest.dependencies { implementation(kotlin("test")) }
-        androidMain.dependencies { implementation(libs.ktor.client.android) }
         iosMain.dependencies {
-            implementation(libs.ktor.client.darwin)
             implementation(libs.sqldelight.native)
         }
     }
