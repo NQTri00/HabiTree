@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.graphics.PathEffect
 import com.mamxanh.app.presentation.ui.design.*
 import com.mamxanh.shared.localization.AppText
@@ -66,4 +67,12 @@ fun BioGardenScreen(state: GardenDisplayState, onAction: (GardenAction) -> Unit)
     }
     if(plots.isEmpty())BioEmpty(AppText.text(TextKey.CopyChuaCoCayODay1f9b1f),AppText.text(TextKey.CopyChonBoLocKhacDeXem6bf49e))
     BioLink(AppText.text(TextKey.CopyBachThaoF2ed64),"book",{onAction(GardenAction.Encyclopedia)},AppText.text(TextKey.Copy0LoaiCay921e87,state.speciesCount))
+}
+
+@Preview(showBackground = true, widthDp = 375)
+@Composable
+private fun BioGardenScreenPreview() {
+    Column(verticalArrangement = Arrangement.spacedBy(AppDimensions.Dp18)) {
+        BioGardenScreen(GardenDisplayState("all", 0, 2, 6, false, listOf(GardenDisplayPlot(1), GardenDisplayPlot(2))), {})
+    }
 }

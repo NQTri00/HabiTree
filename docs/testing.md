@@ -2,7 +2,7 @@
 
 The Compose/Koin app uses platform SQLite behind shared KMP GameSqlConnection. Transaction tests use isolated real SQLite and injected clocks. Production DI and player profiles are preserved.
 
-Run `./gradlew :data:connectedDebugAndroidTest` with a connected emulator. Tests live in:
+Run `./gradlew :core-storage:connectedDebugAndroidTest` with a connected emulator. Tests live in:
 - `data/src/androidTest/java/com/mamxanh/app/data/PhaseOneTransactionsTest.kt`
 - `data/src/androidTest/java/com/mamxanh/app/data/PhaseTwoLifecycleTest.kt`
 - `data/src/androidTest/java/com/mamxanh/app/data/PhaseThreeEngagementTest.kt`

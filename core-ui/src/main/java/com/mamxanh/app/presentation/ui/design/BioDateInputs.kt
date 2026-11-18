@@ -1,6 +1,5 @@
-package com.mamxanh.app.presentation.bio
+package com.mamxanh.app.presentation.ui.design
 
-import com.mamxanh.app.presentation.ui.design.*
 
 import com.mamxanh.app.presentation.ui.design.AppDimensions
 import com.mamxanh.app.presentation.ui.design.AppIcons
@@ -38,7 +37,7 @@ import java.util.Locale
     }
 }
 
-@Composable internal fun BioDateField(label:String,value:String,onChange:(String)->Unit,modifier:Modifier=Modifier,futureOnly:Boolean=false){
+@Composable fun BioDateField(label:String,value:String,onChange:(String)->Unit,modifier:Modifier=Modifier,futureOnly:Boolean=false){
     val context=LocalContext.current;val inspection=LocalInspectionMode.current
     val iso=remember{bioIsoDateFormat()}
     val display=remember(AppText.language){bioDateFormat()}
@@ -54,7 +53,7 @@ import java.util.Locale
     }
 }
 
-@Composable internal fun BioTimeField(label:String,value:String,onChange:(String)->Unit,modifier:Modifier=Modifier){
+@Composable fun BioTimeField(label:String,value:String,onChange:(String)->Unit,modifier:Modifier=Modifier){
     val context=LocalContext.current;val inspection=LocalInspectionMode.current
     val hour=value.substringBefore(':').toIntOrNull()?.coerceIn(0,23)?:9
     val minute=value.substringAfter(':',"0").toIntOrNull()?.coerceIn(0,59)?:0

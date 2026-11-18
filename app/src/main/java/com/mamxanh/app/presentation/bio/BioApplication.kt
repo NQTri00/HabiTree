@@ -78,7 +78,7 @@ import androidx.compose.ui.unit.*
                                             "review"->BioReview(world,ui)
                                             "rest"->BioRest(world,ui)
                                             "insights"->BioInsights(world,ui)
-                                            "achievements"->BioAchievements(world,ui)
+                                            "achievements"->BioAchievements(world)
                                             "timeline"->BioTimeline(world,ui)
                                             "settings"->BioSettings(world,ui)
                                             "data"->BioData(world,ui)

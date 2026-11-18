@@ -1,5 +1,17 @@
 package com.mamxanh.app.presentation.bio
 
+import com.mamxanh.app.feature.stats.presentation.AchievementDisplay
+import com.mamxanh.app.feature.stats.presentation.AchievementsScreen
+import com.mamxanh.app.feature.stats.presentation.TimelineMemory
+import com.mamxanh.app.feature.stats.presentation.TimelineScreen
+import com.mamxanh.app.feature.stats.presentation.WeeklyReviewDisplay
+import com.mamxanh.app.feature.stats.presentation.WeeklyReviewScreen
+import com.mamxanh.app.feature.tasks.presentation.RestScreen
+import com.mamxanh.app.feature.tasks.presentation.RestScreenState
+import com.mamxanh.app.feature.tasks.presentation.InsightTaskLink
+import com.mamxanh.app.feature.tasks.presentation.TaskInsightsDisplay
+import com.mamxanh.app.feature.tasks.presentation.TaskInsightsScreen
+
 import com.mamxanh.app.feature.stats.presentation.StatisticsBars
 import com.mamxanh.app.presentation.ui.design.*
 
@@ -46,56 +58,127 @@ internal fun bioDates(date:String,count:Int):List<String>{val format=SimpleDateF
         Bt(AppText.text(TextKey.CopyBoLoChuaGhiNhan70b04e),size=AppTypography.Size11,tint=bp.muted)
     }
 }
-@Composable internal fun ColumnScope.BioReview(world:BioWorld,ui:BioController){
-    val review=world.data.o("review")
-    if(world.native&&review.length()==0){BioEmpty(AppText.text(TextKey.CopyChuaCoTongKet002b13),AppText.text(TextKey.CopySoLieuSeXuatHienKhiCoHoatDong43a1f5),"calendar",AppText.text(TextKey.CopyXemViec463e95),{ui.go("tasks")});return}
-    var note by rememberSaveable{mutableStateOf(review.s("reflection",world.state.s("reflection")))}
-    Bt(AppText.text(TextKey.CopyTuanTuA3719d)+bioDisplayDate(review.s("start","2026-11-16")),size=AppTypography.Size11,mono=true,tint=bp.muted,spacing=AppTypography.Tracking1_2);Bt(AppText.text(TextKey.CopyTuanCuaBanC82d43),size=AppTypography.Size27,bold=true,spacing=AppTypography.TrackingMinus1)
-    BioMetrics(listOf(AppText.text(TextKey.CopyHoanThanh5eb36f) to "${review.i("completed")}/${review.i("scheduled")}",AppText.text(TextKey.CopyTyLeE86c12) to if(review.i("scheduled")>0)"${review.i("completed")*100/review.i("scheduled")}%"else "—",AppText.text(TextKey.CopyTapTrung964002) to "${review.i("focusMinutes")}′"))
-    BioCard(Modifier.fillMaxWidth()){Bt(AppText.text(TextKey.Copy7NgayGanNhat442aa3),size=AppTypography.Size13,semi=true);Spacer(Modifier.height(AppDimensions.Dp8));StatisticsBars(world.statisticsDailyCompletions(),world.statisticsDayLabels());Spacer(Modifier.height(AppDimensions.Dp14));Bt(if(review.has("previousRate"))AppText.text(TextKey.CopyTuanTruoc0SoLieuDenHomNay87b0c8,review.i("previousRate"))else AppText.text(TextKey.CopyChuaDuDuLieuSoSanh24d4ce),size=AppTypography.Size12,tint=bp.muted)}
-    BioDetails(AppText.text(TextKey.CopyNhungDieuDaLam9f52b2)){BioFacts(listOf(AppText.text(TextKey.CopyXuNhanChi548b91) to "${review.i("earned")} / ${review.i("spent")}",AppText.text(TextKey.CopyChamCayFff511) to AppText.text(TextKey.Copy0Ngay45fa48,review.i("careDays")),AppText.text(TextKey.CopyMocTruongThanhB6cf90) to review.i("milestones").toString(),AppText.text(TextKey.CopyDeuDanNhat2e2e31) to AppText.category(review.s("consistent",AppText.text(TextKey.CopyChuaDuDuLieu414142))),AppText.text(TextKey.CopyCoTheDieuChinhC73bca) to AppText.category(review.s("improve",AppText.text(TextKey.CopyChuaDuDuLieu414142)))))}
-    BioField(AppText.text(TextKey.CopyMotDieuMuonNho455aad),note,{note=it.take(2000)},multiline=true,placeholder=AppText.text(TextKey.CopyTuanNayMinhE6de5c))
-    BioButton(AppText.text(TextKey.CopyLuuSuyNgam18cdd3),{ui.send("reflection",mapOf("note" to note,"week" to review.s("start")))},Modifier.fillMaxWidth())
-    BioLink(AppText.text(TextKey.CopyLichNghiBaoVe8eda57),"moon",{ui.go("rest")},AppText.text(TextKey.Copy0VeBaoVe8bf912,world.state.i("tickets")))
+@Composable
+internal fun BioReview(world: BioWorld, ui: BioController) {
+    val review = world.data.o("review")
+    val display = if (world.native && review.length() == 0) null else WeeklyReviewDisplay(
+        startDisplay = review.s("start", "2026-11-16"),
+        reflection = review.s("reflection", world.state.s("reflection")),
+        completed = review.i("completed"),
+        scheduled = review.i("scheduled"),
+        focusMinutes = review.i("focusMinutes"),
+        previousRate = if (review.has("previousRate")) review.i("previousRate") else null,
+        earned = review.i("earned"),
+        spent = review.i("spent"),
+        careDays = review.i("careDays"),
+        milestones = review.i("milestones"),
+        consistent = review.s("consistent", AppText.text(TextKey.CopyChuaDuDuLieu414142)),
+        improve = review.s("improve", AppText.text(TextKey.CopyChuaDuDuLieu414142)),
+        tickets = world.state.i("tickets"),
+        dailyCompletions = world.statisticsDailyCompletions(),
+        dayLabels = world.statisticsDayLabels(),
+    )
+    WeeklyReviewScreen(
+        review = display,
+        onTasks = { ui.go("tasks") },
+        onSaveNote = { note -> ui.send("reflection", mapOf("note" to note, "week" to review.s("start"))) },
+        onRest = { ui.go("rest") },
+    )
 }
-@Composable internal fun ColumnScope.BioRest(world:BioWorld,ui:BioController){
-    var restDate by rememberSaveable{mutableStateOf(world.data.s("tomorrow","2026-11-18"))};var protectDate by rememberSaveable{mutableStateOf("")}
-    Bt(AppText.text(TextKey.CopyNghiCungLaMotNhipE4f3b6),size=AppTypography.Size27,bold=true,spacing=AppTypography.TrackingMinus1);BioCard(Modifier.fillMaxWidth()){BioCalendar(world,30)}
-    BioDateField(AppText.text(TextKey.CopyNgayNghiSapToiA8efda),restDate,{restDate=it},futureOnly=true);Bt(AppText.text(TextKey.CopyToiDa2NgayThangDatTruocNgayNghiKhongThuong8811c2),size=AppTypography.Size12,tint=bp.muted)
-    BioButton(AppText.text(TextKey.CopyLenLichNghiD71876),{ui.send("rest",mapOf("date" to restDate))},Modifier.fillMaxWidth())
-    val rest=world.state.a("rest").strings();if(rest.isNotEmpty())BioCard(Modifier.fillMaxWidth()){BioFacts(rest.map{AppText.text(TextKey.CopyNghiF0aa0a) to it})}
-    BioSection(AppText.text(TextKey.CopyVeBaoVe5a852e));Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.SpaceBetween){BioTag(AppText.text(TextKey.Copy0Ve604049,world.state.i("tickets")),"award");BioButton(AppText.text(TextKey.CopyMua250XuAa5fe3),{ui.show("ticket")},secondary=true,enabled=world.coins>=250)}
-    BioDateField(AppText.text(TextKey.CopyNgayDaBoLo9f55ee),protectDate,{protectDate=it});BioButton(AppText.text(TextKey.CopyDungVe767d96),{ui.send("protect",mapOf("date" to protectDate))},Modifier.fillMaxWidth(),enabled=world.state.i("tickets")>0&&protectDate.isNotBlank())
+
+@Composable
+internal fun BioRest(world: BioWorld, ui: BioController) {
+    RestScreen(
+        state = RestScreenState(
+            tomorrow = world.data.s("tomorrow", "2026-11-18"),
+            scheduledDays = world.state.a("rest").strings(),
+            tickets = world.state.i("tickets"),
+            canBuy = world.coins >= 250,
+        ),
+        onSchedule = { ui.send("rest", mapOf("date" to it)) },
+        onBuy = { ui.show("ticket") },
+        onProtect = { ui.send("protect", mapOf("date" to it)) },
+        calendar = { BioCalendar(world, 30) },
+    )
 }
-@Composable internal fun ColumnScope.BioInsights(world:BioWorld,ui:BioController){
-    val task=world.task(ui.param)
-    if(task==null){Bt(AppText.text(TextKey.CopyNhipThoiQuen1b8324),size=AppTypography.Size27,bold=true,spacing=AppTypography.TrackingMinus1);if(world.tasks.isEmpty())BioEmpty(AppText.text(TextKey.CopyChuaCoNhipThoiQuenC06c83),AppText.text(TextKey.CopyThemViecDeBatDauE6548a),"chart",AppText.text(TextKey.CopyThemViecC371c2),{ui.go("task-new")})else Column(verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp12)){world.tasks.forEach{BioLink(it.s("title"),"chart",{ui.go("insights",it.s("id"))})}};return}
-    val supplied=world.data.a("insights").objects().firstOrNull{it.s("taskId")==task.s("id")};val insight=supplied?:json("longest" to 7,"rate" to 72,"focusMinutes" to 125,"commonHour" to "19:00","suggestion" to AppText.text(TextKey.CopyDieuChinhSangNgayThuong939cdd))
-    Bt(task.s("title"),size=AppTypography.Size27,bold=true,spacing=AppTypography.TrackingMinus1);val period=ui.tabs["insightDays"]?:"7";BioTabs(listOf("7" to AppText.text(TextKey.Copy7NgayFc11cc),"30" to AppText.text(TextKey.Copy30NgayB37f06)),period){ui.tabs["insightDays"]=it}
-    BioCard(Modifier.fillMaxWidth()){BioCalendar(world,period.toInt(),insight.optJSONArray("days"))}
-    BioMetrics(listOf(AppText.text(TextKey.CopyChuoiHienTai460755) to task.i("streak").toString(),AppText.text(TextKey.CopyDaiNhat67c21e) to insight.i("longest").toString(),AppText.text(TextKey.CopyTyLe30Ngay84d03d) to if(insight.has("rate"))"${insight.i("rate")}%"else "—"))
-    BioDetails(AppText.text(TextKey.CopyTapTrungGoiY2462a6)){BioFacts(listOf(AppText.text(TextKey.CopyTapTrung964002) to AppText.text(TextKey.Copy0Phut2596d2,insight.i("focusMinutes")),AppText.text(TextKey.CopyGioThuongXong450100) to insight.s("commonHour",AppText.text(TextKey.CopyChuaDuDuLieu414142))));if(insight.s("suggestion").isNotBlank())BioButton(insight.s("suggestion"),{ui.show("adjust",task.s("id"))},secondary=true)}
-    val reminder=world.state.o("reminders").o(task.s("id"));var minute by rememberSaveable(task.s("id")){mutableStateOf(reminder.s("minute","09:00"))};var mode by rememberSaveable(task.s("id")){mutableStateOf(reminder.s("mode","OFF"))};var follow by rememberSaveable(task.s("id")){mutableStateOf(reminder.b("followUp"))}
-    Bt(AppText.text(TextKey.CopyNhacViec9e9055),size=AppTypography.Size17,bold=true);BioTimeField(AppText.text(TextKey.CopyGioNhacD9dac9),minute,{minute=it});BioSelect(AppText.text(TextKey.CopyKhiNaoB5af31),listOf("OFF" to AppText.text(TextKey.CopyTat328606),"AT" to AppText.text(TextKey.CopyTheoGio4bd1ce),"BEFORE" to AppText.text(TextKey.CopyTruocKhungGioC97c51)),mode,onSelect={mode=it});BioToggle(AppText.text(TextKey.CopyNhacNheThemMotLan544e8e),follow){follow=it};BioButton(AppText.text(TextKey.CopyLuuNhacViecDe3aa9),{ui.send("reminder",mapOf("id" to task.s("id"),"minute" to minute,"mode" to mode,"followUp" to follow.toString()))},Modifier.fillMaxWidth());BioLink(AppText.text(TextKey.CopyQuyenNhacToanCuc8225b7),"bell",{ui.go("settings")})
+
+@Composable
+internal fun BioInsights(world: BioWorld, ui: BioController) {
+    val task = world.task(ui.param)
+    val id = task?.s("id").orEmpty()
+    val insight = if (task == null) null else world.data.a("insights").objects().firstOrNull {
+        it.s("taskId") == id
+    } ?: json("longest" to 7, "rate" to 72, "focusMinutes" to 125, "commonHour" to "19:00",
+        "suggestion" to AppText.text(TextKey.CopyDieuChinhSangNgayThuong939cdd))
+    val display = if (task == null || insight == null) null else {
+        val reminder = world.state.o("reminders").o(id)
+        TaskInsightsDisplay(
+            id = id,
+            title = task.s("title"),
+            streak = task.i("streak"),
+            longest = insight.i("longest"),
+            rate = if (insight.has("rate")) insight.i("rate") else null,
+            focusMinutes = insight.i("focusMinutes"),
+            commonHour = insight.s("commonHour", AppText.text(TextKey.CopyChuaDuDuLieu414142)),
+            suggestion = insight.s("suggestion"),
+            minute = reminder.s("minute", "09:00"),
+            mode = reminder.s("mode", "OFF"),
+            followUp = reminder.b("followUp"),
+        )
+    }
+    val period = ui.tabs["insightDays"] ?: "7"
+    TaskInsightsScreen(
+        task = display,
+        tasks = if (display == null) world.tasks.map { InsightTaskLink(it.s("id"), it.s("title")) } else emptyList(),
+        period = period,
+        onPeriod = { ui.tabs["insightDays"] = it },
+        onAddTask = { ui.go("task-new") },
+        onTask = { ui.go("insights", it) },
+        onAdjust = { ui.show("adjust", id) },
+        onSaveReminder = { minute, mode, follow ->
+            ui.send("reminder", mapOf("id" to id, "minute" to minute, "mode" to mode, "followUp" to follow.toString()))
+        },
+        onSettings = { ui.go("settings") },
+        calendar = { BioCalendar(world, period.toInt(), insight?.optJSONArray("days")) },
+    )
 }
-@Composable internal fun ColumnScope.BioAchievements(world:BioWorld,ui:BioController){
-    Bt(AppText.text(TextKey.CopyTungDauMocNhoA0b175),size=AppTypography.Size27,bold=true,spacing=AppTypography.TrackingMinus1);Bt(AppText.text(TextKey.CopyGhiNhanHanhTrinhKhongThuongXu061899),size=AppTypography.Size12,tint=bp.muted)
-    val defaults=listOf(Triple(AppText.text(TextKey.CopyBuocDauTien5dbfda),AppText.text(TextKey.CopyHoanThanhMotViecHopLe912065),1 to 1),Triple(AppText.text(TextKey.CopyBaNgayTotLanhD6a627),AppText.text(TextKey.Copy3NgayCoLichHoanThanh0527b6),3 to 3),Triple(AppText.text(TextKey.CopyMotTuanDeuDanD7d5ad),AppText.text(TextKey.Copy7NgayCoLichHoanThanh86a291),5 to 7),Triple(AppText.text(TextKey.CopyKhoiDauTapTrungC3b5b9),AppText.text(TextKey.CopyHoanThanhMotPhienItNhat25Phut6bcfa2),0 to 1),Triple(AppText.text(TextKey.CopyNhipHocTapF10229),AppText.text(TextKey.Copy10LanHoanThanhViecHocDcd041),6 to 10),Triple(AppText.text(TextKey.CopyBanTayXanh9bd1dc),AppText.text(TextKey.CopyTuoiCayTrong10NgayKhacNhau786a07),3 to 10),Triple(AppText.text(TextKey.CopyBongHoaDauTien4d67d1),AppText.text(TextKey.CopyMotLoaiHoaDatGiaiDoanCuoi468527),0 to 1),Triple(AppText.text(TextKey.CopyCayTruongThanhDauTienF9a6e3),AppText.text(TextKey.CopyMotLoaiKhongHoaDatGiaiDoanCuoi120850),1 to 1),Triple(AppText.text(TextKey.CopyGocVuonDaDang8a3813),AppText.text(TextKey.CopyDangSoHuu3LoaiKhacNhauA27bf0),3 to 3),Triple(AppText.text(TextKey.CopyThangDeuDanD8b460),AppText.text(TextKey.Copy20NgayCoLichHoanThanh4b7346),5 to 20))
-    val supplied=world.data.a("achievements").objects();val entries=if(world.native)supplied else defaults.map{(t,c,v)->json("title" to t,"criterion" to c,"progress" to v.first,"target" to v.second)}
-    Column(verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp12)){entries.forEach{item->val n=item.i("progress");val max=item.i("target",1);val unlocked=item.l("unlockedAt")>0||n>=max
-        BioCard(Modifier.fillMaxWidth(),padding=AppSpacing.Value18){Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp12)){Box(Modifier.size(AppDimensions.Dp48).background(if(unlocked)AppColors.RewardSurface else AppColors.SwatchFFF0F0F0,RoundedCornerShape(50)),contentAlignment=Alignment.Center){Bi(if(unlocked)"award"else "lock",size=AppIcons.Size22,tint=if(unlocked)AppColors.SwatchFF947A30 else bp.muted)};Column(Modifier.weight(1f)){Bt(item.s("title"),size=AppTypography.Size14,semi=true);Bt(item.s("criterion"),size=AppTypography.Size10,tint=bp.muted);Spacer(Modifier.height(AppDimensions.Dp6));Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp10)){BioProgress(n.toFloat()/max,Modifier.weight(1f));Bt("${minOf(n,max)}/$max"+if(unlocked)AppText.text(TextKey.CopyDaGhiNhanEbd27e)else "",size=AppTypography.Size11,tint=bp.muted)}}}}
-    }}
-}
-@Composable internal fun ColumnScope.BioTimeline(world:BioWorld,ui:BioController){
-    Bt(AppText.text(TextKey.CopyDieuMinhMuonNho665bc8),size=AppTypography.Size27,bold=true,spacing=AppTypography.TrackingMinus1)
-    val memories=world.state.a("memories").objects()
-    val timelineLine=bp.line;val timelineDot=bp.deep
-    if(memories.isEmpty())BioEmpty(AppText.text(TextKey.CopyChuaCoKyNiemDa130b),AppText.text(TextKey.CopyNhungViecBanLamSeXuatHienODay735541),"book")else Column(Modifier.fillMaxWidth().padding(start=AppDimensions.Dp8).drawBehind{drawLine(timelineLine,Offset.Zero,Offset(0f,size.height),AppDimensions.Dp1.toPx())}.padding(start=AppDimensions.Dp20),verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp28)){
-        memories.forEach{m->var note by rememberSaveable(m.s("id")){mutableStateOf(world.state.o("notes").s(m.s("id"),m.s("note")))}
-            Column(Modifier.drawBehind{drawCircle(timelineDot,AppDimensions.Dp4_5.toPx(),Offset(AppDimensions.DpMinus20.toPx(),AppDimensions.Dp8.toPx()))},verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp0)){Bt(m.s("date"),size=AppTypography.Size10,tint=bp.muted);Spacer(Modifier.height(AppDimensions.Dp4));Bt(m.s("title"),size=AppTypography.Size12,semi=true);if(m.l("entity")>0)BioTextAction(AppText.text(TextKey.CopyXemLienQuan2167e0),{if(m.s("type").startsWith("TREE"))ui.go("tree",m.s("entity"))else ui.go("insights",m.s("entity"))},"next");BioField("",note,{note=it.take(1000)},multiline=true,placeholder=AppText.text(TextKey.CopyMotDieuMuonNho200cc4));Spacer(Modifier.height(AppDimensions.Dp8));BioTextAction(AppText.text(TextKey.CopyLuuGhiChuE3d8bd),{ui.send("memory-note",mapOf("id" to m.s("id"),"note" to note))},modifier=Modifier.fillMaxWidth())}
+
+@Composable
+internal fun BioAchievements(world: BioWorld) {
+    val entries = if (world.native) {
+        world.data.a("achievements").objects().map {
+            AchievementDisplay(it.s("title"), it.s("criterion"), it.i("progress"), it.i("target", 1), it.l("unlockedAt") > 0)
+        }
+    } else {
+        val defaults=listOf(Triple(AppText.text(TextKey.CopyBuocDauTien5dbfda),AppText.text(TextKey.CopyHoanThanhMotViecHopLe912065),1 to 1),Triple(AppText.text(TextKey.CopyBaNgayTotLanhD6a627),AppText.text(TextKey.Copy3NgayCoLichHoanThanh0527b6),3 to 3),Triple(AppText.text(TextKey.CopyMotTuanDeuDanD7d5ad),AppText.text(TextKey.Copy7NgayCoLichHoanThanh86a291),5 to 7),Triple(AppText.text(TextKey.CopyKhoiDauTapTrungC3b5b9),AppText.text(TextKey.CopyHoanThanhMotPhienItNhat25Phut6bcfa2),0 to 1),Triple(AppText.text(TextKey.CopyNhipHocTapF10229),AppText.text(TextKey.Copy10LanHoanThanhViecHocDcd041),6 to 10),Triple(AppText.text(TextKey.CopyBanTayXanh9bd1dc),AppText.text(TextKey.CopyTuoiCayTrong10NgayKhacNhau786a07),3 to 10),Triple(AppText.text(TextKey.CopyBongHoaDauTien4d67d1),AppText.text(TextKey.CopyMotLoaiHoaDatGiaiDoanCuoi468527),0 to 1),Triple(AppText.text(TextKey.CopyCayTruongThanhDauTienF9a6e3),AppText.text(TextKey.CopyMotLoaiKhongHoaDatGiaiDoanCuoi120850),1 to 1),Triple(AppText.text(TextKey.CopyGocVuonDaDang8a3813),AppText.text(TextKey.CopyDangSoHuu3LoaiKhacNhauA27bf0),3 to 3),Triple(AppText.text(TextKey.CopyThangDeuDanD8b460),AppText.text(TextKey.Copy20NgayCoLichHoanThanh4b7346),5 to 20))
+        defaults.map { (title, criterion, progress) ->
+            AchievementDisplay(title, criterion, progress.first, progress.second)
         }
     }
+    AchievementsScreen(entries)
 }
+
+@Composable
+internal fun BioTimeline(world: BioWorld, ui: BioController) {
+    val notes = world.state.o("notes")
+    val memories = world.state.a("memories").objects().map { memory ->
+        val id = memory.s("id")
+        TimelineMemory(
+            id = id,
+            date = memory.s("date"),
+            title = memory.s("title"),
+            entityId = memory.s("entity"),
+            isTree = memory.s("type").startsWith("TREE"),
+            note = notes.s(id, memory.s("note")),
+        )
+    }
+    TimelineScreen(
+        memories = memories,
+        onRelated = { ui.go(if (it.isTree) "tree" else "insights", it.entityId) },
+        onSaveNote = { id, note -> ui.send("memory-note", mapOf("id" to id, "note" to note)) },
+    )
+}
+
 @Composable internal fun ColumnScope.BioEncyclopedia(world:BioWorld,ui:BioController){
     Bt(AppText.text(TextKey.CopyMoiLoaiMotCauChuyen3baf0d),size=AppTypography.Size27,bold=true,spacing=AppTypography.TrackingMinus1)
     val n=world.records.count{it.b("discovered")};BioCard(Modifier.fillMaxWidth(),bp.soft,padding=AppSpacing.Value18){Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween){Bt(AppText.text(TextKey.CopyBoSuuTam539bd6),semi=true);Bt("$n/${world.species.size} · ${n*100/world.species.size}%",semi=true)};BioProgress(n.toFloat()/world.species.size);Bt(AppText.text(TextKey.CopyGiuLichSuKhiDonHoacBanCay42a565),size=AppTypography.Size12,tint=bp.muted)}

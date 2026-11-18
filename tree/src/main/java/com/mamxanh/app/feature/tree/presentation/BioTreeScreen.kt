@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import com.mamxanh.app.presentation.ui.design.*
 import com.mamxanh.shared.localization.AppText
 import com.mamxanh.shared.localization.TextKey
@@ -60,4 +61,12 @@ fun BioTreeScreen(
         else->{BioCard(Modifier.fillMaxWidth()){BioFacts(listOf(AppText.text(TextKey.CopyLoaiD0aa6d) to t.speciesName,AppText.text(TextKey.CopyGiaiDoanAa70a1) to "${t.stage} / ${t.stages}",AppText.text(TextKey.CopyPhatTrien2d33cb) to "${t.progress}%",AppText.text(TextKey.CopyNgayTrong2eb870) to t.planted));Bt(t.description,size=AppTypography.Size12,tint=bp.muted)};BioLink(AppText.text(TextKey.CopyHoSoLoaiCfff22),"book",{onAction(TreeScreenAction.Species)})}
     }
     Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween){if(t.growth=="mature")BioTextAction(AppText.text(TextKey.CopyBanCay5210c7),{onAction(TreeScreenAction.Sell)});BioTextAction(AppText.text(TextKey.CopyDonCayE3d410),{onAction(TreeScreenAction.Remove)},"trash",AppColors.Danger,iconFirst=true)}
+}
+
+@Preview(showBackground = true, widthDp = 375)
+@Composable
+private fun BioTreeScreenPreview() {
+    Column(verticalArrangement = Arrangement.spacedBy(AppDimensions.Dp18)) {
+        BioTreeScreen(null, "care", {}, {}, {}, {})
+    }
 }

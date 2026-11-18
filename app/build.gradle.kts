@@ -74,7 +74,7 @@ dependencies {
     implementation(libs.koin.android)
     implementation(libs.koin.androidx.compose)
     implementation(project(":core-ui"))
-    implementation(project(":data"))
+    implementation(project(":core-storage"))
     implementation(project(":home"))
     implementation(project(":home:data"))
     implementation(project(":tasks"))

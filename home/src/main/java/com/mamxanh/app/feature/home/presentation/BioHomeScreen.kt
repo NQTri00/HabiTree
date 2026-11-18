@@ -6,6 +6,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.style.TextAlign
 import com.mamxanh.app.presentation.ui.design.*
@@ -50,4 +51,12 @@ fun BioHomeScreen(
         listOf(Triple("plus",AppText.text(TextKey.CopyThemViecC371c2),HomeScreenAction.AddTask),Triple("garden",AppText.text(TextKey.CopyGieoCay31adde),HomeScreenAction.BrowseSeeds),Triple("spark",AppText.text(TextKey.CopyPhuKien0852d7),HomeScreenAction.BrowseAccessories)).forEach{(icon,title,action)->Column(Modifier.weight(1f).heightIn(min=AppDimensions.Dp76).background(AppColors.White.copy(alpha=AppOpacity.Value_25),bioShape(AppRadii.Value14)).border(AppDimensions.Dp1,bp.line,bioShape(AppRadii.Value14)).clickable{onAction(action)}.padding(AppDimensions.Dp10),horizontalAlignment=Alignment.CenterHorizontally,verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp7)){Bi(icon);Bt(title,size=AppTypography.Size11,tint=bp.deep,align=TextAlign.Center)}}
     }
     BioLink(AppText.text(TextKey.CopyNhinLaiTuanFf3f0c),"calendar",{onAction(HomeScreenAction.Review)},AppText.text(TextKey.CopyNhungDieuNhoDaLonLen882792))
+}
+
+@Preview(showBackground = true, widthDp = 375)
+@Composable
+private fun BioHomeScreenPreview() {
+    Column(verticalArrangement = Arrangement.spacedBy(AppDimensions.Dp18)) {
+        BioHomeScreen(HomeScreenState("17-11", 0, 4, 0, 0), {}, null, null, null)
+    }
 }

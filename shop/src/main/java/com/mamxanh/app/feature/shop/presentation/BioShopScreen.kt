@@ -7,6 +7,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.text.style.TextAlign
 import com.mamxanh.app.presentation.ui.design.*
 import com.mamxanh.shared.localization.AppText
@@ -38,4 +39,12 @@ fun BioShopScreen(
     if (itemCount > 0) BioGrid(itemCount, content = item) else BioEmpty(AppText.text(TextKey.CopyTuiDangTrong37bf7b),AppText.text(TextKey.CopyBanCoTheMuaVaDungNgayTrongTiem784a6a),"bag",AppText.text(TextKey.CopyGheTiemCb74e9),onShop)
     if(tab=="care")BioDetails(AppText.text(TextKey.CopyDungVatPham1cb958)){Bt(AppText.text(TextKey.CopyBinhTuoiDungLauDaiPhanBonDungTrucTiepTaiC180e06),size=AppTypography.Size12,tint=bp.muted)}
     if(tab=="seeds")Bt(AppText.text(TextKey.CopyChonHatMuaGieoChamCayAd0e4c),Modifier.fillMaxWidth(),size=AppTypography.Size11,tint=bp.muted,align=TextAlign.Center)
+}
+
+@Preview(showBackground = true, widthDp = 375)
+@Composable
+private fun BioShopScreenPreview() {
+    Column(verticalArrangement = Arrangement.spacedBy(AppDimensions.Dp18)) {
+        BioShopScreen("seeds", null, 0, {}, {}, {}, {}, { _, _ -> })
+    }
 }

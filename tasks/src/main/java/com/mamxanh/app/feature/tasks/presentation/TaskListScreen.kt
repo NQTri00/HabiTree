@@ -7,6 +7,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.semantics.*
 import com.mamxanh.app.presentation.ui.design.*
@@ -71,5 +72,13 @@ fun TaskListRow(task: TaskListItem, busy: Boolean, onOpen: () -> Unit, onComplet
             Bt("+${task.reward}",size=AppTypography.Size10,tint=AppColors.SwatchFF946A0E)
             Box(Modifier.size(AppDimensions.Dp48).background(if(done)bp.deep else bp.soft.copy(alpha=AppOpacity.Value_45),RoundedCornerShape(50)).border(AppDimensions.Dp1,if(done)bp.deep else bp.control,RoundedCornerShape(50)).semantics{contentDescription=if(done)AppText.text(TextKey.CopyDaHoanThanh1911fc)+task.title else if(timer)AppText.text(TextKey.CopyTapTrung71ae4b)+task.title else AppText.text(TextKey.CopyHoanThanhF183ae)+task.title}.clickable(enabled=!done&&task.active&&!busy,role=Role.Button,onClick=onComplete),contentAlignment=Alignment.Center){Bi(if(timer&&!done)"play"else "check",tint=if(done)AppColors.White else bp.deep)}
         }
+    }
+}
+
+@Preview(showBackground = true, widthDp = 375)
+@Composable
+private fun TaskListScreenPreview() {
+    Column(verticalArrangement = Arrangement.spacedBy(AppDimensions.Dp18)) {
+        TaskListScreen(TaskListState("today", emptyList(), 0, 4, 0, false), {}, {})
     }
 }

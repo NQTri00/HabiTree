@@ -7,6 +7,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
@@ -45,4 +46,12 @@ fun StatisticsScreen(
 fun StatisticsBars(values: List<Int>, labels: List<String>) {
     val max = maxOf(1, values.maxOrNull() ?: 0)
     Row(Modifier.fillMaxWidth().height(AppDimensions.Dp112),horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp10),verticalAlignment=Alignment.Bottom){values.forEachIndexed{i,value->Column(Modifier.weight(1f).semantics(mergeDescendants=true){contentDescription=AppText.text(TextKey.Copy01ViecHoanThanh0bc363,labels[i],value)},horizontalAlignment=Alignment.CenterHorizontally){Bt(value.toString(),size=AppTypography.Size12,tint=bp.muted);Spacer(Modifier.height(AppDimensions.Dp4));Box(Modifier.width(AppDimensions.Dp24).height((value.toFloat()/max*66).dp).background(if(i==6)bp.deep else bp.accent,RoundedCornerShape(topStart=AppDimensions.Dp6,topEnd=AppDimensions.Dp6)));HorizontalDivider(color=bp.line,thickness=AppDimensions.Dp1);Spacer(Modifier.height(AppDimensions.Dp5));Bt(labels[i],size=AppTypography.Size12,tint=bp.muted)}}}
+}
+
+@Preview(showBackground = true, widthDp = 375)
+@Composable
+private fun StatisticsScreenPreview() {
+    Column(verticalArrangement = Arrangement.spacedBy(AppDimensions.Dp18)) {
+        StatisticsScreen(StatisticsScreenState(9, 2, 6, 1, 3, listOf(0, 1, 0, 2, 0, 2, 1), listOf("M", "T", "W", "T", "F", "S", "S")), {}, {})
+    }
 }

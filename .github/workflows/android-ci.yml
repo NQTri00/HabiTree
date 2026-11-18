@@ -52,7 +52,7 @@ jobs:
           arch: x86_64
           profile: pixel_2
           disable-animations: true
-          script: bash ./gradlew --no-daemon :data:connectedDebugAndroidTest
+          script: bash ./gradlew --no-daemon :core-storage:connectedDebugAndroidTest
 
       - name: Upload verification reports
         if: always()
