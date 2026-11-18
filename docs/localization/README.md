@@ -2,7 +2,9 @@
 
 The latest branding, plant-name and themed launcher-icon work is documented in [POLISH-REPORT.md](POLISH-REPORT.md).
 
-Edit `shared/src/commonMain/resources/i18n/messages.json` for application copy. The `vi` and `en` values share numbered placeholders, such as `{0}`. Pass user data as arguments; never translate user-written task titles, tree names or notes. `canonical` entries retain their original `storageValue` so existing categories and backups remain compatible. Use `AppText.category` only when displaying those IDs.
+Edit `localization/strings/*.yaml` for application copy. The `vi` and `en` values share numbered placeholders, such as `{0}`. Pass user data as arguments; never translate user-written task titles, tree names or notes. `canonical` entries retain their original `storageValue` so existing categories and backups remain compatible. Use `AppText.category` only when displaying those IDs.
+
+Install the pinned dependency from `tools/localization/requirements.txt` in your project Python environment. Keep each entry's `order` unique and preserve existing orders. `localization/android-outputs.json` defines the Android resource targets.
 
 Run from the repository root:
 

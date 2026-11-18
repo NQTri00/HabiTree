@@ -8,7 +8,7 @@ plugins {
     alias(libs.plugins.kotlin.compose) apply false
 }
 
-/** Enforce Phase 5 ownership without moving stable feature APIs or gameplay rules. */
+/** Enforce dependency direction for the Android feature layers and shared source. */
 tasks.register("verifyArchitecture") {
     group = "verification"
     doLast {
@@ -16,13 +16,30 @@ tasks.register("verifyArchitecture") {
         val violations=mutableListOf<String>()
         features.forEach { owner->
             fileTree("$owner/src").matching{include("**/*.kt")}.forEach { source->
-                Regex("""import com\.mamxanh\.app\.feature\.([a-z]+)\..*ViewModel""").findAll(source.readText()).forEach { match->
-                    if(match.groupValues[1]!=owner)violations.add("Cross-feature ViewModel: ${source.relativeTo(rootDir)}")
+                Regex("""(?m)^import com\.mamxanh\.app\.feature\.([a-z]+)\.""").findAll(source.readText()).forEach { match->
+                    if(match.groupValues[1]!=owner)violations.add("Cross-feature import: ${source.relativeTo(rootDir)}")
                 }
             }
-            val script=file("$owner/build.gradle.kts").readText()
-            features.filter{it!=owner}.forEach{other->
-                if(script.contains("project(\":$other\")"))violations.add("$owner depends on feature $other")
+            val allowed = mapOf(
+                "" to setOf(":core-ui", ":$owner:domain"),
+                "domain/" to setOf(":shared"),
+                "data/" to setOf(":$owner:domain"),
+            )
+            allowed.forEach { (layer, dependencies) ->
+                val script = file("$owner/${layer}build.gradle.kts")
+                if (script.exists()) {
+                    Regex("""project\("([^"]+)"\)""").findAll(script.readText()).forEach { match ->
+                        if (match.groupValues[1] !in dependencies) {
+                            violations.add("Unexpected dependency in ${script.relativeTo(rootDir)}: ${match.groupValues[1]}")
+                        }
+                    }
+                }
+            }
+            fileTree("$owner/domain/src").matching { include("**/*.kt") }.forEach { source ->
+                if (Regex("""(?m)^import (android\.|androidx\.|com\.mamxanh\.app\.feature\.[a-z]+\.(data|presentation)\.)""")
+                        .containsMatchIn(source.readText())) {
+                    violations.add("Platform or outer-layer import in ${source.relativeTo(rootDir)}")
+                }
             }
         }
         fileTree("shared/src/commonMain").matching{include("**/*.kt")}.forEach { source->

@@ -4,7 +4,7 @@
 /.idea/
 .DS_Store
 /build
-*/build
+**/build/
 /.kotlin/
 # Local signing material and personal gameplay exports
 *.jks

@@ -1,0 +1,48 @@
+copy_trang_tri_da_so_huu_a10e7a:
+  order: 812
+  vi: Trang trí đã sở hữu
+  en: Owned decorations
+  canonical: false
+  source: inventory/src/main/java/com/mamxanh/app/feature/inventory/presentation/InventoryScreen.kt
+copy_chon_hat_de_gieo_tai_o_183f3d:
+  order: 813
+  vi: 'Chọn hạt để gieo tại ô '
+  en: 'Choose a seed for plot '
+  canonical: false
+  source: inventory/src/main/java/com/mamxanh/app/feature/inventory/presentation/InventoryScreen.kt
+copy_cham_de_dung_ed92ea:
+  order: 814
+  vi: Chạm để dùng
+  en: Tap to use
+  canonical: false
+  source: inventory/src/main/java/com/mamxanh/app/feature/inventory/presentation/InventoryScreen.kt
+copy_cham_binh_tuoi_de_trang_bi_dung_phan_bon_tai_man_hin_d63945:
+  order: 815
+  vi: Chạm bình tưới để trang bị. Dùng phân bón tại màn hình cây; bình tưới dùng lâu dài.
+  en: Tap a watering can to equip it. Apply fertilizer on a tree's screen; watering cans are reusable.
+  canonical: false
+  source: inventory/src/main/java/com/mamxanh/app/feature/inventory/presentation/InventoryScreen.kt
+copy_chua_co_hat_trong_tui_a6854d:
+  order: 816
+  vi: Chưa có hạt trong túi
+  en: No seeds in inventory
+  canonical: false
+  source: inventory/src/main/java/com/mamxanh/app/feature/inventory/presentation/InventoryScreen.kt
+copy_ghe_tiem_de_chon_hat_dau_tien_1bc7be:
+  order: 817
+  vi: Ghé tiệm để chọn hạt đầu tiên.
+  en: Visit the shop to choose your first seed.
+  canonical: false
+  source: inventory/src/main/java/com/mamxanh/app/feature/inventory/presentation/InventoryScreen.kt
+copy_sen_da_ngoc_aba46f:
+  order: 818
+  vi: Sen đá ngọc
+  en: Jade succulent
+  canonical: false
+  source: inventory/src/main/java/com/mamxanh/app/feature/inventory/presentation/InventoryScreen.kt
+copy_binh_co_ban_323b7f:
+  order: 819
+  vi: Bình cơ bản
+  en: Basic can
+  canonical: false
+  source: inventory/src/main/java/com/mamxanh/app/feature/inventory/presentation/InventoryScreen.kt

@@ -1,0 +1,10 @@
+{
+  "module": "core-ui",
+  "file": "app_copy.xml",
+  "alias": "catalog-key",
+  "locales": {
+    "values": "vi",
+    "values-en": "en",
+    "values-vi": "vi"
+  }
+}

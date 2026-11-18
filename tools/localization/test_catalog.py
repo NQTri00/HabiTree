@@ -1,13 +1,13 @@
 """Resource invariants that protect interpolation, storage compatibility and coverage."""
 import json,re,unittest
 import xml.etree.ElementTree as ET
-from catalog import CATALOG,ROOT,collect,source_files
+from catalog import ROOT, collect, source_files, load_catalog
 from generate import enum_name
 
 class CatalogTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.catalog=json.loads(CATALOG.read_text(encoding='utf-8'))
+        cls.catalog=load_catalog()
 
     def test_complete_languages_and_matching_arguments(self):
         for key,item in self.catalog.items():

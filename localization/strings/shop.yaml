@@ -1,0 +1,72 @@
+copy_dang_mua_c2f9ae:
+  order: 767
+  vi: Đang mua…
+  en: Buying…
+  canonical: false
+  source: shop/src/main/java/com/mamxanh/app/feature/shop/presentation/PurchaseConfirmation.kt
+copy_0_xu_mon_d8d2ec:
+  order: 768
+  vi: '{0} xu / món'
+  en: '{0} coins / item'
+  canonical: false
+  source: shop/src/main/java/com/mamxanh/app/feature/shop/presentation/PurchaseConfirmation.kt
+copy_0_1_dang_c7b549:
+  order: 769
+  vi: '{0} · {1} dáng'
+  en: '{0} · Forms: {1}'
+  canonical: false
+  source: shop/src/main/java/com/mamxanh/app/feature/shop/presentation/PurchaseConfirmation.kt
+copy_khoang_0_ngay_tich_xu_uoc_tinh_1_xu_ngay_8fd2f8:
+  order: 770
+  vi: Khoảng {0} ngày tích xu · Ước tính {1} xu/ngày
+  en: About {0} days of saving · Estimated {1} coins/day
+  canonical: false
+  source: shop/src/main/java/com/mamxanh/app/feature/shop/presentation/PurchaseConfirmation.kt
+copy_so_luong_bdb17c:
+  order: 771
+  vi: Số lượng
+  en: Quantity
+  canonical: false
+  source: shop/src/main/java/com/mamxanh/app/feature/shop/presentation/PurchaseConfirmation.kt
+copy_tang_so_luong_f05853:
+  order: 772
+  vi: Tăng số lượng
+  en: Increase quantity
+  canonical: false
+  source: shop/src/main/java/com/mamxanh/app/feature/shop/presentation/PurchaseConfirmation.kt
+copy_giam_so_luong_9abe78:
+  order: 773
+  vi: Giảm số lượng
+  en: Decrease quantity
+  canonical: false
+  source: shop/src/main/java/com/mamxanh/app/feature/shop/presentation/PurchaseConfirmation.kt
+copy_them_mot_chut_xanh_946fa7:
+  order: 774
+  vi: THÊM MỘT CHÚT XANH
+  en: A LITTLE MORE GREEN
+  canonical: false
+  source: shop/src/main/java/com/mamxanh/app/feature/shop/presentation/ShopScreen.kt
+copy_binh_tuoi_keo_dai_thoi_gian_cham_soc_khong_can_mua_n_d611f4:
+  order: 775
+  vi: Bình tưới kéo dài thời gian chăm sóc; không cần mua nước. Phân bón là tiện ích tùy chọn.
+  en: Watering cans extend care time; no need to buy water. Fertilizer is optional.
+  canonical: false
+  source: shop/src/main/java/com/mamxanh/app/feature/shop/presentation/ShopScreen.kt
+copy_exclusive_sap_ra_mat_chua_mo_ban_366438:
+  order: 776
+  vi: Exclusive · Sắp ra mắt. Chưa mở bán.
+  en: Exclusive · Coming soon. Not for sale yet.
+  canonical: false
+  source: shop/src/main/java/com/mamxanh/app/feature/shop/presentation/ShopScreen.kt
+copy_ghe_vuon_uom_ca45c6:
+  order: 777
+  vi: Ghé Vườn ươm
+  en: Visit nursery
+  canonical: false
+  source: shop/src/main/java/com/mamxanh/app/feature/shop/presentation/ShopScreen.kt
+copy_da_them_0_vao_tui_fe68af:
+  order: 778
+  vi: Đã thêm {0} vào túi
+  en: Added {0} to inventory
+  canonical: false
+  source: shop/src/main/java/com/mamxanh/app/feature/shop/presentation/ShopScreen.kt

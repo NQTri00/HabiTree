@@ -1,7 +1,7 @@
 """Record artifact/evidence hashes and actual host-test totals for the checkpoint."""
 import hashlib,json,subprocess,unittest,xml.etree.ElementTree as ET
 from datetime import datetime,timezone
-from catalog import ROOT,CATALOG
+from catalog import ROOT, load_catalog
 
 apk=ROOT/'app/build/outputs/apk/debug/app-debug.apk'
 checks=unittest.TextTestRunner().run(unittest.defaultTestLoader.discover(str(ROOT/'tools/localization'),pattern='test_*.py'))
@@ -24,6 +24,6 @@ for language in ['vi','en']:
         file=__import__('pathlib').Path('E:/Workspace/mamxanh-redesign/localization-review')/language/(item['name']+'.png')
         captures[language].append({'name':item['name'],'sha256':hashlib.sha256(file.read_bytes()).hexdigest()})
 comparison=json.loads((ROOT/'docs/localization/baseline-comparison.json').read_text(encoding='utf-8'))
-result={'verifiedAt':datetime.now(timezone.utc).isoformat(),'copyEntries':len(json.loads(CATALOG.read_text(encoding='utf-8'))),'resourceAndTokenChecks':checks.testsRun,'hostTests':tests,'apk':{'path':apk.relative_to(ROOT).as_posix(),'bytes':apk.stat().st_size,'sha256':apk_hash,'signatureSchemeV2Verified':v2_verified},'previewStatesPerLanguage':144,'originalPngCount':288,'vietnameseBaselineIdentical':sum(item.get('changedPixels')==0 for item in comparison),'vietnameseBaselineChanged':sum(item.get('changedPixels',0)>0 for item in comparison),'captures':captures}
+result={'verifiedAt':datetime.now(timezone.utc).isoformat(),'copyEntries':len(load_catalog()),'resourceAndTokenChecks':checks.testsRun,'hostTests':tests,'apk':{'path':apk.relative_to(ROOT).as_posix(),'bytes':apk.stat().st_size,'sha256':apk_hash,'signatureSchemeV2Verified':v2_verified},'previewStatesPerLanguage':144,'originalPngCount':288,'vietnameseBaselineIdentical':sum(item.get('changedPixels')==0 for item in comparison),'vietnameseBaselineChanged':sum(item.get('changedPixels',0)>0 for item in comparison),'captures':captures}
 (ROOT/'docs/localization/verification.json').write_text(json.dumps(result,indent=2)+'\n',encoding='utf-8')
 print(json.dumps({key:value for key,value in result.items() if key!='captures'},indent=2))

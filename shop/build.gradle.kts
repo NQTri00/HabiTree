@@ -17,7 +17,8 @@ kotlin {
     compilerOptions { jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17) }
 }
 dependencies {
-    implementation(project(":data"))
+    implementation(libs.koin.android)
+    api(project(":shop:domain"))
     implementation(project(":core-ui"))
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(platform(libs.androidx.compose.bom))

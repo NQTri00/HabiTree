@@ -1,10 +1,10 @@
 """Fix copy issues observed in actual bilingual Compose screenshots."""
 import json
-from catalog import ROOT,CATALOG,key_for
+from catalog import ROOT, key_for, load_catalog, write_catalog
 from generate import generate,enum_name
 from kotlin_literals import literals
 
-catalog=json.loads(CATALOG.read_text(encoding='utf-8'))
+catalog=load_catalog()
 copy={
     'Mua':'Buy',
     'Mua & gieo':'Buy & plant',
@@ -18,7 +18,7 @@ for key,vi,en in [
     ('tab_paused','Tạm dừng','Paused'),
     ('choose_weekdays','Chọn ngày','Choose days'),
 ]:catalog[key]={'vi':vi,'en':en,'canonical':False,'source':'bilingual visual review: contextual labels'}
-CATALOG.write_text(json.dumps(catalog,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+write_catalog(catalog)
 directory=ROOT/'app/src/main/java/com/mamxanh/app/presentation/bio'
 for filename in ['BioModal.kt','BioForms.kt','BioMainScreens.kt','BioModel.kt']:
     file=directory/filename;text=file.read_text(encoding='utf-8');edits=[]

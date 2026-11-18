@@ -1,0 +1,785 @@
+copy_doc_mot_dieu_ban_yeu_thich_7a7dfc:
+  order: 556
+  vi: Đọc một điều bạn yêu thích
+  en: Read something you love
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementPreviews.kt
+copy_ky_niem_se_xuat_hien_tu_nhung_viec_ban_thuc_su_da_la_df826a:
+  order: 557
+  vi: Kỷ niệm sẽ xuất hiện từ những việc bạn thực sự đã làm.
+  en: Memories will appear from things you have actually done.
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
+copy_xem_lien_quan_127914:
+  order: 558
+  vi: Xem liên quan ›
+  en: View related ›
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
+copy_ghi_chu_0_e5b4bc:
+  order: 559
+  vi: 'Ghi chú: {0}'
+  en: 'Note: {0}'
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
+copy_cham_mot_chut_moi_ngay_e8732c:
+  order: 560
+  vi: Chăm một chút, mỗi ngày.
+  en: A little care, every day.
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
+copy_mot_nhip_song_vua_suc_theo_cach_cua_ban_0f4521:
+  order: 561
+  vi: Một nhịp sống vừa sức, theo cách của bạn.
+  en: A manageable rhythm, your way.
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
+copy_them_tu_viec_mau_4e3260:
+  order: 562
+  vi: Thêm từ việc mẫu
+  en: Add from templates
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
+copy_nhip_tung_thoi_quen_8481ee:
+  order: 563
+  vi: Nhịp từng thói quen
+  en: Each habit's rhythm
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
+copy_bo_dem_c8def0:
+  order: 564
+  vi: Bộ đếm
+  en: Timer
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
+copy_cham_36a8bd:
+  order: 565
+  vi: Chạm
+  en: Tap
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
+copy_khung_gio_0_1_c4abe6:
+  order: 566
+  vi: Khung giờ {0}–{1}
+  en: Time window {0}–{1}
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
+copy_nghi_mot_chut_khong_tinh_thoi_gian_nghi_a616c7:
+  order: 567
+  vi: Nghỉ một chút · Không tính thời gian nghỉ
+  en: Take a break · Break time does not count
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
+copy_roi_ung_dung_se_tam_dung_phan_da_lam_luon_duoc_luu_381f0a:
+  order: 568
+  vi: Rời ứng dụng sẽ tạm dừng. Phần đã làm luôn được lưu.
+  en: Leaving the app pauses your session. Your progress is always saved.
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
+copy_phut_tap_trung_459fbd:
+  order: 569
+  vi: Phút tập trung
+  en: Focus minutes
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
+copy_5_120_phut_0c4b29:
+  order: 570
+  vi: 5–120 phút
+  en: 5–120 minutes
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
+copy_da_hoan_thanh_0_phien_3aedba:
+  order: 571
+  vi: Đã hoàn thành {0} phiên
+  en: 'Completed sessions: {0}'
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
+copy_0_1_2_phut_3_1cab4a:
+  order: 572
+  vi: '{0} · {1} / {2} phút · {3}'
+  en: '{0} · {1} / {2} min · {3}'
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
+copy_tron_ven_2a4501:
+  order: 573
+  vi: Trọn vẹn
+  en: Complete
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
+copy_da_luu_phan_da_lam_0f9d18:
+  order: 574
+  vi: Đã lưu phần đã làm
+  en: Progress saved
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
+copy_dang_chay_cd07e6:
+  order: 575
+  vi: Đang chạy
+  en: Running
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
+copy_tuan_tu_0_55af46:
+  order: 576
+  vi: TUẦN TỪ {0}
+  en: WEEK OF {0}
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
+copy_chua_du_du_lieu_de_so_sanh_tuan_truoc_63f9c2:
+  order: 577
+  vi: Chưa đủ dữ liệu để so sánh tuần trước.
+  en: Not enough data to compare with last week.
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
+copy_tuan_truoc_0_so_lieu_den_hom_nay_1201e0:
+  order: 578
+  vi: 'Tuần trước: {0}% · Số liệu đến hôm nay.'
+  en: 'Last week: {0}% · Data through today.'
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
+copy_0_ngay_cham_cay_1_moc_truong_thanh_eb3af0:
+  order: 579
+  vi: '{0} ngày chăm cây · {1} mốc trưởng thành'
+  en: 'Tree-care days: {0} · Maturity milestones: {1}'
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
+copy_chua_du_du_lieu_ve_nhom_thoi_quen_2068bb:
+  order: 580
+  vi: Chưa đủ dữ liệu về nhóm thói quen.
+  en: Not enough habit-category data yet.
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
+copy_deu_dan_nhat_0_b18f80:
+  order: 581
+  vi: 'Đều đặn nhất: {0}'
+  en: 'Most consistent: {0}'
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
+copy_co_the_dieu_chinh_nhe_0_c674c2:
+  order: 582
+  vi: 'Có thể điều chỉnh nhẹ: {0}'
+  en: 'A little room to adjust: {0}'
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
+copy_dieu_gi_khien_tuan_nay_de_dang_hon_72fdd9:
+  order: 583
+  vi: Điều gì khiến tuần này dễ dàng hơn?
+  en: What made this week easier?
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
+copy_suy_ngam_tuan_75229e:
+  order: 584
+  vi: Suy ngẫm tuần
+  en: Weekly reflection
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
+copy_ghi_lai_cho_rieng_ban_da0345:
+  order: 585
+  vi: Ghi lại cho riêng bạn
+  en: Write something just for you
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
+copy_ngay_nghi_yyyy_mm_dd_2d6975:
+  order: 586
+  vi: Ngày nghỉ YYYY-MM-DD
+  en: Rest day YYYY-MM-DD
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
+copy_toi_da_2_ngay_thang_dat_truoc_ngay_nghi_khong_thuong_8e36f0:
+  order: 587
+  vi: Tối đa 2 ngày/tháng · Đặt trước ngày nghỉ · Không thưởng xu.
+  en: Up to 2 days/month · Schedule in advance · No coin rewards.
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
+copy_ngay_da_bo_lo_yyyy_mm_dd_d52a2a:
+  order: 588
+  vi: Ngày đã bỏ lỡ YYYY-MM-DD
+  en: Missed day YYYY-MM-DD
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
+copy_moi_ngay_mot_chut_f24459:
+  order: 589
+  vi: Mỗi ngày một chút
+  en: A little each day
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
+copy_nhip_thoi_quen_9c03a7:
+  order: 590
+  vi: NHỊP THÓI QUEN
+  en: HABIT RHYTHM
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
+copy_them_mot_viec_de_bat_dau_ghi_lai_nhip_thoi_quen_5bc1b9:
+  order: 591
+  vi: Thêm một việc để bắt đầu ghi lại nhịp thói quen.
+  en: Add a task to start recording your habit rhythm.
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
+copy_hien_tai_027390:
+  order: 592
+  vi: Hiện tại
+  en: Current
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
+copy_tap_trung_0_phut_gio_thuong_hoan_thanh_1_e3e85d:
+  order: 593
+  vi: 'Tập trung: {0} phút · Giờ thường hoàn thành: {1}'
+  en: 'Focus: {0} min · Usual completion time: {1}'
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
+copy_chua_du_du_lieu_348596:
+  order: 594
+  vi: chưa đủ dữ liệu
+  en: not enough data yet
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
+copy_xem_dieu_chinh_a56d7a:
+  order: 595
+  vi: Xem điều chỉnh
+  en: View adjustment
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
+copy_mac_dinh_tat_bat_quyen_va_nhac_toan_cuc_trong_tuy_ch_703a98:
+  order: 596
+  vi: Mặc định tắt. Bật quyền và nhắc toàn cục trong Tùy chọn nếu muốn nhận thông báo.
+  en: Off by default. Enable notification permission and app reminders in Settings if you want reminders.
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
+copy_gio_nhac_hh_mm_ab3321:
+  order: 597
+  vi: Giờ nhắc HH:mm
+  en: Reminder time HH:mm
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
+copy_luu_gio_nhac_bc709c:
+  order: 598
+  vi: Lưu giờ nhắc
+  en: Save reminder time
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
+copy_mot_lan_nhac_nhe_neu_chua_xong_1e2491:
+  order: 599
+  vi: ✓ Một lần nhắc nhẹ nếu chưa xong
+  en: ✓ One gentle reminder if unfinished
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
+copy_them_mot_lan_nhac_nhe_2b429d:
+  order: 600
+  vi: Thêm một lần nhắc nhẹ
+  en: Add one gentle reminder
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
+copy_dieu_chinh_lich_513357:
+  order: 601
+  vi: Điều chỉnh lịch
+  en: Adjust schedule
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
+copy_chuyen_sang_ngay_thuong_tu_ngay_mai_lich_su_va_ke_ho_ebd07c:
+  order: 602
+  vi: Chuyển sang ngày thường từ ngày mai. Lịch sử và kế hoạch hôm nay được giữ nguyên.
+  en: Switch to weekdays starting tomorrow. History and today's plan are kept.
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
+copy_da_bao_ve_f1dfce:
+  order: 603
+  vi: Đã bảo vệ
+  en: Protected
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
+copy_bo_lo_f8cf8f:
+  order: 604
+  vi: Bỏ lỡ
+  en: Missed
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
+copy_hoan_thanh_n_nghi_bao_ve_cham_da_bo_lo_ec2735:
+  order: 605
+  vi: '✓ Hoàn thành · N Nghỉ · ◇ Bảo vệ · Chấm: đã bỏ lỡ'
+  en: '✓ Done · R Rest · ◇ Protected · Dot: missed'
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
+copy_chon_mot_khung_gio_vua_suc_d8a536:
+  order: 606
+  vi: Chọn một khung giờ vừa sức.
+  en: Choose a manageable time window.
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
+copy_viec_dau_tien_28bcbf:
+  order: 607
+  vi: Việc đầu tiên
+  en: First task
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
+copy_hoan_thanh_mot_viec_1c20b2:
+  order: 608
+  vi: Hoàn thành một việc
+  en: Complete one task
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
+copy_ba_ngay_xanh_0c655e:
+  order: 609
+  vi: Ba ngày xanh
+  en: Three green days
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
+copy_giu_nhip_ba_ngay_b90ddb:
+  order: 610
+  vi: Giữ nhịp ba ngày
+  en: Keep your rhythm for three days
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
+copy_viec_dau_tien_da_xong_b1f060:
+  order: 611
+  vi: Việc đầu tiên đã xong
+  en: First task completed
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
+copy_bat_dau_nhe_nhang_e790f8:
+  order: 612
+  vi: Bắt đầu nhẹ nhàng
+  en: Start gently
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/OnboardingSettings.kt
+copy_mot_hat_giong_common_mien_phi_3d5e43:
+  order: 613
+  vi: Một hạt giống Common miễn phí
+  en: One free Common seed
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/OnboardingSettings.kt
+copy_chon_mot_trong_ba_loai_hat_duoc_giu_trong_tui_de_ban_9340b2:
+  order: 614
+  vi: Chọn một trong ba loài. Hạt được giữ trong túi để bạn tự gieo.
+  en: Choose one of three species. Your seed stays in inventory until you plant it.
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/OnboardingSettings.kt
+copy_ban_muon_danh_thoi_gian_cho_dieu_gi_5a5a7f:
+  order: 615
+  vi: Bạn muốn dành thời gian cho điều gì?
+  en: What would you like to make time for?
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/OnboardingSettings.kt
+copy_chon_2_5_viec_vua_suc_781582:
+  order: 616
+  vi: Chọn 2–5 việc vừa sức
+  en: Choose 2–5 manageable tasks
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/OnboardingSettings.kt
+copy_lich_va_khung_gio_duoc_ghi_tren_moi_mau_co_the_chinh_999368:
+  order: 617
+  vi: Lịch và khung giờ được ghi trên mỗi mẫu; có thể chỉnh về sau.
+  en: Each template shows its schedule and time window. You can edit them later.
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/OnboardingSettings.kt
+copy_cuoi_tuan_cbc24c:
+  order: 618
+  vi: cuối tuần
+  en: weekends
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/OnboardingSettings.kt
+copy_moi_ngay_4a1f92:
+  order: 619
+  vi: mỗi ngày
+  en: every day
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/OnboardingSettings.kt
+copy_nhac_nhe_luc_09_00_tuy_chon_1a1d81:
+  order: 620
+  vi: Nhắc nhẹ lúc 09:00 (tùy chọn)
+  en: A gentle reminder at 09:00 (optional)
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/OnboardingSettings.kt
+copy_thong_bao_chi_hoat_dong_khi_ban_cap_quyen_trong_tuy_68f38a:
+  order: 621
+  vi: Thông báo chỉ hoạt động khi bạn cấp quyền trong Tùy chọn. Từ chối quyền không ảnh hưởng việc và bộ đếm.
+  en: Notifications work only with permission enabled in Settings. Tasks and timers still work without permission.
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/OnboardingSettings.kt
+copy_bat_dau_hh_mm_d6f81d:
+  order: 622
+  vi: Bắt đầu HH:mm
+  en: Start HH:mm
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/OnboardingSettings.kt
+copy_ket_thuc_hh_mm_80ed38:
+  order: 623
+  vi: Kết thúc HH:mm
+  en: End HH:mm
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/OnboardingSettings.kt
+copy_luu_gio_yen_lang_9ba68f:
+  order: 624
+  vi: Lưu giờ yên lặng
+  en: Save quiet hours
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/OnboardingSettings.kt
+copy_thuong_657cfa:
+  order: 625
+  vi: Thưởng
+  en: Reward
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TaskDetails.kt
+copy_chuoi_8f6fe1:
+  order: 626
+  vi: Chuỗi
+  en: Streak
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TaskDetails.kt
+copy_lich_xac_nhan_263bc4:
+  order: 627
+  vi: Lịch & xác nhận
+  en: Schedule & completion
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TaskDetails.kt
+copy_thu_hai_den_thu_sau_78c8f6:
+  order: 628
+  vi: Thứ hai đến thứ sáu
+  en: Monday to Friday
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TaskDetails.kt
+copy_ngay_0_d9f894:
+  order: 629
+  vi: 'Ngày: {0}'
+  en: 'Days: {0}'
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TaskDetails.kt
+copy_mot_lan_han_0_0809b4:
+  order: 630
+  vi: Một lần · Hạn {0}
+  en: One-time · Due {0}
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TaskDetails.kt
+copy_timer_0_phut_hoat_dong_0027f1:
+  order: 631
+  vi: Timer · {0} phút hoạt động
+  en: Timer · {0} active minutes
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TaskDetails.kt
+copy_click_xac_nhan_mot_lan_8007ac:
+  order: 632
+  vi: Click · Xác nhận một lần
+  en: Tap · Confirm once
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TaskDetails.kt
+copy_dang_tam_dung_e40cc1:
+  order: 633
+  vi: Đang tạm dừng
+  en: Paused
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TaskDetails.kt
+copy_da_luu_tru_6aff2a:
+  order: 634
+  vi: Đã lưu trữ
+  en: Archived
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TaskDetails.kt
+copy_lan_cuoi_0_97f1a4:
+  order: 635
+  vi: Lần cuối {0}
+  en: Last completed {0}
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TaskDetails.kt
+copy_hoat_dong_0_1_2_phut_79ed9b:
+  order: 636
+  vi: Hoạt động {0}:{1} / {2} phút
+  en: Active {0}:{1} / {2} min
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TaskDetails.kt
+copy_ra_nen_se_tam_dung_khoi_dong_lai_can_tiep_tuc_thu_co_560f6d:
+  order: 637
+  vi: Ra nền sẽ tạm dừng. Khởi động lại cần tiếp tục thủ công.
+  en: Going to the background pauses the timer. After restarting, resume it manually.
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TaskDetails.kt
+copy_bat_dau_timer_141cca:
+  order: 638
+  vi: Bắt đầu Timer
+  en: Start timer
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TaskDetails.kt
+copy_sua_d4e076:
+  order: 639
+  vi: Sửa
+  en: Edit
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TaskDetails.kt
+copy_tam_dung_viec_c4c909:
+  order: 640
+  vi: Tạm dừng việc
+  en: Pause task
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TaskDetails.kt
+copy_tiep_tuc_viec_255a2e:
+  order: 641
+  vi: Tiếp tục việc
+  en: Resume task
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TaskDetails.kt
+copy_quan_ly_viec_64cecb:
+  order: 642
+  vi: Quản lý việc
+  en: Manage tasks
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TaskDetails.kt
+copy_0_1_viec_bat_buoc_da_xong_0ffc34:
+  order: 643
+  vi: '{0}/{1} việc bắt buộc đã xong'
+  en: '{0}/{1} required tasks done'
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TasksScreen.kt
+  pluralArgument: 1
+  en_one: '{0}/{1} required task done'
+copy_chua_co_viec_nao_2c72b0:
+  order: 644
+  vi: Chưa có việc nào
+  en: No tasks yet
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TasksScreen.kt
+copy_hay_them_viec_nho_de_xay_dung_thoi_quen_moi_ngay_8aeb29:
+  order: 645
+  vi: Hãy thêm việc nhỏ để xây dựng thói quen mỗi ngày.
+  en: Add a small task to build a daily habit.
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TasksScreen.kt
+copy_them_viec_3e34ed:
+  order: 646
+  vi: + Thêm việc
+  en: + Add task
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TasksScreen.kt
+copy_da_hoan_thanh_0_1_viec_e78274:
+  order: 647
+  vi: Đã hoàn thành {0} / {1} việc
+  en: Completed {0} / {1} tasks
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TasksScreen.kt
+  pluralArgument: 1
+  en_one: Completed {0} / {1} task
+copy_da_nhan_thuong_98b708:
+  order: 648
+  vi: Đã nhận thưởng
+  en: Reward claimed
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TasksScreen.kt
+copy_bo_eecf2d:
+  order: 649
+  vi: bộ
+  en: walk
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TasksScreen.kt
+copy_nuoc_a2a970:
+  order: 650
+  vi: nước
+  en: water
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TasksScreen.kt
+copy_don_673082:
+  order: 651
+  vi: Dọn
+  en: Clean
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TasksScreen.kt
+copy_tu_vung_e67acb:
+  order: 652
+  vi: từ vựng
+  en: vocabulary
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TasksScreen.kt
+copy_chuan_bi_e65470:
+  order: 653
+  vi: Chuẩn bị
+  en: Prepare
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TasksScreen.kt
+copy_hoc_380b3f:
+  order: 654
+  vi: Học
+  en: Study
+  canonical: true
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TasksScreen.kt
+  storageValue: Học
+copy_han_59b874:
+  order: 655
+  vi: 'Hạn: '
+  en: 'Due: '
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TasksScreen.kt
+copy_0_1_2_phut_b73be0:
+  order: 656
+  vi: '{0}:{1} / {2} phút'
+  en: '{0}:{1} / {2} min'
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TasksScreen.kt
+copy_tam_dung_bo_dem_e82e42:
+  order: 657
+  vi: Tạm dừng bộ đếm
+  en: Pause timer
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TasksScreen.kt
+copy_bat_dau_bo_dem_35c256:
+  order: 658
+  vi: Bắt đầu bộ đếm
+  en: Start timer
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TasksScreen.kt
+copy_hoan_thanh_nhiem_vu_e5ef43:
+  order: 659
+  vi: Hoàn thành nhiệm vụ
+  en: Complete task
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TasksScreen.kt
+copy_on_tu_vung_15_phut_acc66f:
+  order: 660
+  vi: Ôn từ vựng 15 phút
+  en: Review vocabulary for 15 minutes
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TasksScreen.kt
+copy_tieng_anh_7ecaa5:
+  order: 661
+  vi: Tiếng Anh
+  en: English
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TasksScreen.kt
+copy_don_goc_hoc_tap_e45d91:
+  order: 662
+  vi: Dọn góc học tập
+  en: Tidy the study space
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TasksScreen.kt
+copy_giu_gon_gang_63ed82:
+  order: 663
+  vi: Giữ gọn gàng
+  en: Keep things tidy
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TasksScreen.kt
+copy_chuan_bi_bai_cho_ngay_mai_0c86eb:
+  order: 664
+  vi: Chuẩn bị bài cho ngày mai
+  en: Prepare tomorrow's lesson
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TasksScreen.kt
+copy_daily_clear_0_xu_gioi_han_1_xu_ngay_6fe04e:
+  order: 665
+  vi: Daily Clear +{0} xu · Giới hạn {1} xu/ngày
+  en: Daily Clear +{0} coins · Limit {1} coins/day
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TasksViewModel.kt
+copy_hoan_thanh_ke_hoach_bat_buoc_5342d8:
+  order: 666
+  vi: Hoàn thành kế hoạch bắt buộc
+  en: Complete the required plan
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TasksViewModel.kt
+copy_luu_e91f26:
+  order: 667
+  vi: Lưu
+  en: Save
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/dialog/AddTaskDialog.kt
+copy_viec_moi_la_tuy_chon_hom_nay_lich_moi_tu_ngay_mai_984ba2:
+  order: 668
+  vi: Việc mới là tùy chọn hôm nay. Lịch mới từ ngày mai.
+  en: New tasks are optional today. Their schedule starts tomorrow.
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/dialog/AddTaskDialog.kt
+copy_ten_viec_1_100_312f5b:
+  order: 669
+  vi: Tên việc (1–100)
+  en: Task name (1–100)
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/dialog/AddTaskDialog.kt
+copy_han_chot_yyyy_mm_dd_tuy_chon_b14023:
+  order: 670
+  vi: Hạn chót (YYYY-MM-DD, tùy chọn)
+  en: Due date (YYYY-MM-DD, optional)
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/dialog/AddTaskDialog.kt
+copy_phut_hoat_dong_5_240_0e7a6f:
+  order: 671
+  vi: Phút hoạt động (5–240)
+  en: Active minutes (5–240)
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/dialog/AddTaskDialog.kt
+copy_mo_ta_toi_da_500_5b2042:
+  order: 672
+  vi: Mô tả (tối đa 500)
+  en: Description (up to 500)
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/dialog/AddTaskDialog.kt
+copy_khung_gio_tuy_chon_hh_mm_ket_thuc_som_hon_bat_dau_ng_a49a89:
+  order: 673
+  vi: Khung giờ tùy chọn · HH:mm. Kết thúc sớm hơn bắt đầu nghĩa là qua đêm.
+  en: Optional time window · HH:mm. An earlier end time means overnight.
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/dialog/AddTaskDialog.kt
+copy_bat_dau_hh_mm_af5f85:
+  order: 674
+  vi: Bắt đầu (HH:mm)
+  en: Start (HH:mm)
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/dialog/AddTaskDialog.kt
+copy_ket_thuc_hh_mm_8a0762:
+  order: 675
+  vi: Kết thúc (HH:mm)
+  en: End (HH:mm)
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/dialog/AddTaskDialog.kt
+copy_nhac_viec_hh_mm_tuy_chon_952c81:
+  order: 676
+  vi: Nhắc việc (HH:mm, tùy chọn)
+  en: Reminder (HH:mm, optional)
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/dialog/AddTaskDialog.kt
+copy_thong_bao_can_quyen_he_thong_tu_choi_quyen_van_luu_d_26414d:
+  order: 677
+  vi: Thông báo cần quyền hệ thống; từ chối quyền vẫn lưu được việc.
+  en: Notifications need system permission. You can still save the task without it.
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/dialog/AddTaskDialog.kt
+copy_thuong_0_xu_tong_toi_da_1_xu_ngay_717b49:
+  order: 678
+  vi: 'Thưởng: {0} xu · Tổng tối đa {1} xu/ngày'
+  en: 'Reward: {0} coins · Daily total up to {1} coins'
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/dialog/AddTaskDialog.kt
+copy_tiep_tuc_sua_13f645:
+  order: 679
+  vi: Tiếp tục sửa
+  en: Keep editing
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/dialog/AddTaskDialog.kt
+copy_noi_dung_chua_luu_se_bi_mat_4228e1:
+  order: 680
+  vi: Nội dung chưa lưu sẽ bị mất.
+  en: Your unsaved changes will be lost.
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/dialog/AddTaskDialog.kt
+copy_0_1_xu_8a2ae4:
+  order: 1064
+  vi: '{0} · +{1} xu'
+  en: '{0} · +{1} coins'
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
+copy_thu_0_xu_chi_1_xu_d34d57:
+  order: 1065
+  vi: Thu {0} xu · Chi {1} xu
+  en: Earned {0} coins · Spent {1} coins
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
+copy_0_1_2_3_xu_98b335:
+  order: 1066
+  vi: '{0} · {1} · {2} · +{3} xu'
+  en: '{0} · {1} · {2} · +{3} coins'
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/OnboardingSettings.kt
+copy_0_1_2_xu_9a6d2e:
+  order: 1067
+  vi: '{0}: {1}/{2} xu'
+  en: '{0}: {1}/{2} coins'
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TaskDetails.kt
+date_iso_placeholder:
+  order: 1088
+  vi: YYYY-MM-DD
+  en: YYYY-MM-DD
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt

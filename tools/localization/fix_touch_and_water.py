@@ -1,6 +1,6 @@
 """Apply targeted presentation fixes without changing saved plant names."""
 import json
-from catalog import ROOT,CATALOG
+from catalog import ROOT, load_catalog, write_catalog
 from generate import generate
 
 file=ROOT/'app/src/main/java/com/mamxanh/app/presentation/bio/BioNativeHost.kt'
@@ -11,8 +11,8 @@ file=ROOT/'app/src/main/java/com/mamxanh/app/presentation/bio/BioDesign.kt'
 text=file.read_text(encoding='utf-8')
 text=text.replace('.clickable(enabled=enabled,role=Role.Button,onClick=onClick).padding(horizontal=', '.clickable(interactionSource=interactionSource,indication=LocalIndication.current,enabled=enabled,role=Role.Button,onClick=onClick).padding(horizontal=')
 file.write_text(text,encoding='utf-8')
-catalog=json.loads(CATALOG.read_text(encoding='utf-8'))
+catalog=load_catalog()
 for item in catalog.values():
     if item['vi']=='Đã tưới':item['en']='Watered'
-CATALOG.write_text(json.dumps(catalog,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+write_catalog(catalog)
 generate()

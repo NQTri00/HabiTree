@@ -1,8 +1,8 @@
 import json
-from catalog import ROOT,CATALOG,key_for,inventory
+from catalog import ROOT, key_for, inventory, load_catalog, write_catalog
 
 inventory()
-catalog=json.loads(CATALOG.read_text(encoding='utf-8'))
+catalog=load_catalog()
 data=json.loads((ROOT/'app/src/main/assets/bio_reference.json').read_text(encoding='utf-8'))
 values=[]
 for palette in data['palettes'].values():values.append(palette['name'])
@@ -18,6 +18,6 @@ catalog['calendar_rest_marker']={'vi':'N','en':'R','canonical':False,'source':'c
 for index in [969,971]:catalog[list(catalog)[index]]['canonical']=True
 for index,arg,singular in [(182,1,'{0}/{1} task done'),(249,1,'{0}: {1} task completed'),(416,0,'{0} day'),(643,1,'{0}/{1} required task done'),(647,1,'Completed {0} / {1} task'),(811,1,'{0}: {1} task')]:
     item=catalog[list(catalog)[index]];item['pluralArgument']=arg;item['en_one']=singular
-CATALOG.write_text(json.dumps(catalog,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+write_catalog(catalog)
 for index,(key,item) in enumerate(catalog.items()):
     if not item.get('en'):print(f'{index} {item["vi"]}')

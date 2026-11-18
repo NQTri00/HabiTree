@@ -1,10 +1,10 @@
 """Migrate literal copy while preserving Kotlin expressions and category storage keys."""
 import json,re
-from catalog import ROOT,CATALOG,key_for,source_files
+from catalog import ROOT, key_for, source_files, load_catalog
 from generate import enum_name
 from kotlin_literals import literals,has_copy
 
-catalog=json.loads(CATALOG.read_text(encoding='utf-8'))
+catalog=load_catalog()
 
 def rewrite(source):
     edits=[]

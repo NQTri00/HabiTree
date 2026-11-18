@@ -1,4 +1,5 @@
 plugins {
+    alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
@@ -68,16 +69,23 @@ kotlin {
     compilerOptions { jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17) }
 }
 dependencies {
+    implementation(libs.androidx.navigation3.ui)
     implementation(libs.koin.android)
     implementation(libs.koin.androidx.compose)
     implementation(project(":core-ui"))
     implementation(project(":data"))
     implementation(project(":home"))
+    implementation(project(":home:data"))
     implementation(project(":tasks"))
+    implementation(project(":tasks:data"))
     implementation(project(":garden"))
+    implementation(project(":garden:data"))
     implementation(project(":shop"))
+    implementation(project(":shop:data"))
     implementation(project(":tree"))
+    implementation(project(":tree:data"))
     implementation(project(":stats"))
+    implementation(project(":stats:data"))
     implementation(project(":inventory"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)

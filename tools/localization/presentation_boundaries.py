@@ -1,12 +1,12 @@
 """Explicitly localize labels while retaining persisted categories and user content."""
 import json,re
-from catalog import ROOT,CATALOG,source_files
+from catalog import ROOT, source_files, load_catalog, write_catalog
 from generate import enum_name
 
-catalog=json.loads(CATALOG.read_text(encoding='utf-8'))
+catalog=load_catalog()
 for item in catalog.values():
     if item.get('canonical'):item.setdefault('storageValue',item['vi'])
-CATALOG.write_text(json.dumps(catalog,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+write_catalog(catalog)
 
 for file in source_files():
     text=file.read_text(encoding='utf-8-sig');before=text

@@ -1,0 +1,526 @@
+copy_goc_nho_cua_ban_ba1417:
+  order: 681
+  vi: GÓC NHỎ CỦA BẠN
+  en: YOUR LITTLE CORNER
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/GardenScreen.kt
+copy_0_cay_1_o_mo_528d81:
+  order: 682
+  vi: '{0} cây · {1} ô mở'
+  en: 'Trees: {0} · Open plots: {1}'
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/GardenScreen.kt
+copy_goc_vuon_f4c049:
+  order: 683
+  vi: Góc vườn
+  en: Garden corner
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/GardenScreen.kt
+copy_chua_co_cay_phu_hop_75e67d:
+  order: 684
+  vi: Chưa có cây phù hợp.
+  en: No matching trees yet.
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/GardenScreen.kt
+copy_chua_mo_b744b3:
+  order: 685
+  vi: Chưa mở
+  en: Locked
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/GardenScreen.kt
+copy_chi_tuoi_cay_con_song_dang_can_nuoc_thoi_gian_tuoi_k_958a7a:
+  order: 686
+  vi: Chỉ tưới cây còn sống đang cần nước. Thời gian tưới không cộng dồn.
+  en: Only living trees that need water are watered. Watering time does not stack.
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/GardenScreen.kt
+copy_mo_o_trong_11b979:
+  order: 687
+  vi: Mở ô trồng
+  en: Unlock planting plot
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/GardenScreen.kt
+copy_o_0_3d2411:
+  order: 688
+  vi: Ô {0}
+  en: Plot {0}
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/GardenScreen.kt
+copy_vi_cua_ban_d87c21:
+  order: 689
+  vi: Ví của bạn
+  en: Your wallet
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/GardenScreen.kt
+copy_hat_van_o_trong_tui_mo_them_o_trong_de_gieo_cay_54d8b7:
+  order: 690
+  vi: Hạt vẫn ở trong túi. Mở thêm ô trồng để gieo cây.
+  en: Your seed stays in inventory. Unlock another planting plot to grow it.
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/GardenScreen.kt
+copy_0_cay_dang_lon_c1217a:
+  order: 691
+  vi: 🌿  {0} cây đang lớn  🌿
+  en: '🌿  Growing trees: {0}  🌿'
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/GardenScreen.kt
+copy_0_can_tuoi_425a0d:
+  order: 692
+  vi: '{0} cần tưới'
+  en: 'Need water: {0}'
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/GardenScreen.kt
+copy_0_hat_b54ddd:
+  order: 693
+  vi: '{0} hạt'
+  en: 'Seeds: {0}'
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/GardenScreen.kt
+copy_cham_soc_0_e5e78b:
+  order: 694
+  vi: Chăm sóc {0}
+  en: Care for {0}
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/GardenScreen.kt
+copy_da_tuoi_d97f10:
+  order: 695
+  vi: ✓ Đã tưới
+  en: ✓ Watered
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/GardenScreen.kt
+copy_cho_tuoi_79f9ea:
+  order: 696
+  vi: 💧 Chờ tưới
+  en: 💧 Needs water
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/GardenScreen.kt
+copy_ten_cay_tuy_chon_3f3d38:
+  order: 697
+  vi: Tên cây tùy chọn
+  en: Optional tree name
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/GardenScreen.kt
+copy_bo_trong_de_dung_ten_loai_cay_a7e5fc:
+  order: 698
+  vi: Bỏ trống để dùng tên loài cây.
+  en: Leave empty to use the species name.
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/GardenScreen.kt
+copy_o_trong_0_174f9e:
+  order: 699
+  vi: Ô trồng · {0}
+  en: Planting plot · {0}
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/GardenScreen.kt
+copy_dung_1_hat_trong_tui_de_bat_dau_trong_bde1a7:
+  order: 700
+  vi: Dùng 1 hạt trong túi để bắt đầu trồng.
+  en: Use 1 seed from inventory to start growing.
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/GardenScreen.kt
+copy_dao_hong_76f74f:
+  order: 701
+  vi: Đào hồng
+  en: Pink cherry
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/GardenScreen.kt
+copy_da_gieo_cay_da_trong_e209c5:
+  order: 702
+  vi: 'Đã gieo cây!
+
+    Đã trồng '
+  en: 'Seed planted!
+
+    Planted '
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/GardenViewModel.kt
+copy_mam_moi_fa708b:
+  order: 703
+  vi: mầm mới
+  en: a new sprout
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/GardenViewModel.kt
+copy_tai_o_f143a2:
+  order: 704
+  vi: ' tại ô '
+  en: ' in plot '
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/GardenViewModel.kt
+copy_khong_the_mo_o_trong_hay_kiem_tra_so_xu_hien_co_4a5480:
+  order: 705
+  vi: Không thể mở ô trồng. Hãy kiểm tra số xu hiện có.
+  en: Could not unlock the planting plot. Check your coin balance.
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/GardenViewModel.kt
+copy_chua_the_gieo_cay_hay_kiem_tra_hat_trong_tui_va_o_tr_249b81:
+  order: 706
+  vi: Chưa thể gieo cây. Hãy kiểm tra hạt trong túi và ô trồng còn trống.
+  en: Could not plant yet. Check that you have a seed and an empty plot.
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/GardenViewModel.kt
+copy_trong_3_loai_bcc325:
+  order: 707
+  vi: Trồng 3 loài
+  en: Plant 3 species
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenPreviews.kt
+copy_nuoi_3_loai_truong_thanh_6c9d95:
+  order: 708
+  vi: Nuôi 3 loài trưởng thành
+  en: Grow 3 species to maturity
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenPreviews.kt
+copy_cay_hoa_dau_tien_no_ro_978326:
+  order: 709
+  vi: Cây hoa đầu tiên nở rộ
+  en: First flowering tree in full bloom
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenPreviews.kt
+copy_mo_khu_vuon_moi_9d81b2:
+  order: 710
+  vi: Mở khu vườn mới
+  en: Unlock a new garden section
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenPreviews.kt
+copy_mot_khu_voi_6_loai_khac_nhau_96bcc7:
+  order: 711
+  vi: Một khu với 6 loài khác nhau
+  en: One section with 6 different species
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenPreviews.kt
+copy_thong_xanh_f9e157:
+  order: 712
+  vi: Thông xanh
+  en: Green pine
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenPreviews.kt
+copy_luoi_ho_e071b2:
+  order: 713
+  vi: Lưỡi hổ
+  en: Snake plant
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenPreviews.kt
+copy_bach_thao_complete_content_8e5b3a:
+  order: 714
+  vi: Bách thảo · complete content
+  en: Plant guide · complete content
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenPreviews.kt
+copy_mat_dat_9d263a:
+  order: 715
+  vi: Mặt đất
+  en: Ground
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
+copy_vien_5051f2:
+  order: 716
+  vi: Viền
+  en: Border
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
+copy_diem_nhan_0400b9:
+  order: 717
+  vi: Điểm nhấn
+  en: Accent
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
+copy_hieu_ung_40f9c1:
+  order: 718
+  vi: Hiệu ứng
+  en: Effects
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
+copy_chu_de_59500d:
+  order: 719
+  vi: Chủ đề
+  en: Theme
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
+copy_tiem_trang_tri_fbd50e:
+  order: 720
+  vi: Tiệm trang trí
+  en: Decoration shop
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
+copy_trang_tri_cua_ban_da2761:
+  order: 721
+  vi: Trang trí của bạn
+  en: Your decorations
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
+copy_dien_mao_14bd0c:
+  order: 722
+  vi: Diện mạo
+  en: Appearance
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
+copy_mo_khu_vuon_35e0bd:
+  order: 723
+  vi: Mở khu vườn
+  en: Unlock garden section
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
+copy_huy_bo_tri_ea6ca2:
+  order: 724
+  vi: Hủy bố trí
+  en: Cancel arrangement
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
+copy_hoan_tac_e72ff6:
+  order: 725
+  vi: Hoàn tác
+  en: Undo
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
+copy_khong_gian_cua_ban_d45f67:
+  order: 726
+  vi: KHÔNG GIAN CỦA BẠN
+  en: YOUR SPACE
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
+copy_khu_0_dang_khoa_bdcfda:
+  order: 727
+  vi: Khu {0} đang khóa
+  en: Section {0} is locked
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
+copy_0_xu_them_6_o_bd7dbb:
+  order: 728
+  vi: '{0} xu · Thêm 6 ô'
+  en: '{0} coins · 6 more plots'
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
+copy_xem_mo_khu_28c09c:
+  order: 729
+  vi: Xem mở khu
+  en: View section unlock
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
+copy_o_dang_khoa_0b475c:
+  order: 730
+  vi: Ô đang khóa
+  en: Locked plot
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
+copy_0_trang_tri_a468bd:
+  order: 731
+  vi: '{0} trang trí'
+  en: 'Decorations: {0}'
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
+copy_so_huu_0_a67ee0:
+  order: 732
+  vi: Sở hữu · {0}
+  en: Owned · {0}
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
+copy_qua_suu_tam_218de5:
+  order: 733
+  vi: Quà sưu tầm
+  en: Collection reward
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
+copy_chua_co_trang_tri_c94f39:
+  order: 734
+  vi: Chưa có trang trí
+  en: No decorations yet
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
+copy_vat_pham_chua_duoc_ho_tro_5099e1:
+  order: 735
+  vi: Vật phẩm chưa được hỗ trợ.
+  en: This item is not supported yet.
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
+copy_dang_dat_ae223b:
+  order: 736
+  vi: Đang đặt
+  en: Placing
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
+copy_vi_tri_cach_dung_82d89c:
+  order: 737
+  vi: Vị trí & cách dùng
+  en: Placement & use
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
+copy_chi_trang_tri_khong_doi_toc_do_cay_mua_de_cat_vao_tu_58883c:
+  order: 738
+  vi: Chỉ trang trí; không đổi tốc độ cây. Mua để cất vào túi.
+  en: Decoration only; tree growth is unchanged. Buy it to keep in inventory.
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
+copy_mo_khoa_qua_suu_tam_12f128:
+  order: 739
+  vi: Mở khóa qua sưu tầm
+  en: Unlock through your collection
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
+copy_uoc_tinh_0_ngay_1_b69012:
+  order: 740
+  vi: Ước tính {0} ngày · {1}
+  en: Estimated {0} days · {1}
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
+copy_tham_khao_40_xu_ngay_c8596f:
+  order: 741
+  vi: tham khảo 40 xu/ngày
+  en: based on 40 coins/day
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
+copy_theo_thu_nhap_7_ngay_f72e2b:
+  order: 742
+  vi: theo thu nhập 7 ngày
+  en: based on 7-day earnings
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
+copy_chon_chu_de_c1f89a:
+  order: 743
+  vi: Chọn chủ đề
+  en: Choose theme
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
+copy_0_loai_trong_danh_muc_giu_lich_su_khi_don_hoac_ban_c_ac2aaf:
+  order: 744
+  vi: '{0} loài trong danh mục · Giữ lịch sử khi dọn hoặc bán cây'
+  en: 'Species in catalog: {0} · History stays when you clear or sell a tree'
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
+copy_loai_chua_duoc_ho_tro_9107c4:
+  order: 745
+  vi: Loài chưa được hỗ trợ.
+  en: This species is not supported yet.
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
+copy_cac_giai_doan_d4547f:
+  order: 746
+  vi: Các giai đoạn
+  en: Growth stages
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
+copy_binh_tuoi_8_12_18_24_gio_phan_bon_dung_khi_cay_dang_de84c6:
+  order: 747
+  vi: 'Bình tưới: 8 / 12 / 18 / 24 giờ · Phân bón dùng khi cây đang lớn và đã tưới; không cộng dồn.'
+  en: 'Watering cans: 8 / 12 / 18 / 24 hours · Fertilizer is for growing, watered trees; effects do not stack.'
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
+copy_tu_0_7eb90b:
+  order: 748
+  vi: Từ {0}
+  en: Since {0}
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
+copy_ten_vuon_1b0761:
+  order: 749
+  vi: Tên vườn
+  en: Garden name
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
+copy_loai_cay_dd9342:
+  order: 750
+  vi: Loài cây
+  en: Plant species
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
+copy_dong_co_09da3d:
+  order: 751
+  vi: Đồng cỏ
+  en: Meadow
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
+copy_hat_bay_a6343b:
+  order: 752
+  vi: Hạt bay
+  en: Floating particles
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
+copy_it_a3681b:
+  order: 753
+  vi: Ít
+  en: Low
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
+copy_vua_8af1c0:
+  order: 754
+  vi: Vừa
+  en: Medium
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
+copy_tiet_kiem_pin_b1018c:
+  order: 755
+  vi: Tiết kiệm pin
+  en: Battery saver
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
+copy_giam_chuyen_dong_hoac_tiet_kiem_pin_tat_hat_bay_am_t_91e597:
+  order: 756
+  vi: Giảm chuyển động hoặc tiết kiệm pin tắt hạt bay. Âm thanh tắt.
+  en: Reduced motion or battery saver turns off floating particles. Sound is off.
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
+copy_luu_dien_mao_105663:
+  order: 757
+  vi: Lưu diện mạo
+  en: Save appearance
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
+copy_khu_vuon_0_c58827:
+  order: 758
+  vi: Khu vườn {0}
+  en: Garden section {0}
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
+copy_them_6_o_giu_nguyen_cay_hien_co_f944b2:
+  order: 759
+  vi: Thêm 6 ô · Giữ nguyên cây hiện có
+  en: 6 more plots · Existing trees stay
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
+copy_gia_mo_khu_d7a20a:
+  order: 760
+  vi: Giá mở khu
+  en: Section unlock price
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
+copy_mo_khu_0_xu_d27450:
+  order: 761
+  vi: Mở khu · {0} xu
+  en: Unlock section · {0} coins
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
+copy_can_them_0_xu_8837ee:
+  order: 762
+  vi: Cần thêm {0} xu
+  en: Need {0} more coins
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
+copy_chon_chu_de_tai_dien_mao_bff149:
+  order: 763
+  vi: Chọn chủ đề tại Diện mạo
+  en: Choose a theme in Appearance
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenViewModel.kt
+copy_chon_o_co_cay_con_song_c0f228:
+  order: 764
+  vi: Chọn ô có cây còn sống
+  en: Choose a plot with a living tree
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenViewModel.kt
+copy_vat_pham_da_duoc_dat_het_57767b:
+  order: 765
+  vi: Vật phẩm đã được đặt hết
+  en: All copies of this item have been placed
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenViewModel.kt
+copy_o_nay_da_co_vat_pham_cung_loai_a47c7d:
+  order: 766
+  vi: Ô này đã có vật phẩm cùng loại
+  en: This plot already has an item of the same type
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenViewModel.kt
+copy_mua_0_xu_39faa9:
+  order: 1068
+  vi: Mua · {0} xu
+  en: Buy · {0} coins
+  canonical: false
+  source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt

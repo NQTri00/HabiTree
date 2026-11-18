@@ -1,3 +1,9 @@
+# Android project rules
+
+Read [the Android agent guide](.agent/README.md) and the relevant guides under
+`.agent/android/` before changing the Android project. Use those guides as the
+target architecture for migrations and as the rules for new Android work.
+
 # UI design verification
 
 For UI changes, compare fresh Android Studio Compose previews directly with the approved web design in `E:/Workspace/mamxanh-redesign` before declaring the work complete. If the layouts are visibly different, continue refining and rendering until they are similar. A successful build alone does not satisfy this requirement.
