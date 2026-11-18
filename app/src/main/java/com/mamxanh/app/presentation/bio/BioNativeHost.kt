@@ -1,6 +1,8 @@
 package com.mamxanh.app.presentation.bio
 
 import com.mamxanh.app.presentation.ui.design.bioLocale
+import com.mamxanh.app.core.presentation.navigation.HabiTreeRouteRegistry
+import org.koin.compose.koinInject
 
 import com.mamxanh.shared.localization.TextKey
 
@@ -111,7 +113,7 @@ private fun nativeWorld(storage:GameStorage,reference:BioWorld,service:BackupSer
             else->if(!ui.busy){ui.busy=true;scope.launch{try{val result=withContext(Dispatchers.IO){executeNative(storage,service,pending,command)};refresh();ui.result(result)}catch(_:Exception){ui.result(BioResult(false,AppText.text(TextKey.CopyChuaTheCapNhatVuiLongThuLai42c8ac)))}}}
         }
     }
-    BioApplication(world,ui,Modifier.fillMaxSize().safeDrawingPadding().imePadding())
+    BioApplication(world,ui,Modifier.fillMaxSize().safeDrawingPadding().imePadding(),koinInject<HabiTreeRouteRegistry>())
 }
 
 private fun executeNative(storage:GameStorage,backup:BackupService,pending:GameBackup?,command:BioCommand):BioResult {

@@ -1,6 +1,6 @@
 package com.mamxanh.app.presentation.bio
 
-import androidx.navigation3.runtime.NavKey
+import com.mamxanh.app.core.presentation.navigation.HabiTreeNavKey
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -37,7 +37,8 @@ internal enum class BioRoute(val id: String) {
 @Serializable
 internal data class BioDestination(
     val route: BioRoute,
-    val argument: String = "",
-) : NavKey {
+    override val argument: String = "",
+) : HabiTreeNavKey {
+    override val routeId: String get() = route.id
     constructor(route: String, argument: String) : this(BioRoute.fromId(route), argument)
 }

@@ -16,4 +16,6 @@ kotlin {
 }
 dependencies {
     api(libs.androidx.lifecycle.viewmodel.ktx)
+    api(libs.androidx.navigation3.runtime)
+    api(libs.koin.core)
 }

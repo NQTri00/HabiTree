@@ -12,6 +12,8 @@ import com.mamxanh.shared.localization.TextKey
 import com.mamxanh.shared.localization.AppText
 
 import androidx.activity.compose.BackHandler
+import com.mamxanh.app.core.presentation.navigation.HabiTreeRouteRegistry
+import com.mamxanh.app.di.previewRouteRegistry
 import com.mamxanh.app.feature.stats.presentation.StatisticsLink
 import com.mamxanh.app.feature.stats.presentation.StatisticsScreen
 import com.mamxanh.app.feature.stats.presentation.StatisticsScreenState
@@ -31,7 +33,7 @@ import androidx.compose.ui.graphics.*
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.unit.*
 
-@Composable internal fun BioApplication(world:BioWorld,ui:BioController=remember{BioController()},modifier:Modifier=Modifier) {
+@Composable internal fun BioApplication(world:BioWorld,ui:BioController=remember{BioController()},modifier:Modifier=Modifier,routes:HabiTreeRouteRegistry=previewRouteRegistry) {
     ui.world=world
     val holders=rememberSaveableStateHolder()
     val primary=ui.route in listOf("home","tasks","garden","shop","stats")
@@ -49,7 +51,7 @@ import androidx.compose.ui.unit.*
                 BioHeader(title,world.coins,primary,{ui.back()},{ui.go("more")},showWallet=ui.route!="onboard")
                 if(ui.busy)LinearProgressIndicator(Modifier.fillMaxWidth(),color=bp.deep,trackColor=bp.soft)
                 NavDisplay(
-                    backStack = ui.backStack,
+                    backStack = ui.backStack.map(routes::keyFor),
                     modifier = Modifier.weight(1f).fillMaxWidth(),
                     onBack = ui::back,
                     transitionSpec = { EnterTransition.None togetherWith ExitTransition.None },
@@ -57,12 +59,12 @@ import androidx.compose.ui.unit.*
                     predictivePopTransitionSpec = { EnterTransition.None togetherWith ExitTransition.None },
                     entryProvider = { destination ->
                         NavEntry(destination) {
-                            holders.SaveableStateProvider(destination.route.id + ":" + destination.argument) {
+                            holders.SaveableStateProvider(destination.routeId + ":" + destination.argument) {
                                 Column(Modifier.fillMaxSize()){
-                                    if(destination.route == BioRoute.ONBOARD)BioOnboard(world,ui,gutter)
+                                    if(destination.routeId == BioRoute.ONBOARD.id)BioOnboard(world,ui,gutter)
                                     else Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState(if(ui.tabs["scrollBottom"]=="true")Int.MAX_VALUE else 0)).padding(start=gutter.dp,end=gutter.dp,top=topInset.dp,bottom=AppDimensions.Dp24),verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp18)){
                                         if(world.loading)LinearProgressIndicator(Modifier.fillMaxWidth(),color=bp.deep,trackColor=bp.soft)
-                                        when(destination.route.id){
+                                        when(destination.routeId){
                                             "home"->BioHome(world,ui,shortScreen)
                                             "tasks"->BioTasks(world,ui)
                                             "garden"->BioGarden(world,ui)
