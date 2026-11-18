@@ -1,5 +1,10 @@
 package com.mamxanh.app.presentation.bio
 
+import com.mamxanh.app.feature.garden.presentation.CollectionGoalDisplay
+import com.mamxanh.app.feature.garden.presentation.EncyclopediaScreen
+import com.mamxanh.app.feature.garden.presentation.SpeciesDisplay
+import com.mamxanh.app.feature.garden.presentation.SpeciesScreen
+import com.mamxanh.app.feature.garden.presentation.SpeciesTreeDisplay
 import com.mamxanh.app.feature.stats.presentation.AchievementDisplay
 import com.mamxanh.app.feature.stats.presentation.AchievementsScreen
 import com.mamxanh.app.feature.stats.presentation.TimelineMemory
@@ -179,33 +184,49 @@ internal fun BioTimeline(world: BioWorld, ui: BioController) {
     )
 }
 
-@Composable internal fun ColumnScope.BioEncyclopedia(world:BioWorld,ui:BioController){
-    Bt(AppText.text(TextKey.CopyMoiLoaiMotCauChuyen3baf0d),size=AppTypography.Size27,bold=true,spacing=AppTypography.TrackingMinus1)
-    val n=world.records.count{it.b("discovered")};BioCard(Modifier.fillMaxWidth(),bp.soft,padding=AppSpacing.Value18){Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween){Bt(AppText.text(TextKey.CopyBoSuuTam539bd6),semi=true);Bt("$n/${world.species.size} · ${n*100/world.species.size}%",semi=true)};BioProgress(n.toFloat()/world.species.size);Bt(AppText.text(TextKey.CopyGiuLichSuKhiDonHoacBanCay42a565),size=AppTypography.Size12,tint=bp.muted)}
-    BioGrid(world.species.size,2){i,m->BioProduct(world,ui,world.species[i],m,encyclopedia=true)}
-    BioSection(AppText.text(TextKey.CopyDauMocSuuTam1b494b))
-    Column(verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp12)){
-        world.data.a("goals").objects().filter{it.s("id") !in listOf("expansion","section")}.forEach{g->
-            BioCard(Modifier.fillMaxWidth()){
-                Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically){
-                    Bt(g.s("title"),Modifier.weight(1f),size=AppTypography.Size14,bold=true)
-                    Bt("${g.i("n")}/${g.i("target",1)}",size=AppTypography.Size12)
-                    if(g.i("n")>=g.i("target",1)){Spacer(Modifier.width(AppDimensions.Dp18));Bi("check")}
-                }
-                Bt(when(g.s("reward")){"reward_sign"->AppText.text(TextKey.CopyBienNhaVuonD2e9b7);"reward_petals"->AppText.text(TextKey.CopyCanhHoa137700);else->AppText.text(TextKey.CopyHuyHieuBoSuuTam521407)},size=AppTypography.Size12,tint=bp.muted)
-                Spacer(Modifier.height(AppDimensions.Dp8));BioProgress(g.i("n").toFloat()/g.i("target",1))
-            }
-        }
-    }
+@Composable
+internal fun BioEncyclopedia(world: BioWorld, ui: BioController) {
+    val species = world.species
+    EncyclopediaScreen(
+        discovered = world.records.count { it.b("discovered") },
+        speciesCount = species.size,
+        goals = world.data.a("goals").objects().filter { it.s("id") !in listOf("expansion", "section") }.map {
+            CollectionGoalDisplay(it.s("title"), it.i("n"), it.i("target", 1), it.s("reward"))
+        },
+        item = { index, modifier -> BioProduct(world, ui, species[index], modifier, encyclopedia = true) },
+    )
 }
-@Composable internal fun ColumnScope.BioSpecies(world:BioWorld,ui:BioController){
-    val s=world.species(ui.param);val id=s.s("id");val record=world.record(id);val known=record.b("discovered");val highest=record.i("highest");val trees=world.trees.filter{it.s("species")==id}
-    BioCard(Modifier.fillMaxWidth(),bp.soft,padding=AppSpacing.Value18,radius=AppRadii.Value26){Column(Modifier.fillMaxWidth(),horizontalAlignment=Alignment.CenterHorizontally){BioTag(bioTier(s.s("tier"))+" · "+record.s("status",AppText.text(TextKey.CopyChuaKhamPhaC0b0cb)));if(known){Spacer(Modifier.height(AppDimensions.Dp2));BioPlant(id,Modifier.fillMaxWidth().height(AppDimensions.Dp220))}else Box(Modifier.fillMaxWidth().height(AppDimensions.Dp140),contentAlignment=Alignment.Center){Bi("leaf",size=AppIcons.Size36)};Bt(s.s("name"),size=AppTypography.Size27,bold=true,spacing=AppTypography.TrackingMinus1,align=TextAlign.Center);Bt(s.s("description"),size=AppTypography.Size12,tint=bp.muted,align=TextAlign.Center)}}
-    BioSection(AppText.text(TextKey.CopyCacGiaiDoan01Bee217,highest,s.i("stages")))
-    BioGrid(s.i("stages"),if(LocalDensity.current.fontScale>1.2f)2 else 3){i,m->val reached=i<highest;Column(m.background(if(reached)bp.soft else bp.surface,RoundedCornerShape(AppDimensions.Dp12)).padding(AppDimensions.Dp10),horizontalAlignment=Alignment.CenterHorizontally,verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp5)){Bt("${i+1}",size=AppTypography.Size22,mono=true,tint=if(reached)bp.deep else bp.muted);Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp4)){Bi(if(reached)"check"else "lock",size=AppIcons.Size12,tint=bp.muted);Bt(if(reached)AppText.text(TextKey.CopyDaDat1b9e88)else AppText.text(TextKey.CopyChuaDatF4aa8f),size=AppTypography.Size11,tint=bp.muted)}}}
-    BioCard(Modifier.fillMaxWidth()){BioFacts(listOf(AppText.text(TextKey.CopyDaTrong42fa2b) to record.i("planted").toString(),AppText.text(TextKey.CopyTrongTui905deb) to world.count(id).toString(),AppText.text(TextKey.CopyDangSongE3573d) to trees.count{it.s("state")!="dead"}.toString(),AppText.text(TextKey.CopyTrongDauTien2e1aed) to bioDisplayDate(record.s("firstPlanted",AppText.text(TextKey.CopyChuaGhiNhanF7654d))),AppText.text(TextKey.CopyTruongThanhDauDd677a) to bioDisplayDate(record.s("firstMatured",AppText.text(TextKey.CopyChuaGhiNhanF7654d))),AppText.text(TextKey.CopyCayCaoNhatDangSong7d778f) to if(trees.isEmpty())AppText.text(TextKey.CopyChuaCoBc2b97)else "${trees.maxOf{it.i("stage")}}/${s.i("stages")}"))}
-    BioDetails(AppText.text(TextKey.CopyChamSocLoaiF520bc)){Bt(AppText.text(TextKey.CopyBinhTuoi8121824GioBonPhanKhiCayDangLonVCf24d9),size=AppTypography.Size12,tint=bp.muted)}
-    trees.forEach{BioLink(it.s("name"),"garden",{ui.go("tree",it.s("id"))})}
-    BioButton(AppText.text(TextKey.CopyTimHatA56320),{ui.tabs["shop"]="seeds";ui.go("shop")},Modifier.fillMaxWidth(),"shop")
+
+@Composable
+internal fun BioSpecies(world: BioWorld, ui: BioController) {
+    val species = world.species(ui.param)
+    val id = species.s("id")
+    val record = world.record(id)
+    val trees = world.trees.filter { it.s("species") == id }
+    val noRecord = AppText.text(TextKey.CopyChuaGhiNhanF7654d)
+    SpeciesScreen(
+        state = SpeciesDisplay(
+            id = id,
+            name = species.s("name"),
+            description = species.s("description"),
+            tier = bioTier(species.s("tier")),
+            status = record.s("status", AppText.text(TextKey.CopyChuaKhamPhaC0b0cb)),
+            discovered = record.b("discovered"),
+            highest = record.i("highest"),
+            stages = species.i("stages"),
+            planted = record.i("planted"),
+            owned = world.count(id),
+            living = trees.count { it.s("state") != "dead" },
+            firstPlanted = record.s("firstPlanted", noRecord),
+            firstMatured = record.s("firstMatured", noRecord),
+            highestTree = trees.maxOfOrNull { it.i("stage") },
+            trees = trees.map { SpeciesTreeDisplay(it.s("id"), it.s("name")) },
+        ),
+        onTree = { ui.go("tree", it) },
+        onShop = {
+            ui.tabs["shop"] = "seeds"
+            ui.go("shop")
+        },
+    )
 }
 

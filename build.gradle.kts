@@ -12,7 +12,7 @@ plugins {
 tasks.register("verifyArchitecture") {
     group = "verification"
     doLast {
-        val features=setOf("home","tasks","garden","shop","tree","stats","inventory")
+        val features=setOf("home","tasks","garden","shop","tree","stats","inventory","settings")
         val violations=mutableListOf<String>()
         features.forEach { owner->
             fileTree("$owner/src").matching{include("**/*.kt")}.forEach { source->

@@ -60,7 +60,7 @@ def key_for(value):
     return 'copy_'+(slug or 'message')+'_'+hashlib.sha256(value.encode()).hexdigest()[:6]
 
 def source_files():
-    for module in ['app','core-ui','home','tasks','garden','shop','tree','stats','inventory','data','shared']:
+    for module in ['app','core-ui','home','tasks','garden','shop','tree','stats','inventory','settings','data','shared']:
         roots = [ROOT / module / 'src']
         if module in FEATURES:
             roots.extend(ROOT / module / layer / 'src' for layer in ('domain', 'data'))

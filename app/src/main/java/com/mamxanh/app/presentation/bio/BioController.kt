@@ -2,18 +2,20 @@ package com.mamxanh.app.presentation.bio
 
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.Saver
+import com.mamxanh.app.core.presentation.navigation.HabiTreeNavigator
 import com.mamxanh.shared.localization.AppText
 import com.mamxanh.shared.localization.TextKey
 import org.json.JSONObject
 
 @Stable internal class BioController(initialRoute:String="home",initialParam:String="",initialModal:String="",var execute:(BioCommand)->Unit={}) {
     private val destinations = mutableStateListOf(BioDestination(initialRoute, initialParam))
-    val backStack: List<BioDestination> get() = destinations
-    val route: String get() = destinations.last().route.id
+    private val navigator = HabiTreeNavigator(destinations)
+    val backStack: List<BioDestination> get() = navigator.backStack
+    val route: String get() = navigator.current.route.id
     var param: String
-        get() = destinations.last().argument
+        get() = navigator.current.argument
         private set(value) {
-            destinations[destinations.lastIndex] = destinations.last().copy(argument = value)
+            navigator.replaceCurrent(navigator.current.copy(argument = value))
         }
     var modal by mutableStateOf(initialModal)
     var modalId by mutableStateOf("")
@@ -61,13 +63,7 @@ import org.json.JSONObject
         if(route=="task-new"&&dirty&&next!="task-new"){pendingRoute=next;pendingParam=id;pendingBack=false;pendingRoot=root;show("discard");return}
         if(next!=route)pauseFocus()
         if(next=="focus"&&id.isNotBlank()&&(route!="focus"||id!=param)){fields.remove("focus:task");fields.remove("focus:minutes")}
-        val destination = BioDestination(next, id)
-        if (root) {
-            destinations.clear()
-            destinations.add(destination)
-        } else if (destination != destinations.last()) {
-            destinations.add(destination)
-        }
+        navigator.goTo(BioDestination(next, id), replaceStack = root)
         modal="";message=""
         if(next=="tree")tabs["tree"]=treeTab?:"care"
         if(next=="task-new")fields.clear()
@@ -79,7 +75,7 @@ import org.json.JSONObject
             return
         }
         if (route == "task-new" && dirty) {
-            val previous = destinations.getOrNull(destinations.lastIndex - 1)
+            val previous = navigator.previous
             pendingRoute = previous?.route?.id ?: "tasks"
             pendingParam = previous?.argument.orEmpty()
             pendingBack = true
@@ -88,7 +84,7 @@ import org.json.JSONObject
             return
         }
         pauseFocus()
-        popOrReplace(BioDestination(BioRoute.HOME))
+        navigator.goBack(BioDestination(BioRoute.HOME))
     }
 
     fun discard() {
@@ -96,19 +92,15 @@ import org.json.JSONObject
         fields.clear()
         modal = ""
         if (pendingBack) {
-            popOrReplace(BioDestination(pendingRoute, pendingParam))
+            navigator.goBack(BioDestination(pendingRoute, pendingParam))
         } else {
-            if (!pendingRoot) popOrReplace(BioDestination(BioRoute.HOME))
+            if (!pendingRoot) navigator.goBack(BioDestination(BioRoute.HOME))
             go(pendingRoute, pendingParam, root = pendingRoot)
         }
         pendingBack = false
         pendingRoot = false
     }
 
-    private fun popOrReplace(root: BioDestination) {
-        if (destinations.size > 1) destinations.removeLast()
-        else destinations[0] = root
-    }
     fun show(type:String,id:String=""){modal=type;modalId=id;modalMessage="";quantity=1;message=""}
     fun send(action:String,values:Map<String,String> = emptyMap()){if(!busy)execute(BioCommand(action,values))}
     fun result(result:BioResult){busy=false;if(result.success){modal="";if(result.route.isNotBlank()){if(route=="task-new"){dirty=false;fields.clear()};go(result.route,result.param,root=result.route in listOf("home","tasks","garden","shop","stats"))};if(result.message.isNotBlank())message=result.message}else if(modal.isNotBlank())modalMessage=result.message else message=result.message}

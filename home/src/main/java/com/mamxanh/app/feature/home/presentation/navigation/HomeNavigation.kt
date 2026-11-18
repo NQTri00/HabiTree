@@ -10,6 +10,12 @@ internal data object HomeKey : HabiTreeNavKey {
     override val routeId: String get() = "home"
 }
 
+@Serializable
+internal data object OnboardingKey : HabiTreeNavKey {
+    override val routeId: String get() = "onboard"
+}
+
 val homeFeatureNavigation = HabiTreeFeatureModule(
+    HabiTreeFeatureDestination("onboard") { argument -> OnboardingKey.takeIf { argument.isEmpty() } },
     HabiTreeFeatureDestination("home") { HomeKey.takeIf { _ -> it.isEmpty() } },
 )

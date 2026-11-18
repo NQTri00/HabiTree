@@ -1,6 +1,7 @@
 package com.mamxanh.app.di
 
 import com.mamxanh.app.core.presentation.navigation.HabiTreeRouteRegistry
+import com.mamxanh.app.feature.settings.presentation.navigation.settingsFeatureNavigation
 import com.mamxanh.app.feature.home.presentation.navigation.homeFeatureNavigation
 import com.mamxanh.app.feature.tasks.presentation.navigation.tasksFeatureNavigation
 import com.mamxanh.app.feature.garden.presentation.navigation.gardenFeatureNavigation
@@ -17,6 +18,7 @@ internal val featureNavigation = listOf(
     inventoryFeatureNavigation,
     treeFeatureNavigation,
     statsFeatureNavigation,
+    settingsFeatureNavigation,
 )
 
 internal val previewRouteRegistry = HabiTreeRouteRegistry(featureNavigation.flatMap { it.destinations })
