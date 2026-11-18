@@ -1,0 +1,56 @@
+# HabiTree Android migration plan and checklist
+
+**Completion goal:** Implement and verify every applicable Android requirement in `.agent/` from baseline `4cfc772`. Preserve offline gameplay, existing saves, English and Vietnamese, and the approved mobile UI. Deliver the complete file-by-file repository hierarchy and publish the matching verified APK. iOS implementation and verification are outside scope.
+
+- [x] **G01 · Activate tracking.** The user activated the thread goal through the client. Its tracker objective includes executing until every checklist item is complete. The completion criteria are defined above.
+- [x] **G02 · Establish the baseline.** Verified the clean checkout at `4cfc772` on `y-tuong/quangtri`. [Prior verification and implementation evidence](android-architecture-migration.md)
+- [ ] **G03 · Audit the requirements.** Map each applicable guide rule to a checklist ID, source owner, acceptance check, and evidence link. Record runtime navigation as open because the prior emulator session was interrupted. Preserve historical evidence when a later commit requires a rerun.
+
+## Navigation and feature state
+
+- [ ] **N01 · Register feature entries.** Extend the Koin `HabiTreeFeatureDestination` contract to provide actual NavEntry content. Replace the feature dispatch in `BioApplication` with registry lookup. Keep root tabs, shared framing, Android intent decoding, permissions, and file pickers at the shell. Verify live and preview entries resolve uniquely.
+- [ ] **N02 · Preserve saved navigation.** Keep serialized route IDs, arguments, back-stack format, and saveable keys. Test duplicate pushes, distinct entity IDs, tab replacement, popup Back, stack restoration, and task and tree notification links.
+- [ ] **S01 · Home and Tree.** Move selected tree, care eligibility, watering, fertilizer, and accessory actions from the shell to feature ViewModels and repositories. Verify palettes and persisted selection, watering after restart, disabled actions, and correct tree detail navigation.
+- [ ] **S02 · Tasks and Focus.** Move filters, drafts, form validation, templates, task lifecycle, and timers. Preserve draft and timer recovery keys. Verify create, edit, archive, invalid inputs, dirty Back, discard, process recreation, timer recovery, and a single reward.
+- [ ] **S03 · Garden and Encyclopedia.** Move plot selection, planting eligibility, collection queries, and species state. Verify empty and locked plots, planting from owned inventory, inventory decrement, and retained species history after removing or selling a tree.
+- [ ] **S04 · Shop and Inventory.** Move tabs, quantities, affordability, target-tree selection, and purchase results. Preserve transactions. Verify purchases by category, insufficient funds, duplicate taps, direct accessory purchase or equip, and persisted balances and equipment.
+- [ ] **S05 · Statistics and Journal.** Move aggregation queries and note mutations. Verify empty and populated statistics, persisted reflection and timeline notes, and typed links to the correct task or tree.
+- [ ] **S06 · Settings, Backup, Onboarding.** Move language, reminders, onboarding, and backup request state. Use typed results for shell-owned permissions and document pickers. Verify restart persistence, permission grant and denial, valid and invalid backups, destructive confirmations, onboarding completion and skip, and reopening with an existing garden.
+
+Each flow uses immutable state, typed actions, lifecycle-aware collection, and one-time events through `BaseViewModel`. Remove each shell adapter only after its final caller migrates.
+
+## Domain, data, and delivery boundaries
+
+- [ ] **M01 · Canonical domain ownership.** Replace Android feature-domain aliases to `shared` with canonical platform-independent contracts and models. Update repositories, bindings, and callers, preserving stored names and IDs. Verify one definition per type and no Android dependencies in domain.
+- [ ] **M02 · Inventory layers.** Add `:inventory:domain` and `:inventory:data`. Back owned-item queries and mutations with existing persistence operations. Wire the live route to these bindings. Test counts, empty categories, rejected actions, and rollback.
+- [ ] **M03 · Core libraries.** Give configuration, domain results, mapping, and formatting actual owners in `core.config`, `core.domain`, `core.data`, and `core.utils`. Keep components, navigation, transport, and storage in their existing corresponding libraries. Test real callers and existing-save compatibility.
+- [ ] **M04 · Architecture gate.** Extend `verifyArchitecture` and CI to reject forbidden cross-feature edges, platform imports or dependencies in domain, and domain-to-outer-layer edges. Check that every feature destination has one entry owner. Prove the gate rejects a forbidden example.
+- [ ] **M05 · Independent repositories.** Package feature layers together under independently buildable projects. Give core libraries independent versions. Test publication through a temporary Maven repository and a clean app checkout with pinned coordinates and no sibling folders. Publish the split to authorized destinations and repeat against the published artifacts. Maintain a buildable app branch throughout.
+- [ ] **M06 · Production networking.** Locate the real endpoint, authentication contract, and current and backup certificate pins in authorized sources. Verify valid authentication, expiry, pin mismatch, and rotation overlap. Verify offline startup without an endpoint. Keep any missing production dependency recorded against this item while other work continues.
+
+## Verification and final deliverables
+
+- [ ] **V01 · Preview inventory.** Enumerate route IDs, popup triggers, arguments, device dimensions, locale, and state variants from the live routes and preview manifests. Colocate previews and update `docs/bio-parity/headless.ps1` for changed function owners. Require zero lost, duplicate, or unrenderable scenarios.
+- [ ] **V02 · Image evidence.** Render every inventoried Compose screen and popup, including both locales and existing narrow, landscape, and large-text variants. Compare against the matching Android baseline and directly against the approved web reference for UI changes. Inspect and resolve unexplained layout, clipping, wrapping, and overlay differences.
+- [ ] **V03 · Build and data evidence.** Run `verifyArchitecture`, `:app:assembleDebug`, `:app:testDebugUnitTest`, `:shared:testAndroidHostTest`, the localization suite, and `:core-storage:connectedDebugAndroidTest`. Verify a clean checkout, prior-save upgrade, and backup round trip. Record exact commands and results.
+- [ ] **V04 · Installed APK.** Boot the isolated emulator with `-no-audio`, confirm its identity, install the exact APK, and verify its SHA-256. Exercise launch, tabs, Back, process recreation, draft recovery, notification links, and the feature checks above. Shut down the test emulator and verify disconnection.
+- [ ] **D01 · Full architecture hierarchy.** Generate a directory tree, per-module pages, and a machine-readable inventory from every final tracked path. Each Kotlin entry identifies declarations, ownership, callers, data flow, and verification. Each XML entry identifies resource declarations, qualifiers, and consumers. Document build scripts, tests, resources, assets, generated sources and their generators, workflows, and documents individually. Include out-of-scope tracked files in the inventory.
+- [ ] **D02 · Prove exhaustive coverage.** Compare the report path sets to `git ls-files`. Require zero missing, duplicate, and unexplained extra paths, including the report files tracked in Git. Verify source links and record the final SHA and counts per extension.
+- [ ] **D03 · Publish.** Push the exact verified source to `y-tuong/quangtri`. Upload the matching APK, checksums, image evidence, and architecture hierarchy. Confirm release asset digests and verify the workspace matches the pushed commit.
+- [ ] **D04 · Close.** Check every item against current evidence, then mark the goal complete and verify tracker status. After each intermediate checkpoint, proceed to the next available unchecked item. An interruption preserves the goal and checklist. An external dependency leaves its check open and does not stop independent work.
+
+## Guide-to-check mapping
+
+The route inventory starts with the 22 IDs in `BioRoute`. Home owns `home` and `onboard`. Tasks owns `tasks`, `task`, `task-new`, `focus`, `templates`, `rest`, and `insights`. Garden owns `garden`, `encyclopedia`, and `species`. Statistics owns `stats`, `review`, `achievements`, and `timeline`. Shop, Inventory, and Tree own their namesake IDs. Settings owns `settings` and `data`. The shell owns `more`. Route ownership here describes key registration. Entry-content migration and scenario coverage still require their own evidence.
+
+| Guide rule | Implementation owner | Acceptance and evidence |
+|---|---|---|
+| [Technology, MVI, layer contracts and migration invariants](../.agent/android/architecture.md) | Feature domain, data and presentation, plus core storage | S01–S06, M01–M03, V03–V04. Capture repository tests, upgrade and backup evidence, and live action results. |
+| [Repository structure, shell, packages and core inventory](../.agent/android/modularization.md) | Gradle composition root and library projects | N01, M01–M05. Record the resolved dependency graph and clean-checkout build using pinned artifacts. |
+| [Dependency direction, Koin bindings and scopes](../.agent/android/dependency-graph.md) | Composition root, feature bindings and architecture verifier | M04 and N01. Check forbidden edges and imports, resolve each binding through Koin, and verify route registry parity. |
+| [Typed keys, entry registration and stack operations](../.agent/android/navigation.md) | Feature navigation modules and Android shell | N01–N02 and V04. Run both registry and navigator tests plus notification and restoration checks on the installed APK. |
+| [Client ownership, DTOs and error mapping](../.agent/android/networking.md) | Core network and feature data sources | M06. Verify real authentication and pin inputs, error mapping, rotation, and offline startup. |
+| [Canonical copy and Android resource export](../.agent/android/localization.md) | Localization catalog and generator | V02–V03. Check generated exports and render both locales. |
+| [File organization, naming, design tokens, Figma workflow and previews](../.agent/android/coding-conventions.md) | Feature UI, core components and preview renderer | V01–V03. Review implementation sizes, identifiers and tokens, preserve manifest coverage, and compare any UI changes against the approved reference. |
+
+The final answer shows the top-level module tree, representative Kotlin and XML entries, the exhaustive hierarchy and coverage results, the Android verification evidence, and links to the exact source and checksum-verified APK. Keep task files on E: or in the existing tools location on D:.

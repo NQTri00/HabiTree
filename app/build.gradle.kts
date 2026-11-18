@@ -88,6 +88,8 @@ dependencies {
     implementation(project(":stats"))
     implementation(project(":stats:data"))
     implementation(project(":inventory"))
+    implementation(project(":inventory:domain"))
+    implementation(project(":inventory:data"))
     implementation(project(":settings"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)

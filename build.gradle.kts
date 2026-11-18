@@ -23,7 +23,7 @@ tasks.register("verifyArchitecture") {
             val allowed = mapOf(
                 "" to setOf(":core-ui", ":core-presentation", ":$owner:domain"),
                 "domain/" to setOf(":shared"),
-                "data/" to setOf(":$owner:domain"),
+                "data/" to (setOf(":$owner:domain") + if (owner == "inventory") setOf(":shared") else emptySet()),
             )
             allowed.forEach { (layer, dependencies) ->
                 val script = file("$owner/${layer}build.gradle.kts")

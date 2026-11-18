@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import com.mamxanh.app.BuildConfig
 import com.mamxanh.app.data.BackupService
+import com.mamxanh.app.feature.inventory.domain.InventoryRepository
 import com.mamxanh.shared.data.GameStorage
 import com.mamxanh.shared.data.sql.*
 import com.mamxanh.shared.model.*
@@ -63,6 +64,7 @@ private fun nativeWorld(storage:GameStorage,reference:BioWorld,service:BackupSer
 
 /** Native database/OS adapter. The presentation used here is also the preview target. */
 @Composable fun BioNativeHost(storage:GameStorage,externalTree:Long?=null,externalRoute:String="",externalTask:Long=0,onExternalHandled:()->Unit={}) {
+    val inventory = koinInject<InventoryRepository>()
     val context=LocalContext.current;val scope=rememberCoroutineScope();val reference=remember{BioWorld.reference(context)}
     val prefs=remember{context.getSharedPreferences("bio_ui",Context.MODE_PRIVATE)}
     val permissionPrefs=remember{context.getSharedPreferences("engagement_permissions",Context.MODE_PRIVATE)}
@@ -110,13 +112,13 @@ private fun nativeWorld(storage:GameStorage,reference:BioWorld,service:BackupSer
                 else{permissionPrefs.edit().putBoolean("requested",true).apply();ui.modal="";if(Build.VERSION.SDK_INT>=33)permission.launch(Manifest.permission.POST_NOTIFICATIONS)}
             }
             "permission-settings"->{ui.modal="";context.startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,Uri.fromParts("package",context.packageName,null)))}
-            else->if(!ui.busy){ui.busy=true;scope.launch{try{val result=withContext(Dispatchers.IO){executeNative(storage,service,pending,command)};refresh();ui.result(result)}catch(_:Exception){ui.result(BioResult(false,AppText.text(TextKey.CopyChuaTheCapNhatVuiLongThuLai42c8ac)))}}}
+            else->if(!ui.busy){ui.busy=true;scope.launch{try{val result=withContext(Dispatchers.IO){executeNative(storage,inventory,service,pending,command)};refresh();ui.result(result)}catch(_:Exception){ui.result(BioResult(false,AppText.text(TextKey.CopyChuaTheCapNhatVuiLongThuLai42c8ac)))}}}
         }
     }
     BioApplication(world,ui,Modifier.fillMaxSize().safeDrawingPadding().imePadding(),koinInject<HabiTreeRouteRegistry>())
 }
 
-private fun executeNative(storage:GameStorage,backup:BackupService,pending:GameBackup?,command:BioCommand):BioResult {
+private fun executeNative(storage:GameStorage,inventory:InventoryRepository,backup:BackupService,pending:GameBackup?,command:BioCommand):BioResult {
     val parts=command.action.split(':');val action=parts[0];val id=parts.getOrElse(1){command.values["id"].orEmpty()};val v=command.values;val key=UUID.randomUUID().toString()
     fun result(r:ActionResult,route:String="",param:String="")=BioResult(r.success,r.message,if(r.success)route else "",param)
     fun engage(a:EngagementAction,route:String="")=result(storage.engage(a),route)
@@ -126,17 +128,17 @@ private fun executeNative(storage:GameStorage,backup:BackupService,pending:GameB
         "claim"->return BioResult(storage.dailyBonus(),AppText.text(TextKey.CopyDaNhanThuongHomNayC5cad9))
         "water"->{val r=storage.water(id.toLong());return BioResult(r==TreeWateringResult.WATERED,when(r){TreeWateringResult.WATERED->AppText.text(TextKey.CopyDaTuoiCayMienPhiC84ab7);TreeWateringResult.ALREADY_WATERED->AppText.text(TextKey.CopyCayDaDuNuoc66849f);TreeWateringResult.DEAD->AppText.text(TextKey.CopyCayDaKhoHeo9c0717);else->AppText.text(TextKey.CopyChuaTheTuoiCayB8c05f)})}
         "fertilize"->return result(storage.applyFertilizer(id.toLong(),parts.getOrElse(2){"fertilizer"}))
-        "equip"->return result(storage.equipCan(id))
+        "equip"->return inventory.equipWateringCan(id).let { BioResult(it.success, it.message) }
         "buy","buy-equip","buy-plant"->{
             val item=v["id"]?:id;val quantity=v["quantity"]?.toIntOrNull()?.coerceIn(1,99)?:1
             val g=storage.garden();val plot=g.plots.firstOrNull{it.isUnlocked&&it.treeId==null&&it.id==(v["plot"]?.toIntOrNull()?:it.id)}?:g.plots.firstOrNull{it.isUnlocked&&it.treeId==null}
             if(action=="buy-plant"&&plot==null)return BioResult(false,AppText.text(TextKey.CopyVuonDaDayBanVanCoTheMuaHatVaoTuiE14bdf))
             val bought=storage.purchase(item,quantity,key);if(!bought.success)return result(bought)
-            if(action=="buy-equip")return result(storage.equipCan(item))
-            if(action=="buy-plant"){val planted=storage.plant(item,"",plot!!.id);val tree=storage.garden().trees.firstOrNull{t->storage.garden().plots.any{it.id==plot.id&&it.treeId==t.id}};return BioResult(planted,if(planted)AppText.text(TextKey.CopyDaGieoMotMamXanhB29310)else AppText.text(TextKey.CopyHatDaOTrongTuiChonOTrongDeGieo3a2bef),if(planted)"tree"else "",tree?.id?.toString().orEmpty())}
+            if(action=="buy-equip")return inventory.equipWateringCan(item).let { BioResult(it.success, it.message) }
+            if(action=="buy-plant"){val planted=inventory.plantSeed(item,"",plot!!.id);val tree=storage.garden().trees.firstOrNull{t->storage.garden().plots.any{it.id==plot.id&&it.treeId==t.id}};return BioResult(planted,if(planted)AppText.text(TextKey.CopyDaGieoMotMamXanhB29310)else AppText.text(TextKey.CopyHatDaOTrongTuiChonOTrongDeGieo3a2bef),if(planted)"tree"else "",tree?.id?.toString().orEmpty())}
             return result(bought)
         }
-        "plant"->{val item=v["id"].orEmpty();val plot=v["plot"]?.toIntOrNull();val planted=storage.plant(item,v["name"].orEmpty(),plot);val g=storage.garden();val tree=g.trees.firstOrNull{t->g.plots.any{it.id==plot&&it.treeId==t.id}};return BioResult(planted,if(planted)AppText.text(TextKey.CopyMotMamXanhMoi63e3dc)else AppText.text(TextKey.CopyKiemTraLaiHatVaOTrong36d949),if(planted)"tree"else "",tree?.id?.toString().orEmpty())}
+        "plant"->{val item=v["id"].orEmpty();val plot=v["plot"]?.toIntOrNull();val planted=inventory.plantSeed(item,v["name"].orEmpty(),plot);val g=storage.garden();val tree=g.trees.firstOrNull{t->g.plots.any{it.id==plot&&it.treeId==t.id}};return BioResult(planted,if(planted)AppText.text(TextKey.CopyMotMamXanhMoi63e3dc)else AppText.text(TextKey.CopyKiemTraLaiHatVaOTrong36d949),if(planted)"tree"else "",tree?.id?.toString().orEmpty())}
         "confirm-water-all"->return result(storage.waterAll(key))
         "confirm-unlock"->return BioResult(storage.unlockPlot(id.toInt()),AppText.text(TextKey.CopyDaMoOTrong37fc9b))
         "confirm-remove","confirm-sell"->return result(storage.disposeTree(id.toLong(),action=="confirm-sell",key),"garden")

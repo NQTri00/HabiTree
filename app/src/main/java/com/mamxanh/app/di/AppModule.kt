@@ -3,6 +3,8 @@ package com.mamxanh.app.di
 import com.mamxanh.app.core.presentation.navigation.HabiTreeFeatureDestination
 import com.mamxanh.app.core.presentation.navigation.HabiTreeRouteRegistry
 import com.mamxanh.app.data.local.GardenDatabase
+import com.mamxanh.app.feature.inventory.data.OfflineInventoryRepository
+import com.mamxanh.app.feature.inventory.domain.InventoryRepository
 import com.mamxanh.app.feature.stats.presentation.di.statsPresentationModule
 import com.mamxanh.app.feature.tree.presentation.di.treePresentationModule
 import com.mamxanh.app.feature.shop.presentation.di.shopPresentationModule
@@ -19,6 +21,7 @@ import org.koin.dsl.onClose
 fun appModule(networkConfig: NetworkConfig = NetworkConfig()) = module {
     includes(sharedModule(networkConfig))
     includes(*featureNavigation.map { it.navigationModule }.toTypedArray())
+    single<InventoryRepository> { OfflineInventoryRepository(get()) }
     single { HabiTreeRouteRegistry(getAll<HabiTreeFeatureDestination>()) }
     includes(homePresentationModule, tasksPresentationModule, gardenPresentationModule, shopPresentationModule, treePresentationModule, statsPresentationModule)
     single { GardenDatabase(androidContext()) } onClose { it?.close() }
