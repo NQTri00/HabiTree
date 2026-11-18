@@ -1,6 +1,10 @@
 package com.mamxanh.app.presentation.bio
 
 import com.mamxanh.app.presentation.ui.design.*
+import com.mamxanh.app.feature.tree.presentation.BioTreeScreen
+import com.mamxanh.app.feature.tree.presentation.TreeScreenAction
+import com.mamxanh.app.feature.tree.presentation.TreeScreenFertilizer
+import com.mamxanh.app.feature.tree.presentation.TreeScreenState
 import com.mamxanh.app.feature.shop.presentation.BioShopScreen
 import com.mamxanh.app.feature.shop.presentation.ShopTreeContext
 import com.mamxanh.app.feature.inventory.presentation.BioInventoryScreen
@@ -147,20 +151,6 @@ internal fun BioCatalog(world: BioWorld, ui: BioController, inventory: Boolean) 
     }
 }
 
-@Composable internal fun ColumnScope.BioTree(world:BioWorld,ui:BioController,compact:Boolean=false){
-    val t=world.tree(ui.param)
-    if(t==null){BioEmpty(AppText.text(TextKey.CopyCayDaRoiVuonA1f818),AppText.text(TextKey.CopyBanVanCoTheXemLichSuTrongBachThao92d81b),action=AppText.text(TextKey.CopyBachThaoF2ed64),onClick={ui.go("encyclopedia")});return}
-    BioHero(world,ui,t,short=compact)
-    val tab=ui.tabs["tree"]?:"care";BioTabs(listOf("care" to AppText.text(TextKey.CopyChamSoc7b7df6),"decor" to AppText.text(TextKey.CopyTrangTriD48231),"info" to AppText.text(TextKey.CopyThongTin4aa16c)),tab){ui.tabs["tree"]=it}
-    when(tab){
-        "care"->{Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically){Column(Modifier.weight(1f)){Bt(if(t.s("state")=="dead")AppText.text(TextKey.CopyCayDaKhoHeo9c0717)else AppText.text(TextKey.CopyMotChutNuocNhe30fe89),size=AppTypography.Size17,bold=true);Bt(if(t.b("watered"))AppText.text(TextKey.CopyDaTuoiDe2042)else AppText.text(TextKey.CopyCanTuoiA0957f),size=AppTypography.Size12,tint=bp.muted);Bt(if(t.s("state")=="dead")AppText.text(TextKey.CopyKhongTheHoiPhuc086975)else AppText.text(TextKey.CopyTuoiMienPhiKhongCongDonDe3e6a),size=AppTypography.Size11,tint=bp.muted)};BioButton(AppText.text(TextKey.CopyTuoi617613),{ui.send("water:"+t.s("id"))},icon="water",enabled=!t.b("watered")&&t.s("state")!="dead")}
-            if(t.s("state")!="dead"){Bt(AppText.text(TextKey.CopyDinhDuong3c8978),size=AppTypography.Size17,bold=true);Bt(if(t.s("state")=="mature")AppText.text(TextKey.CopyCayDaTruongThanhKhongCanBonThemEeed14)else if(!t.b("watered"))AppText.text(TextKey.CopyTuoiCayTruocKhiBonPhanCfd0cb)else if(!t.b("canFertilize",true))AppText.text(TextKey.CopyCayDangDuocBonChoHetThoiGianTruocKhiDungT72bbf2)else AppText.text(TextKey.CopyChonPhanDangCoDeBonChoCay540e72),size=AppTypography.Size12,tint=bp.muted);Column(verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp12)){world.products.filter{!it.b("permanent")}.forEach{p->BioCard(Modifier.fillMaxWidth(),padding=AppSpacing.Value12,radius=AppRadii.Value18){Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp12)){Box(Modifier.size(AppDimensions.Dp32).background(bp.soft,bioShape(AppRadii.Value10)),contentAlignment=Alignment.Center){Bi("fertilizer",size=AppIcons.Size19)};Column(Modifier.weight(1f)){Bt(p.s("name"),size=AppTypography.Size12,semi=true);Bt(AppText.text(TextKey.Copy01GioCon252cf45,p.s("rate"),p.i("hours"),world.count(p.s("id"))),size=AppTypography.Size11,tint=bp.muted)};BioButton(if(world.count(p.s("id"))==0)AppText.text(TextKey.CopyHetA89ea0)else AppText.text(TextKey.CopyBon4fd741),{ui.send("fertilize:"+t.s("id")+":"+p.s("id"))},enabled=t.b("canFertilize",t.b("watered"))&&world.count(p.s("id"))>0&&t.s("state")=="growing"&&!ui.busy)}}}};BioTextAction(AppText.text(TextKey.CopyBoSungVatPhamA4c18c),{ui.act("shop-care")},"next",modifier=Modifier.fillMaxWidth())}}
-        "decor"->{if(t.s("state")=="dead")Bt(AppText.text(TextKey.CopyCayDaKhoHeoKhongTheDeoPhuKien7658f1),tint=bp.muted)else{Row(Modifier.fillMaxWidth().height(if(t.s("decor").isNotBlank())AppDimensions.Dp32 else AppDimensions.Dp26),verticalAlignment=Alignment.CenterVertically){Bt(AppText.text(TextKey.CopyDiemToChoCay027c8d),Modifier.weight(1f),size=AppTypography.Size16,bold=true,spacing=AppTypography.TrackingMinus_35);if(t.s("decor").isNotBlank())BioTextAction(AppText.text(TextKey.CopyThaoD39d4a),{ui.send("unequip:"+t.s("id"))},modifier=Modifier.requiredHeight(AppDimensions.Dp48))};if(t.s("decor").isNotBlank())Bt(AppText.text(TextKey.CopyDangDungB6dcf3)+world.product(t.s("decor")).s("name").lowercase(),size=AppTypography.Size12,tint=bp.muted);BioGrid(world.accessories.size){i,m->BioProduct(world,ui,world.accessories[i],m,target=t.s("id"))};BioButton(AppText.text(TextKey.CopyTiemPhuKienE4d7d0),{ui.act("bio-accessory-shop:"+t.s("id"))},Modifier.fillMaxWidth(),"shop",true)}}
-        else->{val s=world.species(t.s("species"));BioCard(Modifier.fillMaxWidth()){BioFacts(listOf(AppText.text(TextKey.CopyLoaiD0aa6d) to s.s("name"),AppText.text(TextKey.CopyGiaiDoanAa70a1) to "${t.i("stage")} / ${s.i("stages")}",AppText.text(TextKey.CopyPhatTrien2d33cb) to "${t.i("progress")}%",AppText.text(TextKey.CopyNgayTrong2eb870) to t.s("planted")));Bt(s.s("description"),size=AppTypography.Size12,tint=bp.muted)};BioLink(AppText.text(TextKey.CopyHoSoLoaiCfff22),"book",{ui.go("species",t.s("species"))})}
-    }
-    Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween){if(t.s("state")=="mature")BioTextAction(AppText.text(TextKey.CopyBanCay5210c7),{ui.show("sell",t.s("id"))});BioTextAction(AppText.text(TextKey.CopyDonCayE3d410),{ui.show("remove",t.s("id"))},"trash",AppColors.Danger,iconFirst=true)}
-}
-
 @Composable internal fun ColumnScope.BioMore(ui:BioController){BioIntro(AppText.text(TextKey.CopyThemMotChut006e8b),AppText.text(TextKey.CopyTheoNhipCuaBan5a2ada));Column(verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp12)){listOf(Triple("focus","clock",AppText.text(TextKey.CopyTapTrung964002)),Triple("templates","plus",AppText.text(TextKey.CopyViecMau535dc1)),Triple("review","calendar",AppText.text(TextKey.CopyNhinLaiTuanFf3f0c)),Triple("achievements","award",AppText.text(TextKey.CopyDauMocDffd66)),Triple("timeline","book",AppText.text(TextKey.CopyKyNiemE3e113)),Triple("insights","chart",AppText.text(TextKey.CopyNhipThoiQuen1b8324)),Triple("encyclopedia","book",AppText.text(TextKey.CopyBachThaoF2ed64)),Triple("settings","settings",AppText.text(TextKey.CopyTuyChonNhacViecA44d85)),Triple("data","download",AppText.text(TextKey.CopyDuLieuUngDung9843b7))).forEach{(r,i,t)->BioLink(t,i,{ui.go(r)})}}}
 
 
@@ -305,6 +295,59 @@ internal fun BioGarden(world: BioWorld, ui: BioController) {
                     }
                 }
             }
+        },
+    )
+}
+
+
+@Composable
+internal fun BioTree(world: BioWorld, ui: BioController, compact: Boolean = false) {
+    val tree = world.tree(ui.param)
+    val id = tree?.s("id").orEmpty()
+    val speciesId = tree?.s("species").orEmpty()
+    val state = tree?.let {
+        val species = world.species(speciesId)
+        TreeScreenState(
+            growth = it.s("state"),
+            watered = it.b("watered"),
+            fertilizerNoteAllowed = it.b("canFertilize", true),
+            canFertilize = it.b("canFertilize", it.b("watered")),
+            busy = ui.busy,
+            hasDecoration = it.s("decor").isNotBlank(),
+            decorationName = world.product(it.s("decor")).s("name").lowercase(),
+            speciesName = species.s("name"),
+            stage = it.i("stage"),
+            stages = species.i("stages"),
+            progress = it.i("progress"),
+            planted = it.s("planted"),
+            description = species.s("description"),
+            fertilizers = world.products.filter { product -> !product.b("permanent") }.map { product ->
+                val productId = product.s("id")
+                TreeScreenFertilizer(productId, product.s("name"), product.s("rate"), product.i("hours"), world.count(productId))
+            },
+        )
+    }
+    BioTreeScreen(
+        state = state,
+        tab = ui.tabs["tree"] ?: "care",
+        onTab = { ui.tabs["tree"] = it },
+        onAction = { action ->
+            when (action) {
+                TreeScreenAction.Encyclopedia -> ui.go("encyclopedia")
+                TreeScreenAction.Water -> ui.send("water:$id")
+                is TreeScreenAction.Fertilize -> ui.send("fertilize:$id:${action.id}")
+                TreeScreenAction.BuyFertilizer -> ui.act("shop-care")
+                TreeScreenAction.Unequip -> ui.send("unequip:$id")
+                TreeScreenAction.BuyAccessory -> ui.act("bio-accessory-shop:$id")
+                TreeScreenAction.Species -> ui.go("species", speciesId)
+                TreeScreenAction.Sell -> ui.show("sell", id)
+                TreeScreenAction.Remove -> ui.show("remove", id)
+            }
+        },
+        hero = { if (tree != null) BioHero(world, ui, tree, short = compact) },
+        accessories = {
+            val products = world.accessories
+            BioGrid(products.size) { index, modifier -> BioProduct(world, ui, products[index], modifier, target = id) }
         },
     )
 }
