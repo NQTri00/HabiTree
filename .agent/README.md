@@ -21,3 +21,5 @@ This directory defines the **required target architecture** for HabiTree (Mầm 
 4. Use the shared design system and localization workflow for UI. Verify the affected modules, navigation flow and existing saved-data compatibility.
 
 Existing directory layouts, route controllers, contracts and copy systems are migration inputs. Use these guides when deciding the destination structure and interfaces. Follow [AGENTS.md](../AGENTS.md) for workspace and verification procedures.
+
+For the current Android migration, apply the [stop condition in AGENTS.md](../AGENTS.md#stop-condition-for-the-current-android-architecture-migration) after each verified checkpoint. The scope excludes iOS.
