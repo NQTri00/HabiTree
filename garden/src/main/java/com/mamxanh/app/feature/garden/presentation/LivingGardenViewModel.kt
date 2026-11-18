@@ -1,13 +1,14 @@
 package com.mamxanh.app.feature.garden.presentation
 
-import com.mamxanh.shared.localization.TextKey
-
-import com.mamxanh.shared.localization.AppText
-
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mamxanh.app.core.presentation.BaseViewModel
+import com.mamxanh.app.core.presentation.UiAction
+import com.mamxanh.app.core.presentation.UiEvent
+import com.mamxanh.app.core.presentation.UiState
 import com.mamxanh.shared.data.GameStorage
+import com.mamxanh.shared.localization.AppText
+import com.mamxanh.shared.localization.TextKey
 import com.mamxanh.shared.model.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
@@ -16,24 +17,23 @@ import kotlinx.coroutines.withContext
 
 data class LivingGardenUiState(val snapshot:LivingGardenSnapshot=LivingGardenSnapshot(),val garden:Garden=Garden(),
     val route:String="",val selected:String="",val draft:List<GardenPlacement>?=null,val draftVersion:Long=0,
-    val busy:Boolean=false,val message:String="",val loading:Boolean=true,val undoAvailable:Boolean=false)
-class LivingGardenViewModel(private val storage:GameStorage,private val saved:SavedStateHandle):ViewModel() {
-    private val restored=saved.get<ArrayList<String>>("layout_draft")?.mapNotNull {
-        val p=it.split('|');if(p.size==4)GardenPlacement(p[0],p[1],p[2].toInt(),p[3].toLong())else null
-    }
-    private val _state=MutableStateFlow(LivingGardenUiState(route=(saved.get<String>("living_route") ?: "").let{if(it=="ARRANGE")"STUDIO" else it},
-        selected=saved["living_selected"] ?: "",draft=restored,draftVersion=saved["layout_version"] ?: 0L))
-    val state=_state.asStateFlow()
+    val busy:Boolean=false,val message:String="",val loading:Boolean=true,val undoAvailable:Boolean=false) : UiState
+data class LivingGardenUiAction(val mutation: LivingGardenAction) : UiAction
+
+class LivingGardenViewModel(private val storage:GameStorage,private val saved:SavedStateHandle) : BaseViewModel<LivingGardenUiState, UiEvent, LivingGardenUiAction>(
+    initialState = LivingGardenUiState(route=(saved.get<String>("living_route") ?: "").let{if(it=="ARRANGE")"STUDIO" else it},
+        selected=saved["living_selected"] ?: "",draft=saved.get<ArrayList<String>>("layout_draft")?.mapNotNull(::decodePlacement),draftVersion=saved["layout_version"] ?: 0L),
+) {
     private val history=mutableListOf<List<GardenPlacement>>()
-    init {viewModelScope.launch{storage.changes.collect{if(_state.value.route.isNotBlank() || _state.value.loading)refresh()}}}
+    init {viewModelScope.launch{storage.changes.collect{if(mutableState.value.route.isNotBlank() || mutableState.value.loading)refresh()}}}
     fun discover(ids:List<String>){viewModelScope.launch{withContext(Dispatchers.IO){storage.designGarden(LivingGardenAction.Discover(ids))}}}
-    fun refreshVisible(){if(_state.value.route.isNotBlank() && !_state.value.busy)viewModelScope.launch{refresh()}}
+    fun refreshVisible(){if(mutableState.value.route.isNotBlank() && !mutableState.value.busy)viewModelScope.launch{refresh()}}
     private suspend fun refresh() {
         val pair=withContext(Dispatchers.IO){storage.garden() to storage.livingGarden()}
-        _state.value=_state.value.copy(garden=pair.first,snapshot=pair.second,loading=false)
+        mutableState.value=mutableState.value.copy(garden=pair.first,snapshot=pair.second,loading=false)
     }
     fun open(route:String,selected:String="") {
-        val current=_state.value
+        val current=mutableState.value
         val stack=saved.get<ArrayList<String>>("living_backstack") ?: arrayListOf()
         if(route.isBlank())stack.clear()
         else if(current.route.isNotBlank() && (current.route!=route || current.selected!=selected)) {
@@ -51,14 +51,14 @@ class LivingGardenViewModel(private val storage:GameStorage,private val saved:Sa
     private fun show(requestedRoute:String,selected:String="") {
         val route=if(requestedRoute=="ARRANGE")"STUDIO" else requestedRoute
         saved["living_route"]=route;saved["living_selected"]=selected
-        _state.value=_state.value.copy(route=route,selected=selected,message="")
+        mutableState.value=mutableState.value.copy(route=route,selected=selected,message="")
         if(route.isNotBlank()) {
-            _state.value=_state.value.copy(loading=true)
+            mutableState.value=mutableState.value.copy(loading=true)
             viewModelScope.launch {
                 refresh()
-                if(_state.value.route=="ARRANGE" && _state.value.draft==null) {
+                if(mutableState.value.route=="ARRANGE" && mutableState.value.draft==null) {
                     history.clear()
-                    _state.value=_state.value.copy(draft=_state.value.snapshot.placements,draftVersion=_state.value.snapshot.version,undoAvailable=false)
+                    mutableState.value=mutableState.value.copy(draft=mutableState.value.snapshot.placements,draftVersion=mutableState.value.snapshot.version,undoAvailable=false)
                     persist()
                 }
             }
@@ -66,22 +66,22 @@ class LivingGardenViewModel(private val storage:GameStorage,private val saved:Sa
     }
     fun resetAfterRestore() {
         history.clear();saved.remove<ArrayList<String>>("layout_draft");saved.remove<Long>("layout_version")
-        _state.value=_state.value.copy(draft=null,draftVersion=0,undoAvailable=false,selected="")
+        mutableState.value=mutableState.value.copy(draft=null,draftVersion=0,undoAvailable=false,selected="")
         open("")
     }
-    fun cancel(){history.clear();saved.remove<ArrayList<String>>("layout_draft");_state.value=_state.value.copy(draft=null,undoAvailable=false);back()}
+    fun cancel(){history.clear();saved.remove<ArrayList<String>>("layout_draft");mutableState.value=mutableState.value.copy(draft=null,undoAvailable=false);back()}
     private fun persist() {
-        saved["layout_draft"]=_state.value.draft?.map{listOf(it.id,it.sku,it.plotId,it.treeId).joinToString("|")}?.let{ArrayList(it)}
-        saved["layout_version"]=_state.value.draftVersion
+        saved["layout_draft"]=mutableState.value.draft?.map{listOf(it.id,it.sku,it.plotId,it.treeId).joinToString("|")}?.let{ArrayList(it)}
+        saved["layout_version"]=mutableState.value.draftVersion
     }
     private fun change(next:List<GardenPlacement>) {
-        history.add(_state.value.draft ?: return)
-        _state.value=_state.value.copy(draft=next,undoAvailable=true,message="");persist()
+        history.add(mutableState.value.draft ?: return)
+        mutableState.value=mutableState.value.copy(draft=next,undoAvailable=true,message="");persist()
     }
-    fun undo(){if(history.isNotEmpty()){_state.value=_state.value.copy(draft=history.removeAt(history.lastIndex),undoAvailable=history.isNotEmpty());persist()}}
-    fun select(sku:String){saved["living_selected"]=sku;_state.value=_state.value.copy(selected=sku,message="")}
+    fun undo(){if(history.isNotEmpty()){mutableState.value=mutableState.value.copy(draft=history.removeAt(history.lastIndex),undoAvailable=history.isNotEmpty());persist()}}
+    fun select(sku:String){saved["living_selected"]=sku;mutableState.value=mutableState.value.copy(selected=sku,message="")}
     fun place(plot:Int,moving:String?=null) {
-        val state=_state.value
+        val state=mutableState.value
         val draft=state.draft ?: return
         val existing=draft.firstOrNull{it.id==moving}
         val sku=existing?.sku ?: state.selected
@@ -97,22 +97,36 @@ class LivingGardenViewModel(private val storage:GameStorage,private val saved:Sa
             base.any{it.plotId==(if(item.slot=="AMBIENT")0 else plot) && gardenCosmetics.firstOrNull{c->c.id==it.sku}?.slot==item.slot}->AppText.text(TextKey.CopyONayDaCoVatPhamCungLoaiA47c7d)
             else->null
         }
-        if(error!=null){_state.value=state.copy(message=error);return}
+        if(error!=null){mutableState.value=state.copy(message=error);return}
         change(base+GardenPlacement(existing?.id ?: java.util.UUID.randomUUID().toString(),sku,
             if(item.slot=="AMBIENT")0 else plot,if(item.slot=="TREE")tree!!.id else 0))
     }
-    fun remove(id:String){change((_state.value.draft ?: return).filterNot{it.id==id})}
-    fun save(){val s=_state.value;act(LivingGardenAction.Layout(s.draftVersion,s.draft ?: return,java.util.UUID.randomUUID().toString()))}
-    fun act(action:LivingGardenAction) {
-        if(_state.value.busy || _state.value.loading && action !is LivingGardenAction.Discover)return
-        _state.value=_state.value.copy(busy=true)
+    fun remove(id:String){change((mutableState.value.draft ?: return).filterNot{it.id==id})}
+    fun save(){val s=mutableState.value;act(LivingGardenAction.Layout(s.draftVersion,s.draft ?: return,java.util.UUID.randomUUID().toString()))}
+    fun act(action: LivingGardenAction) = dispatch(LivingGardenUiAction(action))
+
+    override fun handleAction(action: LivingGardenUiAction) {
+        perform(action.mutation)
+    }
+
+    private fun perform(action: LivingGardenAction) {
+        if(mutableState.value.busy || mutableState.value.loading && action !is LivingGardenAction.Discover)return
+        mutableState.value=mutableState.value.copy(busy=true)
         viewModelScope.launch {
             try {
                 val result=withContext(Dispatchers.IO){storage.designGarden(action)}
                 refresh()
                 if(result.success && action is LivingGardenAction.Layout){cancel()}
-                _state.value=_state.value.copy(message=result.message)
-            } finally {_state.value=_state.value.copy(busy=false)}
+                mutableState.value=mutableState.value.copy(message=result.message)
+            } finally {mutableState.value=mutableState.value.copy(busy=false)}
         }
     }
+}
+
+private fun decodePlacement(value: String): GardenPlacement? {
+    val parts = value.split('|')
+    if (parts.size != 4) return null
+    val plot = parts[2].toIntOrNull() ?: return null
+    val rotation = parts[3].toLongOrNull() ?: return null
+    return GardenPlacement(parts[0], parts[1], plot, rotation)
 }

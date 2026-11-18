@@ -1,6 +1,8 @@
 package com.mamxanh.app.feature.shop.presentation
 
-sealed interface ShopIntent {
+import com.mamxanh.app.core.presentation.UiAction
+
+sealed interface ShopIntent : UiAction {
     data object Refresh : ShopIntent
     data class Equip(val id: String) : ShopIntent
     data class SetFilter(val filter: ShopFilter) : ShopIntent

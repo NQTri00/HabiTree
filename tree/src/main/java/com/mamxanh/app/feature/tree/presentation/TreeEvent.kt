@@ -1,6 +1,8 @@
 package com.mamxanh.app.feature.tree.presentation
 
-sealed interface TreeEffect {
+import com.mamxanh.app.core.presentation.UiEvent
+
+sealed interface TreeEffect : UiEvent {
     data object Back : TreeEffect
     data object OpenFertilizerShop : TreeEffect
     data class Feedback(val message: String) : TreeEffect

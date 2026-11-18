@@ -17,6 +17,7 @@ kotlin {
     compilerOptions { jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17) }
 }
 dependencies {
+    implementation(project(":core-presentation"))
     implementation(libs.koin.android)
     api(project(":tasks:domain"))
     implementation(project(":core-ui"))

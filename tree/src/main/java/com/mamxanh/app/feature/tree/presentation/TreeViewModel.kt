@@ -1,46 +1,44 @@
 package com.mamxanh.app.feature.tree.presentation
 
-import com.mamxanh.shared.localization.TextKey
-
-import com.mamxanh.shared.localization.AppText
-
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mamxanh.app.core.presentation.BaseViewModel
 import com.mamxanh.app.feature.tree.domain.TreeRepository
+import com.mamxanh.shared.localization.AppText
+import com.mamxanh.shared.localization.TextKey
 import com.mamxanh.shared.model.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class TreeViewModel(private val repository:TreeRepository):ViewModel() {
-    private val _uiState=MutableStateFlow(TreeUiState())
-    val uiState=_uiState.asStateFlow()
-    private val effectChannel=Channel<TreeEffect>(Channel.BUFFERED)
-    val effects=effectChannel.receiveAsFlow()
-    fun dispatch(intent:TreeIntent) {
+class TreeViewModel(private val repository:TreeRepository) : BaseViewModel<TreeUiState, TreeEffect, TreeIntent>(
+    initialState = TreeUiState(),
+) {
+    val uiState get() = state
+    val effects get() = events
+    override fun handleAction(action: TreeIntent) {
+        val intent = action
         when(intent) {
             TreeIntent.Back -> {
-                if(_uiState.value.isPanelExpanded)_uiState.value=_uiState.value.copy(isPanelExpanded=false)
-                else viewModelScope.launch{effectChannel.send(TreeEffect.Back)}
+                if(mutableState.value.isPanelExpanded)mutableState.value=mutableState.value.copy(isPanelExpanded=false)
+                else viewModelScope.launch{emitEvent(TreeEffect.Back)}
                 return
             }
-            is TreeIntent.SetPanelExpanded -> {_uiState.value=_uiState.value.copy(isPanelExpanded=intent.expanded);return}
-            TreeIntent.DismissDisposition -> {_uiState.value=_uiState.value.copy(dispositionId=null,quote=null);return}
-            TreeIntent.OpenFertilizerShop -> {viewModelScope.launch{effectChannel.send(TreeEffect.OpenFertilizerShop)};return}
+            is TreeIntent.SetPanelExpanded -> {mutableState.value=mutableState.value.copy(isPanelExpanded=intent.expanded);return}
+            TreeIntent.DismissDisposition -> {mutableState.value=mutableState.value.copy(dispositionId=null,quote=null);return}
+            TreeIntent.OpenFertilizerShop -> {viewModelScope.launch{emitEvent(TreeEffect.OpenFertilizerShop)};return}
             else -> Unit
         }
-        if(_uiState.value.isLoading)return
-        val pending=_uiState.value
-        _uiState.value=pending.copy(isLoading=true)
+        if(mutableState.value.isLoading)return
+        val pending=mutableState.value
+        mutableState.value=pending.copy(isLoading=true)
         viewModelScope.launch {
             try {
                 if(intent is TreeIntent.AskDisposition) {
                     val quote=withContext(Dispatchers.IO){if(intent.sell)repository.saleQuote(intent.id) else ActionResult(true,AppText.text(TextKey.CopyDonCayKhongHoanXuHoacHatCdff29))}
-                    if(quote.success)_uiState.value=_uiState.value.copy(dispositionId=intent.id,selling=intent.sell,
+                    if(quote.success)mutableState.value=mutableState.value.copy(dispositionId=intent.id,selling=intent.sell,
                         quote=quote,actionKey=java.util.UUID.randomUUID().toString())
-                    else effectChannel.send(TreeEffect.Feedback(quote.message))
+                    else emitEvent(TreeEffect.Feedback(quote.message))
                     return@launch
                 }
                 val result=withContext(Dispatchers.IO) {
@@ -62,13 +60,13 @@ class TreeViewModel(private val repository:TreeRepository):ViewModel() {
                         else -> ActionResult(false,AppText.text(TextKey.CopyKhongCoThaoTac432536))
                     }
                 }
-                if(result.success)effectChannel.send(TreeEffect.TreeChanged)
+                if(result.success)emitEvent(TreeEffect.TreeChanged)
                 if(intent==TreeIntent.ConfirmDisposition && result.success) {
-                    _uiState.value=_uiState.value.copy(dispositionId=null,quote=null,isPanelExpanded=false)
-                    effectChannel.send(TreeEffect.Back)
+                    mutableState.value=mutableState.value.copy(dispositionId=null,quote=null,isPanelExpanded=false)
+                    emitEvent(TreeEffect.Back)
                 }
-                effectChannel.send(TreeEffect.Feedback(result.message))
-            } finally {_uiState.value=_uiState.value.copy(isLoading=false)}
+                emitEvent(TreeEffect.Feedback(result.message))
+            } finally {mutableState.value=mutableState.value.copy(isLoading=false)}
         }
     }
 }

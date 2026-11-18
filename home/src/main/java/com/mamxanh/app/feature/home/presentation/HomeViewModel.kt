@@ -1,42 +1,39 @@
 package com.mamxanh.app.feature.home.presentation
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mamxanh.app.feature.home.domain.LoadHomeDashboard
+import com.mamxanh.app.core.presentation.BaseViewModel
 import com.mamxanh.app.feature.home.domain.HomeDashboardRepository
+import com.mamxanh.app.feature.home.domain.LoadHomeDashboard
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class HomeViewModel(private val repository: HomeDashboardRepository) : ViewModel() {
+class HomeViewModel(private val repository: HomeDashboardRepository)  : BaseViewModel<HomeUiState, HomeEffect, HomeIntent>(
+    initialState = HomeUiState(),
+) {
     private var dismissedRewardDate = ""
-    private val _uiState = MutableStateFlow(HomeUiState())
-    val uiState = _uiState.asStateFlow()
-    private val effectChannel = Channel<HomeEffect>(Channel.BUFFERED)
-    val effects = effectChannel.receiveAsFlow()
+    val uiState get() = state
+    val effects get() = events
     init { dispatch(HomeIntent.Refresh) }
 
-    fun dispatch(intent: HomeIntent) {
+    override fun handleAction(action: HomeIntent) {
+        val intent = action
         when (intent) {
             HomeIntent.DismissDailyClear -> {
-                dismissedRewardDate = _uiState.value.dashboard.dailyRewardDate
-                _uiState.value = _uiState.value.copy(isDailyClearVisible = false)
+                dismissedRewardDate = mutableState.value.dashboard.dailyRewardDate
+                mutableState.value = mutableState.value.copy(isDailyClearVisible = false)
             }
             HomeIntent.Refresh -> viewModelScope.launch {
                 val dashboard = withContext(Dispatchers.IO) { LoadHomeDashboard(repository)() }
-                _uiState.value = _uiState.value.copy(dashboard = dashboard, isLoading = false,
+                mutableState.value = mutableState.value.copy(dashboard = dashboard, isLoading = false,
                     isDailyClearVisible = dashboard.dailyRewardDate.isNotBlank() && dashboard.dailyRewardDate != dismissedRewardDate)
             }
-            is HomeIntent.OpenTree -> viewModelScope.launch { effectChannel.send(HomeEffect.OpenTree(intent.id)) }
-            HomeIntent.OpenTasks -> viewModelScope.launch { effectChannel.send(HomeEffect.OpenTasks) }
-            HomeIntent.OpenGarden -> viewModelScope.launch { effectChannel.send(HomeEffect.OpenGarden) }
-            HomeIntent.OpenShop -> viewModelScope.launch { effectChannel.send(HomeEffect.OpenShop) }
-            is HomeIntent.WaterTree -> viewModelScope.launch { effectChannel.send(HomeEffect.WaterTree(intent.id)) }
-            is HomeIntent.FertilizeTree -> viewModelScope.launch { effectChannel.send(HomeEffect.FertilizeTree(intent.id)) }
+            is HomeIntent.OpenTree -> viewModelScope.launch { emitEvent(HomeEffect.OpenTree(intent.id)) }
+            HomeIntent.OpenTasks -> viewModelScope.launch { emitEvent(HomeEffect.OpenTasks) }
+            HomeIntent.OpenGarden -> viewModelScope.launch { emitEvent(HomeEffect.OpenGarden) }
+            HomeIntent.OpenShop -> viewModelScope.launch { emitEvent(HomeEffect.OpenShop) }
+            is HomeIntent.WaterTree -> viewModelScope.launch { emitEvent(HomeEffect.WaterTree(intent.id)) }
+            is HomeIntent.FertilizeTree -> viewModelScope.launch { emitEvent(HomeEffect.FertilizeTree(intent.id)) }
         }
     }
 }

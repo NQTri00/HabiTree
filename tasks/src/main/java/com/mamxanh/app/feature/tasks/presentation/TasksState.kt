@@ -1,5 +1,6 @@
 package com.mamxanh.app.feature.tasks.presentation
 
+import com.mamxanh.app.core.presentation.UiState
 import com.mamxanh.app.feature.tasks.domain.model.Task
 
 data class TasksUiState(
@@ -14,4 +15,4 @@ data class TasksUiState(
     val draft: List<String> = emptyList(),
     val isDailyBonusClaimed: Boolean = false,
     val canClaimDailyBonus: Boolean = false
-)
+) : UiState

@@ -21,7 +21,7 @@ tasks.register("verifyArchitecture") {
                 }
             }
             val allowed = mapOf(
-                "" to setOf(":core-ui", ":$owner:domain"),
+                "" to setOf(":core-ui", ":core-presentation", ":$owner:domain"),
                 "domain/" to setOf(":shared"),
                 "data/" to setOf(":$owner:domain"),
             )

@@ -9,7 +9,7 @@ dependencyResolutionManagement {
     repositories { google(); mavenCentral() }
 }
 rootProject.name = "HabiTree"
-include(":shared", ":app", ":core-ui", ":data", ":home", ":tasks", ":garden", ":shop", ":tree", ":stats", ":inventory")
+include(":shared", ":app", ":core-ui", ":core-presentation", ":data", ":home", ":tasks", ":garden", ":shop", ":tree", ":stats", ":inventory")
 include(":home:domain", ":home:data")
 include(":tasks:domain", ":tasks:data")
 include(":garden:domain", ":garden:data")

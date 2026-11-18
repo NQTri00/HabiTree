@@ -1,6 +1,8 @@
 package com.mamxanh.app.feature.home.presentation
 
-sealed interface HomeEffect {
+import com.mamxanh.app.core.presentation.UiEvent
+
+sealed interface HomeEffect : UiEvent {
     data class OpenTree(val id: Long) : HomeEffect
     data object OpenTasks : HomeEffect
     data object OpenGarden : HomeEffect

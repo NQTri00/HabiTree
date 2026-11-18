@@ -1,6 +1,8 @@
 package com.mamxanh.app.feature.home.presentation
 
-sealed interface HomeIntent {
+import com.mamxanh.app.core.presentation.UiAction
+
+sealed interface HomeIntent : UiAction {
     data object Refresh : HomeIntent
     data object DismissDailyClear : HomeIntent
     data class OpenTree(val id: Long) : HomeIntent

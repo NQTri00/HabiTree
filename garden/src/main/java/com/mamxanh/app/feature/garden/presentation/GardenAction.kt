@@ -1,6 +1,8 @@
 package com.mamxanh.app.feature.garden.presentation
 
-sealed interface GardenIntent {
+import com.mamxanh.app.core.presentation.UiAction
+
+sealed interface GardenIntent : UiAction {
     data object Refresh : GardenIntent
     data class WaterAll(val key: String) : GardenIntent
     data object OpenShop : GardenIntent

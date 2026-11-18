@@ -1,6 +1,8 @@
 package com.mamxanh.app.feature.tasks.presentation
 
-sealed interface TasksIntent {
+import com.mamxanh.app.core.presentation.UiAction
+
+sealed interface TasksIntent : UiAction {
     data object Refresh : TasksIntent
     data class Edit(val id: Long) : TasksIntent
     data class Detail(val id: Long?) : TasksIntent

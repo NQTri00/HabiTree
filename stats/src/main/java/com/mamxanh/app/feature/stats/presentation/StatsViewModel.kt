@@ -1,25 +1,26 @@
 package com.mamxanh.app.feature.stats.presentation
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mamxanh.app.core.presentation.BaseViewModel
+import com.mamxanh.app.core.presentation.UiEvent
 import com.mamxanh.app.feature.stats.domain.LoadGardenStatistics
 import com.mamxanh.app.feature.stats.domain.StatisticsRepository
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class StatsViewModel(private val repository: StatisticsRepository) : ViewModel() {
-    private val _uiState = MutableStateFlow(StatsUiState())
-    val uiState = _uiState.asStateFlow()
+class StatsViewModel(private val repository: StatisticsRepository)  : BaseViewModel<StatsUiState, UiEvent, StatsIntent>(
+    initialState = StatsUiState(),
+) {
+    val uiState get() = state
     init { dispatch(StatsIntent.Refresh) }
-    fun dispatch(intent: StatsIntent) {
+    override fun handleAction(action: StatsIntent) {
+        val intent = action
         when (intent) {
             StatsIntent.Refresh -> viewModelScope.launch {
-                _uiState.value = _uiState.value.copy(isLoading = true)
+                mutableState.value = mutableState.value.copy(isLoading = true)
                 val statistics = withContext(Dispatchers.IO) { LoadGardenStatistics(repository)() }
-                _uiState.value = StatsUiState(statistics, false)
+                mutableState.value = StatsUiState(statistics, false)
             }
         }
     }

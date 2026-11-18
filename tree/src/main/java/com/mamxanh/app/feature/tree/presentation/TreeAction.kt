@@ -1,6 +1,8 @@
 package com.mamxanh.app.feature.tree.presentation
 
-sealed interface TreeIntent {
+import com.mamxanh.app.core.presentation.UiAction
+
+sealed interface TreeIntent : UiAction {
     data object Back : TreeIntent
     data object OpenFertilizerShop : TreeIntent
     data class SetPanelExpanded(val expanded: Boolean) : TreeIntent

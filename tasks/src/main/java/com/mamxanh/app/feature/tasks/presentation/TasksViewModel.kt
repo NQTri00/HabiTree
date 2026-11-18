@@ -1,26 +1,23 @@
 package com.mamxanh.app.feature.tasks.presentation
 
-import com.mamxanh.shared.localization.TextKey
-
-import com.mamxanh.shared.localization.AppText
-
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mamxanh.app.core.presentation.BaseViewModel
 import com.mamxanh.app.feature.tasks.domain.*
+import com.mamxanh.shared.localization.AppText
+import com.mamxanh.shared.localization.TextKey
 import com.mamxanh.shared.model.*
 import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 
-class TasksViewModel(private val repository: TaskRepository,private val savedState: SavedStateHandle): ViewModel() {
-    private val _uiState=MutableStateFlow(TasksUiState(
+class TasksViewModel(private val repository: TaskRepository,private val savedState: SavedStateHandle) : BaseViewModel<TasksUiState, TasksEffect, TasksIntent>(
+    initialState = TasksUiState(
         isAddingTask=savedState["isAddingTask"] ?: false,
         editingId=savedState["editingId"],
-        draft=savedState.get<ArrayList<String>>("draft").orEmpty()))
-    val uiState=_uiState.asStateFlow()
-    private val effectsChannel=Channel<TasksEffect>(Channel.BUFFERED)
-    val effects=effectsChannel.receiveAsFlow()
+        draft=savedState.get<ArrayList<String>>("draft").orEmpty()),
+) {
+    val uiState get() = state
+    val effects get() = events
     private var foreground=false
     init {
         viewModelScope.launch { repository.changes.collect { refresh() } }
@@ -29,7 +26,7 @@ class TasksViewModel(private val repository: TaskRepository,private val savedSta
             withContext(Dispatchers.IO) { repository.snapshot().sessions.filter { it.running }.forEach { repository.timer(it.taskId,"PAUSE") } }
             while(isActive) {
                 delay(1000)
-                if(foreground && _uiState.value.phase.sessions.any { it.running }) {
+                if(foreground && mutableState.value.phase.sessions.any { it.running }) {
                     val completed = withContext(Dispatchers.IO) {
                         repository.snapshot().sessions.filter { it.running }.mapNotNull { session ->
                             repository.timer(session.taskId,"TICK")
@@ -40,8 +37,8 @@ class TasksViewModel(private val repository: TaskRepository,private val savedSta
                         }
                     }
                     completed.forEach {
-                        effectsChannel.send(TasksEffect.Feedback(it.message))
-                        effectsChannel.send(TasksEffect.DataChanged)
+                        emitEvent(TasksEffect.Feedback(it.message))
+                        emitEvent(TasksEffect.DataChanged)
                     }
                     refresh()
                 }
@@ -51,26 +48,27 @@ class TasksViewModel(private val repository: TaskRepository,private val savedSta
     private suspend fun refresh() {
         val value=withContext(Dispatchers.IO) { Triple(repository.observeSnapshot(),repository.snapshot(),repository.isDailyBonusClaimed()) }
         val eligible=withContext(Dispatchers.IO) { repository.canClaimDailyBonus() }
-        _uiState.value=_uiState.value.copy(tasks=value.first,phase=value.second,isDailyBonusClaimed=value.third,
+        mutableState.value=mutableState.value.copy(tasks=value.first,phase=value.second,isDailyBonusClaimed=value.third,
             canClaimDailyBonus=eligible,isLoading=false)
     }
     private fun close() {
         savedState["isAddingTask"]=false; savedState["editingId"]=null; savedState["draft"]=arrayListOf<String>()
-        _uiState.value=_uiState.value.copy(isAddingTask=false,editingId=null,draft=emptyList())
+        mutableState.value=mutableState.value.copy(isAddingTask=false,editingId=null,draft=emptyList())
     }
     private fun mutate(showSuccess: Boolean = true,block: ()->ActionResult) {
-        if(_uiState.value.busy)return
-        _uiState.value=_uiState.value.copy(busy=true)
+        if(mutableState.value.busy)return
+        mutableState.value=mutableState.value.copy(busy=true)
         viewModelScope.launch {
             try {
                 val result=withContext(Dispatchers.IO){block()}
                 refresh()
-                if(showSuccess || !result.success)effectsChannel.send(TasksEffect.Feedback(result.message))
-                if(result.success)effectsChannel.send(TasksEffect.DataChanged)
-            } finally { _uiState.value=_uiState.value.copy(busy=false) }
+                if(showSuccess || !result.success)emitEvent(TasksEffect.Feedback(result.message))
+                if(result.success)emitEvent(TasksEffect.DataChanged)
+            } finally { mutableState.value=mutableState.value.copy(busy=false) }
         }
     }
-    fun dispatch(intent: TasksIntent) {
+    override fun handleAction(action: TasksIntent) {
+        val intent = action
         when(intent) {
             TasksIntent.Refresh -> viewModelScope.launch{refresh()}
             is TasksIntent.Foreground -> {
@@ -81,20 +79,20 @@ class TasksViewModel(private val repository: TaskRepository,private val savedSta
             }
             is TasksIntent.UpdateDraft -> {
                 savedState["draft"]=ArrayList(intent.values)
-                _uiState.value=_uiState.value.copy(draft=intent.values)
+                mutableState.value=mutableState.value.copy(draft=intent.values)
             }
             TasksIntent.ShowAddDialog -> {
                 savedState["isAddingTask"]=true
-                _uiState.value=_uiState.value.copy(isAddingTask=true,editingId=null)
+                mutableState.value=mutableState.value.copy(isAddingTask=true,editingId=null)
             }
             TasksIntent.DismissAddDialog -> close()
-            is TasksIntent.Detail -> _uiState.value=_uiState.value.copy(detailId=intent.id)
+            is TasksIntent.Detail -> mutableState.value=mutableState.value.copy(detailId=intent.id)
             is TasksIntent.Edit -> {
                 savedState["isAddingTask"]=true; savedState["editingId"]=intent.id
-                _uiState.value=_uiState.value.copy(isAddingTask=true,editingId=intent.id,detailId=null,draft=emptyList())
+                mutableState.value=mutableState.value.copy(isAddingTask=true,editingId=intent.id,detailId=null,draft=emptyList())
             }
             is TasksIntent.Save -> {
-                val id=_uiState.value.editingId
+                val id=mutableState.value.editingId
                 if(intent.config.error()!=null)return
                 mutate { repository.save(id,intent.config) };close()
             }
@@ -102,7 +100,7 @@ class TasksViewModel(private val repository: TaskRepository,private val savedSta
             is TasksIntent.Timer -> mutate(showSuccess=false){repository.timer(intent.id,intent.action)}
             is TasksIntent.Complete -> mutate{repository.completeResult(intent.id)}
             is TasksIntent.Delete -> mutate{repository.lifecycle(intent.id,"ARCHIVED")}
-            is TasksIntent.SetFilter -> _uiState.value=_uiState.value.copy(filter=intent.filter)
+            is TasksIntent.SetFilter -> mutableState.value=mutableState.value.copy(filter=intent.filter)
             is TasksIntent.Add -> mutate{repository.save(null,TaskConfig(intent.title,intent.kind,intent.category,frequency=intent.frequency,due=intent.due))}
             TasksIntent.ClaimBonus -> mutate {
                 val before=repository.snapshot().earnedToday

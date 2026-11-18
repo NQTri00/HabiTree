@@ -1,8 +1,9 @@
 package com.mamxanh.app.presentation.ui
 
-import com.mamxanh.shared.localization.TextKey
-
+import com.mamxanh.app.core.presentation.UiAction
+import com.mamxanh.app.core.presentation.UiState
 import com.mamxanh.shared.localization.AppText
+import com.mamxanh.shared.localization.TextKey
 
 enum class AppDestination(private val labelKey: TextKey) {
     HOME(TextKey.CopyTrangChu8be437),
@@ -22,9 +23,9 @@ data class AppUiState(
     val inventoryOpen: Boolean = false,
     val inventoryPlotId: Int? = null,
     val plantingSeedId: String? = null
-)
+) : UiState
 
-sealed interface AppIntent {
+sealed interface AppIntent : UiAction {
     data class Navigate(val destination: AppDestination) : AppIntent
     data class OpenTree(val id: Long) : AppIntent
     data object Back : AppIntent
