@@ -1,6 +1,9 @@
 package com.mamxanh.app.presentation.bio
 
 import com.mamxanh.app.presentation.ui.design.*
+import com.mamxanh.app.feature.shop.presentation.BioShopScreen
+import com.mamxanh.app.feature.shop.presentation.ShopTreeContext
+import com.mamxanh.app.feature.inventory.presentation.BioInventoryScreen
 import com.mamxanh.app.feature.garden.presentation.BioGardenScreen
 import com.mamxanh.app.feature.garden.presentation.GardenAction
 import com.mamxanh.app.feature.garden.presentation.GardenDisplayPlot
@@ -99,22 +102,49 @@ internal fun accessoryIcon(id:String)=when(id){"tree_ribbon"->"gift";"tree_lante
         else{Bt(if(inventory)if(item.b("permanent"))if(world.state.s("equipped")==id)AppText.text(TextKey.CopyDangDung275ca2)else AppText.text(TextKey.CopyTrangBi9e8e12)else "×${world.count(id)}"else if(item.b("permanent")&&world.count(id)>0)if(world.state.s("equipped")==id)AppText.text(TextKey.CopyDangDung275ca2)else AppText.text(TextKey.CopyDaSoHuu822625)else AppText.text(TextKey.Copy0Xu251e68,item.i("price")),size=AppTypography.Size13,tint=bp.deep);if(seed&&!inventory)Bt(bioTier(item.s("tier")),size=AppTypography.Size12,line=AppTypography.LineHeight17,tint=bp.muted)}
     }
 }
-@Composable internal fun ColumnScope.BioCatalog(world:BioWorld,ui:BioController,inventory:Boolean){
-    val family=if(inventory)"inventory"else "shop";val tab=ui.tabs[family]?:"seeds"
-    if(!inventory)BioIntro(AppText.text(TextKey.CopyTiemNho87d6e3),AppText.text(TextKey.CopyMotChutChoMamXanh34d909),action={BioIconButton("bag",{ui.go("inventory")})})
-    BioTabs(listOf("seeds" to AppText.text(TextKey.CopyHatGiongF02257),"care" to if(inventory)AppText.text(TextKey.CopyDungCu913b1a)else AppText.text(TextKey.CopyChamSoc7b7df6),"accessories" to AppText.text(TextKey.CopyPhuKien0852d7)),tab){ui.tabs[family]=it}
-    val shoppingTree=if(!inventory&&ui.param.isNotBlank())world.trees.firstOrNull{it.s("id")==ui.param}else null
-    if(shoppingTree!=null)Row(Modifier.fillMaxWidth().background(AppColors.White.copy(alpha=AppOpacity.Value_44),RoundedCornerShape(AppDimensions.Dp15)).border(AppDimensions.Dp1,AppColors.White.copy(alpha=AppOpacity.Value_6),RoundedCornerShape(AppDimensions.Dp15)).padding(horizontal=AppDimensions.Dp11,vertical=AppDimensions.Dp9),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp10)){
-        BioPlant(shoppingTree.s("species"),Modifier.size(AppDimensions.Dp38))
-        Column(Modifier.weight(1f)){Bt(AppText.text(TextKey.CopyDangChonCho3a6c0f),size=AppTypography.Size10,tint=bp.muted);Bt(shoppingTree.s("name"),size=AppTypography.Size12,semi=true)}
-        BioTextAction(AppText.text(TextKey.CopyVeCayB033ce),{ui.go("tree",shoppingTree.s("id"))},"next")
+@Composable
+internal fun BioCatalog(world: BioWorld, ui: BioController, inventory: Boolean) {
+    val family = if (inventory) "inventory" else "shop"
+    val tab = ui.tabs[family] ?: "seeds"
+    val products = when (tab) {
+        "care" -> world.products
+        "accessories" -> world.accessories
+        else -> world.species
     }
-    if(tab=="accessories"&&!inventory)Bt(AppText.text(TextKey.CopyChonMotMonDeoNgayChoCay32c723),size=AppTypography.Size12,tint=bp.muted)
-    val items=(when(tab){"care"->world.products;"accessories"->world.accessories;else->world.species}).filter{!inventory||if(tab=="accessories")world.owned(it.s("id"))>0 else world.count(it.s("id"))>0}
-    if(items.isNotEmpty())BioGrid(items.size){i,m->BioProduct(world,ui,items[i],m,inventory,ui.targetTree.ifBlank{ui.homeTree})}else BioEmpty(AppText.text(TextKey.CopyTuiDangTrong37bf7b),AppText.text(TextKey.CopyBanCoTheMuaVaDungNgayTrongTiem784a6a),"bag",AppText.text(TextKey.CopyGheTiemCb74e9),{ui.go("shop")})
-    if(inventory&&items.isNotEmpty())BioButton(if(tab=="accessories")AppText.text(TextKey.CopyMuaPhuKien7055c4)else AppText.text(TextKey.CopyGheTiemCb74e9),{if(tab=="accessories")ui.tabs["shop"]="accessories";ui.go("shop")},Modifier.fillMaxWidth(),"shop",true)
-    if(!inventory&&tab=="care")BioDetails(AppText.text(TextKey.CopyDungVatPham1cb958)){Bt(AppText.text(TextKey.CopyBinhTuoiDungLauDaiPhanBonDungTrucTiepTaiC180e06),size=AppTypography.Size12,tint=bp.muted)}
-    if(!inventory&&tab=="seeds")Bt(AppText.text(TextKey.CopyChonHatMuaGieoChamCayAd0e4c),Modifier.fillMaxWidth(),size=AppTypography.Size11,tint=bp.muted,align=TextAlign.Center)
+    val items = products.filter {
+        !inventory || when (tab) {
+            "accessories" -> world.owned(it.s("id")) > 0
+            else -> world.count(it.s("id")) > 0
+        }
+    }
+    val item: @Composable (Int, Modifier) -> Unit = { index, modifier ->
+        BioProduct(world, ui, items[index], modifier, inventory, ui.targetTree.ifBlank { ui.homeTree })
+    }
+    if (inventory) {
+        BioInventoryScreen(
+            tab = tab,
+            itemCount = items.size,
+            onTab = { ui.tabs[family] = it },
+            onShop = { ui.go("shop") },
+            onBuy = {
+                if (tab == "accessories") ui.tabs["shop"] = "accessories"
+                ui.go("shop")
+            },
+            item = item,
+        )
+    } else {
+        val selected = ui.param.takeIf { it.isNotBlank() }?.let(world::tree)
+        BioShopScreen(
+            tab = tab,
+            shoppingTree = selected?.let { ShopTreeContext(it.s("id"), it.s("name"), it.s("species")) },
+            itemCount = items.size,
+            onTab = { ui.tabs[family] = it },
+            onInventory = { ui.go("inventory") },
+            onTree = { ui.go("tree", it) },
+            onShop = { ui.go("shop") },
+            item = item,
+        )
+    }
 }
 
 @Composable internal fun ColumnScope.BioTree(world:BioWorld,ui:BioController,compact:Boolean=false){
