@@ -26,6 +26,7 @@ import com.mamxanh.app.BuildConfig
 import com.mamxanh.app.data.BackupService
 import com.mamxanh.app.feature.inventory.domain.InventoryRepository
 import com.mamxanh.app.feature.home.domain.HomeTreeSelection
+import com.mamxanh.app.feature.tree.domain.TreeRepository
 import com.mamxanh.app.core.domain.RepositoryResult
 import com.mamxanh.app.feature.settings.domain.ReminderSettings
 import com.mamxanh.app.feature.settings.domain.SaveReminderSettingsUseCase
@@ -85,6 +86,7 @@ private fun nativeWorld(
 @Composable fun BioNativeHost(storage:GameStorage,externalTree:Long?=null,externalRoute:String="",externalTask:Long=0,onExternalHandled:()->Unit={}) {
     val inventory = koinInject<InventoryRepository>()
     val homeSelection = koinInject<HomeTreeSelection>()
+    val treeRepository = koinInject<TreeRepository>()
     val loadStatistics = koinInject<LoadGardenStatistics>()
     val saveJournalNote = koinInject<SaveJournalNoteUseCase>()
     val saveReminderSettings = koinInject<SaveReminderSettingsUseCase>()
@@ -144,7 +146,7 @@ private fun nativeWorld(
                 scope.launch {
                     try {
                         val result = withContext(Dispatchers.IO) {
-                            executeNative(storage, inventory, saveJournalNote, saveReminderSettings, service, pending, command)
+                            executeNative(storage, inventory, treeRepository, saveJournalNote, saveReminderSettings, service, pending, command)
                         }
                         refresh()
                         ui.result(result)
@@ -161,6 +163,7 @@ private fun nativeWorld(
 private fun executeNative(
     storage: GameStorage,
     inventory: InventoryRepository,
+    treeRepository: TreeRepository,
     saveJournalNote: SaveJournalNoteUseCase,
     saveReminderSettings: SaveReminderSettingsUseCase,
     backup: BackupService,
@@ -178,8 +181,17 @@ private fun executeNative(
         "refresh"->return BioResult(true,AppText.text(TextKey.CopyDaLamMoiThongKeA8b494))
         "complete"->return result(storage.completeTask(id.toLong()))
         "claim"->return BioResult(storage.dailyBonus(),AppText.text(TextKey.CopyDaNhanThuongHomNayC5cad9))
-        "water"->{val r=storage.water(id.toLong());return BioResult(r==TreeWateringResult.WATERED,when(r){TreeWateringResult.WATERED->AppText.text(TextKey.CopyDaTuoiCayMienPhiC84ab7);TreeWateringResult.ALREADY_WATERED->AppText.text(TextKey.CopyCayDaDuNuoc66849f);TreeWateringResult.DEAD->AppText.text(TextKey.CopyCayDaKhoHeo9c0717);else->AppText.text(TextKey.CopyChuaTheTuoiCayB8c05f)})}
-        "fertilize"->return result(storage.applyFertilizer(id.toLong(),parts.getOrElse(2){"fertilizer"}))
+        "water" -> {
+            val outcome = treeRepository.water(id.toLong())
+            val message = when (outcome) {
+                TreeWateringResult.WATERED -> TextKey.CopyDaTuoiCayMienPhiC84ab7
+                TreeWateringResult.ALREADY_WATERED -> TextKey.CopyCayDaDuNuoc66849f
+                TreeWateringResult.DEAD -> TextKey.CopyCayDaKhoHeo9c0717
+                else -> TextKey.CopyChuaTheTuoiCayB8c05f
+            }
+            return BioResult(outcome == TreeWateringResult.WATERED, AppText.text(message))
+        }
+        "fertilize" -> return result(treeRepository.applyFertilizer(id.toLong(), parts.getOrElse(2) { "fertilizer" }))
         "equip"->return inventory.equipWateringCan(id).let { BioResult(it.success, it.message) }
         "buy","buy-equip","buy-plant"->{
             val item=v["id"]?:id;val quantity=v["quantity"]?.toIntOrNull()?.coerceIn(1,99)?:1
@@ -193,7 +205,8 @@ private fun executeNative(
         "plant"->{val item=v["id"].orEmpty();val plot=v["plot"]?.toIntOrNull();val planted=inventory.plantSeed(item,v["name"].orEmpty(),plot);val g=storage.garden();val tree=g.trees.firstOrNull{t->g.plots.any{it.id==plot&&it.treeId==t.id}};return BioResult(planted,if(planted)AppText.text(TextKey.CopyMotMamXanhMoi63e3dc)else AppText.text(TextKey.CopyKiemTraLaiHatVaOTrong36d949),if(planted)"tree"else "",tree?.id?.toString().orEmpty())}
         "confirm-water-all"->return result(storage.waterAll(key))
         "confirm-unlock"->return BioResult(storage.unlockPlot(id.toInt()),AppText.text(TextKey.CopyDaMoOTrong37fc9b))
-        "confirm-remove","confirm-sell"->return result(storage.disposeTree(id.toLong(),action=="confirm-sell",key),"garden")
+        "confirm-remove", "confirm-sell" ->
+            return result(treeRepository.dispose(id.toLong(), action == "confirm-sell", key), "garden")
         "confirm-archive"->return result(storage.taskLifecycle(id.toLong(),"ARCHIVED"),"tasks")
         "lifecycle"->return result(storage.taskLifecycle(id.toLong(),parts.getOrElse(2){"ACTIVE"}))
         "save-task"->{val kind=v["kind"].orEmpty();val config=TaskConfig(title=v["title"].orEmpty(),kind=kind,category=v["category"].orEmpty(),description=v["description"].orEmpty(),frequency=if(kind=="TODO")"ONCE"else v["frequency"].orEmpty(),days=v["days"].orEmpty(),due=v["due"].orEmpty(),verification=v["verification"].orEmpty(),minutes=v["minutes"]?.toIntOrNull()?:5,startMinute=clock(v["start"].orEmpty()),endMinute=clock(v["end"].orEmpty()),reminderMinute=clock(v["reminder"].orEmpty()));return result(storage.saveTask(v["id"]?.toLongOrNull(),config),"tasks")}
