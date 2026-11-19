@@ -19,6 +19,7 @@ kotlin {
 dependencies {
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.runtime)
+    api(libs.androidx.compose.layout)
     api(libs.androidx.lifecycle.viewmodel.ktx)
     api(libs.androidx.navigation3.runtime)
     api(libs.koin.core)

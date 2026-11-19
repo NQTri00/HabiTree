@@ -9,15 +9,15 @@ import com.mamxanh.app.feature.settings.presentation.navigation.SettingsRouteCon
 
 import com.mamxanh.app.feature.tasks.presentation.TaskCompletionDisplay
 import com.mamxanh.app.feature.tasks.presentation.TaskDetailDisplay
-import com.mamxanh.app.feature.tasks.presentation.TaskDetailScreen
+import com.mamxanh.app.feature.tasks.presentation.navigation.TaskDetailRouteContent
 import com.mamxanh.app.feature.tasks.presentation.TaskFormDisplay
 import com.mamxanh.app.feature.tasks.presentation.TaskFormField
-import com.mamxanh.app.feature.tasks.presentation.TaskFormScreen
+import com.mamxanh.app.feature.tasks.presentation.navigation.TaskFormRouteContent
 import com.mamxanh.app.feature.tasks.presentation.TaskTemplateDisplay
 import com.mamxanh.app.feature.tasks.presentation.navigation.TemplatesRouteContent
 import com.mamxanh.app.feature.tasks.presentation.TemplateRow
 import com.mamxanh.app.feature.tasks.presentation.FocusDisplay
-import com.mamxanh.app.feature.tasks.presentation.FocusScreen
+import com.mamxanh.app.feature.tasks.presentation.navigation.FocusRouteContent
 import com.mamxanh.app.feature.tasks.presentation.FocusTaskChoice
 
 import com.mamxanh.app.presentation.ui.design.*
@@ -59,8 +59,7 @@ import androidx.compose.ui.unit.*
 import com.mamxanh.app.presentation.ui.GardenFontFamily
 import org.json.JSONObject
 
-@Composable
-internal fun BioTaskDetail(world: BioWorld, ui: BioController) {
+internal fun taskDetailRouteContent(world: BioWorld, ui: BioController): TaskDetailRouteContent {
     val task = world.task(ui.param)
     val id = task?.s("id").orEmpty()
     val display = task?.let {
@@ -86,7 +85,7 @@ internal fun BioTaskDetail(world: BioWorld, ui: BioController) {
             },
         )
     }
-    TaskDetailScreen(
+    return TaskDetailRouteContent(
         t = display,
         onTasks = { ui.go("tasks") },
         onComplete = { if (display?.timer == true) ui.go("focus", id) else ui.send("complete:$id") },
@@ -97,8 +96,7 @@ internal fun BioTaskDetail(world: BioWorld, ui: BioController) {
     )
 }
 
-@Composable
-internal fun BioTaskForm(world: BioWorld, ui: BioController) {
+internal fun taskFormRouteContent(world: BioWorld, ui: BioController): TaskFormRouteContent {
     val initial = taskFormInitial(world, ui)
     val values = TaskFormField.entries.associateWith { field ->
         val key = field.name.lowercase()
@@ -111,7 +109,7 @@ internal fun BioTaskForm(world: BioWorld, ui: BioController) {
         minutes >= 20 -> 15
         else -> 10
     } else 8
-    TaskFormScreen(
+    return TaskFormRouteContent(
         state = TaskFormDisplay(values, ui.fields["task-error"].orEmpty(), ui.fields["task-error-attempt"], reward),
         onFieldChanged = { field, value ->
             val key = field.name.lowercase()
@@ -122,10 +120,9 @@ internal fun BioTaskForm(world: BioWorld, ui: BioController) {
     )
 }
 
-@Composable
-internal fun ColumnScope.BioFocus(world: BioWorld, ui: BioController) {
+internal fun focusRouteContent(world: BioWorld, ui: BioController): FocusRouteContent {
     val focus = world.state.o("focus")
-    FocusScreen(
+    return FocusRouteContent(
         state = FocusDisplay(
             title = focus.s("title", AppText.text(TextKey.CopyMotKhoangRiengMinh9ead0d)),
             present = focus.s("id").isNotBlank(),

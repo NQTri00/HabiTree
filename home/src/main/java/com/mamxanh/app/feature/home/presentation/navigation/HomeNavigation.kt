@@ -1,8 +1,16 @@
 package com.mamxanh.app.feature.home.presentation.navigation
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.compositionLocalOf
 import com.mamxanh.app.core.presentation.navigation.HabiTreeFeatureDestination
 import com.mamxanh.app.core.presentation.navigation.HabiTreeFeatureModule
 import com.mamxanh.app.core.presentation.navigation.HabiTreeNavKey
+import com.mamxanh.app.feature.home.presentation.BioHomeScreen
+import com.mamxanh.app.feature.home.presentation.HomeScreenAction
+import com.mamxanh.app.feature.home.presentation.HomeScreenState
+import com.mamxanh.app.feature.home.presentation.OnboardingAction
+import com.mamxanh.app.feature.home.presentation.OnboardingDisplay
+import com.mamxanh.app.feature.home.presentation.OnboardingScreen
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -15,7 +23,36 @@ internal data object OnboardingKey : HabiTreeNavKey {
     override val routeId: String get() = "onboard"
 }
 
+class HomeRouteContent(
+    val state: HomeScreenState,
+    val onAction: (HomeScreenAction) -> Unit,
+    val tree: (@Composable () -> Unit)?,
+    val nextTask: (@Composable () -> Unit)?,
+    val reward: (@Composable () -> Unit)?,
+)
+
+class OnboardingRouteContent(
+    val state: OnboardingDisplay,
+    val gutter: Int,
+    val onAction: (OnboardingAction) -> Unit,
+    val templateRow: @Composable (Int) -> Unit,
+)
+
+val LocalHomeRouteContent = compositionLocalOf<() -> HomeRouteContent> {
+    error("Home route requires its state and actions")
+}
+
+val LocalOnboardingRouteContent = compositionLocalOf<() -> OnboardingRouteContent> {
+    error("Onboarding route requires its state and actions")
+}
+
 val homeFeatureNavigation = HabiTreeFeatureModule(
-    HabiTreeFeatureDestination("onboard") { argument -> OnboardingKey.takeIf { argument.isEmpty() } },
-    HabiTreeFeatureDestination("home") { HomeKey.takeIf { _ -> it.isEmpty() } },
+    HabiTreeFeatureDestination("onboard", content = {
+        val content = LocalOnboardingRouteContent.current()
+        OnboardingScreen(content.state, content.gutter, content.onAction, content.templateRow)
+    }) { argument -> OnboardingKey.takeIf { argument.isEmpty() } },
+    HabiTreeFeatureDestination("home", content = {
+        val content = LocalHomeRouteContent.current()
+        BioHomeScreen(content.state, content.onAction, content.tree, content.nextTask, content.reward)
+    }) { HomeKey.takeIf { _ -> it.isEmpty() } },
 )

@@ -8,7 +8,7 @@
 
 ## Navigation and feature state
 
-- [ ] **N01 · Register feature entries.** Extend the Koin `HabiTreeFeatureDestination` contract to provide actual NavEntry content. Replace the feature dispatch in `BioApplication` with registry lookup. Keep root tabs, shared framing, Android intent decoding, permissions, and file pickers at the shell. Verify live and preview entries resolve uniquely.
+- [x] **N01 · Register feature entries.** All 21 feature destinations provide content through the Koin registry. `BioApplication` resolves it in the shared NavEntry, with More handled by the shell. The live and preview registries resolve the same typed keys and renderers in `FeatureNavigationTest`.
 - [ ] **N02 · Preserve saved navigation.** Keep serialized route IDs, arguments, back-stack format, and saveable keys. Test duplicate pushes, distinct entity IDs, tab replacement, popup Back, stack restoration, and task and tree notification links.
 - [ ] **S01 · Home and Tree.** Move selected tree, care eligibility, watering, fertilizer, and accessory actions from the shell to feature ViewModels and repositories. Verify palettes and persisted selection, watering after restart, disabled actions, and correct tree detail navigation.
 - [ ] **S02 · Tasks and Focus.** Move filters, drafts, form validation, templates, task lifecycle, and timers. Preserve draft and timer recovery keys. Verify create, edit, archive, invalid inputs, dirty Back, discard, process recreation, timer recovery, and a single reward.
@@ -51,10 +51,11 @@ Each flow uses immutable state, typed actions, lifecycle-aware collection, and o
 - N01 Garden feature evidence: Garden, Encyclopedia, and Species supply their renderers through the registry. The app shell supplies typed snapshot adapters. `verifyArchitecture`, `:app:assembleDebug`, and `:app:testDebugUnitTest` passed. Compose batch `batch-20261119-082403` matched all 144 PNGs in `batch-20261119-081612` byte for byte.
 - N01 Settings feature evidence: Settings and Backup supply their renderers through the registry, with launch callbacks for shell-owned document and permission flows. `verifyArchitecture` and `:app:testDebugUnitTest` passed. Compose batch `batch-20261119-083016` matched all 144 PNGs in `batch-20261119-082403` byte for byte.
 - N01 Tasks feature evidence (Templates, Rest, and Insights): the Tasks module supplies these three renderers. `verifyArchitecture`, `:app:assembleDebug`, and `:app:testDebugUnitTest` passed. Compose batch `batch-20261119-083629` matched all 144 PNGs in `batch-20261119-083016` byte for byte.
+- N01 completion evidence: Tasks, Task Detail, Task Form, Focus, Shop, Inventory, Tree, Home, and Onboarding now use registry renderers. Feature registrations require a renderer and the registry rejects duplicate IDs. The app unit suite checks content for all 21 feature IDs in live and preview mode and runs in Android CI. `verifyArchitecture`, `:app:testDebugUnitTest`, `:shared:testAndroidHostTest`, and `:app:assembleDebug` passed. The source-based preview runner rendered 144 PNGs in `batch-20261119-090724`, all identical to `batch-20261119-083629`.
 
 ## Guide-to-check mapping
 
-The route inventory starts with the 22 IDs in `BioRoute`. Home owns `home` and `onboard`. Tasks owns `tasks`, `task`, `task-new`, `focus`, `templates`, `rest`, and `insights`. Garden owns `garden`, `encyclopedia`, and `species`. Statistics owns `stats`, `review`, `achievements`, and `timeline`. Shop, Inventory, and Tree own their namesake IDs. Settings owns `settings` and `data`. The shell owns `more`. Route ownership here describes key registration. Entry-content migration and scenario coverage still require their own evidence.
+The route inventory starts with the 22 IDs in `BioRoute`. Home owns `home` and `onboard`. Tasks owns `tasks`, `task`, `task-new`, `focus`, `templates`, `rest`, and `insights`. Garden owns `garden`, `encyclopedia`, and `species`. Statistics owns `stats`, `review`, `achievements`, and `timeline`. Shop, Inventory, and Tree own their namesake IDs. Settings owns `settings` and `data`. The shell owns `more`. The registry test covers key and renderer registration. V01 and V02 track the broader visual scenario inventory and comparisons.
 
 | Guide rule | Implementation owner | Acceptance and evidence |
 |---|---|---|

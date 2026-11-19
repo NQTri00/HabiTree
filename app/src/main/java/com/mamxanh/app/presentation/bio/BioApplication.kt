@@ -24,6 +24,15 @@ import com.mamxanh.app.feature.settings.presentation.navigation.LocalSettingsRou
 import com.mamxanh.app.feature.tasks.presentation.navigation.LocalRestRouteContent
 import com.mamxanh.app.feature.tasks.presentation.navigation.LocalInsightsRouteContent
 import com.mamxanh.app.feature.tasks.presentation.navigation.LocalTemplatesRouteContent
+import com.mamxanh.app.feature.tasks.presentation.navigation.LocalTaskListRouteContent
+import com.mamxanh.app.feature.tasks.presentation.navigation.LocalTaskDetailRouteContent
+import com.mamxanh.app.feature.tasks.presentation.navigation.LocalTaskFormRouteContent
+import com.mamxanh.app.feature.tasks.presentation.navigation.LocalFocusRouteContent
+import com.mamxanh.app.feature.inventory.presentation.navigation.LocalInventoryRouteContent
+import com.mamxanh.app.feature.shop.presentation.navigation.LocalShopRouteContent
+import com.mamxanh.app.feature.home.presentation.navigation.LocalHomeRouteContent
+import com.mamxanh.app.feature.home.presentation.navigation.LocalOnboardingRouteContent
+import com.mamxanh.app.feature.tree.presentation.navigation.LocalTreeRouteContent
 import com.mamxanh.app.feature.stats.presentation.navigation.LocalAchievementsRouteContent
 import com.mamxanh.app.feature.stats.presentation.navigation.LocalTimelineRouteContent
 import com.mamxanh.app.feature.stats.presentation.navigation.LocalStatisticsRouteContent
@@ -52,6 +61,11 @@ import androidx.compose.ui.unit.*
     val inspection=LocalInspectionMode.current
     LaunchedEffect(ui.message){if(ui.message.isNotBlank()){kotlinx.coroutines.delay(4000);ui.message=""}}
     BioTheme(world,ui.homeTree){
+        BoxWithConstraints(modifier.fillMaxSize().background(bp.bg)){
+            val gutter=if(maxWidth<AppDimensions.Dp359)16 else if(maxWidth>=AppDimensions.Dp400)22 else 20
+            val compactScreen=maxHeight<AppDimensions.Dp600
+            val shortScreen=maxHeight<AppDimensions.Dp700
+            val topInset=if(maxHeight<AppDimensions.Dp600)14 else if(maxWidth<AppDimensions.Dp359)16 else 20
         CompositionLocalProvider(
             LocalBioExpanded provides (ui.tabs["expanded"] == "true"),
             LocalStatisticsRouteContent provides { statisticsRouteContent(world, ui) },
@@ -66,12 +80,16 @@ import androidx.compose.ui.unit.*
             LocalRestRouteContent provides { restRouteContent(world, ui) },
             LocalInsightsRouteContent provides { insightsRouteContent(world, ui) },
             LocalTemplatesRouteContent provides { templatesRouteContent(world, ui) },
+            LocalTaskListRouteContent provides { taskListRouteContent(world, ui) },
+            LocalTaskDetailRouteContent provides { taskDetailRouteContent(world, ui) },
+            LocalTaskFormRouteContent provides { taskFormRouteContent(world, ui) },
+            LocalFocusRouteContent provides { focusRouteContent(world, ui) },
+            LocalInventoryRouteContent provides { inventoryRouteContent(world, ui) },
+            LocalShopRouteContent provides { shopRouteContent(world, ui) },
+            LocalHomeRouteContent provides { homeRouteContent(world, ui, shortScreen) },
+            LocalOnboardingRouteContent provides { onboardingRouteContent(world, ui, gutter) },
+            LocalTreeRouteContent provides { treeRouteContent(world, ui, compactScreen) },
         ) {
-        BoxWithConstraints(modifier.fillMaxSize().background(bp.bg)){
-            val gutter=if(maxWidth<AppDimensions.Dp359)16 else if(maxWidth>=AppDimensions.Dp400)22 else 20
-            val compactScreen=maxHeight<AppDimensions.Dp600
-            val shortScreen=maxHeight<AppDimensions.Dp700
-            val topInset=if(maxHeight<AppDimensions.Dp600)14 else if(maxWidth<AppDimensions.Dp359)16 else 20
             Column(Modifier.fillMaxSize()){
                 val title=if(ui.route=="task-new")if(ui.param.isBlank())AppText.text(TextKey.CopyThemViecC371c2)else AppText.text(TextKey.CopySuaViec55ba70)else bioRoutes[ui.route]?:AppText.text(TextKey.CopyMamXanh7d3324)
                 BioHeader(title,world.coins,primary,{ui.back()},{ui.go("more")},showWallet=ui.route!="onboard")
@@ -87,20 +105,13 @@ import androidx.compose.ui.unit.*
                         NavEntry(destination) {
                             holders.SaveableStateProvider(destination.routeId + ":" + destination.argument) {
                                 Column(Modifier.fillMaxSize()){
-                                    if(destination.routeId == BioRoute.ONBOARD.id)BioOnboard(world,ui,gutter)
-                                    else Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState(if(ui.tabs["scrollBottom"]=="true")Int.MAX_VALUE else 0)).padding(start=gutter.dp,end=gutter.dp,top=topInset.dp,bottom=AppDimensions.Dp24),verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp18)){
+                                    val registeredContent = routes.contentFor(destination)
+                                    if (destination.routeId == BioRoute.ONBOARD.id) {
+                                        registeredContent?.invoke(this)
+                                    } else Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState(if(ui.tabs["scrollBottom"]=="true")Int.MAX_VALUE else 0)).padding(start=gutter.dp,end=gutter.dp,top=topInset.dp,bottom=AppDimensions.Dp24),verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp18)){
                                         if(world.loading)LinearProgressIndicator(Modifier.fillMaxWidth(),color=bp.deep,trackColor=bp.soft)
-                                        val registeredContent = routes.contentFor(destination)
-                                        if (registeredContent != null) registeredContent() else when(destination.routeId){
-                                            "home"->BioHome(world,ui,shortScreen)
-                                            "tasks"->BioTasks(world,ui)
-                                            "shop","inventory"->BioCatalog(world,ui,ui.route=="inventory")
-                                            "tree"->BioTree(world,ui,compactScreen)
-                                            "task"->BioTaskDetail(world,ui)
-                                            "task-new"->BioTaskForm(world,ui)
-                                            "focus"->BioFocus(world,ui)
-                                            "more"->BioMore(ui)
-                                        }
+                                        if (registeredContent != null) registeredContent(this)
+                                        else if (destination.routeId == BioRoute.MORE.id) BioMore(ui)
                                     }
                                 }
                             }

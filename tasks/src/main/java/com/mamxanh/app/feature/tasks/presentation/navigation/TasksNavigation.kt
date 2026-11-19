@@ -5,6 +5,16 @@ import androidx.compose.runtime.compositionLocalOf
 import com.mamxanh.app.core.presentation.navigation.HabiTreeFeatureDestination
 import com.mamxanh.app.core.presentation.navigation.HabiTreeFeatureModule
 import com.mamxanh.app.core.presentation.navigation.HabiTreeNavKey
+import com.mamxanh.app.feature.tasks.presentation.FocusDisplay
+import com.mamxanh.app.feature.tasks.presentation.FocusScreen
+import com.mamxanh.app.feature.tasks.presentation.TaskDetailDisplay
+import com.mamxanh.app.feature.tasks.presentation.TaskDetailScreen
+import com.mamxanh.app.feature.tasks.presentation.TaskFormDisplay
+import com.mamxanh.app.feature.tasks.presentation.TaskFormField
+import com.mamxanh.app.feature.tasks.presentation.TaskFormScreen
+import com.mamxanh.app.feature.tasks.presentation.TaskListAction
+import com.mamxanh.app.feature.tasks.presentation.TaskListScreen
+import com.mamxanh.app.feature.tasks.presentation.TaskListState
 import com.mamxanh.app.feature.tasks.presentation.InsightTaskLink
 import com.mamxanh.app.feature.tasks.presentation.RestScreen
 import com.mamxanh.app.feature.tasks.presentation.RestScreenState
@@ -88,11 +98,85 @@ val LocalTemplatesRouteContent = compositionLocalOf<() -> TemplatesRouteContent>
     error("Templates route requires its state and actions")
 }
 
+class TaskListRouteContent(
+    val state: TaskListState,
+    val onAction: (TaskListAction) -> Unit,
+    val reward: @Composable () -> Unit,
+)
+
+val LocalTaskListRouteContent = compositionLocalOf<() -> TaskListRouteContent> {
+    error("TaskList route requires its state and actions")
+}
+
+class TaskDetailRouteContent(
+    val t: TaskDetailDisplay?,
+    val onTasks: () -> Unit,
+    val onComplete: () -> Unit,
+    val onEdit: () -> Unit,
+    val onInsights: () -> Unit,
+    val onLifecycle: (String) -> Unit,
+    val onArchive: () -> Unit,
+)
+
+val LocalTaskDetailRouteContent = compositionLocalOf<() -> TaskDetailRouteContent> {
+    error("TaskDetail route requires its state and actions")
+}
+
+class TaskFormRouteContent(
+    val state: TaskFormDisplay,
+    val onFieldChanged: (TaskFormField, String) -> Unit,
+)
+
+val LocalTaskFormRouteContent = compositionLocalOf<() -> TaskFormRouteContent> {
+    error("TaskForm route requires its state and actions")
+}
+
+class FocusRouteContent(
+    val state: FocusDisplay,
+    val onTask: (String) -> Unit,
+    val onMinutes: (String) -> Unit,
+)
+
+val LocalFocusRouteContent = compositionLocalOf<() -> FocusRouteContent> {
+    error("Focus route requires its state and actions")
+}
+
 val tasksFeatureNavigation = HabiTreeFeatureModule(
-    HabiTreeFeatureDestination("tasks") { TasksKey.takeIf { _ -> it.isEmpty() } },
-    HabiTreeFeatureDestination("task") { TaskDetailsKey(it) },
-    HabiTreeFeatureDestination("task-new") { TaskFormKey(it) },
-    HabiTreeFeatureDestination("focus") { FocusKey(it) },
+    HabiTreeFeatureDestination("tasks", content = {
+        val content = LocalTaskListRouteContent.current()
+        TaskListScreen(
+            state = content.state,
+            onAction = content.onAction,
+            reward = content.reward,
+        )
+    }) { TasksKey.takeIf { _ -> it.isEmpty() } },
+    HabiTreeFeatureDestination("task", content = {
+        val content = LocalTaskDetailRouteContent.current()
+        TaskDetailScreen(
+            t = content.t,
+            onTasks = content.onTasks,
+            onComplete = content.onComplete,
+            onEdit = content.onEdit,
+            onInsights = content.onInsights,
+            onLifecycle = content.onLifecycle,
+            onArchive = content.onArchive,
+        )
+    }) { TaskDetailsKey(it) },
+    HabiTreeFeatureDestination("task-new", content = {
+        val content = LocalTaskFormRouteContent.current()
+        TaskFormScreen(
+            state = content.state,
+            onFieldChanged = content.onFieldChanged,
+        )
+    }) { TaskFormKey(it) },
+    HabiTreeFeatureDestination("focus", content = {
+        val content = LocalFocusRouteContent.current()
+        FocusScreen(
+            state = content.state,
+            onTask = content.onTask,
+            onMinutes = content.onMinutes,
+        )
+    }) { FocusKey(it) },
     HabiTreeFeatureDestination("templates", content = {
         val content = LocalTemplatesRouteContent.current()
         TaskTemplatesScreen(

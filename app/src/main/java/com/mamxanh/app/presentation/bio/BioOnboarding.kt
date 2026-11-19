@@ -1,15 +1,12 @@
 package com.mamxanh.app.presentation.bio
 
-import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.runtime.Composable
 import com.mamxanh.app.feature.home.presentation.OnboardingAction
 import com.mamxanh.app.feature.home.presentation.OnboardingDisplay
-import com.mamxanh.app.feature.home.presentation.OnboardingScreen
+import com.mamxanh.app.feature.home.presentation.navigation.OnboardingRouteContent
 import com.mamxanh.shared.localization.AppText
 import com.mamxanh.shared.localization.TextKey
 
-@Composable
-internal fun ColumnScope.BioOnboard(world: BioWorld, ui: BioController, gutter: Int) {
+internal fun onboardingRouteContent(world: BioWorld, ui: BioController, gutter: Int): OnboardingRouteContent {
     val templates = world.catalog.a("templates").objects()
     val category = ui.selectedCategory
     val chosen = ui.selectedTemplates.toSet()
@@ -33,7 +30,7 @@ internal fun ColumnScope.BioOnboard(world: BioWorld, ui: BioController, gutter: 
         }
     }
 
-    OnboardingScreen(
+    return OnboardingRouteContent(
         state = OnboardingDisplay(
             step = ui.onboardingStep,
             seed = ui.selectedSeed,

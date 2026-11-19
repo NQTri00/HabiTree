@@ -8,7 +8,24 @@ $bioOutput='E:/Workspace/mamxanh-redesign/native-bio-headless/batch-'+(Get-Date 
 $bioProject=(Resolve-Path -LiteralPath $ProjectDirectory).Path.Replace('\','/')
 $bioArgs=@('preview','render','--sdk=E:/Android/Sdk',"gradle://${bioProject}?:app","--output=$bioOutput",'--format=json')
 if($ComponentTree){$bioArgs+='--component-tree'}
-foreach($bioJob in $bioJobs){if($Names.Count -eq 0 -or $bioJob.name -in $Names){$bioArgs+="--fqn=com.mamxanh.app.presentation.bio.$($bioJob.preview)Kt.$($bioJob.preview)"}}
+$bioSelectedJobs = @($bioJobs | Where-Object { $Names.Count -eq 0 -or $_.name -in $Names })
+if ($bioSelectedJobs.Count -eq 0) { throw 'No previews matched the manifest selection.' }
+$bioPreviewOwners = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
+foreach ($bioJob in $bioSelectedJobs) {
+    $bioSource = Join-Path $bioProject $bioJob.source
+    $bioCode = Get-Content -Raw -LiteralPath $bioSource -ErrorAction Stop
+    $bioPackage = [regex]::Match($bioCode, '(?m)^\s*package\s+([\w.]+)')
+    $bioMethod = [regex]::Escape($bioJob.preview)
+    if (!$bioPackage.Success -or $bioCode -cnotmatch "\bfun\s+$bioMethod\s*\(") {
+        throw "Cannot resolve preview $($bioJob.preview) in $($bioJob.source)."
+    }
+    $bioFacade = [io.path]::GetFileNameWithoutExtension($bioSource) + 'Kt'
+    $bioJvmName = [regex]::Match($bioCode, '(?m)^\s*@file:JvmName\("([^"]+)"\)')
+    if ($bioJvmName.Success) { $bioFacade = $bioJvmName.Groups[1].Value }
+    $bioFqn = "$($bioPackage.Groups[1].Value).$bioFacade.$($bioJob.preview)"
+    if (!$bioPreviewOwners.Add($bioFqn)) { throw "Duplicate preview in manifest selection. $bioFqn" }
+    $bioArgs += "--fqn=$bioFqn"
+}
 if(!$Online){$bioArgs+=@('--','--offline')}else{$bioArgs+='--'}
 $bioArgs+=@('--no-daemon','--max-workers=1','-Pkotlin.compiler.execution.strategy=in-process','-Dorg.gradle.jvmargs=-Xmx1536m -XX:MaxMetaspaceSize=512m -Duser.home=E:/Android -Djava.io.tmpdir=E:/Workspace/mamxanh-redesign/.tmp/bio-final')
 $bioFree=(Get-CimInstance Win32_OperatingSystem).FreePhysicalMemory/1024

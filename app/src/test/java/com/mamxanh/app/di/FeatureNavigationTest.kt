@@ -8,6 +8,7 @@ import com.mamxanh.app.presentation.bio.BioRoute
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotSame
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertSame
 import org.junit.Test
 import org.koin.dsl.koinApplication
@@ -30,12 +31,6 @@ class FeatureNavigationTest {
                 BioRoute.SPECIES to "succulent",
                 BioRoute.ACHIEVEMENTS to "first-plant",
             )
-            val routesWithContent = setOf(
-                BioRoute.STATS, BioRoute.REVIEW, BioRoute.ACHIEVEMENTS, BioRoute.TIMELINE,
-                BioRoute.GARDEN, BioRoute.ENCYCLOPEDIA, BioRoute.SPECIES,
-                BioRoute.SETTINGS, BioRoute.DATA,
-                BioRoute.TEMPLATES, BioRoute.REST, BioRoute.INSIGHTS,
-            )
             for (route in BioRoute.entries.filterNot { it == BioRoute.MORE }) {
                 val argument = arguments[route].orEmpty()
                 val saved = BioDestination(route, argument)
@@ -44,13 +39,13 @@ class FeatureNavigationTest {
                 assertEquals(route.id, key.routeId)
                 assertEquals(argument, key.argument)
                 assertEquals(previewRouteRegistry.keyFor(saved), key)
-                if (route in routesWithContent) {
-                    assertNotNull(live.contentFor(key))
-                    assertNotNull(previewRouteRegistry.contentFor(key))
-                }
+                assertNotNull("Missing live content for ${route.id}", live.contentFor(key))
+                assertNotNull("Missing preview content for ${route.id}", previewRouteRegistry.contentFor(key))
             }
             val shell = BioDestination("more", "")
             assertSame(shell, live.keyFor(shell))
+            assertNull(live.contentFor(shell))
+            assertNull(previewRouteRegistry.contentFor(shell))
         } finally {
             application.close()
         }

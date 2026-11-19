@@ -1,25 +1,25 @@
 package com.mamxanh.app.presentation.bio
 
 import com.mamxanh.app.presentation.ui.design.*
-import com.mamxanh.app.feature.tree.presentation.BioTreeScreen
+import com.mamxanh.app.feature.tree.presentation.navigation.TreeRouteContent
 import com.mamxanh.app.feature.tree.presentation.TreeScreenAction
 import com.mamxanh.app.feature.tree.presentation.TreeScreenFertilizer
 import com.mamxanh.app.feature.tree.presentation.TreeScreenState
-import com.mamxanh.app.feature.shop.presentation.BioShopScreen
+import com.mamxanh.app.feature.shop.presentation.navigation.ShopRouteContent
 import com.mamxanh.app.feature.shop.presentation.ShopTreeContext
-import com.mamxanh.app.feature.inventory.presentation.BioInventoryScreen
+import com.mamxanh.app.feature.inventory.presentation.navigation.InventoryRouteContent
 import com.mamxanh.app.feature.garden.presentation.navigation.GardenRouteContent
 import com.mamxanh.app.feature.garden.presentation.GardenAction
 import com.mamxanh.app.feature.garden.presentation.GardenDisplayPlot
 import com.mamxanh.app.feature.garden.presentation.GardenDisplayState
 import com.mamxanh.app.feature.garden.presentation.GardenDisplayTree
-import com.mamxanh.app.feature.home.presentation.BioHomeScreen
+import com.mamxanh.app.feature.home.presentation.navigation.HomeRouteContent
 import com.mamxanh.app.feature.home.presentation.HomeScreenAction
 import com.mamxanh.app.feature.home.presentation.HomeScreenState
 import com.mamxanh.app.feature.tasks.presentation.TaskListAction
 import com.mamxanh.app.feature.tasks.presentation.TaskListItem
 import com.mamxanh.app.feature.tasks.presentation.TaskListRow
-import com.mamxanh.app.feature.tasks.presentation.TaskListScreen
+import com.mamxanh.app.feature.tasks.presentation.navigation.TaskListRouteContent
 import com.mamxanh.app.feature.tasks.presentation.TaskListState
 
 import com.mamxanh.app.presentation.ui.design.AppColors
@@ -106,61 +106,62 @@ internal fun accessoryIcon(id:String)=when(id){"tree_ribbon"->"gift";"tree_lante
         else{Bt(if(inventory)if(item.b("permanent"))if(world.state.s("equipped")==id)AppText.text(TextKey.CopyDangDung275ca2)else AppText.text(TextKey.CopyTrangBi9e8e12)else "×${world.inventoryCount(id, accessory)}"else if(item.b("permanent")&&world.count(id)>0)if(world.state.s("equipped")==id)AppText.text(TextKey.CopyDangDung275ca2)else AppText.text(TextKey.CopyDaSoHuu822625)else AppText.text(TextKey.Copy0Xu251e68,item.i("price")),size=AppTypography.Size13,tint=bp.deep);if(seed&&!inventory)Bt(bioTier(item.s("tier")),size=AppTypography.Size12,line=AppTypography.LineHeight17,tint=bp.muted)}
     }
 }
-@Composable
-internal fun BioCatalog(world: BioWorld, ui: BioController, inventory: Boolean) {
-    val family = if (inventory) "inventory" else "shop"
-    val tab = ui.tabs[family] ?: "seeds"
-    val products = when (tab) {
+private fun catalogProducts(world: BioWorld, tab: String): List<JSONObject> =
+    when (tab) {
         "care" -> world.products
         "accessories" -> world.accessories
         else -> world.species
     }
-    val items = products.filter {
-        val id = it.s("id")
-        !inventory || world.inventoryCount(id, accessory = tab == "accessories") > 0
+
+internal fun inventoryRouteContent(world: BioWorld, ui: BioController): InventoryRouteContent {
+    val tab = ui.tabs["inventory"] ?: "seeds"
+    val items = catalogProducts(world, tab).filter {
+        world.inventoryCount(it.s("id"), accessory = tab == "accessories") > 0
     }
-    val item: @Composable (Int, Modifier) -> Unit = { index, modifier ->
-        BioProduct(world, ui, items[index], modifier, inventory, ui.targetTree.ifBlank { ui.homeTree })
-    }
-    if (inventory) {
-        BioInventoryScreen(
-            tab = tab,
-            itemCount = items.size,
-            onTab = { ui.tabs[family] = it },
-            onShop = { ui.go("shop") },
-            onBuy = {
-                if (tab == "accessories") ui.tabs["shop"] = "accessories"
-                ui.go("shop")
-            },
-            item = item,
-        )
-    } else {
-        val selected = ui.param.takeIf { it.isNotBlank() }?.let(world::tree)
-        BioShopScreen(
-            tab = tab,
-            shoppingTree = selected?.let { ShopTreeContext(it.s("id"), it.s("name"), it.s("species")) },
-            itemCount = items.size,
-            onTab = { ui.tabs[family] = it },
-            onInventory = { ui.go("inventory") },
-            onTree = { ui.go("tree", it) },
-            onShop = { ui.go("shop") },
-            item = item,
-        )
-    }
+    return InventoryRouteContent(
+        tab = tab,
+        itemCount = items.size,
+        onTab = { ui.tabs["inventory"] = it },
+        onShop = { ui.go("shop") },
+        onBuy = {
+            if (tab == "accessories") ui.tabs["shop"] = "accessories"
+            ui.go("shop")
+        },
+        item = { index, modifier ->
+            BioProduct(world, ui, items[index], modifier, inventory = true, target = ui.targetTree.ifBlank { ui.homeTree })
+        },
+    )
+}
+
+internal fun shopRouteContent(world: BioWorld, ui: BioController): ShopRouteContent {
+    val tab = ui.tabs["shop"] ?: "seeds"
+    val items = catalogProducts(world, tab)
+    val selected = ui.param.takeIf { it.isNotBlank() }?.let(world::tree)
+    return ShopRouteContent(
+        tab = tab,
+        shoppingTree = selected?.let { ShopTreeContext(it.s("id"), it.s("name"), it.s("species")) },
+        itemCount = items.size,
+        onTab = { ui.tabs["shop"] = it },
+        onInventory = { ui.go("inventory") },
+        onTree = { ui.go("tree", it) },
+        onShop = { ui.go("shop") },
+        item = { index, modifier ->
+            BioProduct(world, ui, items[index], modifier, target = ui.targetTree.ifBlank { ui.homeTree })
+        },
+    )
 }
 
 @Composable internal fun ColumnScope.BioMore(ui:BioController){BioIntro(AppText.text(TextKey.CopyThemMotChut006e8b),AppText.text(TextKey.CopyTheoNhipCuaBan5a2ada));Column(verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp12)){listOf(Triple("focus","clock",AppText.text(TextKey.CopyTapTrung964002)),Triple("templates","plus",AppText.text(TextKey.CopyViecMau535dc1)),Triple("review","calendar",AppText.text(TextKey.CopyNhinLaiTuanFf3f0c)),Triple("achievements","award",AppText.text(TextKey.CopyDauMocDffd66)),Triple("timeline","book",AppText.text(TextKey.CopyKyNiemE3e113)),Triple("insights","chart",AppText.text(TextKey.CopyNhipThoiQuen1b8324)),Triple("encyclopedia","book",AppText.text(TextKey.CopyBachThaoF2ed64)),Triple("settings","settings",AppText.text(TextKey.CopyTuyChonNhacViecA44d85)),Triple("data","download",AppText.text(TextKey.CopyDuLieuUngDung9843b7))).forEach{(r,i,t)->BioLink(t,i,{ui.go(r)})}}}
 
 
-@Composable
-internal fun BioHome(world: BioWorld, ui: BioController, short: Boolean) {
+internal fun homeRouteContent(world: BioWorld, ui: BioController, short: Boolean): HomeRouteContent {
     val tree = world.tree(ui.homeTree)
     val next = world.tasks.firstOrNull {
         !it.b("done") && !it.b("finished") && it.s("lifecycle", "ACTIVE") == "ACTIVE" &&
             it.b("scheduledToday", true)
     }
     val phase = world.data.o("phase")
-    BioHomeScreen(
+    return HomeRouteContent(
         state = HomeScreenState(
             date = world.data.s("date").split('-').takeLast(2).reversed().joinToString("-"),
             completed = phase.i("completed"),
@@ -208,8 +209,7 @@ internal fun BioTaskRow(task: JSONObject, ui: BioController) {
     TaskListRow(item, ui.busy, { ui.go("task", item.id) }, { ui.completeTask(item.id, item.timer) })
 }
 
-@Composable
-internal fun BioTasks(world: BioWorld, ui: BioController) {
+internal fun taskListRouteContent(world: BioWorld, ui: BioController): TaskListRouteContent {
     val filter = ui.tabs["taskFilter"] ?: "today"
     val lifecycle = when (filter) {
         "paused" -> "PAUSED"
@@ -217,7 +217,7 @@ internal fun BioTasks(world: BioWorld, ui: BioController) {
         else -> "ACTIVE"
     }
     val phase = world.data.o("phase")
-    TaskListScreen(
+    return TaskListRouteContent(
         state = TaskListState(
             filter = filter,
             items = world.tasks.filter { it.s("lifecycle", "ACTIVE") == lifecycle }.map { it.toTaskListItem() },
@@ -297,8 +297,7 @@ internal fun gardenRouteContent(world: BioWorld, ui: BioController): GardenRoute
 }
 
 
-@Composable
-internal fun BioTree(world: BioWorld, ui: BioController, compact: Boolean = false) {
+internal fun treeRouteContent(world: BioWorld, ui: BioController, compact: Boolean): TreeRouteContent {
     val tree = world.tree(ui.param)
     val id = tree?.s("id").orEmpty()
     val speciesId = tree?.s("species").orEmpty()
@@ -324,7 +323,7 @@ internal fun BioTree(world: BioWorld, ui: BioController, compact: Boolean = fals
             },
         )
     }
-    BioTreeScreen(
+    return TreeRouteContent(
         state = state,
         tab = ui.tabs["tree"] ?: "care",
         onTab = { ui.tabs["tree"] = it },
