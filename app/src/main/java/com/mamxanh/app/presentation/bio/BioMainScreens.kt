@@ -118,15 +118,16 @@ internal fun inventoryRouteContent(world: BioWorld, ui: BioController): Inventor
     val items = catalogProducts(world, tab).filter {
         world.inventoryCount(it.s("id"), accessory = tab == "accessories") > 0
     }
+    val openShop = {
+        ui.tabs["shop"] = tab
+        ui.go("shop")
+    }
     return InventoryRouteContent(
         tab = tab,
         itemCount = items.size,
         onTab = { ui.tabs["inventory"] = it },
-        onShop = { ui.go("shop") },
-        onBuy = {
-            if (tab == "accessories") ui.tabs["shop"] = "accessories"
-            ui.go("shop")
-        },
+        onShop = openShop,
+        onBuy = openShop,
         item = { index, modifier ->
             BioProduct(world, ui, items[index], modifier, inventory = true, target = ui.targetTree.ifBlank { ui.homeTree })
         },

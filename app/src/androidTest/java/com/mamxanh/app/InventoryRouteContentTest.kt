@@ -11,6 +11,27 @@ import org.junit.Test
 
 class InventoryRouteContentTest {
     @Test
+    fun inventoryShortcutsOpenTheMatchingShopCategory() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val world = BioWorld.reference(context).copy(native = true, inventoryQuantities = emptyMap())
+        world.state.put("owned", JSONObject())
+
+        for (tab in listOf("seeds", "care", "accessories")) {
+            for (useBrowseShortcut in listOf(true, false)) {
+                val controller = BioController("inventory")
+                controller.tabs["inventory"] = tab
+                controller.tabs["shop"] = if (tab == "seeds") "accessories" else "seeds"
+
+                val content = inventoryRouteContent(world, controller)
+                if (useBrowseShortcut) content.onShop() else content.onBuy()
+
+                assertEquals("shop", controller.route)
+                assertEquals(tab, controller.tabs["shop"])
+            }
+        }
+    }
+
+    @Test
     fun anEmptyCategoryUsesTheLiveCountsAndOwnedAccessoriesStayVisible() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         val world = BioWorld.reference(context).copy(native = true, inventoryQuantities = emptyMap())
