@@ -2,8 +2,11 @@ package com.mamxanh.app
 
 import android.database.sqlite.SQLiteConstraintException
 import android.database.sqlite.SQLiteDatabase
+import com.mamxanh.app.core.domain.RepositoryResult
 import com.mamxanh.app.feature.inventory.data.OfflineInventoryRepository
 import com.mamxanh.app.feature.inventory.domain.InventoryRepository
+import com.mamxanh.app.feature.shop.data.OfflineShopRepository
+import com.mamxanh.app.feature.shop.domain.ShopRepository
 import com.mamxanh.shared.data.GameStorage
 import com.mamxanh.shared.data.sql.GameSchema
 import com.mamxanh.shared.data.sql.GameSqlConnection
@@ -21,6 +24,31 @@ class InventoryRepositoryPersistenceTest {
     @Test
     fun appResolvesTheFeatureOwnedInventoryRepository() {
         assertTrue(GlobalContext.get().get<InventoryRepository>() is OfflineInventoryRepository)
+        assertTrue(GlobalContext.get().get<ShopRepository>() is OfflineShopRepository)
+    }
+
+    @Test
+    fun shopPurchaseCreditsInventoryExactlyOnce() {
+        SQLiteDatabase.create(null).use { database ->
+            val connection = InMemoryConnection(database)
+            GameSchema.create(connection)
+            val storage = GameStorage(SqlGameDatabase(connection))
+            val shop = OfflineShopRepository(storage)
+            val inventory = OfflineInventoryRepository(storage)
+            val seed = "succulent"
+            val initial = shop.loadWallet()
+            assertTrue(shop.purchase(seed, 2, "insufficient") is RepositoryResult.Error)
+            assertEquals(initial, shop.loadWallet())
+
+            database.execSQL("UPDATE meta SET v='1000' WHERE k='coins'")
+            val before = shop.loadWallet()
+            assertTrue(shop.purchase(seed, 2, "purchase") is RepositoryResult.Success)
+            val after = shop.loadWallet()
+            assertTrue(after.coins < before.coins)
+            assertEquals((before.inventory[seed] ?: 0) + 2, inventory.quantities()[seed])
+            assertTrue(shop.purchase(seed, 2, "purchase") is RepositoryResult.Error)
+            assertEquals(after, shop.loadWallet())
+        }
     }
 
     @Test

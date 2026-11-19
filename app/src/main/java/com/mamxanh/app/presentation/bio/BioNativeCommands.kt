@@ -80,7 +80,7 @@ internal fun executeNative(
                 return BioResult(false, AppText.text(TextKey.CopyVuonDaDayBanVanCoTheMuaHatVaoTuiE14bdf))
             }
             val bought = shop.purchase(item, quantity, key)
-            if (!bought.success) return result(bought)
+            if (bought is RepositoryResult.Error) return result(bought)
             if (action == "buy-equip") {
                 val equipped = inventory.equipWateringCan(item)
                 return BioResult(equipped.success, equipped.message)

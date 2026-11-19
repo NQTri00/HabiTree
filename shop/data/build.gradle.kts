@@ -19,4 +19,6 @@ kotlin {
 
 dependencies {
     implementation(project(":shop:domain"))
+    implementation(project(":shared"))
+    implementation(libs.koin.core)
 }

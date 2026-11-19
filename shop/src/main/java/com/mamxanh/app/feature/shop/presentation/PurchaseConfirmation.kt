@@ -35,7 +35,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.mamxanh.app.feature.shop.domain.model.shopCatalog
 import com.mamxanh.app.presentation.ui.*
 import com.mamxanh.app.presentation.ui.components.*
 import com.mamxanh.app.presentation.ui.components.GardenRichText as Text
