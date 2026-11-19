@@ -6,6 +6,7 @@ import com.mamxanh.app.core.presentation.BaseViewModel
 import com.mamxanh.app.core.presentation.UiAction
 import com.mamxanh.app.core.presentation.UiEvent
 import com.mamxanh.app.core.presentation.UiState
+import com.mamxanh.app.feature.tasks.domain.FocusSessionCommands
 import com.mamxanh.shared.data.GameStorage
 import com.mamxanh.shared.model.*
 import kotlinx.coroutines.*
@@ -15,14 +16,18 @@ data class EngagementUiState(val snapshot:EngagementSnapshot=EngagementSnapshot(
     val route:String="",val selectedTask:Long=0,val busy:Boolean=false,val loading:Boolean=true,val message:String="") : UiState
 data class EngagementUiAction(val mutation: EngagementAction) : UiAction
 
-class EngagementViewModel(private val storage:GameStorage,private val saved:SavedStateHandle) : BaseViewModel<EngagementUiState, UiEvent, EngagementUiAction>(
+class EngagementViewModel(
+    private val storage: GameStorage,
+    private val saved: SavedStateHandle,
+    private val focusCommands: FocusSessionCommands,
+) : BaseViewModel<EngagementUiState, UiEvent, EngagementUiAction>(
     initialState = EngagementUiState(route=saved["engagement_route"] ?: "",selectedTask=saved["engagement_task"] ?: 0),
 ) {
     private var foreground=false
     private var gate=false
     init {
         viewModelScope.launch {
-            withContext(Dispatchers.IO){storage.engage(EngagementAction.Focus("","RECOVER"))}
+            withContext(Dispatchers.IO) { focusCommands.recover() }
             refresh()
             storage.changes.collect{refresh()}
         }
@@ -34,7 +39,7 @@ class EngagementViewModel(private val storage:GameStorage,private val saved:Save
                     if(running.isNotEmpty() && !gate && !mutableState.value.busy) {
                         gate=true
                         try {
-                            withContext(Dispatchers.IO){running.forEach{storage.engage(EngagementAction.Focus(it.id,"TICK"))}}
+                            withContext(Dispatchers.IO) { running.forEach { focusCommands.tick(it.id) } }
                             refresh()
                         } finally{gate=false}
                     }
@@ -55,7 +60,8 @@ class EngagementViewModel(private val storage:GameStorage,private val saved:Save
     fun foreground(active:Boolean) {
         foreground=active
         if(!active)viewModelScope.launch {
-            withContext(Dispatchers.IO){storage.engage(EngagementAction.Focus("","RECOVER"))};refresh()
+            withContext(Dispatchers.IO) { focusCommands.recover() }
+            refresh()
         } else viewModelScope.launch{refresh()}
     }
     fun act(action: EngagementAction) = dispatch(EngagementUiAction(action))

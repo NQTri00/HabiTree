@@ -126,7 +126,7 @@
     <string name="copy_du_lieu_ung_dung_9843b7" formatted="false">Data &amp; app</string>
     <string name="copy_xem_lai_bat_dau_b87622" formatted="false">View the introduction</string>
     <string name="copy_sao_luu_cua_ban_ec4a6a" formatted="false">Your backup</string>
-    <string name="copy_luu_tren_thiet_bi_0_kb_c7f8bb" formatted="false">On this device · {0} KB</string>
+    <string name="copy_luu_tren_thiet_bi_0_kb_c7f8bb">On this device · %1$d KB</string>
     <string name="copy_xuat_tep_b5d886" formatted="false">Export file</string>
     <string name="copy_khoi_phuc_c652d9" formatted="false">Restore</string>
     <string name="copy_quyen_rieng_tu_cua_ban_sao_f03d3e" formatted="false">Backup privacy</string>

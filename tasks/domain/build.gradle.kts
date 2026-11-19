@@ -18,5 +18,6 @@ kotlin {
 }
 
 dependencies {
+    api(project(":core-domain"))
     api(project(":shared"))
 }

@@ -19,4 +19,5 @@ kotlin {
 
 dependencies {
     implementation(project(":tasks:domain"))
+    implementation(libs.koin.core)
 }

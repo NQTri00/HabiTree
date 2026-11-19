@@ -126,7 +126,7 @@
     <string name="copy_du_lieu_ung_dung_9843b7" formatted="false">Dữ liệu &amp; ứng dụng</string>
     <string name="copy_xem_lai_bat_dau_b87622" formatted="false">Xem lại bắt đầu</string>
     <string name="copy_sao_luu_cua_ban_ec4a6a" formatted="false">Sao lưu của bạn</string>
-    <string name="copy_luu_tren_thiet_bi_0_kb_c7f8bb" formatted="false">Lưu trên thiết bị · {0} KB</string>
+    <string name="copy_luu_tren_thiet_bi_0_kb_c7f8bb">Lưu trên thiết bị · %1$d KB</string>
     <string name="copy_xuat_tep_b5d886" formatted="false">Xuất tệp</string>
     <string name="copy_khoi_phuc_c652d9" formatted="false">Khôi phục</string>
     <string name="copy_quyen_rieng_tu_cua_ban_sao_f03d3e" formatted="false">Quyền riêng tư của bản sao</string>

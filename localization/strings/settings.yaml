@@ -18,8 +18,10 @@ copy_sao_luu_cua_ban_ec4a6a:
   source: settings/src/main/java/com/mamxanh/app/feature/settings/presentation/BackupScreen.kt
 copy_luu_tren_thiet_bi_0_kb_c7f8bb:
   order: 125
-  vi: Lưu trên thiết bị · {0} KB
-  en: On this device · {0} KB
+  vi: Lưu trên thiết bị · {size_kib} KB
+  en: On this device · {size_kib} KB
+  placeholders:
+    size_kib: integer
   canonical: false
   source: settings/src/main/java/com/mamxanh/app/feature/settings/presentation/BackupScreen.kt
 copy_xuat_tep_b5d886:

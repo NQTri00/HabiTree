@@ -4,17 +4,50 @@ import json,re,sys
 from xml.sax.saxutils import escape
 from catalog import ROOT, load_catalog
 
+NAMED_PLACEHOLDER = re.compile(r'\{([a-z][a-z0-9_]*)\}')
+POSITIONAL_PLACEHOLDER = re.compile(r'\{\d+\}')
+ANDROID_FORMATS = {'integer': 'd', 'string': 's'}
+
 def kotlin(value):
     return json.dumps(value,ensure_ascii=False).replace('$','\\$')
 
 def enum_name(key):
     return ''.join(part[:1].upper()+part[1:] for part in key.split('_'))
 
+
+def normalize_placeholders(key, item):
+    placeholders = item.get('placeholders')
+    if placeholders is None:
+        return item, {}
+    if not isinstance(placeholders, dict) or not placeholders:
+        raise ValueError(f'Expected named placeholders in {key}')
+    for name, argument_type in placeholders.items():
+        if (not isinstance(name, str) or not re.fullmatch(r'[a-z][a-z0-9_]*', name)
+                or not isinstance(argument_type, str) or argument_type not in ANDROID_FORMATS):
+            raise ValueError(f'Invalid named placeholder {name!r} in {key}')
+    positions = {name: index for index, name in enumerate(placeholders)}
+    normalized = dict(item)
+    for language in ('vi', 'en', 'en_one'):
+        text = item.get(language)
+        if not text:
+            continue
+        if set(NAMED_PLACEHOLDER.findall(text)) != positions.keys() or POSITIONAL_PLACEHOLDER.search(text):
+            raise ValueError(f'Named placeholder mismatch: {key} ({language})')
+        normalized[language] = NAMED_PLACEHOLDER.sub(lambda match: '{' + str(positions[match[1]]) + '}', text)
+    android_formats = {
+        f'{{{index}}}': f'%{index + 1}${ANDROID_FORMATS[argument_type]}'
+        for index, argument_type in enumerate(placeholders.values())
+    }
+    return normalized, android_formats
+
 def generate(allow_incomplete=False):
     catalog=load_catalog()
     missing=[key for key,item in catalog.items() if not item.get('en')]
     if missing and not allow_incomplete:raise SystemExit(f'{len(missing)} English translations remain; refusing release generation.')
-    for key,item in catalog.items():
+    android_formats_by_key = {}
+    for key, item in catalog.items():
+        item, android_formats_by_key[key] = normalize_placeholders(key, item)
+        catalog[key] = item
         for variant in ['en','en_one']:
             if item.get(variant) and sorted(re.findall(r'\{\d+\}',item['vi']))!=sorted(re.findall(r'\{\d+\}',item[variant])):
                 raise SystemExit(f'Placeholder mismatch: {key} ({variant})')
@@ -37,9 +70,14 @@ def generate(allow_incomplete=False):
         target.parent.mkdir(parents=True,exist_ok=True)
         rows=[]
         for key,item in catalog.items():
-            text=(item.get(language) or item['vi']).replace('\\','\\\\').replace("'","\\'").replace('"','\\"').replace('\n','\\n').replace('\r','\\r').replace('\t','\\t')
+            text = item.get(language) or item['vi']
+            formats = android_formats_by_key[key]
+            if formats:
+                text = POSITIONAL_PLACEHOLDER.sub(lambda match: formats[match[0]], text.replace('%', '%%'))
+            text=text.replace('\\','\\\\').replace("'","\\'").replace('"','\\"').replace('\n','\\n').replace('\r','\\r').replace('\t','\\t')
             if text.startswith(('@','?')):text='\\'+text
-            rows.append(f'    <string name="{key}" formatted="false">{escape(text)}</string>')
+            format_attribute = '' if formats else ' formatted="false"'
+            rows.append(f'    <string name="{key}"{format_attribute}>{escape(text)}</string>')
         target.write_text('<?xml version="1.0" encoding="utf-8"?>\n<!-- Generated from the shared copy catalog. -->\n<resources>\n'+'\n'.join(rows)+'\n</resources>\n',encoding='utf-8')
     print(f'Generated {len(keys)} typed copy keys; {len(missing)} translations pending.')
 
