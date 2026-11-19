@@ -1,5 +1,6 @@
 package com.mamxanh.app.core.presentation.navigation
 
+import androidx.compose.runtime.Composable
 import androidx.navigation3.runtime.NavKey
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -11,6 +12,7 @@ interface HabiTreeNavKey : NavKey {
 
 class HabiTreeFeatureDestination(
     val routeId: String,
+    val content: (@Composable () -> Unit)? = null,
     private val createKey: (String) -> HabiTreeNavKey?,
 ) {
     fun keyFor(argument: String): HabiTreeNavKey? = createKey(argument)
@@ -32,6 +34,8 @@ class HabiTreeRouteRegistry(destinations: List<HabiTreeFeatureDestination>) {
     init {
         require(byRoute.size == destinations.size) { "Duplicate feature route registration" }
     }
+
+    fun contentFor(key: HabiTreeNavKey): (@Composable () -> Unit)? = byRoute[key.routeId]?.content
 
     fun keyFor(fallback: HabiTreeNavKey): HabiTreeNavKey =
         byRoute[fallback.routeId]?.keyFor(fallback.argument) ?: fallback

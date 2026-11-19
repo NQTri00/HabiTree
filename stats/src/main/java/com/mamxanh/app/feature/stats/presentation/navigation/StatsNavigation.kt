@@ -1,5 +1,10 @@
 package com.mamxanh.app.feature.stats.presentation.navigation
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.compositionLocalOf
+import com.mamxanh.app.feature.stats.presentation.StatisticsLink
+import com.mamxanh.app.feature.stats.presentation.StatisticsScreen
+import com.mamxanh.app.feature.stats.presentation.StatisticsScreenState
 import com.mamxanh.app.core.presentation.navigation.HabiTreeFeatureDestination
 import com.mamxanh.app.core.presentation.navigation.HabiTreeFeatureModule
 import com.mamxanh.app.core.presentation.navigation.HabiTreeNavKey
@@ -25,8 +30,24 @@ internal data object TimelineKey : HabiTreeNavKey {
     override val routeId: String get() = "timeline"
 }
 
+class StatisticsRouteContent(
+    val state: StatisticsScreenState,
+    val onNavigate: (StatisticsLink) -> Unit,
+    val onRefresh: () -> Unit,
+)
+
+val LocalStatisticsRouteContent = compositionLocalOf<() -> StatisticsRouteContent> {
+    error("Statistics route requires its state and actions")
+}
+
+@Composable
+private fun StatisticsEntry() {
+    val content = LocalStatisticsRouteContent.current()
+    StatisticsScreen(content.state, content.onNavigate, content.onRefresh)
+}
+
 val statsFeatureNavigation = HabiTreeFeatureModule(
-    HabiTreeFeatureDestination("stats") { StatisticsKey.takeIf { _ -> it.isEmpty() } },
+    HabiTreeFeatureDestination("stats", content = { StatisticsEntry() }) { StatisticsKey.takeIf { _ -> it.isEmpty() } },
     HabiTreeFeatureDestination("review") { WeeklyReviewKey.takeIf { _ -> it.isEmpty() } },
     HabiTreeFeatureDestination("achievements") { AchievementsKey(it) },
     HabiTreeFeatureDestination("timeline") { TimelineKey.takeIf { _ -> it.isEmpty() } },

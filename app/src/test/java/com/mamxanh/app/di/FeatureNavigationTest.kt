@@ -7,6 +7,7 @@ import com.mamxanh.app.presentation.bio.BioDestination
 import com.mamxanh.app.presentation.bio.BioRoute
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotSame
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertSame
 import org.junit.Test
 import org.koin.dsl.koinApplication
@@ -37,6 +38,10 @@ class FeatureNavigationTest {
                 assertEquals(route.id, key.routeId)
                 assertEquals(argument, key.argument)
                 assertEquals(previewRouteRegistry.keyFor(saved), key)
+                if (route == BioRoute.STATS) {
+                    assertNotNull(live.contentFor(key))
+                    assertNotNull(previewRouteRegistry.contentFor(key))
+                }
             }
             val shell = BioDestination("more", "")
             assertSame(shell, live.keyFor(shell))

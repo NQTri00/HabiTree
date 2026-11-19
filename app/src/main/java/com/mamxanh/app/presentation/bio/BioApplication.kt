@@ -15,7 +15,8 @@ import androidx.activity.compose.BackHandler
 import com.mamxanh.app.core.presentation.navigation.HabiTreeRouteRegistry
 import com.mamxanh.app.di.previewRouteRegistry
 import com.mamxanh.app.feature.stats.presentation.StatisticsLink
-import com.mamxanh.app.feature.stats.presentation.StatisticsScreen
+import com.mamxanh.app.feature.stats.presentation.navigation.LocalStatisticsRouteContent
+import com.mamxanh.app.feature.stats.presentation.navigation.StatisticsRouteContent
 import com.mamxanh.app.feature.stats.presentation.StatisticsScreenState
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
@@ -40,7 +41,10 @@ import androidx.compose.ui.unit.*
     val inspection=LocalInspectionMode.current
     LaunchedEffect(ui.message){if(ui.message.isNotBlank()){kotlinx.coroutines.delay(4000);ui.message=""}}
     BioTheme(world,ui.homeTree){
-        CompositionLocalProvider(LocalBioExpanded provides (ui.tabs["expanded"]=="true")){
+        CompositionLocalProvider(
+            LocalBioExpanded provides (ui.tabs["expanded"] == "true"),
+            LocalStatisticsRouteContent provides { statisticsRouteContent(world, ui) },
+        ) {
         BoxWithConstraints(modifier.fillMaxSize().background(bp.bg)){
             val gutter=if(maxWidth<AppDimensions.Dp359)16 else if(maxWidth>=AppDimensions.Dp400)22 else 20
             val compactScreen=maxHeight<AppDimensions.Dp600
@@ -64,13 +68,13 @@ import androidx.compose.ui.unit.*
                                     if(destination.routeId == BioRoute.ONBOARD.id)BioOnboard(world,ui,gutter)
                                     else Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState(if(ui.tabs["scrollBottom"]=="true")Int.MAX_VALUE else 0)).padding(start=gutter.dp,end=gutter.dp,top=topInset.dp,bottom=AppDimensions.Dp24),verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp18)){
                                         if(world.loading)LinearProgressIndicator(Modifier.fillMaxWidth(),color=bp.deep,trackColor=bp.soft)
-                                        when(destination.routeId){
+                                        val registeredContent = routes.contentFor(destination)
+                                        if (registeredContent != null) registeredContent() else when(destination.routeId){
                                             "home"->BioHome(world,ui,shortScreen)
                                             "tasks"->BioTasks(world,ui)
                                             "garden"->BioGarden(world,ui)
                                             "shop","inventory"->BioCatalog(world,ui,ui.route=="inventory")
                                             "tree"->BioTree(world,ui,compactScreen)
-                                            "stats"->BioStatisticsRoute(world,ui)
                                             "task"->BioTaskDetail(world,ui)
                                             "task-new"->BioTaskForm(world,ui)
                                             "focus"->BioFocus(world,ui)
@@ -111,10 +115,9 @@ import androidx.compose.ui.unit.*
 @Composable internal fun BioToast(message:String,onDismiss:()->Unit,modifier:Modifier=Modifier){BioCard(modifier.fillMaxWidth(),padding=AppSpacing.Value14,radius=AppRadii.Value14){Row(verticalAlignment=Alignment.CenterVertically){Bt(message,Modifier.weight(1f),size=AppTypography.Size12);BioIconButton("close",onDismiss)}}}
 
 
-@Composable
-private fun BioStatisticsRoute(world: BioWorld, ui: BioController) {
+private fun statisticsRouteContent(world: BioWorld, ui: BioController): StatisticsRouteContent {
     val statistics = world.data.o("statistics")
-    StatisticsScreen(
+    return StatisticsRouteContent(
         state = StatisticsScreenState(
             total = statistics.i("total"),
             treeCount = world.trees.size,
