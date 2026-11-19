@@ -59,8 +59,8 @@ import androidx.compose.ui.unit.*
 import com.mamxanh.app.presentation.ui.GardenFontFamily
 import org.json.JSONObject
 
-internal fun taskDetailRouteContent(world: BioWorld, ui: BioController): TaskDetailRouteContent {
-    val task = world.task(ui.param)
+internal fun taskDetailRouteContent(world: BioWorld, ui: BioController, argument: String): TaskDetailRouteContent {
+    val task = world.task(argument)
     val id = task?.s("id").orEmpty()
     val display = task?.let {
         TaskDetailDisplay(
@@ -96,8 +96,8 @@ internal fun taskDetailRouteContent(world: BioWorld, ui: BioController): TaskDet
     )
 }
 
-internal fun taskFormRouteContent(world: BioWorld, ui: BioController): TaskFormRouteContent {
-    val initial = taskFormInitial(world, ui)
+internal fun taskFormRouteContent(world: BioWorld, ui: BioController, argument: String): TaskFormRouteContent {
+    val initial = taskFormInitial(world, argument)
     val values = TaskFormField.entries.associateWith { field ->
         val key = field.name.lowercase()
         ui.fields[key] ?: initial.s(key, if (field == TaskFormField.Minutes) "5" else "")
@@ -120,7 +120,7 @@ internal fun taskFormRouteContent(world: BioWorld, ui: BioController): TaskFormR
     )
 }
 
-internal fun focusRouteContent(world: BioWorld, ui: BioController): FocusRouteContent {
+internal fun focusRouteContent(world: BioWorld, ui: BioController, argument: String): FocusRouteContent {
     val focus = world.state.o("focus")
     return FocusRouteContent(
         state = FocusDisplay(
@@ -130,8 +130,8 @@ internal fun focusRouteContent(world: BioWorld, ui: BioController): FocusRouteCo
             onBreak = focus.b("break"),
             remaining = focus.i("remaining", 1500),
             date = bioDisplayDate(world.data.s("date")),
-            minutes = focusMinutes(world, ui),
-            task = focusTask(ui),
+            minutes = focusMinutes(world, ui, argument),
+            task = focusTask(ui, argument),
             eligibleTasks = world.tasks.filter {
                 it.s("verification") == "TIMER" && !it.b("done") && it.b("available", true) &&
                     it.s("lifecycle", "ACTIVE") == "ACTIVE"

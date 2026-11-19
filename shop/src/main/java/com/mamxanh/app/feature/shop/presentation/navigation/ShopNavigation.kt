@@ -26,13 +26,13 @@ class ShopRouteContent(
     val item: @Composable (Int, Modifier) -> Unit,
 )
 
-val LocalShopRouteContent = compositionLocalOf<() -> ShopRouteContent> {
+val LocalShopRouteContent = compositionLocalOf<(String) -> ShopRouteContent> {
     error("Shop route requires its state and actions")
 }
 
 val shopFeatureNavigation = HabiTreeFeatureModule(
     HabiTreeFeatureDestination("shop", content = {
-        val content = LocalShopRouteContent.current()
+        val content = LocalShopRouteContent.current(it.argument)
         BioShopScreen(
             tab = content.tab,
             shoppingTree = content.shoppingTree,

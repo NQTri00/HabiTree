@@ -11,6 +11,11 @@ import com.mamxanh.app.presentation.ui.MamXanhApp
 import org.koin.androidx.compose.koinViewModel
 
 class MainActivity : ComponentActivity() {
+    private companion object {
+        const val REMINDER_ENTITY_EXTRA = "engagement_task"
+        const val PENDING_REMINDER_STATE = "pending_reminder_entity"
+    }
+
     override fun attachBaseContext(newBase:android.content.Context){
         super.attachBaseContext(com.mamxanh.app.presentation.ui.localization.AppLanguageController.wrap(newBase))
     }
@@ -18,11 +23,16 @@ class MainActivity : ComponentActivity() {
     override fun onNewIntent(intent:android.content.Intent) {
         super.onNewIntent(intent)
         setIntent(intent)
-        incomingEntity=intent.getLongExtra("engagement_task",0).takeIf{it!=0L}
+        incomingEntity = intent.getLongExtra(REMINDER_ENTITY_EXTRA, 0).takeIf { it != 0L }
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        incomingEntity=intent.getLongExtra("engagement_task",0).takeIf{it!=0L}
+        val pendingEntity = if (savedInstanceState == null) {
+            intent.getLongExtra(REMINDER_ENTITY_EXTRA, 0)
+        } else {
+            savedInstanceState.getLong(PENDING_REMINDER_STATE)
+        }
+        incomingEntity = pendingEntity.takeIf { it != 0L }
         enableEdgeToEdge(
             statusBarStyle = SystemBarStyle.light(android.graphics.Color.TRANSPARENT, android.graphics.Color.TRANSPARENT),
             navigationBarStyle = SystemBarStyle.light(android.graphics.Color.TRANSPARENT, android.graphics.Color.TRANSPARENT)
@@ -34,5 +44,10 @@ class MainActivity : ComponentActivity() {
             MamXanhApp(tasksVm,engagementVm,
                 incomingEntity=incomingEntity,onIncomingHandled={incomingEntity=null})
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        incomingEntity?.let { outState.putLong(PENDING_REMINDER_STATE, it) }
     }
 }

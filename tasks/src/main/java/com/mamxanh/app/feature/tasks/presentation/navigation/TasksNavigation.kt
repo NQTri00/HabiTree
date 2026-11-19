@@ -84,7 +84,7 @@ class InsightsRouteContent(
     val calendar: @Composable () -> Unit,
 )
 
-val LocalInsightsRouteContent = compositionLocalOf<() -> InsightsRouteContent> {
+val LocalInsightsRouteContent = compositionLocalOf<(String) -> InsightsRouteContent> {
     error("Insights route requires its state and actions")
 }
 
@@ -118,7 +118,7 @@ class TaskDetailRouteContent(
     val onArchive: () -> Unit,
 )
 
-val LocalTaskDetailRouteContent = compositionLocalOf<() -> TaskDetailRouteContent> {
+val LocalTaskDetailRouteContent = compositionLocalOf<(String) -> TaskDetailRouteContent> {
     error("TaskDetail route requires its state and actions")
 }
 
@@ -127,7 +127,7 @@ class TaskFormRouteContent(
     val onFieldChanged: (TaskFormField, String) -> Unit,
 )
 
-val LocalTaskFormRouteContent = compositionLocalOf<() -> TaskFormRouteContent> {
+val LocalTaskFormRouteContent = compositionLocalOf<(String) -> TaskFormRouteContent> {
     error("TaskForm route requires its state and actions")
 }
 
@@ -137,7 +137,7 @@ class FocusRouteContent(
     val onMinutes: (String) -> Unit,
 )
 
-val LocalFocusRouteContent = compositionLocalOf<() -> FocusRouteContent> {
+val LocalFocusRouteContent = compositionLocalOf<(String) -> FocusRouteContent> {
     error("Focus route requires its state and actions")
 }
 
@@ -151,7 +151,7 @@ val tasksFeatureNavigation = HabiTreeFeatureModule(
         )
     }) { TasksKey.takeIf { _ -> it.isEmpty() } },
     HabiTreeFeatureDestination("task", content = {
-        val content = LocalTaskDetailRouteContent.current()
+        val content = LocalTaskDetailRouteContent.current(it.argument)
         TaskDetailScreen(
             t = content.t,
             onTasks = content.onTasks,
@@ -163,14 +163,14 @@ val tasksFeatureNavigation = HabiTreeFeatureModule(
         )
     }) { TaskDetailsKey(it) },
     HabiTreeFeatureDestination("task-new", content = {
-        val content = LocalTaskFormRouteContent.current()
+        val content = LocalTaskFormRouteContent.current(it.argument)
         TaskFormScreen(
             state = content.state,
             onFieldChanged = content.onFieldChanged,
         )
     }) { TaskFormKey(it) },
     HabiTreeFeatureDestination("focus", content = {
-        val content = LocalFocusRouteContent.current()
+        val content = LocalFocusRouteContent.current(it.argument)
         FocusScreen(
             state = content.state,
             onTask = content.onTask,
@@ -196,7 +196,7 @@ val tasksFeatureNavigation = HabiTreeFeatureModule(
         )
     }) { RestKey.takeIf { _ -> it.isEmpty() } },
     HabiTreeFeatureDestination("insights", content = {
-        val content = LocalInsightsRouteContent.current()
+        val content = LocalInsightsRouteContent.current(it.argument)
         TaskInsightsScreen(
             task = content.task,
             tasks = content.tasks,

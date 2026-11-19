@@ -56,7 +56,7 @@ val LocalEncyclopediaRouteContent = compositionLocalOf<() -> EncyclopediaRouteCo
     error("Encyclopedia route requires its state and item content")
 }
 
-val LocalSpeciesRouteContent = compositionLocalOf<() -> SpeciesRouteContent> {
+val LocalSpeciesRouteContent = compositionLocalOf<(String) -> SpeciesRouteContent> {
     error("Species route requires its state and actions")
 }
 
@@ -70,7 +70,7 @@ val gardenFeatureNavigation = HabiTreeFeatureModule(
         EncyclopediaScreen(content.discovered, content.speciesCount, content.goals, content.item)
     }) { EncyclopediaKey.takeIf { _ -> it.isEmpty() } },
     HabiTreeFeatureDestination("species", content = {
-        val content = LocalSpeciesRouteContent.current()
+        val content = LocalSpeciesRouteContent.current(it.argument)
         SpeciesScreen(content.state, content.onTree, content.onShop)
     }) { SpeciesKey(it) },
 )

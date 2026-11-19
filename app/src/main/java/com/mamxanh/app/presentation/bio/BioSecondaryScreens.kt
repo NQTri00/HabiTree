@@ -104,8 +104,8 @@ internal fun restRouteContent(world: BioWorld, ui: BioController): RestRouteCont
     )
 }
 
-internal fun insightsRouteContent(world: BioWorld, ui: BioController): InsightsRouteContent {
-    val task = world.task(ui.param)
+internal fun insightsRouteContent(world: BioWorld, ui: BioController, argument: String): InsightsRouteContent {
+    val task = world.task(argument)
     val id = task?.s("id").orEmpty()
     val insight = if (task == null) null else world.data.a("insights").objects().firstOrNull {
         it.s("taskId") == id
@@ -188,8 +188,8 @@ internal fun encyclopediaRouteContent(world: BioWorld, ui: BioController): Encyc
     )
 }
 
-internal fun speciesRouteContent(world: BioWorld, ui: BioController): SpeciesRouteContent {
-    val species = world.species(ui.param)
+internal fun speciesRouteContent(world: BioWorld, ui: BioController, argument: String): SpeciesRouteContent {
+    val species = world.species(argument)
     val id = species.s("id")
     val record = world.record(id)
     val trees = world.trees.filter { it.s("species") == id }

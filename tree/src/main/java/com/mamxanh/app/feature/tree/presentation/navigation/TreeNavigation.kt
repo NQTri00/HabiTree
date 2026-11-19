@@ -24,13 +24,13 @@ class TreeRouteContent(
     val accessories: @Composable () -> Unit,
 )
 
-val LocalTreeRouteContent = compositionLocalOf<() -> TreeRouteContent> {
+val LocalTreeRouteContent = compositionLocalOf<(String) -> TreeRouteContent> {
     error("Tree route requires its state and actions")
 }
 
 val treeFeatureNavigation = HabiTreeFeatureModule(
     HabiTreeFeatureDestination("tree", content = {
-        val content = LocalTreeRouteContent.current()
+        val content = LocalTreeRouteContent.current(it.argument)
         BioTreeScreen(content.state, content.tab, content.onTab, content.onAction, content.hero, content.accessories)
     }) { TreeKey(it) },
 )

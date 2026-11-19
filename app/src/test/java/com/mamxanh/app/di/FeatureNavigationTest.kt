@@ -6,6 +6,7 @@ import com.mamxanh.app.core.presentation.navigation.HabiTreeRouteRegistry
 import com.mamxanh.app.presentation.bio.BioDestination
 import com.mamxanh.app.presentation.bio.BioRoute
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertNotSame
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
@@ -46,6 +47,14 @@ class FeatureNavigationTest {
             assertSame(shell, live.keyFor(shell))
             assertNull(live.contentFor(shell))
             assertNull(previewRouteRegistry.contentFor(shell))
+
+            for (route in arguments.keys) {
+                val first = live.keyFor(BioDestination(route, arguments.getValue(route)))
+                val other = live.keyFor(BioDestination(route, "second-entity"))
+                assertEquals(first::class, other::class)
+                assertNotEquals(first, other)
+                assertEquals("second-entity", other.argument)
+            }
         } finally {
             application.close()
         }

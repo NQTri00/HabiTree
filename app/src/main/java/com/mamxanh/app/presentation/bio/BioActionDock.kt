@@ -22,8 +22,8 @@ import androidx.compose.ui.unit.dp
     }
 }
 
-internal fun taskFormInitial(world:BioWorld,ui:BioController)=world.task(ui.param)?:json("title" to "","kind" to "DAILY","category" to AppText.canonical(TextKey.CopyHocTapA51516),"frequency" to "EVERY_DAY","verification" to "CLICK","minutes" to 5)
-internal fun taskFormValue(world:BioWorld,ui:BioController,key:String,default:String="")=ui.fields[key]?:taskFormInitial(world,ui).s(key,default)
+internal fun taskFormInitial(world:BioWorld,argument:String)=world.task(argument)?:json("title" to "","kind" to "DAILY","category" to AppText.canonical(TextKey.CopyHocTapA51516),"frequency" to "EVERY_DAY","verification" to "CLICK","minutes" to 5)
+internal fun taskFormValue(world:BioWorld,ui:BioController,key:String,default:String="")=ui.fields[key]?:taskFormInitial(world,ui.param).s(key,default)
 
 @Composable internal fun BioTaskFormActions(world:BioWorld,ui:BioController){
     fun value(key:String,default:String="")=taskFormValue(world,ui,key,default)
@@ -49,8 +49,8 @@ internal fun selectedBioTemplates(ui:BioController)=ui.fields.filter{it.key.star
     BioButton(if(chosen.isEmpty())AppText.text(TextKey.CopyChonViecDeThemA9f4fc)else AppText.text(TextKey.CopyThem0ViecD0390c,chosen.size),{ui.send("templates",mapOf("ids" to chosen.joinToString(",")))},Modifier.fillMaxWidth(),enabled=chosen.isNotEmpty()&&!ui.busy)
 }
 
-internal fun focusTask(ui:BioController)=ui.fields["focus:task"]?:ui.param.ifBlank{"0"}
-internal fun focusMinutes(world:BioWorld,ui:BioController)=world.task(focusTask(ui))?.i("minutes")?.toString()?:ui.fields["focus:minutes"]?:"25"
+internal fun focusTask(ui:BioController,argument:String=ui.param)=ui.fields["focus:task"]?:argument.ifBlank{"0"}
+internal fun focusMinutes(world:BioWorld,ui:BioController,argument:String=ui.param)=world.task(focusTask(ui,argument))?.i("minutes")?.toString()?:ui.fields["focus:minutes"]?:"25"
 @Composable internal fun BioFocusActions(world:BioWorld,ui:BioController){
     val focus=world.state.o("focus")
     if(focus.s("id").isNotBlank()){

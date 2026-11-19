@@ -133,10 +133,10 @@ internal fun inventoryRouteContent(world: BioWorld, ui: BioController): Inventor
     )
 }
 
-internal fun shopRouteContent(world: BioWorld, ui: BioController): ShopRouteContent {
+internal fun shopRouteContent(world: BioWorld, ui: BioController, argument: String): ShopRouteContent {
     val tab = ui.tabs["shop"] ?: "seeds"
     val items = catalogProducts(world, tab)
-    val selected = ui.param.takeIf { it.isNotBlank() }?.let(world::tree)
+    val selected = argument.takeIf { it.isNotBlank() }?.let(world::tree)
     return ShopRouteContent(
         tab = tab,
         shoppingTree = selected?.let { ShopTreeContext(it.s("id"), it.s("name"), it.s("species")) },
@@ -297,8 +297,8 @@ internal fun gardenRouteContent(world: BioWorld, ui: BioController): GardenRoute
 }
 
 
-internal fun treeRouteContent(world: BioWorld, ui: BioController, compact: Boolean): TreeRouteContent {
-    val tree = world.tree(ui.param)
+internal fun treeRouteContent(world: BioWorld, ui: BioController, argument: String, compact: Boolean): TreeRouteContent {
+    val tree = world.tree(argument)
     val id = tree?.s("id").orEmpty()
     val speciesId = tree?.s("species").orEmpty()
     val state = tree?.let {
