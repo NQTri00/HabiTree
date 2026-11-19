@@ -25,6 +25,7 @@ import androidx.compose.ui.platform.LocalContext
 import com.mamxanh.app.BuildConfig
 import com.mamxanh.app.data.BackupService
 import com.mamxanh.app.feature.inventory.domain.InventoryRepository
+import com.mamxanh.app.feature.home.domain.HomeTreeSelection
 import com.mamxanh.app.core.domain.RepositoryResult
 import com.mamxanh.app.feature.settings.domain.ReminderSettings
 import com.mamxanh.app.feature.settings.domain.SaveReminderSettingsUseCase
@@ -83,21 +84,26 @@ private fun nativeWorld(
 /** Native database/OS adapter. The presentation used here is also the preview target. */
 @Composable fun BioNativeHost(storage:GameStorage,externalTree:Long?=null,externalRoute:String="",externalTask:Long=0,onExternalHandled:()->Unit={}) {
     val inventory = koinInject<InventoryRepository>()
+    val homeSelection = koinInject<HomeTreeSelection>()
     val loadStatistics = koinInject<LoadGardenStatistics>()
     val saveJournalNote = koinInject<SaveJournalNoteUseCase>()
     val saveReminderSettings = koinInject<SaveReminderSettingsUseCase>()
     val context=LocalContext.current;val scope=rememberCoroutineScope();val reference=remember{BioWorld.reference(context)}
-    val prefs=remember{context.getSharedPreferences("bio_ui",Context.MODE_PRIVATE)}
     val permissionPrefs=remember{context.getSharedPreferences("engagement_permissions",Context.MODE_PRIVATE)}
     val service=remember{BackupService(context.applicationContext,storage,BuildConfig.VERSION_NAME)}
-    val ui=rememberSaveable(saver=BioController.Saver){BioController().apply{homeTree=prefs.getLong("home_tree_id",0).toString()}}
+    val ui = rememberSaveable(saver = BioController.Saver) {
+        BioController().apply { homeTree = homeSelection.savedId() }
+    }
     var world by remember{mutableStateOf(BioWorld(JSONObject(reference.data.toString()).apply{put("state",json("coins" to 0,"trees" to JSONArray(),"tasks" to JSONArray(),"inventory" to JSONObject(),"owned" to JSONObject(),"settings" to JSONObject()))},loading=true,native=true))}
     var pending by remember{mutableStateOf<GameBackup?>(null)}
     val homeSpecies=world.tree(ui.homeTree)?.s("species").orEmpty()
     LaunchedEffect(homeSpecies,world.loading){
         if(!world.loading)withContext(Dispatchers.IO){HabiTreeLauncherIcon.update(context.applicationContext,homeSpecies)}
     }
-    suspend fun refresh(){world=withContext(Dispatchers.IO){nativeWorld(storage,reference,service,inventory,loadStatistics)};if(world.trees.none{it.s("id")==ui.homeTree})ui.homeTree=world.trees.firstOrNull()?.s("id")?:"0"}
+    suspend fun refresh() {
+        world = withContext(Dispatchers.IO) { nativeWorld(storage, reference, service, inventory, loadStatistics) }
+        ui.homeTree = homeSelection.resolve(ui.homeTree, world.trees.map { it.s("id") })
+    }
     val lifecycleOwner=LocalLifecycleOwner.current
     LaunchedEffect(storage,lifecycleOwner){
         lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED){
@@ -120,7 +126,7 @@ private fun nativeWorld(
     ui.execute={command->
         when(command.action){
             "language"->com.mamxanh.app.presentation.ui.localization.AppLanguageController.select(context,command.values["tag"].orEmpty())
-            "pin"->{val id=command.values["id"]?.toLongOrNull()?:0;prefs.edit().putLong("home_tree_id",id).apply()}
+            "pin" -> homeSelection.save(command.values["id"].orEmpty())
             "export"->export.launch("MamXanh-${System.currentTimeMillis()}.mamxanh")
             "diagnostics"->diagnostics.launch("MamXanh-diagnostics.txt")
             "import"->import.launch(arrayOf("application/octet-stream","text/plain","application/zip","application/json"))

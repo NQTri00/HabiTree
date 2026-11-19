@@ -19,4 +19,5 @@ kotlin {
 
 dependencies {
     implementation(project(":home:domain"))
+    implementation(libs.koin.core)
 }
