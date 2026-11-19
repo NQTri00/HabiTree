@@ -36,6 +36,7 @@ import com.mamxanh.app.feature.settings.domain.SaveReminderSettingsUseCase
 import com.mamxanh.app.feature.stats.domain.JournalNote
 import com.mamxanh.app.feature.stats.domain.LoadGardenStatistics
 import com.mamxanh.app.feature.stats.domain.SaveJournalNoteUseCase
+import com.mamxanh.app.feature.tasks.domain.TaskRepository
 import com.mamxanh.shared.data.GameStorage
 import com.mamxanh.shared.data.sql.*
 import com.mamxanh.shared.model.*
@@ -59,23 +60,24 @@ private fun nativeWorld(
     service: BackupService,
     inventory: InventoryRepository,
     garden: GardenRepository,
+    taskRepository: TaskRepository,
     loadStatistics: LoadGardenStatistics,
 ): BioWorld {
     val data = JSONObject(reference.data.toString())
     val g = garden.loadGarden()
-    val tasks = storage.tasks()
+    val tasks = taskRepository.observeSnapshot()
     val e = storage.engagementSnapshot()
     val living = storage.livingGarden()
     val statistics = loadStatistics()
-    val phase = storage.phaseSnapshot()
+    val phase = taskRepository.snapshot()
     val now=System.currentTimeMillis();val today=date(now)
     val trees=g.trees.map{t->val decoration=living.placements.firstOrNull{it.treeId==t.id&&gardenCosmetics.any{c->c.id==it.sku&&c.slot=="TREE"}}?.sku.orEmpty();json("id" to t.id,"species" to t.speciesId,"name" to AppText.plantName(t.speciesId,t.name),"plot" to (g.plots.firstOrNull{it.treeId==t.id}?.id?:0),"state" to t.status.state.name.lowercase(),"stage" to t.status.stageIndex+1,"progress" to t.status.percentage,"watered" to t.status.waterActive,"planted" to t.planted,"decor" to decoration,"canFertilize" to t.status.canFertilize,"fertilized" to t.status.fertilizerId)}
     val taskJson=tasks.map{t->json("id" to t.id,"title" to t.title,"kind" to t.kind,"category" to t.category,"verification" to t.config.verification,"minutes" to t.config.minutes,"frequency" to t.frequency,"description" to t.config.description,"days" to t.config.days,"due" to t.due,"start" to clockLabel(t.config.startMinute),"end" to clockLabel(t.config.endMinute),"reminder" to clockLabel(t.config.reminderMinute),"done" to t.doneToday,"finished" to t.finished,"lifecycle" to t.lifecycle,"scheduledToday" to t.scheduledToday,"available" to t.available,"availability" to t.availability,"streak" to t.streak,"lastDone" to t.lastDone,"history" to array(t.history.map{json("date" to it.date,"nominal" to it.nominal,"granted" to it.granted)}))}
     val focus=e.focus.firstOrNull{it.state in listOf("RUNNING","PAUSED","BREAK")}
     val reminders=JSONObject().apply{e.reminders.forEach{put(it.taskId.toString(),json("mode" to it.mode,"minute" to clockLabel(it.minute),"followUp" to it.followUp))}}
-    val state=json("coins" to g.coins,"earned" to phase.earnedToday,"claimed" to storage.isDailyBonusClaimed(),"trees" to array(trees),"tasks" to array(taskJson),"inventory" to mapJson(g.inventory),"equipped" to g.equippedCan,"owned" to mapJson(living.owned),"unlocked" to g.plots.count{it.isUnlocked},"openPlots" to array(g.plots.filter{it.isUnlocked}.map{it.id}),"settings" to json("paused" to e.settings.paused,"treeReminders" to e.settings.treeReminders,"breakPrompts" to e.settings.breakPrompts,"reducedMotion" to e.settings.reducedMotion,"quietStart" to clockLabel(e.settings.quietStart),"quietEnd" to clockLabel(e.settings.quietEnd)),"reminders" to reminders,"templates" to array(e.templates),"tickets" to e.protectionTickets,"rest" to array(e.days.filter{it.state=="REST"}.map{it.date}),"protected" to array(e.days.filter{it.state=="PROTECTED"}.map{it.date}),"bytes" to service.sizeBytes(),"safety" to service.hasSafety(),"onboarded" to e.onboarded,"focusHistory" to array(e.focus.filter{it.state=="COMPLETE"}.map{json("title" to it.title,"date" to it.date)}),"memories" to array(e.memories.map{json("id" to it.id,"title" to AppText.history(it.title),"type" to it.type,"entity" to it.entity,"at" to it.at,"date" to java.text.DateFormat.getDateTimeInstance(java.text.DateFormat.SHORT,java.text.DateFormat.SHORT,bioLocale()).format(Date(it.at)),"note" to it.note)}),"notes" to JSONObject())
+    val state=json("coins" to g.coins,"earned" to phase.earnedToday,"claimed" to taskRepository.isDailyBonusClaimed(),"trees" to array(trees),"tasks" to array(taskJson),"inventory" to mapJson(g.inventory),"equipped" to g.equippedCan,"owned" to mapJson(living.owned),"unlocked" to g.plots.count{it.isUnlocked},"openPlots" to array(g.plots.filter{it.isUnlocked}.map{it.id}),"settings" to json("paused" to e.settings.paused,"treeReminders" to e.settings.treeReminders,"breakPrompts" to e.settings.breakPrompts,"reducedMotion" to e.settings.reducedMotion,"quietStart" to clockLabel(e.settings.quietStart),"quietEnd" to clockLabel(e.settings.quietEnd)),"reminders" to reminders,"templates" to array(e.templates),"tickets" to e.protectionTickets,"rest" to array(e.days.filter{it.state=="REST"}.map{it.date}),"protected" to array(e.days.filter{it.state=="PROTECTED"}.map{it.date}),"bytes" to service.sizeBytes(),"safety" to service.hasSafety(),"onboarded" to e.onboarded,"focusHistory" to array(e.focus.filter{it.state=="COMPLETE"}.map{json("title" to it.title,"date" to it.date)}),"memories" to array(e.memories.map{json("id" to it.id,"title" to AppText.history(it.title),"type" to it.type,"entity" to it.entity,"at" to it.at,"date" to java.text.DateFormat.getDateTimeInstance(java.text.DateFormat.SHORT,java.text.DateFormat.SHORT,bioLocale()).format(Date(it.at)),"note" to it.note)}),"notes" to JSONObject())
     if(focus!=null)state.put("focus",json("id" to focus.id,"title" to focus.title,"state" to focus.state,"remaining" to focus.remaining,"break" to (focus.state=="BREAK")))
-    data.put("state",state);data.put("date",today);data.put("tomorrow",e.tomorrow);data.put("phase",json("required" to phase.required,"completed" to phase.completed,"streak" to phase.streak,"canClaim" to storage.canClaimDailyBonus()))
+    data.put("state",state);data.put("date",today);data.put("tomorrow",e.tomorrow);data.put("phase",json("required" to phase.required,"completed" to phase.completed,"streak" to phase.streak,"canClaim" to taskRepository.canClaimDailyBonus()))
     data.put("statistics",json("total" to statistics.total,"today" to statistics.today,"week" to statistics.week,"streak" to statistics.streak,"treeCount" to statistics.treeCount,"recentDailyCompletions" to array(statistics.recentDailyCompletions)))
     data.put("records",array(living.species.map{r->json("id" to r.id,"seeds" to r.ownedSeeds,"planted" to r.planted,"discovered" to (r.discoveredAt>0),"highest" to (r.highestStage+1).coerceAtLeast(0),"mature" to (r.firstMatured>0),"bloom" to r.flourished,"status" to r.status,"firstPlanted" to date(r.firstPlanted),"firstMatured" to date(r.firstMatured))}))
     data.put("goals",array(living.goals.map{g0->json("id" to g0.id,"title" to g0.title,"n" to g0.progress,"target" to g0.target,"reward" to g0.reward,"unlocked" to (g0.unlockedAt>0))}))
@@ -92,6 +94,7 @@ private fun nativeWorld(
     val garden = koinInject<GardenRepository>()
     val homeSelection = koinInject<HomeTreeSelection>()
     val treeRepository = koinInject<TreeRepository>()
+    val taskRepository = koinInject<TaskRepository>()
     val loadStatistics = koinInject<LoadGardenStatistics>()
     val saveJournalNote = koinInject<SaveJournalNoteUseCase>()
     val saveReminderSettings = koinInject<SaveReminderSettingsUseCase>()
@@ -108,7 +111,9 @@ private fun nativeWorld(
         if(!world.loading)withContext(Dispatchers.IO){HabiTreeLauncherIcon.update(context.applicationContext,homeSpecies)}
     }
     suspend fun refresh() {
-        world = withContext(Dispatchers.IO) { nativeWorld(storage, reference, service, inventory, garden, loadStatistics) }
+        world = withContext(Dispatchers.IO) {
+            nativeWorld(storage, reference, service, inventory, garden, taskRepository, loadStatistics)
+        }
         ui.homeTree = homeSelection.resolve(ui.homeTree, world.trees.map { it.s("id") })
     }
     val lifecycleOwner=LocalLifecycleOwner.current
@@ -151,7 +156,7 @@ private fun nativeWorld(
                 scope.launch {
                     try {
                         val result = withContext(Dispatchers.IO) {
-                            executeNative(storage, inventory, garden, treeRepository, saveJournalNote, saveReminderSettings, service, pending, command)
+                            executeNative(storage, inventory, garden, treeRepository, taskRepository, saveJournalNote, saveReminderSettings, service, pending, command)
                         }
                         refresh()
                         ui.result(result)
@@ -170,6 +175,7 @@ private fun executeNative(
     inventory: InventoryRepository,
     garden: GardenRepository,
     treeRepository: TreeRepository,
+    taskRepository: TaskRepository,
     saveJournalNote: SaveJournalNoteUseCase,
     saveReminderSettings: SaveReminderSettingsUseCase,
     backup: BackupService,
@@ -185,8 +191,8 @@ private fun executeNative(
     }
     when(action){
         "refresh"->return BioResult(true,AppText.text(TextKey.CopyDaLamMoiThongKeA8b494))
-        "complete"->return result(storage.completeTask(id.toLong()))
-        "claim"->return BioResult(storage.dailyBonus(),AppText.text(TextKey.CopyDaNhanThuongHomNayC5cad9))
+        "complete" -> return result(taskRepository.completeResult(id.toLong()))
+        "claim" -> return BioResult(taskRepository.claimDailyBonus(), AppText.text(TextKey.CopyDaNhanThuongHomNayC5cad9))
         "water" -> {
             val outcome = treeRepository.water(id.toLong())
             val message = when (outcome) {
@@ -224,9 +230,26 @@ private fun executeNative(
         "confirm-unlock" -> return BioResult(garden.unlockPlot(id.toInt()), AppText.text(TextKey.CopyDaMoOTrong37fc9b))
         "confirm-remove", "confirm-sell" ->
             return result(treeRepository.dispose(id.toLong(), action == "confirm-sell", key), "garden")
-        "confirm-archive"->return result(storage.taskLifecycle(id.toLong(),"ARCHIVED"),"tasks")
-        "lifecycle"->return result(storage.taskLifecycle(id.toLong(),parts.getOrElse(2){"ACTIVE"}))
-        "save-task"->{val kind=v["kind"].orEmpty();val config=TaskConfig(title=v["title"].orEmpty(),kind=kind,category=v["category"].orEmpty(),description=v["description"].orEmpty(),frequency=if(kind=="TODO")"ONCE"else v["frequency"].orEmpty(),days=v["days"].orEmpty(),due=v["due"].orEmpty(),verification=v["verification"].orEmpty(),minutes=v["minutes"]?.toIntOrNull()?:5,startMinute=clock(v["start"].orEmpty()),endMinute=clock(v["end"].orEmpty()),reminderMinute=clock(v["reminder"].orEmpty()));return result(storage.saveTask(v["id"]?.toLongOrNull(),config),"tasks")}
+        "confirm-archive" -> return result(taskRepository.lifecycle(id.toLong(), "ARCHIVED"), "tasks")
+        "lifecycle" -> return result(taskRepository.lifecycle(id.toLong(), parts.getOrElse(2) { "ACTIVE" }))
+        "save-task" -> {
+            val kind = v["kind"].orEmpty()
+            val config = TaskConfig(
+                title = v["title"].orEmpty(),
+                kind = kind,
+                category = v["category"].orEmpty(),
+                description = v["description"].orEmpty(),
+                frequency = if (kind == "TODO") "ONCE" else v["frequency"].orEmpty(),
+                days = v["days"].orEmpty(),
+                due = v["due"].orEmpty(),
+                verification = v["verification"].orEmpty(),
+                minutes = v["minutes"]?.toIntOrNull() ?: 5,
+                startMinute = clock(v["start"].orEmpty()),
+                endMinute = clock(v["end"].orEmpty()),
+                reminderMinute = clock(v["reminder"].orEmpty()),
+            )
+            return result(taskRepository.save(v["id"]?.toLongOrNull(), config), "tasks")
+        }
         "start-focus"->return engage(EngagementAction.StartFocus(v["task"]?.toLongOrNull()?:0,v["minutes"]?.toIntOrNull()?:25,key),"focus")
         "focus-pause"->{val f=storage.engagementSnapshot().focus.firstOrNull{it.state=="RUNNING"}?:return BioResult(true);val r=storage.engage(EngagementAction.Focus(f.id,"PAUSE"));return BioResult(r.success,if(r.success)""else r.message)}
         "focus-toggle"->{val f=storage.engagementSnapshot().focus.firstOrNull{it.state in listOf("RUNNING","PAUSED","BREAK")}?:return BioResult(false,AppText.text(TextKey.CopyChuaCoPhienTapTrung80d4ae));return engage(EngagementAction.Focus(f.id,if(f.state=="RUNNING")"PAUSE"else "RESUME"))}
@@ -250,7 +273,11 @@ private fun executeNative(
                 ),
             ),
         )
-        "confirm-adjust"->{val task=storage.tasks().firstOrNull{it.id==id.toLong()}?:return BioResult(false,AppText.text(TextKey.CopyKhongTimThayViec07c69c));return result(storage.saveTask(task.id,task.config.copy(frequency="WEEKDAYS",days="")))}
+        "confirm-adjust" -> {
+            val task = taskRepository.observeSnapshot().firstOrNull { it.id == id.toLong() }
+                ?: return BioResult(false, AppText.text(TextKey.CopyKhongTimThayViec07c69c))
+            return result(taskRepository.save(task.id, task.config.copy(frequency = "WEEKDAYS", days = "")))
+        }
         "onboard"->return engage(EngagementAction.Onboard(v["seed"]?:"succulent",v["category"]?:AppText.canonical(TextKey.CopyHocTapA51516),v["ids"].orEmpty().split(',').filter{it.isNotBlank()},key,v["skip"]=="true",v["remind"]=="true"),"home")
         "accessory-buy","accessory-use","unequip"->{
             val sku=v["id"]?:id;var living=storage.livingGarden()
