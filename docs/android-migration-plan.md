@@ -48,6 +48,7 @@ Each flow uses immutable state, typed actions, lifecycle-aware collection, and o
 - N01 Statistics entry: Stats supplies the Statistics screen through the feature registry, and the app shell resolves that content instead of keeping a Statistics dispatch branch. The shell still adapts its snapshot for the feature. Architecture and JVM tests passed, including live and preview registry assertions. The 144 PNGs in Compose batch `batch-20261119-080810` matched `batch-20261119-012409` byte for byte with zero missing or extra files.
 
 - N01 Stats feature evidence: all four Stats routes now supply feature-owned renderers. Registry tests passed and 144 PNGs matched the preceding batch without missing or extra images. Other feature entries and the shell snapshot bridge remain open.
+- N01 Garden feature evidence: Garden, Encyclopedia, and Species supply their renderers through the registry. The app shell supplies typed snapshot adapters. `verifyArchitecture`, `:app:assembleDebug`, and `:app:testDebugUnitTest` passed. Compose batch `batch-20261119-082403` matched all 144 PNGs in `batch-20261119-081612` byte for byte.
 
 ## Guide-to-check mapping
 

@@ -30,6 +30,10 @@ class FeatureNavigationTest {
                 BioRoute.SPECIES to "succulent",
                 BioRoute.ACHIEVEMENTS to "first-plant",
             )
+            val routesWithContent = setOf(
+                BioRoute.STATS, BioRoute.REVIEW, BioRoute.ACHIEVEMENTS, BioRoute.TIMELINE,
+                BioRoute.GARDEN, BioRoute.ENCYCLOPEDIA, BioRoute.SPECIES,
+            )
             for (route in BioRoute.entries.filterNot { it == BioRoute.MORE }) {
                 val argument = arguments[route].orEmpty()
                 val saved = BioDestination(route, argument)
@@ -38,7 +42,7 @@ class FeatureNavigationTest {
                 assertEquals(route.id, key.routeId)
                 assertEquals(argument, key.argument)
                 assertEquals(previewRouteRegistry.keyFor(saved), key)
-                if (route in setOf(BioRoute.STATS, BioRoute.REVIEW, BioRoute.ACHIEVEMENTS, BioRoute.TIMELINE)) {
+                if (route in routesWithContent) {
                     assertNotNull(live.contentFor(key))
                     assertNotNull(previewRouteRegistry.contentFor(key))
                 }

@@ -1,10 +1,10 @@
 package com.mamxanh.app.presentation.bio
 
 import com.mamxanh.app.feature.garden.presentation.CollectionGoalDisplay
-import com.mamxanh.app.feature.garden.presentation.EncyclopediaScreen
 import com.mamxanh.app.feature.garden.presentation.SpeciesDisplay
-import com.mamxanh.app.feature.garden.presentation.SpeciesScreen
 import com.mamxanh.app.feature.garden.presentation.SpeciesTreeDisplay
+import com.mamxanh.app.feature.garden.presentation.navigation.EncyclopediaRouteContent
+import com.mamxanh.app.feature.garden.presentation.navigation.SpeciesRouteContent
 import com.mamxanh.app.feature.stats.presentation.AchievementDisplay
 import com.mamxanh.app.feature.stats.presentation.TimelineMemory
 import com.mamxanh.app.feature.stats.presentation.navigation.TimelineRouteContent
@@ -178,10 +178,9 @@ internal fun timelineRouteContent(world: BioWorld, ui: BioController): TimelineR
     )
 }
 
-@Composable
-internal fun BioEncyclopedia(world: BioWorld, ui: BioController) {
+internal fun encyclopediaRouteContent(world: BioWorld, ui: BioController): EncyclopediaRouteContent {
     val species = world.species
-    EncyclopediaScreen(
+    return EncyclopediaRouteContent(
         discovered = world.records.count { it.b("discovered") },
         speciesCount = species.size,
         goals = world.data.a("goals").objects().filter { it.s("id") !in listOf("expansion", "section") }.map {
@@ -191,14 +190,13 @@ internal fun BioEncyclopedia(world: BioWorld, ui: BioController) {
     )
 }
 
-@Composable
-internal fun BioSpecies(world: BioWorld, ui: BioController) {
+internal fun speciesRouteContent(world: BioWorld, ui: BioController): SpeciesRouteContent {
     val species = world.species(ui.param)
     val id = species.s("id")
     val record = world.record(id)
     val trees = world.trees.filter { it.s("species") == id }
     val noRecord = AppText.text(TextKey.CopyChuaGhiNhanF7654d)
-    SpeciesScreen(
+    return SpeciesRouteContent(
         state = SpeciesDisplay(
             id = id,
             name = species.s("name"),

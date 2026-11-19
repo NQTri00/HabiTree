@@ -8,7 +8,7 @@ import com.mamxanh.app.feature.tree.presentation.TreeScreenState
 import com.mamxanh.app.feature.shop.presentation.BioShopScreen
 import com.mamxanh.app.feature.shop.presentation.ShopTreeContext
 import com.mamxanh.app.feature.inventory.presentation.BioInventoryScreen
-import com.mamxanh.app.feature.garden.presentation.BioGardenScreen
+import com.mamxanh.app.feature.garden.presentation.navigation.GardenRouteContent
 import com.mamxanh.app.feature.garden.presentation.GardenAction
 import com.mamxanh.app.feature.garden.presentation.GardenDisplayPlot
 import com.mamxanh.app.feature.garden.presentation.GardenDisplayState
@@ -242,8 +242,7 @@ internal fun BioTasks(world: BioWorld, ui: BioController) {
 }
 
 
-@Composable
-internal fun BioGarden(world: BioWorld, ui: BioController) {
+internal fun gardenRouteContent(world: BioWorld, ui: BioController): GardenRouteContent {
     val open = world.state.i("unlocked", 5)
     val filter = ui.tabs["gardenFilter"] ?: "all"
     fun thirsty(tree: JSONObject) = !tree.b("watered") && tree.s("state") != "dead"
@@ -271,7 +270,7 @@ internal fun BioGarden(world: BioWorld, ui: BioController) {
             add(GardenDisplayPlot(open + 1, price = 400 + (open - 5).coerceAtLeast(0) * 200))
         }
     }
-    BioGardenScreen(
+    return GardenRouteContent(
         state = GardenDisplayState(filter, trees.size, world.emptyPlots().size, world.species.size, trees.any(::thirsty), plots),
         onAction = { action ->
             when (action) {

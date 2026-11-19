@@ -16,6 +16,9 @@ import com.mamxanh.app.core.presentation.navigation.HabiTreeRouteRegistry
 import com.mamxanh.app.di.previewRouteRegistry
 import com.mamxanh.app.feature.stats.presentation.StatisticsLink
 import com.mamxanh.app.feature.stats.presentation.navigation.LocalWeeklyReviewRouteContent
+import com.mamxanh.app.feature.garden.presentation.navigation.LocalEncyclopediaRouteContent
+import com.mamxanh.app.feature.garden.presentation.navigation.LocalGardenRouteContent
+import com.mamxanh.app.feature.garden.presentation.navigation.LocalSpeciesRouteContent
 import com.mamxanh.app.feature.stats.presentation.navigation.LocalAchievementsRouteContent
 import com.mamxanh.app.feature.stats.presentation.navigation.LocalTimelineRouteContent
 import com.mamxanh.app.feature.stats.presentation.navigation.LocalStatisticsRouteContent
@@ -50,6 +53,9 @@ import androidx.compose.ui.unit.*
             LocalWeeklyReviewRouteContent provides { weeklyReviewRouteContent(world, ui) },
             LocalAchievementsRouteContent provides { achievementEntries(world) },
             LocalTimelineRouteContent provides { timelineRouteContent(world, ui) },
+            LocalGardenRouteContent provides { gardenRouteContent(world, ui) },
+            LocalEncyclopediaRouteContent provides { encyclopediaRouteContent(world, ui) },
+            LocalSpeciesRouteContent provides { speciesRouteContent(world, ui) },
         ) {
         BoxWithConstraints(modifier.fillMaxSize().background(bp.bg)){
             val gutter=if(maxWidth<AppDimensions.Dp359)16 else if(maxWidth>=AppDimensions.Dp400)22 else 20
@@ -78,7 +84,6 @@ import androidx.compose.ui.unit.*
                                         if (registeredContent != null) registeredContent() else when(destination.routeId){
                                             "home"->BioHome(world,ui,shortScreen)
                                             "tasks"->BioTasks(world,ui)
-                                            "garden"->BioGarden(world,ui)
                                             "shop","inventory"->BioCatalog(world,ui,ui.route=="inventory")
                                             "tree"->BioTree(world,ui,compactScreen)
                                             "task"->BioTaskDetail(world,ui)
@@ -89,8 +94,6 @@ import androidx.compose.ui.unit.*
                                             "insights"->BioInsights(world,ui)
                                             "settings"->BioSettings(world,ui)
                                             "data"->BioData(world,ui)
-                                            "encyclopedia"->BioEncyclopedia(world,ui)
-                                            "species"->BioSpecies(world,ui)
                                             "more"->BioMore(ui)
                                         }
                                     }
