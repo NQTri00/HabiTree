@@ -34,7 +34,7 @@ tasks.register("verifyArchitecture") {
             }
             val allowed = mapOf(
                 "" to setOf(":core-ui", ":core-presentation", ":$owner:domain"),
-                "domain/" to setOf(":shared"),
+                "domain/" to if (owner == "stats") setOf(":core-domain") else setOf(":shared"),
                 "data/" to (setOf(":$owner:domain") + when (owner) {
                     "inventory" -> setOf(":shared")
                     "stats" -> setOf(":core-data", ":shared")
@@ -61,7 +61,7 @@ tasks.register("verifyArchitecture") {
                 }
             }
         }
-        val coreProjects = listOf("core-config", "core-data", "core-utils", "core-ui", "core-presentation", "core-network", "data")
+        val coreProjects = listOf("core-config", "core-domain", "core-data", "core-utils", "core-ui", "core-presentation", "core-network", "data")
         coreProjects.forEach { owner ->
             val script = file("$owner/build.gradle.kts")
             projectDependency.findAll(script.readText()).forEach { match ->

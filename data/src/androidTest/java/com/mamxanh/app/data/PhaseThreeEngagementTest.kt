@@ -159,6 +159,18 @@ class PhaseThreeEngagementTest {
         assertTrue(engagement.act(EngagementAction.Reflection(review.start,"A calmer morning")).success)
         assertEquals("A calmer morning",EngagementEngine(connection,clock).snapshot().review!!.reflection)
     }
+
+    @Test fun timelineNotePersistsAndInvalidReplacementLeavesItIntact() {
+        assertTrue(phase.complete(add()).success)
+        val memory = engagement.snapshot().memories.single { it.id == "first-task" }
+        val note = "Ghi chú của tôi\nA calmer morning"
+
+        assertTrue(engagement.act(EngagementAction.MemoryNote(memory.id, note)).success)
+        val reopened = EngagementEngine(connection, clock)
+        assertFalse(reopened.act(EngagementAction.MemoryNote(memory.id, "a".repeat(1001))).success)
+        assertEquals(note, reopened.snapshot().memories.single { it.id == memory.id }.note)
+    }
+
     @Test fun remindersAreOptInUniqueAndSuppressCompletedPausedTasks() {
         val id=add();engagement.act(EngagementAction.Reminder(ReminderPreference(id,"AT",780,true)))
         assertTrue(engagement.reminders().isEmpty())

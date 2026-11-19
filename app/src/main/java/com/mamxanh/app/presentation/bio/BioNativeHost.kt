@@ -25,7 +25,10 @@ import androidx.compose.ui.platform.LocalContext
 import com.mamxanh.app.BuildConfig
 import com.mamxanh.app.data.BackupService
 import com.mamxanh.app.feature.inventory.domain.InventoryRepository
+import com.mamxanh.app.core.domain.RepositoryResult
+import com.mamxanh.app.feature.stats.domain.JournalNote
 import com.mamxanh.app.feature.stats.domain.LoadGardenStatistics
+import com.mamxanh.app.feature.stats.domain.SaveJournalNoteUseCase
 import com.mamxanh.shared.data.GameStorage
 import com.mamxanh.shared.data.sql.*
 import com.mamxanh.shared.model.*
@@ -79,6 +82,7 @@ private fun nativeWorld(
 @Composable fun BioNativeHost(storage:GameStorage,externalTree:Long?=null,externalRoute:String="",externalTask:Long=0,onExternalHandled:()->Unit={}) {
     val inventory = koinInject<InventoryRepository>()
     val loadStatistics = koinInject<LoadGardenStatistics>()
+    val saveJournalNote = koinInject<SaveJournalNoteUseCase>()
     val context=LocalContext.current;val scope=rememberCoroutineScope();val reference=remember{BioWorld.reference(context)}
     val prefs=remember{context.getSharedPreferences("bio_ui",Context.MODE_PRIVATE)}
     val permissionPrefs=remember{context.getSharedPreferences("engagement_permissions",Context.MODE_PRIVATE)}
@@ -126,16 +130,40 @@ private fun nativeWorld(
                 else{permissionPrefs.edit().putBoolean("requested",true).apply();ui.modal="";if(Build.VERSION.SDK_INT>=33)permission.launch(Manifest.permission.POST_NOTIFICATIONS)}
             }
             "permission-settings"->{ui.modal="";context.startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,Uri.fromParts("package",context.packageName,null)))}
-            else->if(!ui.busy){ui.busy=true;scope.launch{try{val result=withContext(Dispatchers.IO){executeNative(storage,inventory,service,pending,command)};refresh();ui.result(result)}catch(_:Exception){ui.result(BioResult(false,AppText.text(TextKey.CopyChuaTheCapNhatVuiLongThuLai42c8ac)))}}}
+            else -> if (!ui.busy) {
+                ui.busy = true
+                scope.launch {
+                    try {
+                        val result = withContext(Dispatchers.IO) {
+                            executeNative(storage, inventory, saveJournalNote, service, pending, command)
+                        }
+                        refresh()
+                        ui.result(result)
+                    } catch (_: Exception) {
+                        ui.result(BioResult(false, AppText.text(TextKey.CopyChuaTheCapNhatVuiLongThuLai42c8ac)))
+                    }
+                }
+            }
         }
     }
     BioApplication(world,ui,Modifier.fillMaxSize().safeDrawingPadding().imePadding(),koinInject<HabiTreeRouteRegistry>())
 }
 
-private fun executeNative(storage:GameStorage,inventory:InventoryRepository,backup:BackupService,pending:GameBackup?,command:BioCommand):BioResult {
+private fun executeNative(
+    storage: GameStorage,
+    inventory: InventoryRepository,
+    saveJournalNote: SaveJournalNoteUseCase,
+    backup: BackupService,
+    pending: GameBackup?,
+    command: BioCommand,
+): BioResult {
     val parts=command.action.split(':');val action=parts[0];val id=parts.getOrElse(1){command.values["id"].orEmpty()};val v=command.values;val key=UUID.randomUUID().toString()
     fun result(r:ActionResult,route:String="",param:String="")=BioResult(r.success,r.message,if(r.success)route else "",param)
     fun engage(a:EngagementAction,route:String="")=result(storage.engage(a),route)
+    fun saveNote(note: JournalNote): BioResult = when (val saved = saveJournalNote(note)) {
+        is RepositoryResult.Success -> BioResult(true, saved.value)
+        is RepositoryResult.Error -> BioResult(false, saved.message)
+    }
     when(action){
         "refresh"->return BioResult(true,AppText.text(TextKey.CopyDaLamMoiThongKeA8b494))
         "complete"->return result(storage.completeTask(id.toLong()))
@@ -164,11 +192,11 @@ private fun executeNative(storage:GameStorage,inventory:InventoryRepository,back
         "focus-toggle"->{val f=storage.engagementSnapshot().focus.firstOrNull{it.state in listOf("RUNNING","PAUSED","BREAK")}?:return BioResult(false,AppText.text(TextKey.CopyChuaCoPhienTapTrung80d4ae));return engage(EngagementAction.Focus(f.id,if(f.state=="RUNNING")"PAUSE"else "RESUME"))}
         "confirm-focus-end"->{val f=storage.engagementSnapshot().focus.firstOrNull{it.state in listOf("RUNNING","PAUSED","BREAK")}?:return BioResult(false,AppText.text(TextKey.CopyChuaCoPhienTapTrung80d4ae));return engage(EngagementAction.Focus(f.id,"END"))}
         "templates"->return engage(EngagementAction.Templates(v["ids"].orEmpty().split(',').filter{it.isNotBlank()},key))
-        "reflection"->return engage(EngagementAction.Reflection(v["week"].orEmpty(),v["note"].orEmpty()))
+        "reflection" -> return saveNote(JournalNote.WeeklyReflection(v["week"].orEmpty(), v["note"].orEmpty()))
         "rest"->return engage(EngagementAction.Rest(v["date"].orEmpty()))
         "protect"->return engage(EngagementAction.Protect(v["date"].orEmpty(),key))
         "confirm-ticket"->return engage(EngagementAction.BuyProtection(key))
-        "memory-note"->return engage(EngagementAction.MemoryNote(v["id"].orEmpty(),v["note"].orEmpty()))
+        "memory-note" -> return saveNote(JournalNote.TimelineMemory(v["id"].orEmpty(), v["note"].orEmpty()))
         "reminder"->return engage(EngagementAction.Reminder(ReminderPreference(v["id"]?.toLongOrNull()?:0,v["mode"]?:"OFF",clock(v["minute"].orEmpty()),v["followUp"]=="true")))
         "settings"->return engage(EngagementAction.Settings(EngagementSettings(paused=v["paused"]=="true",quietStart=clock(v["quietStart"].orEmpty()),quietEnd=clock(v["quietEnd"].orEmpty()),treeReminders=v["treeReminders"]=="true",reducedMotion=v["reducedMotion"]=="true",breakPrompts=v["breakPrompts"]=="true")))
         "confirm-adjust"->{val task=storage.tasks().firstOrNull{it.id==id.toLong()}?:return BioResult(false,AppText.text(TextKey.CopyKhongTimThayViec07c69c));return result(storage.saveTask(task.id,task.config.copy(frequency="WEEKDAYS",days="")))}

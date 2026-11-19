@@ -11,6 +11,7 @@ android {
         applicationId = "com.mamxanh.app"
         minSdk = 24
         targetSdk = 36
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         resourceConfigurations += listOf("vi", "en")
         versionCode = providers.gradleProperty("mamxanh.versionCode").orElse("2").get().toInt().also { require(it>0) }
         versionName = providers.gradleProperty("mamxanh.versionName").orElse("0.2.0").get()
@@ -48,6 +49,7 @@ android {
         }
     }
     buildFeatures { compose = true; buildConfig = true }
+    testBuildType = "verification"
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -70,6 +72,7 @@ kotlin {
 }
 dependencies {
     implementation(project(":core-config"))
+    implementation(project(":core-domain"))
     implementation(project(":core-presentation"))
     implementation(libs.androidx.navigation3.ui)
     implementation(libs.koin.android)
@@ -106,4 +109,7 @@ dependencies {
     implementation(libs.androidx.compose.material.icons.extended)
     debugImplementation(libs.androidx.compose.ui.tooling)
     testImplementation("junit:junit:4.13.2")
+    androidTestImplementation("androidx.test:core:1.7.0")
+    androidTestImplementation("androidx.test:runner:1.7.0")
+    androidTestImplementation("junit:junit:4.13.2")
 }
