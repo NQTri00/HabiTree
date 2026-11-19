@@ -7,6 +7,7 @@ import com.mamxanh.app.feature.garden.presentation.navigation.EncyclopediaRouteC
 import com.mamxanh.app.feature.garden.presentation.navigation.SpeciesRouteContent
 import com.mamxanh.app.feature.stats.presentation.AchievementDisplay
 import com.mamxanh.app.feature.stats.presentation.TimelineMemory
+import com.mamxanh.app.feature.stats.domain.TimelineRelated
 import com.mamxanh.app.feature.stats.presentation.navigation.TimelineRouteContent
 import com.mamxanh.app.feature.stats.presentation.WeeklyReviewDisplay
 import com.mamxanh.app.feature.stats.presentation.navigation.WeeklyReviewRouteContent
@@ -164,14 +165,16 @@ internal fun timelineRouteContent(world: BioWorld, ui: BioController): TimelineR
             id = id,
             date = memory.s("date"),
             title = memory.s("title"),
-            entityId = memory.s("entity"),
-            isTree = memory.s("type").startsWith("TREE"),
+            related = TimelineRelated.fromStored(memory.s("type"), memory.s("entity")),
             note = notes.s(id, memory.s("note")),
         )
     }
     return TimelineRouteContent(
         memories = memories,
-        onRelated = { ui.go(if (it.isTree) "tree" else "insights", it.entityId) },
+        onRelated = { target ->
+            val destination = target.toBioDestination()
+            ui.go(destination.routeId, destination.argument)
+        },
         onSaveNote = { id, note -> ui.send("memory-note", mapOf("id" to id, "note" to note)) },
     )
 }

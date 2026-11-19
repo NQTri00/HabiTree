@@ -11,6 +11,7 @@ import com.mamxanh.app.core.presentation.navigation.HabiTreeNavKey
 import com.mamxanh.app.feature.stats.presentation.AchievementDisplay
 import com.mamxanh.app.feature.stats.presentation.AchievementsScreen
 import com.mamxanh.app.feature.stats.presentation.TimelineMemory
+import com.mamxanh.app.feature.stats.domain.TimelineRelated
 import com.mamxanh.app.feature.stats.presentation.TimelineScreen
 import com.mamxanh.app.feature.stats.presentation.WeeklyReviewDisplay
 import com.mamxanh.app.feature.stats.presentation.WeeklyReviewScreen
@@ -61,7 +62,7 @@ class WeeklyReviewRouteContent(
 
 class TimelineRouteContent(
     val memories: List<TimelineMemory>,
-    val onRelated: (TimelineMemory) -> Unit,
+    val onRelated: (TimelineRelated) -> Unit,
     val onSaveNote: (String, String) -> Unit,
 )
 

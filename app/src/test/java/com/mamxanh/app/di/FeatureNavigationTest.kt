@@ -3,8 +3,10 @@ package com.mamxanh.app.di
 import com.mamxanh.app.core.presentation.navigation.HabiTreeFeatureDestination
 import com.mamxanh.app.core.presentation.navigation.HabiTreeNavigator
 import com.mamxanh.app.core.presentation.navigation.HabiTreeRouteRegistry
+import com.mamxanh.app.feature.stats.domain.TimelineRelated
 import com.mamxanh.app.presentation.bio.BioDestination
 import com.mamxanh.app.presentation.bio.BioRoute
+import com.mamxanh.app.presentation.bio.toBioDestination
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertNotSame
@@ -15,6 +17,15 @@ import org.junit.Test
 import org.koin.dsl.koinApplication
 
 class FeatureNavigationTest {
+    @Test
+    fun timelineLinksPreserveStoredEntityIdsAndRouteKinds() {
+        assertEquals(BioDestination(BioRoute.TREE, "04"), TimelineRelated.fromStored("TREE_HISTORY", "04")?.toBioDestination())
+        assertEquals(BioDestination(BioRoute.INSIGHTS, "31"), TimelineRelated.fromStored("TASK", "31")?.toBioDestination())
+        assertEquals(BioDestination(BioRoute.INSIGHTS, "42"), TimelineRelated.fromStored("FOCUS", "42")?.toBioDestination())
+        assertNull(TimelineRelated.fromStored("FOCUS", "0"))
+        assertNull(TimelineRelated.fromStored("TREE", "missing"))
+    }
+
     @Test
     fun liveAndPreviewRegistrationsResolveTheSameKeys() {
         val application = koinApplication { modules(featureNavigation.map { it.navigationModule }) }

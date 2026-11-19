@@ -1,6 +1,7 @@
 package com.mamxanh.app.presentation.bio
 
 import com.mamxanh.app.core.presentation.navigation.HabiTreeNavKey
+import com.mamxanh.app.feature.stats.domain.TimelineRelated
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -41,4 +42,9 @@ internal data class BioDestination(
 ) : HabiTreeNavKey {
     override val routeId: String get() = route.id
     constructor(route: String, argument: String) : this(BioRoute.fromId(route), argument)
+}
+
+internal fun TimelineRelated.toBioDestination(): BioDestination = when (this) {
+    is TimelineRelated.Tree -> BioDestination(BioRoute.TREE, entityId)
+    is TimelineRelated.TaskInsights -> BioDestination(BioRoute.INSIGHTS, entityId)
 }
