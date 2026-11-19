@@ -132,6 +132,7 @@ kotlin {
     compilerOptions { jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17) }
 }
 dependencies {
+    implementation(project(":core-utils"))
     api(project(":shared"))
     implementation(libs.androidx.core.ktx)
     implementation(platform(libs.androidx.compose.bom))

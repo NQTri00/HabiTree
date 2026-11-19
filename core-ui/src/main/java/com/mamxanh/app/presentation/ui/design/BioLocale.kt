@@ -1,8 +1,8 @@
 package com.mamxanh.app.presentation.ui.design
 
+import com.mamxanh.app.core.utils.DisplayDates
 import com.mamxanh.shared.localization.AppLanguage
 import com.mamxanh.shared.localization.AppText
-import java.text.DateFormatSymbols
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -14,15 +14,11 @@ fun bioLocale(): Locale = when (AppText.language) {
 }
 
 fun bioWeekday(calendarDay: Int): String =
-    DateFormatSymbols.getInstance(bioLocale()).shortWeekdays[calendarDay]
+    DisplayDates.weekday(calendarDay, bioLocale())
 
 /** Display and picker fields share one date order; storage keeps ISO keys. */
-fun bioDateFormat(): DateFormat = DateFormat.getDateInstance(DateFormat.SHORT, bioLocale())
+fun bioDateFormat(): DateFormat = DisplayDates.shortFormat(bioLocale())
 
-fun bioIsoDateFormat(): SimpleDateFormat =
-    SimpleDateFormat("yyyy-MM-dd", Locale.ROOT).apply { isLenient = false }
+fun bioIsoDateFormat(): SimpleDateFormat = DisplayDates.isoFormat()
 
-fun bioDisplayDate(value:String):String {
-    if(!Regex("\\d{4}-\\d{2}-\\d{2}").matches(value))return value
-    return runCatching { bioDateFormat().format(bioIsoDateFormat().parse(value)!!) }.getOrDefault(value)
-}
+fun bioDisplayDate(value: String): String = DisplayDates.format(value, bioLocale())

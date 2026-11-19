@@ -69,6 +69,7 @@ kotlin {
     compilerOptions { jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17) }
 }
 dependencies {
+    implementation(project(":core-config"))
     implementation(project(":core-presentation"))
     implementation(libs.androidx.navigation3.ui)
     implementation(libs.koin.android)

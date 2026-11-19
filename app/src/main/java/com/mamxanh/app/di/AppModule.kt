@@ -1,5 +1,6 @@
 package com.mamxanh.app.di
 
+import com.mamxanh.app.core.config.HabiTreeConfigProvider
 import com.mamxanh.app.core.presentation.navigation.HabiTreeFeatureDestination
 import com.mamxanh.app.core.presentation.navigation.HabiTreeRouteRegistry
 import com.mamxanh.app.data.local.GardenDatabase
@@ -18,8 +19,9 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 import org.koin.dsl.onClose
 
-fun appModule(networkConfig: NetworkConfig = NetworkConfig()) = module {
-    includes(sharedModule(networkConfig))
+fun appModule(configProvider: HabiTreeConfigProvider = HabiTreeConfigProvider()) = module {
+    includes(sharedModule(NetworkConfig(configProvider.config.apiBaseUrl)))
+    single { configProvider }
     includes(*featureNavigation.map { it.navigationModule }.toTypedArray())
     single<InventoryRepository> { OfflineInventoryRepository(get()) }
     single { HabiTreeRouteRegistry(getAll<HabiTreeFeatureDestination>()) }
