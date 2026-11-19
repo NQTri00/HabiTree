@@ -24,6 +24,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import com.mamxanh.app.BuildConfig
 import com.mamxanh.app.data.BackupService
+import com.mamxanh.app.feature.garden.domain.GardenRepository
+import com.mamxanh.app.feature.garden.domain.eligiblePlantingPlot
+import com.mamxanh.app.feature.garden.domain.plantedTreeId
 import com.mamxanh.app.feature.inventory.domain.InventoryRepository
 import com.mamxanh.app.feature.home.domain.HomeTreeSelection
 import com.mamxanh.app.feature.tree.domain.TreeRepository
@@ -55,10 +58,11 @@ private fun nativeWorld(
     reference: BioWorld,
     service: BackupService,
     inventory: InventoryRepository,
+    garden: GardenRepository,
     loadStatistics: LoadGardenStatistics,
 ): BioWorld {
     val data = JSONObject(reference.data.toString())
-    val g = storage.garden()
+    val g = garden.loadGarden()
     val tasks = storage.tasks()
     val e = storage.engagementSnapshot()
     val living = storage.livingGarden()
@@ -85,6 +89,7 @@ private fun nativeWorld(
 /** Native database/OS adapter. The presentation used here is also the preview target. */
 @Composable fun BioNativeHost(storage:GameStorage,externalTree:Long?=null,externalRoute:String="",externalTask:Long=0,onExternalHandled:()->Unit={}) {
     val inventory = koinInject<InventoryRepository>()
+    val garden = koinInject<GardenRepository>()
     val homeSelection = koinInject<HomeTreeSelection>()
     val treeRepository = koinInject<TreeRepository>()
     val loadStatistics = koinInject<LoadGardenStatistics>()
@@ -103,7 +108,7 @@ private fun nativeWorld(
         if(!world.loading)withContext(Dispatchers.IO){HabiTreeLauncherIcon.update(context.applicationContext,homeSpecies)}
     }
     suspend fun refresh() {
-        world = withContext(Dispatchers.IO) { nativeWorld(storage, reference, service, inventory, loadStatistics) }
+        world = withContext(Dispatchers.IO) { nativeWorld(storage, reference, service, inventory, garden, loadStatistics) }
         ui.homeTree = homeSelection.resolve(ui.homeTree, world.trees.map { it.s("id") })
     }
     val lifecycleOwner=LocalLifecycleOwner.current
@@ -146,7 +151,7 @@ private fun nativeWorld(
                 scope.launch {
                     try {
                         val result = withContext(Dispatchers.IO) {
-                            executeNative(storage, inventory, treeRepository, saveJournalNote, saveReminderSettings, service, pending, command)
+                            executeNative(storage, inventory, garden, treeRepository, saveJournalNote, saveReminderSettings, service, pending, command)
                         }
                         refresh()
                         ui.result(result)
@@ -163,6 +168,7 @@ private fun nativeWorld(
 private fun executeNative(
     storage: GameStorage,
     inventory: InventoryRepository,
+    garden: GardenRepository,
     treeRepository: TreeRepository,
     saveJournalNote: SaveJournalNoteUseCase,
     saveReminderSettings: SaveReminderSettingsUseCase,
@@ -195,16 +201,27 @@ private fun executeNative(
         "equip"->return inventory.equipWateringCan(id).let { BioResult(it.success, it.message) }
         "buy","buy-equip","buy-plant"->{
             val item=v["id"]?:id;val quantity=v["quantity"]?.toIntOrNull()?.coerceIn(1,99)?:1
-            val g=storage.garden();val plot=g.plots.firstOrNull{it.isUnlocked&&it.treeId==null&&it.id==(v["plot"]?.toIntOrNull()?:it.id)}?:g.plots.firstOrNull{it.isUnlocked&&it.treeId==null}
+            val plot = if (action == "buy-plant") garden.loadGarden().eligiblePlantingPlot(v["plot"]?.toIntOrNull()) else null
             if(action=="buy-plant"&&plot==null)return BioResult(false,AppText.text(TextKey.CopyVuonDaDayBanVanCoTheMuaHatVaoTuiE14bdf))
             val bought=storage.purchase(item,quantity,key);if(!bought.success)return result(bought)
             if(action=="buy-equip")return inventory.equipWateringCan(item).let { BioResult(it.success, it.message) }
-            if(action=="buy-plant"){val planted=inventory.plantSeed(item,"",plot!!.id);val tree=storage.garden().trees.firstOrNull{t->storage.garden().plots.any{it.id==plot.id&&it.treeId==t.id}};return BioResult(planted,if(planted)AppText.text(TextKey.CopyDaGieoMotMamXanhB29310)else AppText.text(TextKey.CopyHatDaOTrongTuiChonOTrongDeGieo3a2bef),if(planted)"tree"else "",tree?.id?.toString().orEmpty())}
+            if (plot != null) {
+                val planted = inventory.plantSeed(item, "", plot)
+                val treeId = garden.loadGarden().plantedTreeId(plot)
+                val message = if (planted) TextKey.CopyDaGieoMotMamXanhB29310 else TextKey.CopyHatDaOTrongTuiChonOTrongDeGieo3a2bef
+                return BioResult(planted, AppText.text(message), if (planted) "tree" else "", treeId?.toString().orEmpty())
+            }
             return result(bought)
         }
-        "plant"->{val item=v["id"].orEmpty();val plot=v["plot"]?.toIntOrNull();val planted=inventory.plantSeed(item,v["name"].orEmpty(),plot);val g=storage.garden();val tree=g.trees.firstOrNull{t->g.plots.any{it.id==plot&&it.treeId==t.id}};return BioResult(planted,if(planted)AppText.text(TextKey.CopyMotMamXanhMoi63e3dc)else AppText.text(TextKey.CopyKiemTraLaiHatVaOTrong36d949),if(planted)"tree"else "",tree?.id?.toString().orEmpty())}
-        "confirm-water-all"->return result(storage.waterAll(key))
-        "confirm-unlock"->return BioResult(storage.unlockPlot(id.toInt()),AppText.text(TextKey.CopyDaMoOTrong37fc9b))
+        "plant" -> {
+            val plot = v["plot"]?.toIntOrNull()
+            val planted = inventory.plantSeed(v["id"].orEmpty(), v["name"].orEmpty(), plot)
+            val treeId = garden.loadGarden().plantedTreeId(plot)
+            val message = if (planted) TextKey.CopyMotMamXanhMoi63e3dc else TextKey.CopyKiemTraLaiHatVaOTrong36d949
+            return BioResult(planted, AppText.text(message), if (planted) "tree" else "", treeId?.toString().orEmpty())
+        }
+        "confirm-water-all" -> return result(garden.waterAll(key))
+        "confirm-unlock" -> return BioResult(garden.unlockPlot(id.toInt()), AppText.text(TextKey.CopyDaMoOTrong37fc9b))
         "confirm-remove", "confirm-sell" ->
             return result(treeRepository.dispose(id.toLong(), action == "confirm-sell", key), "garden")
         "confirm-archive"->return result(storage.taskLifecycle(id.toLong(),"ARCHIVED"),"tasks")
