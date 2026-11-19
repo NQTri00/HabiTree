@@ -103,6 +103,35 @@ class NavigationRestorationTest {
         assertEquals("31", restored.param)
     }
 
+    @Test
+    fun reminderSettingPersistsAfterActivityRecreation() {
+        check(context.packageName != "com.mamxanh.app") { "Use the isolated verification app." }
+        GardenDatabase(context).use { database ->
+            val storage = GameStorage(database)
+            if (!storage.engagementSnapshot().onboarded) {
+                assertTrue(storage.engage(EngagementAction.Onboard("succulent", "", emptyList(), "settings-onboard", skip = true)).success)
+            }
+            val previous = storage.engagementSnapshot().settings
+            try {
+                ActivityScenario.launch<MainActivity>(Intent(context, MainActivity::class.java)).use { scenario ->
+                    clickLabel(AppText.text(TextKey.CopyNhatKy1e6c3c))
+                    clickLabel(AppText.text(TextKey.CopyTuyChon598c1b))
+                    val option = AppText.text(TextKey.CopyGoiYNghiSau25Phut6e7319)
+                    clickLabel(option)
+                    scrollForward()
+                    clickLabel(AppText.text(TextKey.CopyLuuTuyChon3847ca))
+                    awaitLabel(AppText.text(TextKey.CopyDaLuuTuyChon6ceb29))
+
+                    scenario.recreate()
+                    awaitLabel(AppText.text(TextKey.CopyTuyChon598c1b))
+                    assertEquals(previous.copy(breakPrompts = !previous.breakPrompts), storage.engagementSnapshot().settings)
+                }
+            } finally {
+                storage.engage(EngagementAction.Settings(previous))
+            }
+        }
+    }
+
     private fun reminderIntent(entity: Long) =
         Intent(context, MainActivity::class.java).putExtra("engagement_task", entity)
 
@@ -133,6 +162,20 @@ class NavigationRestorationTest {
         while (node != null && !node.isClickable) node = node.parent
         assertNotNull("No clickable accessibility node for $label", node)
         assertTrue(node!!.performAction(AccessibilityNodeInfo.ACTION_CLICK))
+    }
+
+    private fun scrollForward() {
+        val action = AccessibilityNodeInfo.ACTION_SCROLL_FORWARD
+        val scrollable = checkNotNull(appRoot()?.findAction(action)) { "No scrollable Android settings content" }
+        assertTrue(scrollable.performAction(action))
+    }
+
+    private fun AccessibilityNodeInfo.findAction(action: Int): AccessibilityNodeInfo? {
+        if (actionList.any { it.id == action }) return this
+        for (index in 0 until childCount) {
+            getChild(index)?.findAction(action)?.let { return it }
+        }
+        return null
     }
 
     private fun AccessibilityNodeInfo.findLabel(label: String): AccessibilityNodeInfo? {

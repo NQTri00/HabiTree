@@ -18,6 +18,7 @@ kotlin {
     compilerOptions { jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17) }
 }
 dependencies {
+    implementation(project(":settings:domain"))
     implementation(project(":core-ui"))
     implementation(project(":core-presentation"))
     implementation(platform(libs.androidx.compose.bom))

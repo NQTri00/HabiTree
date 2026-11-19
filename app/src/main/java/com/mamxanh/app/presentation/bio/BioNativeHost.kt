@@ -26,6 +26,8 @@ import com.mamxanh.app.BuildConfig
 import com.mamxanh.app.data.BackupService
 import com.mamxanh.app.feature.inventory.domain.InventoryRepository
 import com.mamxanh.app.core.domain.RepositoryResult
+import com.mamxanh.app.feature.settings.domain.ReminderSettings
+import com.mamxanh.app.feature.settings.domain.SaveReminderSettingsUseCase
 import com.mamxanh.app.feature.stats.domain.JournalNote
 import com.mamxanh.app.feature.stats.domain.LoadGardenStatistics
 import com.mamxanh.app.feature.stats.domain.SaveJournalNoteUseCase
@@ -83,6 +85,7 @@ private fun nativeWorld(
     val inventory = koinInject<InventoryRepository>()
     val loadStatistics = koinInject<LoadGardenStatistics>()
     val saveJournalNote = koinInject<SaveJournalNoteUseCase>()
+    val saveReminderSettings = koinInject<SaveReminderSettingsUseCase>()
     val context=LocalContext.current;val scope=rememberCoroutineScope();val reference=remember{BioWorld.reference(context)}
     val prefs=remember{context.getSharedPreferences("bio_ui",Context.MODE_PRIVATE)}
     val permissionPrefs=remember{context.getSharedPreferences("engagement_permissions",Context.MODE_PRIVATE)}
@@ -135,7 +138,7 @@ private fun nativeWorld(
                 scope.launch {
                     try {
                         val result = withContext(Dispatchers.IO) {
-                            executeNative(storage, inventory, saveJournalNote, service, pending, command)
+                            executeNative(storage, inventory, saveJournalNote, saveReminderSettings, service, pending, command)
                         }
                         refresh()
                         ui.result(result)
@@ -153,6 +156,7 @@ private fun executeNative(
     storage: GameStorage,
     inventory: InventoryRepository,
     saveJournalNote: SaveJournalNoteUseCase,
+    saveReminderSettings: SaveReminderSettingsUseCase,
     backup: BackupService,
     pending: GameBackup?,
     command: BioCommand,
@@ -160,7 +164,7 @@ private fun executeNative(
     val parts=command.action.split(':');val action=parts[0];val id=parts.getOrElse(1){command.values["id"].orEmpty()};val v=command.values;val key=UUID.randomUUID().toString()
     fun result(r:ActionResult,route:String="",param:String="")=BioResult(r.success,r.message,if(r.success)route else "",param)
     fun engage(a:EngagementAction,route:String="")=result(storage.engage(a),route)
-    fun saveNote(note: JournalNote): BioResult = when (val saved = saveJournalNote(note)) {
+    fun result(saved: RepositoryResult<String>): BioResult = when (saved) {
         is RepositoryResult.Success -> BioResult(true, saved.value)
         is RepositoryResult.Error -> BioResult(false, saved.message)
     }
@@ -192,13 +196,24 @@ private fun executeNative(
         "focus-toggle"->{val f=storage.engagementSnapshot().focus.firstOrNull{it.state in listOf("RUNNING","PAUSED","BREAK")}?:return BioResult(false,AppText.text(TextKey.CopyChuaCoPhienTapTrung80d4ae));return engage(EngagementAction.Focus(f.id,if(f.state=="RUNNING")"PAUSE"else "RESUME"))}
         "confirm-focus-end"->{val f=storage.engagementSnapshot().focus.firstOrNull{it.state in listOf("RUNNING","PAUSED","BREAK")}?:return BioResult(false,AppText.text(TextKey.CopyChuaCoPhienTapTrung80d4ae));return engage(EngagementAction.Focus(f.id,"END"))}
         "templates"->return engage(EngagementAction.Templates(v["ids"].orEmpty().split(',').filter{it.isNotBlank()},key))
-        "reflection" -> return saveNote(JournalNote.WeeklyReflection(v["week"].orEmpty(), v["note"].orEmpty()))
+        "reflection" -> return result(saveJournalNote(JournalNote.WeeklyReflection(v["week"].orEmpty(), v["note"].orEmpty())))
         "rest"->return engage(EngagementAction.Rest(v["date"].orEmpty()))
         "protect"->return engage(EngagementAction.Protect(v["date"].orEmpty(),key))
         "confirm-ticket"->return engage(EngagementAction.BuyProtection(key))
-        "memory-note" -> return saveNote(JournalNote.TimelineMemory(v["id"].orEmpty(), v["note"].orEmpty()))
+        "memory-note" -> return result(saveJournalNote(JournalNote.TimelineMemory(v["id"].orEmpty(), v["note"].orEmpty())))
         "reminder"->return engage(EngagementAction.Reminder(ReminderPreference(v["id"]?.toLongOrNull()?:0,v["mode"]?:"OFF",clock(v["minute"].orEmpty()),v["followUp"]=="true")))
-        "settings"->return engage(EngagementAction.Settings(EngagementSettings(paused=v["paused"]=="true",quietStart=clock(v["quietStart"].orEmpty()),quietEnd=clock(v["quietEnd"].orEmpty()),treeReminders=v["treeReminders"]=="true",reducedMotion=v["reducedMotion"]=="true",breakPrompts=v["breakPrompts"]=="true")))
+        "settings" -> return result(
+            saveReminderSettings(
+                ReminderSettings(
+                    paused = v["paused"] == "true",
+                    quietStartMinute = clock(v["quietStart"].orEmpty()),
+                    quietEndMinute = clock(v["quietEnd"].orEmpty()),
+                    treeReminders = v["treeReminders"] == "true",
+                    reducedMotion = v["reducedMotion"] == "true",
+                    breakPrompts = v["breakPrompts"] == "true",
+                ),
+            ),
+        )
         "confirm-adjust"->{val task=storage.tasks().firstOrNull{it.id==id.toLong()}?:return BioResult(false,AppText.text(TextKey.CopyKhongTimThayViec07c69c));return result(storage.saveTask(task.id,task.config.copy(frequency="WEEKDAYS",days="")))}
         "onboard"->return engage(EngagementAction.Onboard(v["seed"]?:"succulent",v["category"]?:AppText.canonical(TextKey.CopyHocTapA51516),v["ids"].orEmpty().split(',').filter{it.isNotBlank()},key,v["skip"]=="true",v["remind"]=="true"),"home")
         "accessory-buy","accessory-use","unequip"->{

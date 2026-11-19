@@ -96,6 +96,8 @@ dependencies {
     implementation(project(":inventory:domain"))
     implementation(project(":inventory:data"))
     implementation(project(":settings"))
+    implementation(project(":settings:domain"))
+    implementation(project(":settings:data"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.lifecycle.runtime.ktx)
