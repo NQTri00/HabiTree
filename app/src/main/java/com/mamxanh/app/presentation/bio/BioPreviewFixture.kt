@@ -16,6 +16,7 @@ import androidx.compose.ui.input.InputModeManager
 import androidx.compose.ui.tooling.preview.Preview
 import com.mamxanh.shared.localization.AppLanguage
 import com.mamxanh.shared.localization.AppText
+import com.mamxanh.shared.localization.TextKey
 import android.content.res.Configuration
 
 @Composable internal fun BioReferenceSurface(route:String,param:String="",modal:String="",id:String="",tab:String="",home:String="1",step:Int=0,expanded:Boolean=false,bottom:Boolean=false,sheetBottom:Boolean=false,referenceFields:Map<String,String> = emptyMap(),busy:Boolean=false){
@@ -31,7 +32,7 @@ import android.content.res.Configuration
   override val inputMode=InputMode.Touch
   override fun requestInputMode(inputMode:InputMode)=inputMode==InputMode.Touch
  }}
- val world=remember{BioWorld.reference(context).also{if(modal=="focus-end")it.state.put("focus",json("id" to "reference","title" to "M\u1ed9t kho\u1ea3ng cho ri\u00eang m\u00ecnh","state" to "RUNNING","remaining" to 1500))}}
+ val world=remember(context){BioWorld.reference(context).also{if(modal=="focus-end")it.state.put("focus",json("id" to "reference","title" to AppText.forLanguage(TextKey.CopyMotKhoangChoRiengMinhCcf66e, language),"state" to "RUNNING","remaining" to 1500))}}
  val ui=remember{BioController(route,param,modal).apply{modalId=id;homeTree=home;onboardingStep=step;this.busy=requestedBusy;fields.putAll(referenceFields);if(expanded)tabs["expanded"]="true";if(bottom)tabs["scrollBottom"]="true";if(sheetBottom)tabs["sheetBottom"]="true";if(tab.isNotBlank()){val parts=tab.split(':');tabs[parts[0]]=parts[1]}}}
  CompositionLocalProvider(LocalInputModeManager provides touch,LocalContext provides context){
   Box(Modifier.fillMaxSize().focusRequester(initialFocus).focusable()){BioApplication(world,ui)}

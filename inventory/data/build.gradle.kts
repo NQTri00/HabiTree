@@ -20,4 +20,5 @@ kotlin {
 dependencies {
     implementation(project(":inventory:domain"))
     implementation(project(":shared"))
+    implementation(libs.koin.core)
 }

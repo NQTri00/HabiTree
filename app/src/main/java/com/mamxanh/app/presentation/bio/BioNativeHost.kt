@@ -29,10 +29,12 @@ import com.mamxanh.app.feature.inventory.domain.InventoryRepository
 import com.mamxanh.app.feature.home.domain.HomeTreeSelection
 import com.mamxanh.app.feature.tree.domain.TreeRepository
 import com.mamxanh.app.feature.settings.domain.SaveReminderSettingsUseCase
+import com.mamxanh.app.feature.shop.domain.ShopRepository
 import com.mamxanh.app.feature.stats.domain.LoadGardenStatistics
 import com.mamxanh.app.feature.stats.domain.SaveJournalNoteUseCase
 import com.mamxanh.app.feature.tasks.domain.FocusSessionCommands
 import com.mamxanh.app.feature.tasks.domain.TaskRepository
+import com.mamxanh.app.feature.tasks.presentation.focusSessionTitle
 import com.mamxanh.shared.data.GameStorage
 import com.mamxanh.shared.data.sql.*
 import com.mamxanh.shared.model.*
@@ -70,8 +72,8 @@ private fun nativeWorld(
     val taskJson=tasks.map{t->json("id" to t.id,"title" to t.title,"kind" to t.kind,"category" to t.category,"verification" to t.config.verification,"minutes" to t.config.minutes,"frequency" to t.frequency,"description" to t.config.description,"days" to t.config.days,"due" to t.due,"start" to clockLabel(t.config.startMinute),"end" to clockLabel(t.config.endMinute),"reminder" to clockLabel(t.config.reminderMinute),"done" to t.doneToday,"finished" to t.finished,"lifecycle" to t.lifecycle,"scheduledToday" to t.scheduledToday,"available" to t.available,"availability" to t.availability,"streak" to t.streak,"lastDone" to t.lastDone,"history" to array(t.history.map{json("date" to it.date,"nominal" to it.nominal,"granted" to it.granted)}))}
     val focus=e.focus.firstOrNull{it.state in listOf("RUNNING","PAUSED","BREAK")}
     val reminders=JSONObject().apply{e.reminders.forEach{put(it.taskId.toString(),json("mode" to it.mode,"minute" to clockLabel(it.minute),"followUp" to it.followUp))}}
-    val state=json("coins" to g.coins,"earned" to phase.earnedToday,"claimed" to taskRepository.isDailyBonusClaimed(),"trees" to array(trees),"tasks" to array(taskJson),"inventory" to mapJson(g.inventory),"equipped" to g.equippedCan,"owned" to mapJson(living.owned),"unlocked" to g.plots.count{it.isUnlocked},"openPlots" to array(g.plots.filter{it.isUnlocked}.map{it.id}),"settings" to json("paused" to e.settings.paused,"treeReminders" to e.settings.treeReminders,"breakPrompts" to e.settings.breakPrompts,"reducedMotion" to e.settings.reducedMotion,"quietStart" to clockLabel(e.settings.quietStart),"quietEnd" to clockLabel(e.settings.quietEnd)),"reminders" to reminders,"templates" to array(e.templates),"tickets" to e.protectionTickets,"rest" to array(e.days.filter{it.state=="REST"}.map{it.date}),"protected" to array(e.days.filter{it.state=="PROTECTED"}.map{it.date}),"bytes" to service.sizeBytes(),"safety" to service.hasSafety(),"onboarded" to e.onboarded,"focusHistory" to array(e.focus.filter{it.state=="COMPLETE"}.map{json("title" to it.title,"date" to it.date)}),"memories" to array(e.memories.map{json("id" to it.id,"title" to AppText.history(it.title),"type" to it.type,"entity" to it.entity,"at" to it.at,"date" to java.text.DateFormat.getDateTimeInstance(java.text.DateFormat.SHORT,java.text.DateFormat.SHORT,bioLocale()).format(Date(it.at)),"note" to it.note)}),"notes" to JSONObject())
-    if(focus!=null)state.put("focus",json("id" to focus.id,"title" to focus.title,"state" to focus.state,"remaining" to focus.remaining,"break" to (focus.state=="BREAK")))
+    val state=json("coins" to g.coins,"earned" to phase.earnedToday,"claimed" to taskRepository.isDailyBonusClaimed(),"trees" to array(trees),"tasks" to array(taskJson),"inventory" to mapJson(g.inventory),"equipped" to g.equippedCan,"owned" to mapJson(living.owned),"unlocked" to g.plots.count{it.isUnlocked},"openPlots" to array(g.plots.filter{it.isUnlocked}.map{it.id}),"settings" to json("paused" to e.settings.paused,"treeReminders" to e.settings.treeReminders,"breakPrompts" to e.settings.breakPrompts,"reducedMotion" to e.settings.reducedMotion,"quietStart" to clockLabel(e.settings.quietStart),"quietEnd" to clockLabel(e.settings.quietEnd)),"reminders" to reminders,"templates" to array(e.templates),"tickets" to e.protectionTickets,"rest" to array(e.days.filter{it.state=="REST"}.map{it.date}),"protected" to array(e.days.filter{it.state=="PROTECTED"}.map{it.date}),"bytes" to service.sizeBytes(),"safety" to service.hasSafety(),"onboarded" to e.onboarded,"focusHistory" to array(e.focus.filter{it.state=="COMPLETE"}.map{json("title" to focusSessionTitle(it.taskId,it.title),"date" to it.date)}),"memories" to array(e.memories.map{json("id" to it.id,"title" to AppText.history(it.title),"type" to it.type,"entity" to it.entity,"at" to it.at,"date" to java.text.DateFormat.getDateTimeInstance(java.text.DateFormat.SHORT,java.text.DateFormat.SHORT,bioLocale()).format(Date(it.at)),"note" to it.note)}),"notes" to JSONObject())
+    if(focus!=null)state.put("focus",json("id" to focus.id,"title" to focusSessionTitle(focus.taskId,focus.title),"state" to focus.state,"remaining" to focus.remaining,"break" to (focus.state=="BREAK")))
     data.put("state",state);data.put("date",today);data.put("tomorrow",e.tomorrow);data.put("phase",json("required" to phase.required,"completed" to phase.completed,"streak" to phase.streak,"canClaim" to taskRepository.canClaimDailyBonus()))
     data.put("statistics",json("total" to statistics.total,"today" to statistics.today,"week" to statistics.week,"streak" to statistics.streak,"treeCount" to statistics.treeCount,"recentDailyCompletions" to array(statistics.recentDailyCompletions)))
     data.put("records",array(living.species.map{r->json("id" to r.id,"seeds" to r.ownedSeeds,"planted" to r.planted,"discovered" to (r.discoveredAt>0),"highest" to (r.highestStage+1).coerceAtLeast(0),"mature" to (r.firstMatured>0),"bloom" to r.flourished,"status" to r.status,"firstPlanted" to date(r.firstPlanted),"firstMatured" to date(r.firstMatured))}))
@@ -89,6 +91,7 @@ private fun nativeWorld(
     val garden = koinInject<GardenRepository>()
     val homeSelection = koinInject<HomeTreeSelection>()
     val treeRepository = koinInject<TreeRepository>()
+    val shop = koinInject<ShopRepository>()
     val taskRepository = koinInject<TaskRepository>()
     val focusCommands = koinInject<FocusSessionCommands>()
     val loadStatistics = koinInject<LoadGardenStatistics>()
@@ -152,7 +155,10 @@ private fun nativeWorld(
                 scope.launch {
                     try {
                         val result = withContext(Dispatchers.IO) {
-                            executeNative(storage, inventory, garden, treeRepository, taskRepository, focusCommands, saveJournalNote, saveReminderSettings, service, pending, command)
+                            executeNative(
+                                storage, inventory, garden, treeRepository, shop, taskRepository, focusCommands,
+                                saveJournalNote, saveReminderSettings, service, pending, command,
+                            )
                         }
                         refresh()
                         ui.result(result)

@@ -8,6 +8,7 @@ import com.mamxanh.app.feature.garden.domain.plantedTreeId
 import com.mamxanh.app.feature.inventory.domain.InventoryRepository
 import com.mamxanh.app.feature.settings.domain.ReminderSettings
 import com.mamxanh.app.feature.settings.domain.SaveReminderSettingsUseCase
+import com.mamxanh.app.feature.shop.domain.ShopRepository
 import com.mamxanh.app.feature.stats.domain.JournalNote
 import com.mamxanh.app.feature.stats.domain.SaveJournalNoteUseCase
 import com.mamxanh.app.feature.tasks.domain.FocusCommandResult
@@ -35,6 +36,7 @@ internal fun executeNative(
     inventory: InventoryRepository,
     garden: GardenRepository,
     treeRepository: TreeRepository,
+    shop: ShopRepository,
     taskRepository: TaskRepository,
     focusCommands: FocusSessionCommands,
     saveJournalNote: SaveJournalNoteUseCase,
@@ -70,12 +72,19 @@ internal fun executeNative(
         }
         "fertilize" -> return result(treeRepository.applyFertilizer(id.toLong(), parts.getOrElse(2) { "fertilizer" }))
         "equip"->return inventory.equipWateringCan(id).let { BioResult(it.success, it.message) }
-        "buy","buy-equip","buy-plant"->{
-            val item=v["id"]?:id;val quantity=v["quantity"]?.toIntOrNull()?.coerceIn(1,99)?:1
+        "buy", "buy-equip", "buy-plant" -> {
+            val item = v["id"] ?: id
+            val quantity = v["quantity"]?.toIntOrNull()?.coerceIn(1, 99) ?: 1
             val plot = if (action == "buy-plant") garden.loadGarden().eligiblePlantingPlot(v["plot"]?.toIntOrNull()) else null
-            if(action=="buy-plant"&&plot==null)return BioResult(false,AppText.text(TextKey.CopyVuonDaDayBanVanCoTheMuaHatVaoTuiE14bdf))
-            val bought=storage.purchase(item,quantity,key);if(!bought.success)return result(bought)
-            if(action=="buy-equip")return inventory.equipWateringCan(item).let { BioResult(it.success, it.message) }
+            if (action == "buy-plant" && plot == null) {
+                return BioResult(false, AppText.text(TextKey.CopyVuonDaDayBanVanCoTheMuaHatVaoTuiE14bdf))
+            }
+            val bought = shop.purchase(item, quantity, key)
+            if (!bought.success) return result(bought)
+            if (action == "buy-equip") {
+                val equipped = inventory.equipWateringCan(item)
+                return BioResult(equipped.success, equipped.message)
+            }
             if (plot != null) {
                 val planted = inventory.plantSeed(item, "", plot)
                 val treeId = garden.loadGarden().plantedTreeId(plot)
