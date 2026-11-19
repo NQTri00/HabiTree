@@ -39,6 +39,11 @@ Each flow uses immutable state, typed actions, lifecycle-aware collection, and o
 - [ ] **D03 · Publish.** Push the exact verified source to `y-tuong/quangtri`. Upload the matching APK, checksums, image evidence, and architecture hierarchy. Confirm release asset digests and verify the workspace matches the pushed commit.
 - [ ] **D04 · Close.** Check every item against current evidence, then mark the goal complete and verify tracker status. After each intermediate checkpoint, proceed to the next available unchecked item. An interruption preserves the goal and checklist. An external dependency leaves its check open and does not stop independent work.
 
+## Verified implementation evidence
+
+- M02 partial: `c592fd7` adds the pure JVM Inventory domain and Android data adapter. Equip and planting now use the injected repository. `verifyArchitecture`, `:app:assembleDebug` and `:app:testDebugUnitTest` passed. [Checksum-verified checkpoint APK](https://github.com/NQTri00/HabiTree/releases/tag/android-inventory-layer-c592fd73). Owned-item queries, route state and device-level rollback evidence remain open.
+- N01 partial: `FeatureNavigationTest` passed with all 21 feature-owned route IDs, representative primitive arguments, and the shell-owned More fallback. This verifies key resolution and live/preview parity. Entry content ownership still requires migration.
+
 ## Guide-to-check mapping
 
 The route inventory starts with the 22 IDs in `BioRoute`. Home owns `home` and `onboard`. Tasks owns `tasks`, `task`, `task-new`, `focus`, `templates`, `rest`, and `insights`. Garden owns `garden`, `encyclopedia`, and `species`. Statistics owns `stats`, `review`, `achievements`, and `timeline`. Shop, Inventory, and Tree own their namesake IDs. Settings owns `settings` and `data`. The shell owns `more`. Route ownership here describes key registration. Entry-content migration and scenario coverage still require their own evidence.

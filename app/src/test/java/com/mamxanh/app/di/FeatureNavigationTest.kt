@@ -4,6 +4,7 @@ import com.mamxanh.app.core.presentation.navigation.HabiTreeFeatureDestination
 import com.mamxanh.app.core.presentation.navigation.HabiTreeNavigator
 import com.mamxanh.app.core.presentation.navigation.HabiTreeRouteRegistry
 import com.mamxanh.app.presentation.bio.BioDestination
+import com.mamxanh.app.presentation.bio.BioRoute
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotSame
 import org.junit.Assert.assertSame
@@ -17,11 +18,23 @@ class FeatureNavigationTest {
 
         try {
             val live = HabiTreeRouteRegistry(application.koin.getAll<HabiTreeFeatureDestination>())
-            for ((route, argument) in listOf("home" to "", "task" to "31", "tree" to "4", "shop" to "4", "settings" to "", "data" to "", "onboard" to "")) {
+            val arguments = mapOf(
+                BioRoute.TASK to "31",
+                BioRoute.TASK_NEW to "31",
+                BioRoute.TREE to "4",
+                BioRoute.SHOP to "4",
+                BioRoute.INVENTORY to "2",
+                BioRoute.FOCUS to "31",
+                BioRoute.INSIGHTS to "31",
+                BioRoute.SPECIES to "succulent",
+                BioRoute.ACHIEVEMENTS to "first-plant",
+            )
+            for (route in BioRoute.entries.filterNot { it == BioRoute.MORE }) {
+                val argument = arguments[route].orEmpty()
                 val saved = BioDestination(route, argument)
                 val key = live.keyFor(saved)
                 assertNotSame(saved, key)
-                assertEquals(route, key.routeId)
+                assertEquals(route.id, key.routeId)
                 assertEquals(argument, key.argument)
                 assertEquals(previewRouteRegistry.keyFor(saved), key)
             }
