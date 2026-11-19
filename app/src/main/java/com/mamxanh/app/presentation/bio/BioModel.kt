@@ -19,7 +19,12 @@ internal fun JSONArray.strings()=(0 until length()).map{optString(it)}
 internal fun bioTier(value:String)=when(value.lowercase()){"common"->AppText.text(TextKey.CopyPhoBien961e77);"rare"->AppText.text(TextKey.CopyHiem82557a);"legendary"->AppText.text(TextKey.CopyHuyenThoai538bf1);else->value}
 internal fun json(vararg pairs:Pair<String,Any?>)=JSONObject().apply{pairs.forEach{(k,v)->put(k,v)}}
 
-internal data class BioWorld(val data:JSONObject, val loading:Boolean=false, val native:Boolean=false) {
+internal data class BioWorld(
+    val data: JSONObject,
+    val loading: Boolean = false,
+    val native: Boolean = false,
+    val inventoryQuantities: Map<String, Int>? = null,
+) {
     val state get()=data.o("state")
     val catalog get()=data.o("catalog")
     val trees get()=state.a("trees").objects()
@@ -36,6 +41,8 @@ internal data class BioWorld(val data:JSONObject, val loading:Boolean=false, val
     fun task(id:String)=tasks.firstOrNull{it.s("id")==id}
     fun count(id:String)=state.o("inventory").i(id)
     fun owned(id:String)=state.o("owned").i(id)
+    fun inventoryCount(id: String, accessory: Boolean): Int =
+        inventoryQuantities?.getOrDefault(id, 0) ?: if (accessory) owned(id) else count(id)
     fun emptyPlots():List<Int> {
         val all=state.optJSONArray("openPlots")?.let{a->(0 until a.length()).map{a.optInt(it)}}?:(1..state.i("unlocked",5)).toList()
         return all.filter{p->trees.none{it.i("plot")==p}}

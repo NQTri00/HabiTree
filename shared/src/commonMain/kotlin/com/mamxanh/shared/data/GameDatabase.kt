@@ -26,6 +26,7 @@ interface GameDatabase {
     fun completeTask(id: Long): ActionResult
     fun purchase(id: String, quantity: Int, key: String): ActionResult
     fun tasks(): List<Task>
+    fun inventoryQuantities(): Map<String, Int>
     fun garden(): Garden
     fun statistics(): Statistics
     fun addTask(title: String, kind: String, category: String, reward: Int, frequency: String, due: String)

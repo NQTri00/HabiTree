@@ -52,9 +52,12 @@ class SqlGameDatabase(private val connection: GameSqlConnection, private val clo
     override fun purchase(id: String,quantity: Int,key: String) = phase.purchase(id,quantity,key)
     override fun tasks() = phase.tasks()
 
+    override fun inventoryQuantities(): Map<String, Int> =
+        rows("SELECT item,quantity FROM inventory", 2).associate { it.string(0) to it.int(1) }
+
     override fun garden(): Garden {
         val trees = life.trees()
-        val inventory = rows("SELECT item,quantity FROM inventory", 2).associate { it.string(0) to it.int(1) }
+        val inventory = inventoryQuantities()
         val plots = rows("SELECT id,unlocked,COALESCE(tree_id,0) FROM garden_plots ORDER BY id", 3).map {
             GardenPlot(it.int(0), it.int(1) == 1, it.long(2).takeIf { id -> id != 0L })
         }

@@ -42,6 +42,7 @@ Each flow uses immutable state, typed actions, lifecycle-aware collection, and o
 ## Verified implementation evidence
 
 - M02 partial: `c592fd7` adds the pure JVM Inventory domain and Android data adapter. Equip and planting now use the injected repository. `verifyArchitecture`, `:app:assembleDebug` and `:app:testDebugUnitTest` passed. [Checksum-verified checkpoint APK](https://github.com/NQTri00/HabiTree/releases/tag/android-inventory-layer-c592fd73). Owned-item queries, route state and device-level rollback evidence remain open.
+- M02 query evidence: the live Inventory list and quantity labels now use the same repository stock snapshot. The query reads the existing inventory table directly on the worker dispatcher. The architecture check, APK build, app JVM tests, and shared Android host tests passed for this change. The planting instrumentation case passed on an isolated Android 15 emulator with audio disabled, confirming matching stock reads and unchanged quantities after a rejected retry.
 - N01 partial: `FeatureNavigationTest` passed with all 21 feature-owned route IDs, representative primitive arguments, and the shell-owned More fallback. This verifies key resolution and live/preview parity. Entry content ownership still requires migration.
 
 ## Guide-to-check mapping

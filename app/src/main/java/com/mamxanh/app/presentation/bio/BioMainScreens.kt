@@ -95,7 +95,7 @@ internal fun accessoryIcon(id:String)=when(id){"tree_ribbon"->"gift";"tree_lante
 @Composable internal fun BioReward(world:BioWorld,ui:BioController){BioCard(Modifier.fillMaxWidth(),AppColors.RewardSurface,padding=AppSpacing.Value14,radius=AppRadii.Value18){Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp12)){Bi("gift",tint=bp.ink);Column(Modifier.weight(1f)){Bt(AppText.text(TextKey.CopyThuongHomNayC015c6),size=AppTypography.Size12,semi=true);Bt(AppText.text(TextKey.Copy8Xu3a7892),size=AppTypography.Size11)};BioButton(if(world.state.b("claimed"))AppText.text(TextKey.CopyDaNhan1d62ad) else AppText.text(TextKey.CopyNhan8518f2),{ui.send("claim")},enabled=world.data.o("phase").b("canClaim")&&!world.state.b("claimed"))}}}
 
 @Composable internal fun BioProduct(world:BioWorld,ui:BioController,item:JSONObject,modifier:Modifier=Modifier,inventory:Boolean=false,target:String="",encyclopedia:Boolean=false){
-    val id=item.s("id");val seed=world.species.any{it.s("id")==id};val accessory=item.s("category")=="TREE";val owned=world.owned(id)>0;val equipped=world.trees.any{it.s("decor")==id};val known=world.record(id).b("discovered")||world.record(id).i("planted")>0||world.count(id)>0
+    val id=item.s("id");val seed=world.species.any{it.s("id")==id};val accessory=item.s("category")=="TREE";val owned=(if(inventory)world.inventoryCount(id, accessory) else world.owned(id))>0;val equipped=world.trees.any{it.s("decor")==id};val known=world.record(id).b("discovered")||world.record(id).i("planted")>0||world.count(id)>0
     val action={if(encyclopedia)ui.go("species",id)else if(accessory)ui.act("accessory:$id:$target")else if(inventory){if(seed)ui.act("plant:$id:${ui.plot}")else if(item.b("permanent"))ui.send("equip:$id")else ui.show("fertilizer-help")}else ui.show("purchase",id)}
     BioCard(modifier,padding=AppSpacing.Value12,onClick=action){
         val backdrop=Brush.linearGradient(if(seed&&(!encyclopedia||known))listOf(AppColors.SwatchFFFAFAF8,bp.soft)else listOf(bp.soft,bp.soft))
@@ -103,7 +103,7 @@ internal fun accessoryIcon(id:String)=when(id){"tree_ribbon"->"gift";"tree_lante
         Spacer(Modifier.height(AppDimensions.Dp10));Bt(item.s("name"),Modifier.heightIn(min=AppDimensions.Dp36),size=AppTypography.Size13,line=AppTypography.LineHeight18_85,semi=true);Spacer(Modifier.height(AppDimensions.Dp10))
         if(encyclopedia)Bt(world.record(id).s("status",AppText.text(TextKey.CopyChuaKhamPhaC0b0cb)),size=AppTypography.Size11,tint=bp.muted,line=AppTypography.LineHeight15_4)
         else if(accessory){Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically){Bt(if(equipped)AppText.text(TextKey.CopyDangDung275ca2)else if(owned)AppText.text(TextKey.CopyDaSoHuu822625)else AppText.text(TextKey.Copy0Xu251e68,item.i("price")),Modifier.weight(1f),size=AppTypography.Size13,tint=bp.deep);Box(Modifier.size(AppDimensions.Dp27).border(AppDimensions.Dp1,bp.line,RoundedCornerShape(AppDimensions.Dp8)),contentAlignment=Alignment.Center){Bi(if(equipped)"check"else if(owned)"next"else "plus",size=AppIcons.Size14)}}}
-        else{Bt(if(inventory)if(item.b("permanent"))if(world.state.s("equipped")==id)AppText.text(TextKey.CopyDangDung275ca2)else AppText.text(TextKey.CopyTrangBi9e8e12)else "×${world.count(id)}"else if(item.b("permanent")&&world.count(id)>0)if(world.state.s("equipped")==id)AppText.text(TextKey.CopyDangDung275ca2)else AppText.text(TextKey.CopyDaSoHuu822625)else AppText.text(TextKey.Copy0Xu251e68,item.i("price")),size=AppTypography.Size13,tint=bp.deep);if(seed&&!inventory)Bt(bioTier(item.s("tier")),size=AppTypography.Size12,line=AppTypography.LineHeight17,tint=bp.muted)}
+        else{Bt(if(inventory)if(item.b("permanent"))if(world.state.s("equipped")==id)AppText.text(TextKey.CopyDangDung275ca2)else AppText.text(TextKey.CopyTrangBi9e8e12)else "×${world.inventoryCount(id, accessory)}"else if(item.b("permanent")&&world.count(id)>0)if(world.state.s("equipped")==id)AppText.text(TextKey.CopyDangDung275ca2)else AppText.text(TextKey.CopyDaSoHuu822625)else AppText.text(TextKey.Copy0Xu251e68,item.i("price")),size=AppTypography.Size13,tint=bp.deep);if(seed&&!inventory)Bt(bioTier(item.s("tier")),size=AppTypography.Size12,line=AppTypography.LineHeight17,tint=bp.muted)}
     }
 }
 @Composable
@@ -116,10 +116,8 @@ internal fun BioCatalog(world: BioWorld, ui: BioController, inventory: Boolean) 
         else -> world.species
     }
     val items = products.filter {
-        !inventory || when (tab) {
-            "accessories" -> world.owned(it.s("id")) > 0
-            else -> world.count(it.s("id")) > 0
-        }
+        val id = it.s("id")
+        !inventory || world.inventoryCount(id, accessory = tab == "accessories") > 0
     }
     val item: @Composable (Int, Modifier) -> Unit = { index, modifier ->
         BioProduct(world, ui, items[index], modifier, inventory, ui.targetTree.ifBlank { ui.homeTree })

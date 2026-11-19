@@ -226,10 +226,13 @@ class PhaseOneTransactionsTest {
         val game=SqlGameDatabase(connection,clock)
         val before=game.garden()
         assertEquals(1,before.inventory["succulent"])
+        assertEquals(before.inventory,game.inventoryQuantities())
         // Viewing/canceling the selection performs no mutation.
         assertEquals(before,game.garden())
         assertTrue(game.plant("succulent","Chosen",3))
+        val afterPlant=game.inventoryQuantities()
         assertFalse(game.plant("succulent","Retry",3))
+        assertEquals(afterPlant,game.inventoryQuantities())
         assertEquals(0,game.garden().inventory["succulent"])
         assertNotNull(game.garden().plots.first{it.id==3}.treeId)
         assertNull(game.garden().plots.first{it.id==1}.treeId)

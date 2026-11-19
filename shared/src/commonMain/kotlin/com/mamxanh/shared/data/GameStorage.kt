@@ -26,6 +26,7 @@ class GameStorage(private val database: GameDatabase) {
     fun completeTask(id: Long) = database.completeTask(id).also { changed() }
     fun purchase(id: String,quantity: Int,key: String) = database.purchase(id,quantity,key).also { changed() }
     fun tasks() = database.tasks()
+    fun inventoryQuantities() = database.inventoryQuantities()
     fun garden() = database.garden()
     fun statistics() = database.statistics()
     fun addTask(title: String, kind: String, category: String, reward: Int, frequency: String, due: String) =
