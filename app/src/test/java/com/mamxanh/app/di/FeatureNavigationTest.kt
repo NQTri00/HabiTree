@@ -13,10 +13,19 @@ import org.junit.Assert.assertNotSame
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertSame
+import org.junit.Assert.assertThrows
 import org.junit.Test
 import org.koin.dsl.koinApplication
 
 class FeatureNavigationTest {
+    @Test
+    fun duplicateFeatureDestinationOwnersAreRejected() {
+        val destination = featureNavigation.first().destinations.first()
+        assertThrows(IllegalArgumentException::class.java) {
+            HabiTreeRouteRegistry(listOf(destination, destination))
+        }
+    }
+
     @Test
     fun timelineLinksPreserveStoredEntityIdsAndRouteKinds() {
         assertEquals(BioDestination(BioRoute.TREE, "04"), TimelineRelated.fromStored("TREE_HISTORY", "04")?.toBioDestination())

@@ -53,7 +53,10 @@ jobs:
           arch: x86_64
           profile: pixel_2
           disable-animations: true
-          script: bash ./gradlew --no-daemon :core-storage:connectedDebugAndroidTest :app:connectedVerificationAndroidTest
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -no-audio -no-boot-anim
+          script: >-
+            bash tools/android/verify-installed-debug.sh app/build/outputs/apk/debug/app-debug.apk app/build/reports/installed-debug.txt
+            && bash ./gradlew --no-daemon :core-storage:connectedDebugAndroidTest :app:connectedVerificationAndroidTest
 
       - name: Upload verification reports
         if: always()
@@ -62,6 +65,7 @@ jobs:
           name: mam-xanh-verification-reports
           path: |
             app/build/reports/tests/
+            app/build/reports/installed-debug.txt
             app/build/test-results/
             app/build/reports/androidTests/
             app/build/outputs/androidTest-results/
