@@ -3,6 +3,8 @@ package com.mamxanh.app
 import android.database.sqlite.SQLiteConstraintException
 import android.database.sqlite.SQLiteDatabase
 import com.mamxanh.app.core.domain.RepositoryResult
+import com.mamxanh.app.feature.garden.data.GardenCollectionRepositoryImpl
+import com.mamxanh.app.feature.garden.domain.GardenCollectionRepository
 import com.mamxanh.app.feature.inventory.data.InventoryRepositoryImpl
 import com.mamxanh.app.feature.inventory.domain.InventoryRepository
 import com.mamxanh.app.feature.shop.data.ShopRepositoryImpl
@@ -29,6 +31,44 @@ class GameRepositoryPersistenceTest {
         assertTrue(GlobalContext.get().get<InventoryRepository>() is InventoryRepositoryImpl)
         assertTrue(GlobalContext.get().get<ShopRepository>() is ShopRepositoryImpl)
         assertTrue(GlobalContext.get().get<TreeRepository>() is TreeRepositoryImpl)
+        assertTrue(GlobalContext.get().get<GardenCollectionRepository>() is GardenCollectionRepositoryImpl)
+    }
+
+    @Test
+    fun collectionRetainsSpeciesHistoryAfterRemovingOrSellingTheTree() {
+        for (sell in listOf(false, true)) {
+            SQLiteDatabase.create(null).use { database ->
+                val connection = InMemoryConnection(database)
+                GameSchema.create(connection)
+                val storage = GameStorage(SqlGameDatabase(connection))
+                val inventory = InventoryRepositoryImpl(storage)
+                assertTrue(inventory.plantSeed("succulent", "My tree", plotId = 1))
+                val treeId = storage.garden().trees.single().id
+                if (sell) {
+                    database.execSQL(
+                        "UPDATE trees SET life_state='MATURE', matured_at=? WHERE id=?",
+                        arrayOf(System.currentTimeMillis(), treeId),
+                    )
+                }
+
+                val collection = GardenCollectionRepositoryImpl(storage)
+                val before = collection.load().species.single { it.id == "succulent" }
+                assertTrue(before.discovered)
+                assertTrue(before.firstPlanted > 0)
+                assertTrue(before.highestStage > 0)
+                if (sell) assertTrue(before.firstMatured > 0)
+
+                val result = TreeRepositoryImpl(storage).dispose(treeId, sell, "disposition")
+                assertTrue(result is RepositoryResult.Success)
+                assertNull(storage.garden().plots.single { it.id == 1 }.treeId)
+                val after = collection.load().species.single { it.id == before.id }
+                assertEquals(before.firstPlanted, after.firstPlanted)
+                assertEquals(before.firstMatured, after.firstMatured)
+                assertEquals(before.highestStage, after.highestStage)
+                assertTrue(after.discovered)
+                assertEquals(0, after.ownedSeeds)
+            }
+        }
     }
 
     @Test
