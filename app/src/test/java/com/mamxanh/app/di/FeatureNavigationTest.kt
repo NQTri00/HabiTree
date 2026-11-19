@@ -34,6 +34,7 @@ class FeatureNavigationTest {
                 BioRoute.STATS, BioRoute.REVIEW, BioRoute.ACHIEVEMENTS, BioRoute.TIMELINE,
                 BioRoute.GARDEN, BioRoute.ENCYCLOPEDIA, BioRoute.SPECIES,
                 BioRoute.SETTINGS, BioRoute.DATA,
+                BioRoute.TEMPLATES, BioRoute.REST, BioRoute.INSIGHTS,
             )
             for (route in BioRoute.entries.filterNot { it == BioRoute.MORE }) {
                 val argument = arguments[route].orEmpty()

@@ -10,11 +10,11 @@ import com.mamxanh.app.feature.stats.presentation.TimelineMemory
 import com.mamxanh.app.feature.stats.presentation.navigation.TimelineRouteContent
 import com.mamxanh.app.feature.stats.presentation.WeeklyReviewDisplay
 import com.mamxanh.app.feature.stats.presentation.navigation.WeeklyReviewRouteContent
-import com.mamxanh.app.feature.tasks.presentation.RestScreen
+import com.mamxanh.app.feature.tasks.presentation.navigation.RestRouteContent
 import com.mamxanh.app.feature.tasks.presentation.RestScreenState
 import com.mamxanh.app.feature.tasks.presentation.InsightTaskLink
 import com.mamxanh.app.feature.tasks.presentation.TaskInsightsDisplay
-import com.mamxanh.app.feature.tasks.presentation.TaskInsightsScreen
+import com.mamxanh.app.feature.tasks.presentation.navigation.InsightsRouteContent
 
 import com.mamxanh.app.feature.stats.presentation.StatisticsBars
 import com.mamxanh.app.presentation.ui.design.*
@@ -89,9 +89,8 @@ internal fun weeklyReviewRouteContent(world: BioWorld, ui: BioController): Weekl
     )
 }
 
-@Composable
-internal fun BioRest(world: BioWorld, ui: BioController) {
-    RestScreen(
+internal fun restRouteContent(world: BioWorld, ui: BioController): RestRouteContent {
+    return RestRouteContent(
         state = RestScreenState(
             tomorrow = world.data.s("tomorrow", "2026-11-18"),
             scheduledDays = world.state.a("rest").strings(),
@@ -105,8 +104,7 @@ internal fun BioRest(world: BioWorld, ui: BioController) {
     )
 }
 
-@Composable
-internal fun BioInsights(world: BioWorld, ui: BioController) {
+internal fun insightsRouteContent(world: BioWorld, ui: BioController): InsightsRouteContent {
     val task = world.task(ui.param)
     val id = task?.s("id").orEmpty()
     val insight = if (task == null) null else world.data.a("insights").objects().firstOrNull {
@@ -130,7 +128,7 @@ internal fun BioInsights(world: BioWorld, ui: BioController) {
         )
     }
     val period = ui.tabs["insightDays"] ?: "7"
-    TaskInsightsScreen(
+    return InsightsRouteContent(
         task = display,
         tasks = if (display == null) world.tasks.map { InsightTaskLink(it.s("id"), it.s("title")) } else emptyList(),
         period = period,

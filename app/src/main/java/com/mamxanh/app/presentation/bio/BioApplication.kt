@@ -21,6 +21,9 @@ import com.mamxanh.app.feature.garden.presentation.navigation.LocalGardenRouteCo
 import com.mamxanh.app.feature.garden.presentation.navigation.LocalSpeciesRouteContent
 import com.mamxanh.app.feature.settings.presentation.navigation.LocalBackupRouteContent
 import com.mamxanh.app.feature.settings.presentation.navigation.LocalSettingsRouteContent
+import com.mamxanh.app.feature.tasks.presentation.navigation.LocalRestRouteContent
+import com.mamxanh.app.feature.tasks.presentation.navigation.LocalInsightsRouteContent
+import com.mamxanh.app.feature.tasks.presentation.navigation.LocalTemplatesRouteContent
 import com.mamxanh.app.feature.stats.presentation.navigation.LocalAchievementsRouteContent
 import com.mamxanh.app.feature.stats.presentation.navigation.LocalTimelineRouteContent
 import com.mamxanh.app.feature.stats.presentation.navigation.LocalStatisticsRouteContent
@@ -60,6 +63,9 @@ import androidx.compose.ui.unit.*
             LocalSpeciesRouteContent provides { speciesRouteContent(world, ui) },
             LocalSettingsRouteContent provides { settingsRouteContent(world, ui) },
             LocalBackupRouteContent provides { backupRouteContent(world, ui) },
+            LocalRestRouteContent provides { restRouteContent(world, ui) },
+            LocalInsightsRouteContent provides { insightsRouteContent(world, ui) },
+            LocalTemplatesRouteContent provides { templatesRouteContent(world, ui) },
         ) {
         BoxWithConstraints(modifier.fillMaxSize().background(bp.bg)){
             val gutter=if(maxWidth<AppDimensions.Dp359)16 else if(maxWidth>=AppDimensions.Dp400)22 else 20
@@ -93,9 +99,6 @@ import androidx.compose.ui.unit.*
                                             "task"->BioTaskDetail(world,ui)
                                             "task-new"->BioTaskForm(world,ui)
                                             "focus"->BioFocus(world,ui)
-                                            "templates"->BioTemplates(world,ui)
-                                            "rest"->BioRest(world,ui)
-                                            "insights"->BioInsights(world,ui)
                                             "more"->BioMore(ui)
                                         }
                                     }

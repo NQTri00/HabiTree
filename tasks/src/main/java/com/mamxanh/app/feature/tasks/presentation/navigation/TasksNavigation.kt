@@ -1,8 +1,17 @@
 package com.mamxanh.app.feature.tasks.presentation.navigation
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.compositionLocalOf
 import com.mamxanh.app.core.presentation.navigation.HabiTreeFeatureDestination
 import com.mamxanh.app.core.presentation.navigation.HabiTreeFeatureModule
 import com.mamxanh.app.core.presentation.navigation.HabiTreeNavKey
+import com.mamxanh.app.feature.tasks.presentation.InsightTaskLink
+import com.mamxanh.app.feature.tasks.presentation.RestScreen
+import com.mamxanh.app.feature.tasks.presentation.RestScreenState
+import com.mamxanh.app.feature.tasks.presentation.TaskInsightsDisplay
+import com.mamxanh.app.feature.tasks.presentation.TaskInsightsScreen
+import com.mamxanh.app.feature.tasks.presentation.TaskTemplateDisplay
+import com.mamxanh.app.feature.tasks.presentation.TaskTemplatesScreen
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -40,12 +49,81 @@ internal data class InsightsKey(override val argument: String) : HabiTreeNavKey 
     override val routeId: String get() = "insights"
 }
 
+class RestRouteContent(
+    val state: RestScreenState,
+    val onSchedule: (String) -> Unit,
+    val onBuy: () -> Unit,
+    val onProtect: (String) -> Unit,
+    val calendar: @Composable () -> Unit,
+)
+
+val LocalRestRouteContent = compositionLocalOf<() -> RestRouteContent> {
+    error("Rest route requires its state and actions")
+}
+
+class InsightsRouteContent(
+    val task: TaskInsightsDisplay?,
+    val tasks: List<InsightTaskLink>,
+    val period: String,
+    val onPeriod: (String) -> Unit,
+    val onAddTask: () -> Unit,
+    val onTask: (String) -> Unit,
+    val onAdjust: () -> Unit,
+    val onSaveReminder: (String, String, Boolean) -> Unit,
+    val onSettings: () -> Unit,
+    val calendar: @Composable () -> Unit,
+)
+
+val LocalInsightsRouteContent = compositionLocalOf<() -> InsightsRouteContent> {
+    error("Insights route requires its state and actions")
+}
+
+class TemplatesRouteContent(
+    val templates: List<TaskTemplateDisplay>,
+    val chosen: Set<String>,
+    val onToggle: (String) -> Unit,
+)
+
+val LocalTemplatesRouteContent = compositionLocalOf<() -> TemplatesRouteContent> {
+    error("Templates route requires its state and actions")
+}
+
 val tasksFeatureNavigation = HabiTreeFeatureModule(
     HabiTreeFeatureDestination("tasks") { TasksKey.takeIf { _ -> it.isEmpty() } },
     HabiTreeFeatureDestination("task") { TaskDetailsKey(it) },
     HabiTreeFeatureDestination("task-new") { TaskFormKey(it) },
     HabiTreeFeatureDestination("focus") { FocusKey(it) },
-    HabiTreeFeatureDestination("templates") { TemplatesKey.takeIf { _ -> it.isEmpty() } },
-    HabiTreeFeatureDestination("rest") { RestKey.takeIf { _ -> it.isEmpty() } },
-    HabiTreeFeatureDestination("insights") { InsightsKey(it) },
+    HabiTreeFeatureDestination("templates", content = {
+        val content = LocalTemplatesRouteContent.current()
+        TaskTemplatesScreen(
+            templates = content.templates,
+            chosen = content.chosen,
+            onToggle = content.onToggle,
+        )
+    }) { TemplatesKey.takeIf { _ -> it.isEmpty() } },
+    HabiTreeFeatureDestination("rest", content = {
+        val content = LocalRestRouteContent.current()
+        RestScreen(
+            state = content.state,
+            onSchedule = content.onSchedule,
+            onBuy = content.onBuy,
+            onProtect = content.onProtect,
+            calendar = content.calendar,
+        )
+    }) { RestKey.takeIf { _ -> it.isEmpty() } },
+    HabiTreeFeatureDestination("insights", content = {
+        val content = LocalInsightsRouteContent.current()
+        TaskInsightsScreen(
+            task = content.task,
+            tasks = content.tasks,
+            period = content.period,
+            onPeriod = content.onPeriod,
+            onAddTask = content.onAddTask,
+            onTask = content.onTask,
+            onAdjust = content.onAdjust,
+            onSaveReminder = content.onSaveReminder,
+            onSettings = content.onSettings,
+            calendar = content.calendar,
+        )
+    }) { InsightsKey(it) },
 )

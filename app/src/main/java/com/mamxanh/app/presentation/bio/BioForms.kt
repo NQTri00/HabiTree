@@ -14,7 +14,7 @@ import com.mamxanh.app.feature.tasks.presentation.TaskFormDisplay
 import com.mamxanh.app.feature.tasks.presentation.TaskFormField
 import com.mamxanh.app.feature.tasks.presentation.TaskFormScreen
 import com.mamxanh.app.feature.tasks.presentation.TaskTemplateDisplay
-import com.mamxanh.app.feature.tasks.presentation.TaskTemplatesScreen
+import com.mamxanh.app.feature.tasks.presentation.navigation.TemplatesRouteContent
 import com.mamxanh.app.feature.tasks.presentation.TemplateRow
 import com.mamxanh.app.feature.tasks.presentation.FocusDisplay
 import com.mamxanh.app.feature.tasks.presentation.FocusScreen
@@ -162,10 +162,9 @@ internal fun BioTemplateRow(template: JSONObject, selected: Boolean, onboarding:
     TemplateRow(template.toTemplateDisplay(), selected, onboarding, onChange)
 }
 
-@Composable
-internal fun BioTemplates(world: BioWorld, ui: BioController) {
+internal fun templatesRouteContent(world: BioWorld, ui: BioController): TemplatesRouteContent {
     val chosen = selectedBioTemplates(ui).toSet()
-    TaskTemplatesScreen(
+    return TemplatesRouteContent(
         templates = world.catalog.a("templates").objects().map { it.toTemplateDisplay() },
         chosen = chosen,
         onToggle = { id -> ui.fields["template:$id"] = (id !in chosen).toString() },
