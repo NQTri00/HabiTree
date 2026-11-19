@@ -6,7 +6,7 @@ import com.mamxanh.app.feature.shop.domain.model.ShopWallet
 import com.mamxanh.shared.data.GameStorage
 import com.mamxanh.shared.model.ActionResult
 
-class OfflineShopRepository(private val storage: GameStorage) : ShopRepository {
+class ShopRepositoryImpl(private val storage: GameStorage) : ShopRepository {
     override fun equipCan(id: String): RepositoryResult<String> = storage.equipCan(id).toResult()
 
     override fun purchase(id: String, quantity: Int, key: String): RepositoryResult<String> =

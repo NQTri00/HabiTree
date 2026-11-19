@@ -39,6 +39,22 @@ class CatalogTests(unittest.TestCase):
                 self.assertIn('%1$d KB', entry.text)
                 self.assertNotEqual('false', entry.get('formatted'))
 
+    def test_task_progress_exports_platform_plural_forms(self):
+        key = 'copy_0_1_viec_da_xong_cf7a5d'
+        expected_forms = {'values': {'other'}, 'values-vi': {'other'}, 'values-en': {'one', 'other'}}
+        for qualifier, expected in expected_forms.items():
+            resource = ET.parse(ROOT / f'core-ui/src/main/res/{qualifier}/app_copy.xml')
+            entries = {
+                item.get('quantity'): item.text for item in resource.findall(f"./plurals[@name='{key}']/item")
+            }
+            with self.subTest(qualifier=qualifier):
+                self.assertEqual(expected, entries.keys())
+                for text in entries.values():
+                    self.assertIn('%1$d/%2$d', text)
+                if qualifier == 'values-en':
+                    self.assertEqual('%1$d/%2$d task done', entries['one'])
+                    self.assertEqual('%1$d/%2$d tasks done', entries['other'])
+
     def test_canonical_categories_keep_original_storage_values(self):
         for item in self.catalog.values():
             if item.get('canonical'):

@@ -1,6 +1,16 @@
 # Android architecture migration
 
-This checkpoint applies the project's [.agent guide](../.agent/README.md) to the Android module graph, localization source and navigation host.
+The [migration checklist](android-migration-plan.md) records the active Android implementation and verification requirements in the [.agent guide](../.agent/README.md).
+
+## Latest published checkpoint
+
+At `f47e3e2`, Android Shop owns a JVM domain contract and maps existing purchase transactions at the data boundary. Inventory owns its data binding. Focus owns its persisted session commands. A clean app export also resolved the independently built `core-domain` and `core-utils` artifacts from their pinned local Maven coordinates and passed its app unit tests.
+
+The release includes the matching APK, 432 Compose preview PNGs, per-image checksums, and a hierarchy of all 1,448 tracked paths. The preview inventory covers 22 routes and 23 popups. The source report also identifies Kotlin symbol occurrences, generated-resource inputs, and linked tests. [Shop domain release](https://github.com/NQTri00/HabiTree/releases/tag/android-shop-domain-f47e3e2c).
+
+## Earlier checkpoints
+
+The initial checkpoint applied the guide to the Android module graph, localization source, and navigation host.
 
 Home, tasks, garden, shop, tree, stats and inventory each have domain, data and presentation Gradle projects. The Android shell includes the feature ViewModel bindings through Koin. Inventory's domain is a pure JVM project. Its offline adapter handles stock reads, watering-can equip and seed planting through existing storage operations. Other Android feature domain projects still expose types from the Android variant of the shared module. The shared KMP module continues to provide game rules and models.
 

@@ -1,13 +1,14 @@
 package com.mamxanh.app.feature.tree.presentation
 
 import androidx.lifecycle.viewModelScope
+import com.mamxanh.app.core.domain.RepositoryResult
 import com.mamxanh.app.core.presentation.BaseViewModel
+import com.mamxanh.app.feature.tree.domain.TreeCareReceipt
 import com.mamxanh.app.feature.tree.domain.TreeRepository
+import com.mamxanh.app.feature.tree.domain.WateringOutcome
 import com.mamxanh.shared.localization.AppText
 import com.mamxanh.shared.localization.TextKey
-import com.mamxanh.shared.model.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -35,38 +36,58 @@ class TreeViewModel(private val repository:TreeRepository) : BaseViewModel<TreeU
         viewModelScope.launch {
             try {
                 if(intent is TreeIntent.AskDisposition) {
-                    val quote=withContext(Dispatchers.IO){if(intent.sell)repository.saleQuote(intent.id) else ActionResult(true,AppText.text(TextKey.CopyDonCayKhongHoanXuHoacHatCdff29))}
-                    if(quote.success)mutableState.value=mutableState.value.copy(dispositionId=intent.id,selling=intent.sell,
-                        quote=quote,actionKey=java.util.UUID.randomUUID().toString())
-                    else emitEvent(TreeEffect.Feedback(quote.message))
+                    val quote = if (intent.sell) {
+                        withContext(Dispatchers.IO) { repository.saleQuote(intent.id) }
+                    } else {
+                        success(TextKey.CopyDonCayKhongHoanXuHoacHatCdff29)
+                    }
+                    when (quote) {
+                        is RepositoryResult.Success -> mutableState.value = mutableState.value.copy(
+                            dispositionId = intent.id,
+                            selling = intent.sell,
+                            quote = quote.value,
+                            actionKey = java.util.UUID.randomUUID().toString(),
+                        )
+                        is RepositoryResult.Error -> emitEvent(TreeEffect.Feedback(quote.message))
+                    }
                     return@launch
                 }
                 val result=withContext(Dispatchers.IO) {
                     when(intent) {
-                        is TreeIntent.Water -> {
-                            val result=repository.water(intent.id)
-                            ActionResult(result==TreeWateringResult.WATERED,when(result) {
-                                TreeWateringResult.WATERED -> AppText.text(TextKey.CopyDaTuoiCayCuaSoTangTruongDaBatDau1da977)
-                                TreeWateringResult.ALREADY_WATERED -> AppText.text(TextKey.CopyCayDangDuocTuoiThoiGianKhongCongDonA33cd0)
-                                TreeWateringResult.DEAD -> AppText.text(TextKey.CopyCayDaKhoHeoVinhVienChiCoTheDonCay6ddff8)
-                                TreeWateringResult.CLOCK_CHANGED -> AppText.text(TextKey.CopyDongHoDaLuiHayChoGioThucBatKip822584)
-                                TreeWateringResult.TREE_NOT_FOUND -> AppText.text(TextKey.CopyCayKhongConTrongVuon40c7ae)
-                            })
+                        is TreeIntent.Water -> when (repository.water(intent.id)) {
+                            WateringOutcome.Watered -> success(TextKey.CopyDaTuoiCayCuaSoTangTruongDaBatDau1da977)
+                            WateringOutcome.AlreadyWatered -> failure(TextKey.CopyCayDangDuocTuoiThoiGianKhongCongDonA33cd0)
+                            WateringOutcome.Dead -> failure(TextKey.CopyCayDaKhoHeoVinhVienChiCoTheDonCay6ddff8)
+                            WateringOutcome.ClockChanged -> failure(TextKey.CopyDongHoDaLuiHayChoGioThucBatKip822584)
+                            WateringOutcome.MissingTree -> failure(TextKey.CopyCayKhongConTrongVuon40c7ae)
                         }
                         is TreeIntent.Fertilize -> repository.applyFertilizer(intent.id,intent.tier)
-                        is TreeIntent.Decorate -> {repository.decorate(intent.id,intent.decoration);ActionResult(true,AppText.text(TextKey.CopyDaCapNhatTrangTri472665))}
-                        TreeIntent.ConfirmDisposition -> pending.dispositionId?.let{repository.dispose(it,pending.selling,pending.actionKey)}
-                            ?: ActionResult(false,AppText.text(TextKey.CopyChonCayTruoc84691e))
-                        else -> ActionResult(false,AppText.text(TextKey.CopyKhongCoThaoTac432536))
+                        is TreeIntent.Decorate -> {
+                            repository.decorate(intent.id, intent.decoration)
+                            success(TextKey.CopyDaCapNhatTrangTri472665)
+                        }
+                        TreeIntent.ConfirmDisposition -> pending.dispositionId?.let {
+                            repository.dispose(it, pending.selling, pending.actionKey)
+                        } ?: failure(TextKey.CopyChonCayTruoc84691e)
+                        else -> failure(TextKey.CopyKhongCoThaoTac432536)
                     }
                 }
-                if(result.success)emitEvent(TreeEffect.TreeChanged)
-                if(intent==TreeIntent.ConfirmDisposition && result.success) {
-                    mutableState.value=mutableState.value.copy(dispositionId=null,quote=null,isPanelExpanded=false)
-                    emitEvent(TreeEffect.Back)
+                when (result) {
+                    is RepositoryResult.Success -> {
+                        emitEvent(TreeEffect.TreeChanged)
+                        if (intent == TreeIntent.ConfirmDisposition) {
+                            mutableState.value = mutableState.value.copy(dispositionId = null, quote = null, isPanelExpanded = false)
+                            emitEvent(TreeEffect.Back)
+                        }
+                        emitEvent(TreeEffect.Feedback(result.value.message))
+                    }
+                    is RepositoryResult.Error -> emitEvent(TreeEffect.Feedback(result.message))
                 }
-                emitEvent(TreeEffect.Feedback(result.message))
             } finally {mutableState.value=mutableState.value.copy(isLoading=false)}
         }
     }
+
+    private fun success(key: TextKey) = RepositoryResult.Success(TreeCareReceipt(AppText.text(key)))
+
+    private fun failure(key: TextKey) = RepositoryResult.Error(AppText.text(key))
 }

@@ -7,10 +7,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.semantics.*
 import com.mamxanh.app.presentation.ui.design.*
+import com.mamxanh.core.ui.R
 import com.mamxanh.shared.localization.AppText
 import com.mamxanh.shared.localization.TextKey
 
@@ -48,7 +50,26 @@ sealed interface TaskListAction {
 fun TaskListScreen(state: TaskListState, onAction: (TaskListAction) -> Unit, reward: @Composable () -> Unit) {
     val filter = state.filter
     BioIntro(when(filter){"paused"->AppText.text(TextKey.CopyViecTamDungB756a3);"archived"->AppText.text(TextKey.CopyViecLuuTru911d4f);else->AppText.text(TextKey.CopyViecHomNay22a0a4)},AppText.text(TextKey.CopyTungChutMot238966),action={BioIconButton("plus",{onAction(TaskListAction.Add)})})
-    if(filter=="today")BioCard(Modifier.fillMaxWidth(),bp.soft,padding=AppSpacing.Value18){Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp12)){Bt(AppText.text(TextKey.Copy01ViecDaXongCf7a5d,state.completed,state.required),Modifier.weight(1f),size=AppTypography.Size14,semi=true);BioTag(AppText.text(TextKey.Copy0Xu7c2391,state.earned),"spark")};Spacer(Modifier.height(AppDimensions.Dp12));BioProgress(if(state.required>0)state.completed.toFloat()/state.required else 0f)}
+    if (filter == "today") {
+        BioCard(Modifier.fillMaxWidth(), bp.soft, padding = AppSpacing.Value18) {
+            Row(
+                Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(AppDimensions.Dp12),
+            ) {
+                val progressLabel = pluralStringResource(
+                    R.plurals.copy_0_1_viec_da_xong_cf7a5d,
+                    state.required,
+                    state.completed,
+                    state.required,
+                )
+                Bt(progressLabel, Modifier.weight(1f), size = AppTypography.Size14, semi = true)
+                BioTag(AppText.text(TextKey.Copy0Xu7c2391, state.earned), "spark")
+            }
+            Spacer(Modifier.height(AppDimensions.Dp12))
+            BioProgress(if (state.required > 0) state.completed.toFloat() / state.required else 0f)
+        }
+    }
     Row(horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp12)){BioButton(AppText.text(TextKey.CopyTapTrung964002),{onAction(TaskListAction.Focus)},Modifier.weight(1f),"clock",true);BioButton(AppText.text(TextKey.CopyViecMau535dc1),{onAction(TaskListAction.Templates)},Modifier.weight(1f),"plus",true)}
     BioChips(listOf("today" to AppText.text(TextKey.CopyHomNayE6747a),"paused" to AppText.text(TextKey.TabPaused),"archived" to AppText.text(TextKey.CopyLuuTru7e7c5f)),filter){onAction(TaskListAction.Filter(it))}
     val list = state.items

@@ -42,7 +42,7 @@ internal data class BioWorld(
     fun count(id:String)=state.o("inventory").i(id)
     fun owned(id:String)=state.o("owned").i(id)
     fun inventoryCount(id: String, accessory: Boolean): Int =
-        inventoryQuantities?.getOrDefault(id, 0) ?: if (accessory) owned(id) else count(id)
+        if (accessory) owned(id) else inventoryQuantities?.getOrDefault(id, 0) ?: count(id)
     fun emptyPlots():List<Int> {
         val all=state.optJSONArray("openPlots")?.let{a->(0 until a.length()).map{a.optInt(it)}}?:(1..state.i("unlocked",5)).toList()
         return all.filter{p->trees.none{it.i("plot")==p}}

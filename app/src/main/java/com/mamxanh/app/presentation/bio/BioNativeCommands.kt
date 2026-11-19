@@ -14,7 +14,9 @@ import com.mamxanh.app.feature.stats.domain.SaveJournalNoteUseCase
 import com.mamxanh.app.feature.tasks.domain.FocusCommandResult
 import com.mamxanh.app.feature.tasks.domain.FocusSessionCommands
 import com.mamxanh.app.feature.tasks.domain.TaskRepository
+import com.mamxanh.app.feature.tree.domain.TreeCareReceipt
 import com.mamxanh.app.feature.tree.domain.TreeRepository
+import com.mamxanh.app.feature.tree.domain.WateringOutcome
 import com.mamxanh.shared.data.GameStorage
 import com.mamxanh.shared.data.sql.GameBackup
 import com.mamxanh.shared.localization.AppText
@@ -25,7 +27,6 @@ import com.mamxanh.shared.model.GardenPlacement
 import com.mamxanh.shared.model.LivingGardenAction
 import com.mamxanh.shared.model.ReminderPreference
 import com.mamxanh.shared.model.TaskConfig
-import com.mamxanh.shared.model.TreeWateringResult
 import com.mamxanh.shared.model.gardenCosmetics
 import java.util.UUID
 
@@ -52,6 +53,10 @@ internal fun executeNative(
         is RepositoryResult.Success -> BioResult(true, saved.value, route)
         is RepositoryResult.Error -> BioResult(false, saved.message)
     }
+    fun treeResult(receipt: RepositoryResult<TreeCareReceipt>, route: String = ""): BioResult = when (receipt) {
+        is RepositoryResult.Success -> BioResult(true, receipt.value.message, route)
+        is RepositoryResult.Error -> BioResult(false, receipt.message)
+    }
     fun focusResult(outcome: FocusCommandResult): BioResult = when (outcome) {
         FocusCommandResult.NoActiveSession -> BioResult(false, AppText.text(TextKey.CopyChuaCoPhienTapTrung80d4ae))
         is FocusCommandResult.Handled -> result(outcome.result)
@@ -63,14 +68,14 @@ internal fun executeNative(
         "water" -> {
             val outcome = treeRepository.water(id.toLong())
             val message = when (outcome) {
-                TreeWateringResult.WATERED -> TextKey.CopyDaTuoiCayMienPhiC84ab7
-                TreeWateringResult.ALREADY_WATERED -> TextKey.CopyCayDaDuNuoc66849f
-                TreeWateringResult.DEAD -> TextKey.CopyCayDaKhoHeo9c0717
-                else -> TextKey.CopyChuaTheTuoiCayB8c05f
+                WateringOutcome.Watered -> TextKey.CopyDaTuoiCayMienPhiC84ab7
+                WateringOutcome.AlreadyWatered -> TextKey.CopyCayDaDuNuoc66849f
+                WateringOutcome.Dead -> TextKey.CopyCayDaKhoHeo9c0717
+                WateringOutcome.ClockChanged, WateringOutcome.MissingTree -> TextKey.CopyChuaTheTuoiCayB8c05f
             }
-            return BioResult(outcome == TreeWateringResult.WATERED, AppText.text(message))
+            return BioResult(outcome == WateringOutcome.Watered, AppText.text(message))
         }
-        "fertilize" -> return result(treeRepository.applyFertilizer(id.toLong(), parts.getOrElse(2) { "fertilizer" }))
+        "fertilize" -> return treeResult(treeRepository.applyFertilizer(id.toLong(), parts.getOrElse(2) { "fertilizer" }))
         "equip"->return inventory.equipWateringCan(id).let { BioResult(it.success, it.message) }
         "buy", "buy-equip", "buy-plant" -> {
             val item = v["id"] ?: id
@@ -103,7 +108,7 @@ internal fun executeNative(
         "confirm-water-all" -> return result(garden.waterAll(key))
         "confirm-unlock" -> return BioResult(garden.unlockPlot(id.toInt()), AppText.text(TextKey.CopyDaMoOTrong37fc9b))
         "confirm-remove", "confirm-sell" ->
-            return result(treeRepository.dispose(id.toLong(), action == "confirm-sell", key), "garden")
+            return treeResult(treeRepository.dispose(id.toLong(), action == "confirm-sell", key), "garden")
         "confirm-archive" -> return result(taskRepository.lifecycle(id.toLong(), "ARCHIVED"), "tasks")
         "lifecycle" -> return result(taskRepository.lifecycle(id.toLong(), parts.getOrElse(2) { "ACTIVE" }))
         "save-task" -> {

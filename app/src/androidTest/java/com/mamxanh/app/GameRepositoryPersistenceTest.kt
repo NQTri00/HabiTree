@@ -3,10 +3,13 @@ package com.mamxanh.app
 import android.database.sqlite.SQLiteConstraintException
 import android.database.sqlite.SQLiteDatabase
 import com.mamxanh.app.core.domain.RepositoryResult
-import com.mamxanh.app.feature.inventory.data.OfflineInventoryRepository
+import com.mamxanh.app.feature.inventory.data.InventoryRepositoryImpl
 import com.mamxanh.app.feature.inventory.domain.InventoryRepository
-import com.mamxanh.app.feature.shop.data.OfflineShopRepository
+import com.mamxanh.app.feature.shop.data.ShopRepositoryImpl
 import com.mamxanh.app.feature.shop.domain.ShopRepository
+import com.mamxanh.app.feature.tree.data.TreeRepositoryImpl
+import com.mamxanh.app.feature.tree.domain.TreeRepository
+import com.mamxanh.app.feature.tree.domain.WateringOutcome
 import com.mamxanh.shared.data.GameStorage
 import com.mamxanh.shared.data.sql.GameSchema
 import com.mamxanh.shared.data.sql.GameSqlConnection
@@ -20,11 +23,32 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.koin.core.context.GlobalContext
 
-class InventoryRepositoryPersistenceTest {
+class GameRepositoryPersistenceTest {
     @Test
-    fun appResolvesTheFeatureOwnedInventoryRepository() {
-        assertTrue(GlobalContext.get().get<InventoryRepository>() is OfflineInventoryRepository)
-        assertTrue(GlobalContext.get().get<ShopRepository>() is OfflineShopRepository)
+    fun appResolvesTheFeatureOwnedRepositories() {
+        assertTrue(GlobalContext.get().get<InventoryRepository>() is InventoryRepositoryImpl)
+        assertTrue(GlobalContext.get().get<ShopRepository>() is ShopRepositoryImpl)
+        assertTrue(GlobalContext.get().get<TreeRepository>() is TreeRepositoryImpl)
+    }
+
+    @Test
+    fun wateringSurvivesRecreatingTheRepositoryAndRejectsASecondWatering() {
+        SQLiteDatabase.create(null).use { database ->
+            val connection = InMemoryConnection(database)
+            GameSchema.create(connection)
+            val storage = GameStorage(SqlGameDatabase(connection))
+            val inventory = InventoryRepositoryImpl(storage)
+            assertTrue(inventory.plantSeed("succulent", "My tree", plotId = null))
+            val treeId = storage.garden().trees.single().id
+            val tree = TreeRepositoryImpl(storage)
+            assertEquals(WateringOutcome.MissingTree, tree.water(0))
+            assertEquals(WateringOutcome.Watered, tree.water(treeId))
+
+            val reopenedStorage = GameStorage(SqlGameDatabase(connection))
+            val reopenedTree = TreeRepositoryImpl(reopenedStorage)
+            assertTrue(reopenedStorage.garden().trees.single().status.waterActive)
+            assertEquals(WateringOutcome.AlreadyWatered, reopenedTree.water(treeId))
+        }
     }
 
     @Test
@@ -33,8 +57,8 @@ class InventoryRepositoryPersistenceTest {
             val connection = InMemoryConnection(database)
             GameSchema.create(connection)
             val storage = GameStorage(SqlGameDatabase(connection))
-            val shop = OfflineShopRepository(storage)
-            val inventory = OfflineInventoryRepository(storage)
+            val shop = ShopRepositoryImpl(storage)
+            val inventory = InventoryRepositoryImpl(storage)
             val seed = "succulent"
             val initial = shop.loadWallet()
             assertTrue(shop.purchase(seed, 2, "insufficient") is RepositoryResult.Error)
@@ -57,7 +81,7 @@ class InventoryRepositoryPersistenceTest {
             val connection = InMemoryConnection(database)
             GameSchema.create(connection)
             val storage = GameStorage(SqlGameDatabase(connection))
-            val inventory = OfflineInventoryRepository(storage)
+            val inventory = InventoryRepositoryImpl(storage)
             val initial = storage.garden()
             val openPlot = initial.plots.first { it.isUnlocked && it.treeId == null }.id
             val lockedPlot = initial.plots.first { !it.isUnlocked }.id

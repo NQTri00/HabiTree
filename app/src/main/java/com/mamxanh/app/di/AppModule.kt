@@ -10,6 +10,7 @@ import com.mamxanh.app.feature.settings.data.di.settingsDataModule
 import com.mamxanh.app.feature.settings.presentation.di.settingsPresentationModule
 import com.mamxanh.app.feature.stats.presentation.di.statsPresentationModule
 import com.mamxanh.app.feature.tree.presentation.di.treePresentationModule
+import com.mamxanh.app.feature.tree.data.di.treeDataModule
 import com.mamxanh.app.feature.shop.data.di.shopDataModule
 import com.mamxanh.app.feature.shop.presentation.di.shopPresentationModule
 import com.mamxanh.app.feature.garden.presentation.di.gardenPresentationModule
@@ -33,6 +34,7 @@ fun appModule(configProvider: HabiTreeConfigProvider = HabiTreeConfigProvider())
         focusSessionDataModule,
         inventoryDataModule,
         shopDataModule,
+        treeDataModule,
         statsDataModule,
         settingsDataModule,
     )

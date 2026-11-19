@@ -39,12 +39,12 @@ tasks.register("verifyArchitecture") {
             val allowed = mapOf(
                 ":$owner" to setOf(":core-ui", ":core-presentation", ":$owner:domain"),
                 ":$owner:domain" to when (owner) {
-                    "shop", "stats", "settings" -> setOf(":core-domain")
+                    "shop", "tree", "stats", "settings" -> setOf(":core-domain")
                     "tasks" -> setOf(":core-domain", ":shared")
                     else -> setOf(":shared")
                 },
                 ":$owner:data" to (setOf(":$owner:domain") + when (owner) {
-                    "inventory", "shop", "settings" -> setOf(":shared")
+                    "inventory", "shop", "tree", "settings" -> setOf(":shared")
                     "stats" -> setOf(":core-data", ":shared")
                     else -> emptySet()
                 }),

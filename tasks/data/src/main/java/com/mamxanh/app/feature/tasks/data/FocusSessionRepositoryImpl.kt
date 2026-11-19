@@ -10,7 +10,7 @@ import com.mamxanh.shared.model.ActionResult
 import com.mamxanh.shared.model.EngagementAction
 import org.koin.dsl.module
 
-class OfflineFocusSessionRepository(private val storage: GameStorage) : FocusSessionRepository {
+class FocusSessionRepositoryImpl(private val storage: GameStorage) : FocusSessionRepository {
     override fun activeSessions(): List<ActiveFocusSession> =
         storage.engagementSnapshot().focus.mapNotNull { session ->
             val state = when (session.state) {
@@ -43,5 +43,5 @@ class OfflineFocusSessionRepository(private val storage: GameStorage) : FocusSes
 }
 
 val focusSessionDataModule = module {
-    single<FocusSessionRepository> { OfflineFocusSessionRepository(get()) }
+    single<FocusSessionRepository> { FocusSessionRepositoryImpl(get()) }
 }

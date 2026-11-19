@@ -783,3 +783,14 @@ date_iso_placeholder:
   en: YYYY-MM-DD
   canonical: false
   source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
+copy_0_1_viec_da_xong_cf7a5d:
+  order: 182
+  vi: '{completed}/{required} việc đã xong'
+  en: '{completed}/{required} tasks done'
+  en_one: '{completed}/{required} task done'
+  placeholders:
+    completed: integer
+    required: integer
+  pluralArgument: 1
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TaskListScreen.kt

@@ -23,7 +23,6 @@ import com.mamxanh.app.feature.shop.domain.model.ShopWallet
 import com.mamxanh.app.feature.stats.presentation.*
 import com.mamxanh.app.feature.tasks.presentation.*
 import com.mamxanh.app.feature.tree.presentation.*
-import com.mamxanh.app.feature.tree.domain.model.Tree as FeatureTree
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 @Composable

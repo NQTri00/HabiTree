@@ -25,6 +25,12 @@ def normalize_placeholders(key, item):
         if (not isinstance(name, str) or not re.fullmatch(r'[a-z][a-z0-9_]*', name)
                 or not isinstance(argument_type, str) or argument_type not in ANDROID_FORMATS):
             raise ValueError(f'Invalid named placeholder {name!r} in {key}')
+    plural_argument = item.get('pluralArgument')
+    if plural_argument is not None:
+        types = list(placeholders.values())
+        if (type(plural_argument) is not int or not 0 <= plural_argument < len(types)
+                or types[plural_argument] != 'integer' or not item.get('en_one')):
+            raise ValueError(f'Invalid named plural argument in {key}')
     positions = {name: index for index, name in enumerate(placeholders)}
     normalized = dict(item)
     for language in ('vi', 'en', 'en_one'):
@@ -39,6 +45,16 @@ def normalize_placeholders(key, item):
         for index, argument_type in enumerate(placeholders.values())
     }
     return normalized, android_formats
+
+
+def android_text(text, formats):
+    if formats:
+        text = POSITIONAL_PLACEHOLDER.sub(lambda match: formats[match[0]], text.replace('%', '%%'))
+    text = text.replace('\\', '\\\\').replace("'", "\\'").replace('"', '\\"')
+    text = text.replace('\n', '\\n').replace('\r', '\\r').replace('\t', '\\t')
+    if text.startswith(('@', '?')):
+        text = '\\' + text
+    return escape(text)
 
 def generate(allow_incomplete=False):
     catalog=load_catalog()
@@ -70,14 +86,17 @@ def generate(allow_incomplete=False):
         target.parent.mkdir(parents=True,exist_ok=True)
         rows=[]
         for key,item in catalog.items():
-            text = item.get(language) or item['vi']
             formats = android_formats_by_key[key]
-            if formats:
-                text = POSITIONAL_PLACEHOLDER.sub(lambda match: formats[match[0]], text.replace('%', '%%'))
-            text=text.replace('\\','\\\\').replace("'","\\'").replace('"','\\"').replace('\n','\\n').replace('\r','\\r').replace('\t','\\t')
-            if text.startswith(('@','?')):text='\\'+text
+            text = android_text(item.get(language) or item['vi'], formats)
             format_attribute = '' if formats else ' formatted="false"'
-            rows.append(f'    <string name="{key}"{format_attribute}>{escape(text)}</string>')
+            rows.append(f'    <string name="{key}"{format_attribute}>{text}</string>')
+            if formats and item.get('pluralArgument') is not None:
+                rows.append(f'    <plurals name="{key}">')
+                if language == 'en':
+                    singular = android_text(item['en_one'], formats)
+                    rows.append(f'        <item quantity="one">{singular}</item>')
+                rows.append(f'        <item quantity="other">{text}</item>')
+                rows.append('    </plurals>')
         target.write_text('<?xml version="1.0" encoding="utf-8"?>\n<!-- Generated from the shared copy catalog. -->\n<resources>\n'+'\n'.join(rows)+'\n</resources>\n',encoding='utf-8')
     print(f'Generated {len(keys)} typed copy keys; {len(missing)} translations pending.')
 

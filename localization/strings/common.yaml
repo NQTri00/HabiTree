@@ -1025,14 +1025,6 @@ copy_tung_chut_mot_238966:
   en: A LITTLE AT A TIME
   canonical: false
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioMainScreens.kt
-copy_0_1_viec_da_xong_cf7a5d:
-  order: 182
-  vi: '{0}/{1} việc đã xong'
-  en: '{0}/{1} tasks done'
-  canonical: false
-  source: app/src/main/java/com/mamxanh/app/presentation/bio/BioMainScreens.kt
-  pluralArgument: 1
-  en_one: '{0}/{1} task done'
 copy_viec_mau_535dc1:
   order: 183
   vi: Việc mẫu

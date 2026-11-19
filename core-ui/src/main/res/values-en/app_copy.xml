@@ -183,7 +183,11 @@
     <string name="copy_viec_tam_dung_b756a3" formatted="false">Paused tasks</string>
     <string name="copy_viec_luu_tru_911d4f" formatted="false">Archived tasks</string>
     <string name="copy_tung_chut_mot_238966" formatted="false">A LITTLE AT A TIME</string>
-    <string name="copy_0_1_viec_da_xong_cf7a5d" formatted="false">{0}/{1} tasks done</string>
+    <string name="copy_0_1_viec_da_xong_cf7a5d">%1$d/%2$d tasks done</string>
+    <plurals name="copy_0_1_viec_da_xong_cf7a5d">
+        <item quantity="one">%1$d/%2$d task done</item>
+        <item quantity="other">%1$d/%2$d tasks done</item>
+    </plurals>
     <string name="copy_viec_mau_535dc1" formatted="false">Templates</string>
     <string name="copy_khong_co_viec_tam_dung_074795" formatted="false">No paused tasks</string>
     <string name="copy_chua_co_viec_luu_tru_3a7d32" formatted="false">No archived tasks yet</string>
