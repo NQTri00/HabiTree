@@ -38,7 +38,7 @@ class FeatureNavigationTest {
                 assertEquals(route.id, key.routeId)
                 assertEquals(argument, key.argument)
                 assertEquals(previewRouteRegistry.keyFor(saved), key)
-                if (route == BioRoute.STATS) {
+                if (route in setOf(BioRoute.STATS, BioRoute.REVIEW, BioRoute.ACHIEVEMENTS, BioRoute.TIMELINE)) {
                     assertNotNull(live.contentFor(key))
                     assertNotNull(previewRouteRegistry.contentFor(key))
                 }

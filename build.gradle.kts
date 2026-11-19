@@ -15,9 +15,13 @@ tasks.register("verifyArchitecture") {
         val features=setOf("home","tasks","garden","shop","tree","stats","inventory","settings")
         val violations=mutableListOf<String>()
         features.forEach { owner->
-            fileTree("$owner/src").matching{include("**/*.kt")}.forEach { source->
-                Regex("""(?m)^import com\.mamxanh\.app\.feature\.([a-z]+)\.""").findAll(source.readText()).forEach { match->
-                    if(match.groupValues[1]!=owner)violations.add("Cross-feature import: ${source.relativeTo(rootDir)}")
+            listOf("src", "domain/src", "data/src").forEach { sourceRoot ->
+                fileTree("$owner/$sourceRoot").matching { include("**/*.kt") }.forEach { source ->
+                    Regex("""(?m)^import com\.mamxanh\.app\.feature\.([a-z]+)\.""").findAll(source.readText()).forEach { match ->
+                        if (match.groupValues[1] != owner) {
+                            violations.add("Cross-feature import: ${source.relativeTo(rootDir)}")
+                        }
+                    }
                 }
             }
             val allowed = mapOf(

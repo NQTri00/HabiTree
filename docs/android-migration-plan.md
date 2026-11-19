@@ -47,6 +47,8 @@ Each flow uses immutable state, typed actions, lifecycle-aware collection, and o
 
 - N01 Statistics entry: Stats supplies the Statistics screen through the feature registry, and the app shell resolves that content instead of keeping a Statistics dispatch branch. The shell still adapts its snapshot for the feature. Architecture and JVM tests passed, including live and preview registry assertions. The 144 PNGs in Compose batch `batch-20261119-080810` matched `batch-20261119-012409` byte for byte with zero missing or extra files.
 
+- N01 Stats feature evidence: all four Stats routes now supply feature-owned renderers. Registry tests passed and 144 PNGs matched the preceding batch without missing or extra images. Other feature entries and the shell snapshot bridge remain open.
+
 ## Guide-to-check mapping
 
 The route inventory starts with the 22 IDs in `BioRoute`. Home owns `home` and `onboard`. Tasks owns `tasks`, `task`, `task-new`, `focus`, `templates`, `rest`, and `insights`. Garden owns `garden`, `encyclopedia`, and `species`. Statistics owns `stats`, `review`, `achievements`, and `timeline`. Shop, Inventory, and Tree own their namesake IDs. Settings owns `settings` and `data`. The shell owns `more`. Route ownership here describes key registration. Entry-content migration and scenario coverage still require their own evidence.

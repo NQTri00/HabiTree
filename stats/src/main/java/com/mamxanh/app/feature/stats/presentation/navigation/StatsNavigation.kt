@@ -8,6 +8,12 @@ import com.mamxanh.app.feature.stats.presentation.StatisticsScreenState
 import com.mamxanh.app.core.presentation.navigation.HabiTreeFeatureDestination
 import com.mamxanh.app.core.presentation.navigation.HabiTreeFeatureModule
 import com.mamxanh.app.core.presentation.navigation.HabiTreeNavKey
+import com.mamxanh.app.feature.stats.presentation.AchievementDisplay
+import com.mamxanh.app.feature.stats.presentation.AchievementsScreen
+import com.mamxanh.app.feature.stats.presentation.TimelineMemory
+import com.mamxanh.app.feature.stats.presentation.TimelineScreen
+import com.mamxanh.app.feature.stats.presentation.WeeklyReviewDisplay
+import com.mamxanh.app.feature.stats.presentation.WeeklyReviewScreen
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -46,9 +52,46 @@ private fun StatisticsEntry() {
     StatisticsScreen(content.state, content.onNavigate, content.onRefresh)
 }
 
+class WeeklyReviewRouteContent(
+    val review: WeeklyReviewDisplay?,
+    val onTasks: () -> Unit,
+    val onSaveNote: (String) -> Unit,
+    val onRest: () -> Unit,
+)
+
+class TimelineRouteContent(
+    val memories: List<TimelineMemory>,
+    val onRelated: (TimelineMemory) -> Unit,
+    val onSaveNote: (String, String) -> Unit,
+)
+
+val LocalWeeklyReviewRouteContent = compositionLocalOf<() -> WeeklyReviewRouteContent> {
+    error("Weekly Review route requires its state and actions")
+}
+
+val LocalAchievementsRouteContent = compositionLocalOf<() -> List<AchievementDisplay>> {
+    error("Achievements route requires its state")
+}
+
+val LocalTimelineRouteContent = compositionLocalOf<() -> TimelineRouteContent> {
+    error("Timeline route requires its state and actions")
+}
+
+@Composable
+private fun WeeklyReviewEntry() {
+    val content = LocalWeeklyReviewRouteContent.current()
+    WeeklyReviewScreen(content.review, content.onTasks, content.onSaveNote, content.onRest)
+}
+
+@Composable
+private fun TimelineEntry() {
+    val content = LocalTimelineRouteContent.current()
+    TimelineScreen(content.memories, content.onRelated, content.onSaveNote)
+}
+
 val statsFeatureNavigation = HabiTreeFeatureModule(
     HabiTreeFeatureDestination("stats", content = { StatisticsEntry() }) { StatisticsKey.takeIf { _ -> it.isEmpty() } },
-    HabiTreeFeatureDestination("review") { WeeklyReviewKey.takeIf { _ -> it.isEmpty() } },
-    HabiTreeFeatureDestination("achievements") { AchievementsKey(it) },
-    HabiTreeFeatureDestination("timeline") { TimelineKey.takeIf { _ -> it.isEmpty() } },
+    HabiTreeFeatureDestination("review", content = { WeeklyReviewEntry() }) { WeeklyReviewKey.takeIf { _ -> it.isEmpty() } },
+    HabiTreeFeatureDestination("achievements", content = { AchievementsScreen(LocalAchievementsRouteContent.current()) }) { AchievementsKey(it) },
+    HabiTreeFeatureDestination("timeline", content = { TimelineEntry() }) { TimelineKey.takeIf { _ -> it.isEmpty() } },
 )

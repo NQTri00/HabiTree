@@ -6,11 +6,10 @@ import com.mamxanh.app.feature.garden.presentation.SpeciesDisplay
 import com.mamxanh.app.feature.garden.presentation.SpeciesScreen
 import com.mamxanh.app.feature.garden.presentation.SpeciesTreeDisplay
 import com.mamxanh.app.feature.stats.presentation.AchievementDisplay
-import com.mamxanh.app.feature.stats.presentation.AchievementsScreen
 import com.mamxanh.app.feature.stats.presentation.TimelineMemory
-import com.mamxanh.app.feature.stats.presentation.TimelineScreen
+import com.mamxanh.app.feature.stats.presentation.navigation.TimelineRouteContent
 import com.mamxanh.app.feature.stats.presentation.WeeklyReviewDisplay
-import com.mamxanh.app.feature.stats.presentation.WeeklyReviewScreen
+import com.mamxanh.app.feature.stats.presentation.navigation.WeeklyReviewRouteContent
 import com.mamxanh.app.feature.tasks.presentation.RestScreen
 import com.mamxanh.app.feature.tasks.presentation.RestScreenState
 import com.mamxanh.app.feature.tasks.presentation.InsightTaskLink
@@ -63,8 +62,7 @@ internal fun bioDates(date:String,count:Int):List<String>{val format=SimpleDateF
         Bt(AppText.text(TextKey.CopyBoLoChuaGhiNhan70b04e),size=AppTypography.Size11,tint=bp.muted)
     }
 }
-@Composable
-internal fun BioReview(world: BioWorld, ui: BioController) {
+internal fun weeklyReviewRouteContent(world: BioWorld, ui: BioController): WeeklyReviewRouteContent {
     val review = world.data.o("review")
     val display = if (world.native && review.length() == 0) null else WeeklyReviewDisplay(
         startDisplay = review.s("start", "2026-11-16"),
@@ -83,7 +81,7 @@ internal fun BioReview(world: BioWorld, ui: BioController) {
         dailyCompletions = world.statisticsDailyCompletions(),
         dayLabels = world.statisticsDayLabels(),
     )
-    WeeklyReviewScreen(
+    return WeeklyReviewRouteContent(
         review = display,
         onTasks = { ui.go("tasks") },
         onSaveNote = { note -> ui.send("reflection", mapOf("note" to note, "week" to review.s("start"))) },
@@ -148,9 +146,8 @@ internal fun BioInsights(world: BioWorld, ui: BioController) {
     )
 }
 
-@Composable
-internal fun BioAchievements(world: BioWorld) {
-    val entries = if (world.native) {
+internal fun achievementEntries(world: BioWorld): List<AchievementDisplay> =
+    if (world.native) {
         world.data.a("achievements").objects().map {
             AchievementDisplay(it.s("title"), it.s("criterion"), it.i("progress"), it.i("target", 1), it.l("unlockedAt") > 0)
         }
@@ -160,11 +157,8 @@ internal fun BioAchievements(world: BioWorld) {
             AchievementDisplay(title, criterion, progress.first, progress.second)
         }
     }
-    AchievementsScreen(entries)
-}
 
-@Composable
-internal fun BioTimeline(world: BioWorld, ui: BioController) {
+internal fun timelineRouteContent(world: BioWorld, ui: BioController): TimelineRouteContent {
     val notes = world.state.o("notes")
     val memories = world.state.a("memories").objects().map { memory ->
         val id = memory.s("id")
@@ -177,7 +171,7 @@ internal fun BioTimeline(world: BioWorld, ui: BioController) {
             note = notes.s(id, memory.s("note")),
         )
     }
-    TimelineScreen(
+    return TimelineRouteContent(
         memories = memories,
         onRelated = { ui.go(if (it.isTree) "tree" else "insights", it.entityId) },
         onSaveNote = { id, note -> ui.send("memory-note", mapOf("id" to id, "note" to note)) },

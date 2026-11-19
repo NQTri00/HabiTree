@@ -15,6 +15,9 @@ import androidx.activity.compose.BackHandler
 import com.mamxanh.app.core.presentation.navigation.HabiTreeRouteRegistry
 import com.mamxanh.app.di.previewRouteRegistry
 import com.mamxanh.app.feature.stats.presentation.StatisticsLink
+import com.mamxanh.app.feature.stats.presentation.navigation.LocalWeeklyReviewRouteContent
+import com.mamxanh.app.feature.stats.presentation.navigation.LocalAchievementsRouteContent
+import com.mamxanh.app.feature.stats.presentation.navigation.LocalTimelineRouteContent
 import com.mamxanh.app.feature.stats.presentation.navigation.LocalStatisticsRouteContent
 import com.mamxanh.app.feature.stats.presentation.navigation.StatisticsRouteContent
 import com.mamxanh.app.feature.stats.presentation.StatisticsScreenState
@@ -44,6 +47,9 @@ import androidx.compose.ui.unit.*
         CompositionLocalProvider(
             LocalBioExpanded provides (ui.tabs["expanded"] == "true"),
             LocalStatisticsRouteContent provides { statisticsRouteContent(world, ui) },
+            LocalWeeklyReviewRouteContent provides { weeklyReviewRouteContent(world, ui) },
+            LocalAchievementsRouteContent provides { achievementEntries(world) },
+            LocalTimelineRouteContent provides { timelineRouteContent(world, ui) },
         ) {
         BoxWithConstraints(modifier.fillMaxSize().background(bp.bg)){
             val gutter=if(maxWidth<AppDimensions.Dp359)16 else if(maxWidth>=AppDimensions.Dp400)22 else 20
@@ -79,11 +85,8 @@ import androidx.compose.ui.unit.*
                                             "task-new"->BioTaskForm(world,ui)
                                             "focus"->BioFocus(world,ui)
                                             "templates"->BioTemplates(world,ui)
-                                            "review"->BioReview(world,ui)
                                             "rest"->BioRest(world,ui)
                                             "insights"->BioInsights(world,ui)
-                                            "achievements"->BioAchievements(world)
-                                            "timeline"->BioTimeline(world,ui)
                                             "settings"->BioSettings(world,ui)
                                             "data"->BioData(world,ui)
                                             "encyclopedia"->BioEncyclopedia(world,ui)
