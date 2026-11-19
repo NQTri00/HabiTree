@@ -14,6 +14,7 @@ import com.mamxanh.app.feature.tree.data.di.treeDataModule
 import com.mamxanh.app.feature.shop.data.di.shopDataModule
 import com.mamxanh.app.feature.shop.presentation.di.shopPresentationModule
 import com.mamxanh.app.feature.garden.presentation.di.gardenPresentationModule
+import com.mamxanh.app.feature.garden.data.gardenCollectionDataModule
 import com.mamxanh.app.feature.tasks.data.focusSessionDataModule
 import com.mamxanh.app.feature.tasks.presentation.di.tasksPresentationModule
 import com.mamxanh.app.feature.home.presentation.di.homePresentationModule
@@ -35,6 +36,7 @@ fun appModule(configProvider: HabiTreeConfigProvider = HabiTreeConfigProvider())
         inventoryDataModule,
         shopDataModule,
         treeDataModule,
+        gardenCollectionDataModule,
         statsDataModule,
         settingsDataModule,
     )

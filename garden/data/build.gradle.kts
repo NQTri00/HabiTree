@@ -19,4 +19,5 @@ kotlin {
 
 dependencies {
     implementation(project(":garden:domain"))
+    implementation(libs.koin.core)
 }
