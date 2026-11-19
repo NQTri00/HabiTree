@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalInputModeManager
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -19,9 +20,10 @@ import android.content.res.Configuration
 
 @Composable internal fun BioReferenceSurface(route:String,param:String="",modal:String="",id:String="",tab:String="",home:String="1",step:Int=0,expanded:Boolean=false,bottom:Boolean=false,sheetBottom:Boolean=false,referenceFields:Map<String,String> = emptyMap(),busy:Boolean=false){
  val baseContext=LocalContext.current
- val language=if(baseContext.resources.configuration.locales[0].language=="en")AppLanguage.English else AppLanguage.Vietnamese
+ val configuration = LocalConfiguration.current
+ val language=if(configuration.locales[0].language=="en")AppLanguage.English else AppLanguage.Vietnamese
  AppText.language=language
- val context=remember(baseContext,language){baseContext.createConfigurationContext(Configuration(baseContext.resources.configuration).apply{setLocale(java.util.Locale.forLanguageTag(language.tag))})}
+ val context=remember(baseContext,configuration,language){baseContext.createConfigurationContext(Configuration(configuration).apply{setLocale(java.util.Locale.forLanguageTag(language.tag))})}
  val requestedBusy=busy
  val initialFocus=remember{FocusRequester()}
  val keyboard=LocalSoftwareKeyboardController.current

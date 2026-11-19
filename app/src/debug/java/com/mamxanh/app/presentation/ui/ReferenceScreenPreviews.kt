@@ -15,7 +15,7 @@ import com.mamxanh.app.feature.tasks.domain.model.today
 import com.mamxanh.app.feature.tasks.presentation.TasksUiState
 import com.mamxanh.app.feature.shop.domain.model.ShopWallet
 import com.mamxanh.app.feature.shop.presentation.ShopUiState
-import com.mamxanh.app.feature.stats.domain.model.GardenStatistics
+import com.mamxanh.app.feature.stats.domain.model.StatisticsSummary
 import com.mamxanh.app.feature.stats.presentation.StatsUiState
 import com.mamxanh.app.feature.tree.presentation.TreeUiState
 
@@ -126,7 +126,7 @@ private fun ReferenceWorld(route: AppUiState, empty: Boolean = false, careUnavai
             ), isLoading = false, isAddingTask = addingTask),
             garden = GardenUiState(Garden(trees, inventory), false),
             shop = ShopUiState(ShopWallet(if (empty) 0 else 120, inventory), false),
-            stats = StatsUiState(if (empty) GardenStatistics() else GardenStatistics(
+            stats = StatsUiState(if (empty) StatisticsSummary() else StatisticsSummary(
                 coins = 120, total = 32, today = 3, week = 12, streak = 5, treeCount = 3,
                 recentDailyCompletions = listOf(1,0,2,1,3,1,3)
             ), false),

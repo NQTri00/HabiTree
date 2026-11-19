@@ -25,6 +25,7 @@ import androidx.compose.ui.platform.LocalContext
 import com.mamxanh.app.BuildConfig
 import com.mamxanh.app.data.BackupService
 import com.mamxanh.app.feature.inventory.domain.InventoryRepository
+import com.mamxanh.app.feature.stats.domain.LoadGardenStatistics
 import com.mamxanh.shared.data.GameStorage
 import com.mamxanh.shared.data.sql.*
 import com.mamxanh.shared.model.*
@@ -42,8 +43,20 @@ private fun mapJson(map:Map<String,*>)=JSONObject().apply{map.forEach{(k,v)->put
 private fun date(at:Long)=if(at<=0)AppText.text(TextKey.CopyChuaGhiNhanF7654d)else SimpleDateFormat("yyyy-MM-dd",Locale.US).format(Date(at))
 private fun clock(value:String):Int{if(value.isBlank())return -1;val m=Regex("^(\\d{1,2}):(\\d{2})$").matchEntire(value)?:return -2;val h=m.groupValues[1].toInt();val n=m.groupValues[2].toInt();return if(h in 0..23&&n in 0..59)h*60+n else -2}
 
-private fun nativeWorld(storage:GameStorage,reference:BioWorld,service:BackupService,inventory:InventoryRepository):BioWorld {
-    val data=JSONObject(reference.data.toString());val g=storage.garden();val tasks=storage.tasks();val e=storage.engagementSnapshot();val living=storage.livingGarden();val statistics=storage.statistics();val phase=storage.phaseSnapshot()
+private fun nativeWorld(
+    storage: GameStorage,
+    reference: BioWorld,
+    service: BackupService,
+    inventory: InventoryRepository,
+    loadStatistics: LoadGardenStatistics,
+): BioWorld {
+    val data = JSONObject(reference.data.toString())
+    val g = storage.garden()
+    val tasks = storage.tasks()
+    val e = storage.engagementSnapshot()
+    val living = storage.livingGarden()
+    val statistics = loadStatistics()
+    val phase = storage.phaseSnapshot()
     val now=System.currentTimeMillis();val today=date(now)
     val trees=g.trees.map{t->val decoration=living.placements.firstOrNull{it.treeId==t.id&&gardenCosmetics.any{c->c.id==it.sku&&c.slot=="TREE"}}?.sku.orEmpty();json("id" to t.id,"species" to t.speciesId,"name" to AppText.plantName(t.speciesId,t.name),"plot" to (g.plots.firstOrNull{it.treeId==t.id}?.id?:0),"state" to t.status.state.name.lowercase(),"stage" to t.status.stageIndex+1,"progress" to t.status.percentage,"watered" to t.status.waterActive,"planted" to t.planted,"decor" to decoration,"canFertilize" to t.status.canFertilize,"fertilized" to t.status.fertilizerId)}
     val taskJson=tasks.map{t->json("id" to t.id,"title" to t.title,"kind" to t.kind,"category" to t.category,"verification" to t.config.verification,"minutes" to t.config.minutes,"frequency" to t.frequency,"description" to t.config.description,"days" to t.config.days,"due" to t.due,"start" to clockLabel(t.config.startMinute),"end" to clockLabel(t.config.endMinute),"reminder" to clockLabel(t.config.reminderMinute),"done" to t.doneToday,"finished" to t.finished,"lifecycle" to t.lifecycle,"scheduledToday" to t.scheduledToday,"available" to t.available,"availability" to t.availability,"streak" to t.streak,"lastDone" to t.lastDone,"history" to array(t.history.map{json("date" to it.date,"nominal" to it.nominal,"granted" to it.granted)}))}
@@ -65,6 +78,7 @@ private fun nativeWorld(storage:GameStorage,reference:BioWorld,service:BackupSer
 /** Native database/OS adapter. The presentation used here is also the preview target. */
 @Composable fun BioNativeHost(storage:GameStorage,externalTree:Long?=null,externalRoute:String="",externalTask:Long=0,onExternalHandled:()->Unit={}) {
     val inventory = koinInject<InventoryRepository>()
+    val loadStatistics = koinInject<LoadGardenStatistics>()
     val context=LocalContext.current;val scope=rememberCoroutineScope();val reference=remember{BioWorld.reference(context)}
     val prefs=remember{context.getSharedPreferences("bio_ui",Context.MODE_PRIVATE)}
     val permissionPrefs=remember{context.getSharedPreferences("engagement_permissions",Context.MODE_PRIVATE)}
@@ -76,7 +90,7 @@ private fun nativeWorld(storage:GameStorage,reference:BioWorld,service:BackupSer
     LaunchedEffect(homeSpecies,world.loading){
         if(!world.loading)withContext(Dispatchers.IO){HabiTreeLauncherIcon.update(context.applicationContext,homeSpecies)}
     }
-    suspend fun refresh(){world=withContext(Dispatchers.IO){nativeWorld(storage,reference,service,inventory)};if(world.trees.none{it.s("id")==ui.homeTree})ui.homeTree=world.trees.firstOrNull()?.s("id")?:"0"}
+    suspend fun refresh(){world=withContext(Dispatchers.IO){nativeWorld(storage,reference,service,inventory,loadStatistics)};if(world.trees.none{it.s("id")==ui.homeTree})ui.homeTree=world.trees.firstOrNull()?.s("id")?:"0"}
     val lifecycleOwner=LocalLifecycleOwner.current
     LaunchedEffect(storage,lifecycleOwner){
         lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED){

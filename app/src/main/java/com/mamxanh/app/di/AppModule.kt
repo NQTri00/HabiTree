@@ -6,6 +6,7 @@ import com.mamxanh.app.core.presentation.navigation.HabiTreeRouteRegistry
 import com.mamxanh.app.data.local.GardenDatabase
 import com.mamxanh.app.feature.inventory.data.OfflineInventoryRepository
 import com.mamxanh.app.feature.inventory.domain.InventoryRepository
+import com.mamxanh.app.feature.stats.data.di.statsDataModule
 import com.mamxanh.app.feature.stats.presentation.di.statsPresentationModule
 import com.mamxanh.app.feature.tree.presentation.di.treePresentationModule
 import com.mamxanh.app.feature.shop.presentation.di.shopPresentationModule
@@ -24,6 +25,7 @@ fun appModule(configProvider: HabiTreeConfigProvider = HabiTreeConfigProvider())
     single { configProvider }
     includes(*featureNavigation.map { it.navigationModule }.toTypedArray())
     single<InventoryRepository> { OfflineInventoryRepository(get()) }
+    includes(statsDataModule)
     single { HabiTreeRouteRegistry(getAll<HabiTreeFeatureDestination>()) }
     includes(homePresentationModule, tasksPresentationModule, gardenPresentationModule, shopPresentationModule, treePresentationModule, statsPresentationModule)
     single { GardenDatabase(androidContext()) } onClose { it?.close() }

@@ -1,6 +1,6 @@
 package com.mamxanh.app.feature.stats.presentation
 
 import com.mamxanh.app.core.presentation.UiState
-import com.mamxanh.app.feature.stats.domain.model.GardenStatistics
+import com.mamxanh.app.feature.stats.domain.model.StatisticsSummary
 
-data class StatsUiState(val statistics: GardenStatistics = GardenStatistics(), val isLoading: Boolean = true) : UiState
+data class StatsUiState(val statistics: StatisticsSummary = StatisticsSummary(), val isLoading: Boolean = true) : UiState

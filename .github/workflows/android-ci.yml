@@ -40,7 +40,7 @@ jobs:
 
       # The wrapper supports the Java 25 daemon selected by gradle-daemon-jvm.properties.
       - name: Test feature routing and build both APKs and shared metadata
-        run: bash ./gradlew --no-daemon :app:testDebugUnitTest :app:assembleDebug :app:assembleVerification :app:lintDebug :shared:compileCommonMainKotlinMetadata --stacktrace
+        run: bash ./gradlew --no-daemon :app:testDebugUnitTest :core-utils:test :stats:data:testDebugUnitTest :app:assembleDebug :app:assembleVerification :app:lintDebug :shared:compileCommonMainKotlinMetadata --stacktrace
 
       - name: Enable KVM for SQLite regression tests
         run: |
@@ -63,8 +63,10 @@ jobs:
           path: |
             app/build/reports/tests/
             app/build/test-results/
-            core-storage/build/reports/androidTests/
-            core-storage/build/outputs/androidTest-results/
+            core-utils/build/test-results/
+            stats/data/build/test-results/
+            data/build/reports/androidTests/
+            data/build/outputs/androidTest-results/
             **/build/reports/lint-results*
           if-no-files-found: warn
           retention-days: 7

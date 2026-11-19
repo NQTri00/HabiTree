@@ -18,5 +18,9 @@ kotlin {
 }
 
 dependencies {
+    implementation(project(":core-data"))
     implementation(project(":stats:domain"))
+    implementation(project(":shared"))
+    implementation(libs.koin.core)
+    testImplementation("junit:junit:4.13.2")
 }

@@ -87,6 +87,7 @@ dependencies {
     implementation(project(":tree"))
     implementation(project(":tree:data"))
     implementation(project(":stats"))
+    implementation(project(":stats:domain"))
     implementation(project(":stats:data"))
     implementation(project(":inventory"))
     implementation(project(":inventory:domain"))

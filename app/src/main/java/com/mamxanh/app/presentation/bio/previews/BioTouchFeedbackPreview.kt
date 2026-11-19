@@ -11,6 +11,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import com.mamxanh.app.presentation.ui.design.AppDimensions
 import com.mamxanh.shared.localization.AppText
@@ -20,7 +21,7 @@ import com.mamxanh.shared.localization.TextKey
 /** Controlled interaction states of actual controls, not a simulated device tap. */
 @Preview(name="touch-feedback",widthDp=375,heightDp=812,locale="en",device="spec:width=375dp,height=812dp,dpi=160")
 @Composable fun BioTouchFeedbackPreview() {
-    AppText.language=AppLanguage.fromTag(LocalContext.current.resources.configuration.locales[0].language)
+    AppText.language=AppLanguage.fromTag(LocalConfiguration.current.locales[0].language)
     val world=BioWorld.reference(LocalContext.current)
     BioPreviewTouchInput { BioTheme(world,"1") {
         Column(Modifier.fillMaxSize().background(bp.bg).padding(AppDimensions.Dp20),verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp18)) {

@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.mamxanh.app.presentation.ui.design.AppDimensions
@@ -22,7 +23,7 @@ import com.mamxanh.shared.localization.AppText
 /** Native icon foreground/background resources under representative launcher masks. */
 @Composable internal fun LauncherMarks(round:Boolean) {
     val context=LocalContext.current
-    AppText.language=AppLanguage.fromTag(context.resources.configuration.locales[0].language)
+    AppText.language=AppLanguage.fromTag(LocalConfiguration.current.locales[0].language)
     val world=BioWorld.reference(context)
     BioTheme(world,"1") {
         Column(Modifier.fillMaxSize().background(bp.bg).padding(AppDimensions.Dp20),verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp16)) {

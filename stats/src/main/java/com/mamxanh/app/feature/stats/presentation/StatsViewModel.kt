@@ -4,12 +4,11 @@ import androidx.lifecycle.viewModelScope
 import com.mamxanh.app.core.presentation.BaseViewModel
 import com.mamxanh.app.core.presentation.UiEvent
 import com.mamxanh.app.feature.stats.domain.LoadGardenStatistics
-import com.mamxanh.app.feature.stats.domain.StatisticsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class StatsViewModel(private val repository: StatisticsRepository)  : BaseViewModel<StatsUiState, UiEvent, StatsIntent>(
+class StatsViewModel(private val loadStatistics: LoadGardenStatistics) : BaseViewModel<StatsUiState, UiEvent, StatsIntent>(
     initialState = StatsUiState(),
 ) {
     val uiState get() = state
@@ -19,7 +18,7 @@ class StatsViewModel(private val repository: StatisticsRepository)  : BaseViewMo
         when (intent) {
             StatsIntent.Refresh -> viewModelScope.launch {
                 mutableState.value = mutableState.value.copy(isLoading = true)
-                val statistics = withContext(Dispatchers.IO) { LoadGardenStatistics(repository)() }
+                val statistics = withContext(Dispatchers.IO) { loadStatistics() }
                 mutableState.value = StatsUiState(statistics, false)
             }
         }

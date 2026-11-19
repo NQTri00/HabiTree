@@ -106,7 +106,7 @@ private fun JourneyCard(emoji: String, title: String, value: String, caption: St
 @Composable
 fun StatsScreenPreview() {
     MamXanhPreviewTheme {
-        StatsScreen(StatsUiState(com.mamxanh.app.feature.stats.domain.model.GardenStatistics(
+        StatsScreen(StatsUiState(com.mamxanh.app.feature.stats.domain.model.StatisticsSummary(
             coins = 120, total = 32, today = 3, week = 12, streak = 5, treeCount = 3,
             recentDailyCompletions = listOf(1, 0, 2, 1, 3, 1, 3)
         ), false), {})
@@ -123,7 +123,7 @@ fun StatsExtendedDocumentPreview() { StatsScreenPreview() }
 @Composable
 fun StatsRefreshingPreview() {
     MamXanhPreviewTheme {
-        StatsScreen(StatsUiState(com.mamxanh.app.feature.stats.domain.model.GardenStatistics(
+        StatsScreen(StatsUiState(com.mamxanh.app.feature.stats.domain.model.StatisticsSummary(
             coins = 120, total = 32, today = 3, week = 12, streak = 5, treeCount = 3,
             recentDailyCompletions = listOf(1, 0, 2, 1, 3, 1, 3)
         ), true), {})
@@ -135,7 +135,7 @@ fun StatsRefreshingPreview() {
 @Composable
 fun StatsLargeValuesPreview() {
     MamXanhPreviewTheme {
-        StatsScreen(StatsUiState(com.mamxanh.app.feature.stats.domain.model.GardenStatistics(
+        StatsScreen(StatsUiState(com.mamxanh.app.feature.stats.domain.model.StatisticsSummary(
             coins = 1_234_567_890, total = 1_234_567_890, today = 12_345, week = 1_234_567,
             streak = 12_345, treeCount = 1_234_567_890,
             recentDailyCompletions = listOf(0, 1, 1_234, Int.MAX_VALUE, 12_345, 1, 3)
@@ -148,7 +148,7 @@ fun StatsLargeValuesPreview() {
 @Composable
 fun StatsZeroHistoryPreview() {
     MamXanhPreviewTheme {
-        StatsScreen(StatsUiState(com.mamxanh.app.feature.stats.domain.model.GardenStatistics(
+        StatsScreen(StatsUiState(com.mamxanh.app.feature.stats.domain.model.StatisticsSummary(
             coins = 60, total = 0, today = 0, week = 0, streak = 0, treeCount = 0,
             recentDailyCompletions = List(7) { 0 }
         ), false), {})
