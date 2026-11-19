@@ -1,0 +1,72 @@
+copy_luu_tuy_chon_3847ca:
+  order: 119
+  vi: Lưu tùy chọn
+  en: Save settings
+  canonical: false
+  source: settings/src/main/java/com/mamxanh/app/feature/settings/presentation/SettingsScreen.kt
+copy_xem_lai_bat_dau_b87622:
+  order: 123
+  vi: Xem lại bắt đầu
+  en: View the introduction
+  canonical: false
+  source: settings/src/main/java/com/mamxanh/app/feature/settings/presentation/SettingsScreen.kt
+copy_sao_luu_cua_ban_ec4a6a:
+  order: 124
+  vi: Sao lưu của bạn
+  en: Your backup
+  canonical: false
+  source: settings/src/main/java/com/mamxanh/app/feature/settings/presentation/BackupScreen.kt
+copy_luu_tren_thiet_bi_0_kb_c7f8bb:
+  order: 125
+  vi: Lưu trên thiết bị · {0} KB
+  en: On this device · {0} KB
+  canonical: false
+  source: settings/src/main/java/com/mamxanh/app/feature/settings/presentation/BackupScreen.kt
+copy_xuat_tep_b5d886:
+  order: 126
+  vi: Xuất tệp
+  en: Export file
+  canonical: false
+  source: settings/src/main/java/com/mamxanh/app/feature/settings/presentation/BackupScreen.kt
+copy_ban_sao_co_the_chua_lich_su_va_ghi_chu_rieng_tu_chi_d59ce2:
+  order: 129
+  vi: Bản sao có thể chứa lịch sử và ghi chú riêng tư. Chỉ chia sẻ với người tin cậy.
+  en: Backups may contain private history and notes. Only share them with someone you trust.
+  canonical: false
+  source: settings/src/main/java/com/mamxanh/app/feature/settings/presentation/BackupScreen.kt
+copy_ban_an_toan_gan_nhat_4ca154:
+  order: 130
+  vi: Bản an toàn gần nhất
+  en: Latest safety backup
+  canonical: false
+  source: settings/src/main/java/com/mamxanh/app/feature/settings/presentation/BackupScreen.kt
+copy_chua_co_ban_an_toan_ban_nay_duoc_tao_truoc_khi_khoi_432d5b:
+  order: 131
+  vi: Chưa có bản an toàn. Bản này được tạo trước khi khôi phục dữ liệu.
+  en: No safety backup yet. One is created before restoring data.
+  canonical: false
+  source: settings/src/main/java/com/mamxanh/app/feature/settings/presentation/BackupScreen.kt
+copy_ung_dung_rieng_tu_01362e:
+  order: 133
+  vi: Ứng dụng & riêng tư
+  en: App & privacy
+  canonical: false
+  source: settings/src/main/java/com/mamxanh/app/feature/settings/presentation/BackupScreen.kt
+copy_khong_can_tai_khoan_du_lieu_duoc_luu_tren_thiet_bi_e30fea:
+  order: 134
+  vi: Không cần tài khoản. Dữ liệu được lưu trên thiết bị.
+  en: No account needed. Data stays on your device.
+  canonical: false
+  source: settings/src/main/java/com/mamxanh/app/feature/settings/presentation/BackupScreen.kt
+copy_xuat_thong_tin_dung_luong_va_so_luong_muc_de_ho_tro_d6fe92:
+  order: 137
+  vi: Xuất thông tin dung lượng và số lượng mục để hỗ trợ kiểm tra sự cố.
+  en: Export storage information and item counts to help investigate an issue.
+  canonical: false
+  source: settings/src/main/java/com/mamxanh/app/feature/settings/presentation/BackupScreen.kt
+copy_xuat_chan_doan_9d86ed:
+  order: 138
+  vi: Xuất chẩn đoán
+  en: Export diagnostics
+  canonical: false
+  source: settings/src/main/java/com/mamxanh/app/feature/settings/presentation/BackupScreen.kt

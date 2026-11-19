@@ -6,7 +6,7 @@ from kotlin_literals import literals,has_copy
 
 ROOT=Path(__file__).resolve().parents[2]
 CATALOG_DIR = ROOT / 'localization/strings'
-FEATURES = {'home', 'tasks', 'garden', 'catalog', 'tree', 'shop', 'inventory', 'stats'}
+FEATURES = {'home', 'tasks', 'garden', 'catalog', 'tree', 'shop', 'inventory', 'stats', 'settings'}
 
 
 class CatalogLoader(yaml.SafeLoader):
