@@ -12,4 +12,7 @@ interface TreeRepository {
     fun saleQuote(treeId: Long): RepositoryResult<TreeCareReceipt>
     fun dispose(treeId: Long, sell: Boolean, key: String): RepositoryResult<TreeCareReceipt>
     fun decorate(treeId: Long, decoration: String)
+    fun buyAccessory(sku: String, purchaseKey: String): RepositoryResult<String>
+    fun equipAccessory(sku: String, treeId: Long?, purchaseKey: String): RepositoryResult<String>
+    fun unequipAccessory(treeId: Long): RepositoryResult<String>
 }

@@ -35,6 +35,33 @@ class GameRepositoryPersistenceTest {
     }
 
     @Test
+    fun directAccessoryPurchaseEquipsAndUnequipsWithoutChargingTwice() {
+        SQLiteDatabase.create(null).use { database ->
+            val connection = InMemoryConnection(database)
+            GameSchema.create(connection)
+            val storage = GameStorage(SqlGameDatabase(connection))
+            assertTrue(InventoryRepositoryImpl(storage).plantSeed("succulent", "My tree", plotId = 1))
+            val treeId = storage.garden().trees.single().id
+            database.execSQL("UPDATE meta SET v='1000' WHERE k='coins'")
+            val tree = TreeRepositoryImpl(storage)
+            val collection = GardenCollectionRepositoryImpl(storage)
+            val sku = "tree_ribbon"
+
+            assertTrue(tree.equipAccessory(sku, treeId, "direct-purchase") is RepositoryResult.Success)
+            assertEquals(sku, collection.load().decorationsByTree[treeId])
+            assertEquals(1, collection.load().ownedAccessories[sku])
+            val remaining = storage.garden().coins
+            assertTrue(remaining < 1000)
+
+            assertTrue(tree.equipAccessory(sku, treeId, "equip-again") is RepositoryResult.Success)
+            assertEquals(remaining, storage.garden().coins)
+            assertTrue(tree.unequipAccessory(treeId) is RepositoryResult.Success)
+            assertNull(collection.load().decorationsByTree[treeId])
+            assertEquals(1, collection.load().ownedAccessories[sku])
+        }
+    }
+
+    @Test
     fun collectionRetainsSpeciesHistoryAfterRemovingOrSellingTheTree() {
         for (sell in listOf(false, true)) {
             SQLiteDatabase.create(null).use { database ->

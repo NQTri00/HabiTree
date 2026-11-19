@@ -23,11 +23,8 @@ import com.mamxanh.shared.localization.AppText
 import com.mamxanh.shared.localization.TextKey
 import com.mamxanh.shared.model.ActionResult
 import com.mamxanh.shared.model.EngagementAction
-import com.mamxanh.shared.model.GardenPlacement
-import com.mamxanh.shared.model.LivingGardenAction
 import com.mamxanh.shared.model.ReminderPreference
 import com.mamxanh.shared.model.TaskConfig
-import com.mamxanh.shared.model.gardenCosmetics
 import java.util.UUID
 
 private fun clock(value:String):Int{if(value.isBlank())return -1;val m=Regex("^(\\d{1,2}):(\\d{2})$").matchEntire(value)?:return -2;val h=m.groupValues[1].toInt();val n=m.groupValues[2].toInt();return if(h in 0..23&&n in 0..59)h*60+n else -2}
@@ -158,16 +155,9 @@ internal fun executeNative(
             return result(taskRepository.save(task.id, task.config.copy(frequency = "WEEKDAYS", days = "")))
         }
         "onboard"->return engage(EngagementAction.Onboard(v["seed"]?:"succulent",v["category"]?:AppText.canonical(TextKey.CopyHocTapA51516),v["ids"].orEmpty().split(',').filter{it.isNotBlank()},key,v["skip"]=="true",v["remind"]=="true"),"home")
-        "accessory-buy","accessory-use","unequip"->{
-            val sku=v["id"]?:id;var living=storage.livingGarden()
-            if(action!="unequip"&&(living.owned[sku]?:0)==0){val bought=storage.designGarden(LivingGardenAction.Buy(sku,key));if(!bought.success)return result(bought);living=storage.livingGarden()}
-            if(action=="accessory-buy")return BioResult(true,AppText.text(TextKey.CopyDaThemPhuKienVaoTui40b7d7))
-            val treeId=if(action=="unequip")id.toLong()else v["tree"]?.toLongOrNull()?:return BioResult(false,AppText.text(TextKey.CopyChonMotCayTruocKhiDeoPhuKien4f5562))
-            val g=storage.garden();val tree=g.trees.firstOrNull{it.id==treeId&&it.status.alive}?:return BioResult(false,AppText.text(TextKey.CopyChonMotCayConSong6d5572));val plot=g.plots.firstOrNull{it.treeId==tree.id}?:return BioResult(false,AppText.text(TextKey.CopyKhongTimThayOTrong4ab339))
-            var placements=living.placements.filterNot{it.treeId==treeId&&gardenCosmetics.any{c->c.id==it.sku&&c.slot=="TREE"}}
-            if(action!="unequip"){if(placements.count{it.sku==sku}>=(living.owned[sku]?:0))placements=placements.filterNot{it.id==placements.firstOrNull{p->p.sku==sku}?.id};placements=placements+GardenPlacement(UUID.randomUUID().toString(),sku,plot.id,treeId)}
-            return result(storage.designGarden(LivingGardenAction.Layout(living.version,placements,UUID.randomUUID().toString())))
-        }
+        "accessory-buy" -> return result(treeRepository.buyAccessory(v["id"] ?: id, key))
+        "accessory-use" -> return result(treeRepository.equipAccessory(v["id"] ?: id, v["tree"]?.toLongOrNull(), key))
+        "unequip" -> return result(treeRepository.unequipAccessory(id.toLong()))
         "clear-data"->{backup.clear();return BioResult(true,AppText.text(TextKey.CopyDaXoaDuLieu1841a6),"onboard")}
         "recover-data"->{backup.recover();return BioResult(true,AppText.text(TextKey.CopyDaKhoiPhucDuLieuB0b459),"home")}
         "confirm-import"->{if(pending==null)return BioResult(false,AppText.text(TextKey.CopyChonTepSaoLuuTruoc71112e));backup.restore(pending);return BioResult(true,AppText.text(TextKey.CopyDaKhoiPhucDuLieuB0b459),"home")}
