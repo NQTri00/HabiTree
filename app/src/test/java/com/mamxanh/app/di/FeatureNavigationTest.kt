@@ -33,6 +33,7 @@ class FeatureNavigationTest {
             val routesWithContent = setOf(
                 BioRoute.STATS, BioRoute.REVIEW, BioRoute.ACHIEVEMENTS, BioRoute.TIMELINE,
                 BioRoute.GARDEN, BioRoute.ENCYCLOPEDIA, BioRoute.SPECIES,
+                BioRoute.SETTINGS, BioRoute.DATA,
             )
             for (route in BioRoute.entries.filterNot { it == BioRoute.MORE }) {
                 val argument = arguments[route].orEmpty()

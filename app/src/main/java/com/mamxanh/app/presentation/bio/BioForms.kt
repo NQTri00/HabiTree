@@ -1,11 +1,11 @@
 package com.mamxanh.app.presentation.bio
 
 import com.mamxanh.app.feature.settings.presentation.BackupDisplay
-import com.mamxanh.app.feature.settings.presentation.BackupScreen
 import com.mamxanh.app.feature.settings.presentation.BackupScreenAction
 import com.mamxanh.app.feature.settings.presentation.SettingsDisplay
 import com.mamxanh.app.feature.settings.presentation.SettingsLink
-import com.mamxanh.app.feature.settings.presentation.SettingsScreen
+import com.mamxanh.app.feature.settings.presentation.navigation.BackupRouteContent
+import com.mamxanh.app.feature.settings.presentation.navigation.SettingsRouteContent
 
 import com.mamxanh.app.feature.tasks.presentation.TaskCompletionDisplay
 import com.mamxanh.app.feature.tasks.presentation.TaskDetailDisplay
@@ -172,13 +172,12 @@ internal fun BioTemplates(world: BioWorld, ui: BioController) {
     )
 }
 
-@Composable
-internal fun BioSettings(world: BioWorld, ui: BioController) {
+internal fun settingsRouteContent(world: BioWorld, ui: BioController): SettingsRouteContent {
     val settings = world.settings
     val options = listOf("paused", "treeReminders", "breakPrompts", "reducedMotion").associateWith { key ->
         ui.fields["settings:$key"]?.toBoolean() ?: settings.b(key)
     }
-    SettingsScreen(
+    return SettingsRouteContent(
         state = SettingsDisplay(options, settings.s("quietStart", "22:00"), settings.s("quietEnd", "07:00")),
         onLanguage = { ui.send("language", mapOf("tag" to it)) },
         onToggle = { key, value -> ui.fields["settings:$key"] = value.toString() },
@@ -196,9 +195,8 @@ internal fun BioSettings(world: BioWorld, ui: BioController) {
     )
 }
 
-@Composable
-internal fun BioData(world: BioWorld, ui: BioController) {
-    BackupScreen(BackupDisplay(world.state.i("bytes", 3072) / 1024, world.state.b("safety"))) { action ->
+internal fun backupRouteContent(world: BioWorld, ui: BioController): BackupRouteContent {
+    return BackupRouteContent(BackupDisplay(world.state.i("bytes", 3072) / 1024, world.state.b("safety"))) { action ->
         when (action) {
             BackupScreenAction.Export -> ui.send("export")
             BackupScreenAction.Import -> ui.send("import")

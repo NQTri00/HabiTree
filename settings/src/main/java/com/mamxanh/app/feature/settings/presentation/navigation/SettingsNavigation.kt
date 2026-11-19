@@ -1,8 +1,15 @@
 package com.mamxanh.app.feature.settings.presentation.navigation
 
+import androidx.compose.runtime.compositionLocalOf
 import com.mamxanh.app.core.presentation.navigation.HabiTreeFeatureDestination
 import com.mamxanh.app.core.presentation.navigation.HabiTreeFeatureModule
 import com.mamxanh.app.core.presentation.navigation.HabiTreeNavKey
+import com.mamxanh.app.feature.settings.presentation.BackupDisplay
+import com.mamxanh.app.feature.settings.presentation.BackupScreen
+import com.mamxanh.app.feature.settings.presentation.BackupScreenAction
+import com.mamxanh.app.feature.settings.presentation.SettingsDisplay
+import com.mamxanh.app.feature.settings.presentation.SettingsLink
+import com.mamxanh.app.feature.settings.presentation.SettingsScreen
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -15,7 +22,34 @@ internal data object BackupKey : HabiTreeNavKey {
     override val routeId: String get() = "data"
 }
 
+class SettingsRouteContent(
+    val state: SettingsDisplay,
+    val onLanguage: (String) -> Unit,
+    val onToggle: (String, Boolean) -> Unit,
+    val onSave: (String, String) -> Unit,
+    val onLink: (SettingsLink) -> Unit,
+)
+
+class BackupRouteContent(
+    val state: BackupDisplay,
+    val onAction: (BackupScreenAction) -> Unit,
+)
+
+val LocalSettingsRouteContent = compositionLocalOf<() -> SettingsRouteContent> {
+    error("Settings route requires its state and actions")
+}
+
+val LocalBackupRouteContent = compositionLocalOf<() -> BackupRouteContent> {
+    error("Backup route requires its state and actions")
+}
+
 val settingsFeatureNavigation = HabiTreeFeatureModule(
-    HabiTreeFeatureDestination("settings") { argument -> SettingsKey.takeIf { argument.isEmpty() } },
-    HabiTreeFeatureDestination("data") { argument -> BackupKey.takeIf { argument.isEmpty() } },
+    HabiTreeFeatureDestination("settings", content = {
+        val content = LocalSettingsRouteContent.current()
+        SettingsScreen(content.state, content.onLanguage, content.onToggle, content.onSave, content.onLink)
+    }) { argument -> SettingsKey.takeIf { argument.isEmpty() } },
+    HabiTreeFeatureDestination("data", content = {
+        val content = LocalBackupRouteContent.current()
+        BackupScreen(content.state, content.onAction)
+    }) { argument -> BackupKey.takeIf { argument.isEmpty() } },
 )

@@ -49,6 +49,7 @@ Each flow uses immutable state, typed actions, lifecycle-aware collection, and o
 
 - N01 Stats feature evidence: all four Stats routes now supply feature-owned renderers. Registry tests passed and 144 PNGs matched the preceding batch without missing or extra images. Other feature entries and the shell snapshot bridge remain open.
 - N01 Garden feature evidence: Garden, Encyclopedia, and Species supply their renderers through the registry. The app shell supplies typed snapshot adapters. `verifyArchitecture`, `:app:assembleDebug`, and `:app:testDebugUnitTest` passed. Compose batch `batch-20261119-082403` matched all 144 PNGs in `batch-20261119-081612` byte for byte.
+- N01 Settings feature evidence: Settings and Backup supply their renderers through the registry, with launch callbacks for shell-owned document and permission flows. `verifyArchitecture` and `:app:testDebugUnitTest` passed. Compose batch `batch-20261119-083016` matched all 144 PNGs in `batch-20261119-082403` byte for byte.
 
 ## Guide-to-check mapping
 

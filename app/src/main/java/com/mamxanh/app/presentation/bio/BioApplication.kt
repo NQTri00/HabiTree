@@ -19,6 +19,8 @@ import com.mamxanh.app.feature.stats.presentation.navigation.LocalWeeklyReviewRo
 import com.mamxanh.app.feature.garden.presentation.navigation.LocalEncyclopediaRouteContent
 import com.mamxanh.app.feature.garden.presentation.navigation.LocalGardenRouteContent
 import com.mamxanh.app.feature.garden.presentation.navigation.LocalSpeciesRouteContent
+import com.mamxanh.app.feature.settings.presentation.navigation.LocalBackupRouteContent
+import com.mamxanh.app.feature.settings.presentation.navigation.LocalSettingsRouteContent
 import com.mamxanh.app.feature.stats.presentation.navigation.LocalAchievementsRouteContent
 import com.mamxanh.app.feature.stats.presentation.navigation.LocalTimelineRouteContent
 import com.mamxanh.app.feature.stats.presentation.navigation.LocalStatisticsRouteContent
@@ -56,6 +58,8 @@ import androidx.compose.ui.unit.*
             LocalGardenRouteContent provides { gardenRouteContent(world, ui) },
             LocalEncyclopediaRouteContent provides { encyclopediaRouteContent(world, ui) },
             LocalSpeciesRouteContent provides { speciesRouteContent(world, ui) },
+            LocalSettingsRouteContent provides { settingsRouteContent(world, ui) },
+            LocalBackupRouteContent provides { backupRouteContent(world, ui) },
         ) {
         BoxWithConstraints(modifier.fillMaxSize().background(bp.bg)){
             val gutter=if(maxWidth<AppDimensions.Dp359)16 else if(maxWidth>=AppDimensions.Dp400)22 else 20
@@ -92,8 +96,6 @@ import androidx.compose.ui.unit.*
                                             "templates"->BioTemplates(world,ui)
                                             "rest"->BioRest(world,ui)
                                             "insights"->BioInsights(world,ui)
-                                            "settings"->BioSettings(world,ui)
-                                            "data"->BioData(world,ui)
                                             "more"->BioMore(ui)
                                         }
                                     }
