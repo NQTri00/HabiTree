@@ -23,6 +23,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.*
 import androidx.compose.ui.text.font.*
 import androidx.compose.ui.text.style.*
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import com.mamxanh.app.presentation.ui.GardenFontFamily
 
@@ -106,7 +107,7 @@ fun Modifier.bioLift(shape:Shape,tint:Color)=drawBehind{
 @Composable fun BioHeader(title:String,coins:Int,primary:Boolean,onBack:()->Unit,onMore:()->Unit,showWallet:Boolean=true) {
     Column(Modifier.fillMaxWidth()){
         Row(Modifier.fillMaxWidth().height(AppDimensions.Dp71).padding(start=if(LocalConfiguration.current.screenWidthDp<AppThemeEffects.CompactWidth)AppDimensions.Dp14 else AppDimensions.Dp20,end=if(LocalConfiguration.current.screenWidthDp<AppThemeEffects.CompactWidth)AppDimensions.Dp14 else AppDimensions.Dp20,top=AppDimensions.Dp10,bottom=AppDimensions.Dp8),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp4)) {
-            if(primary){Row(Modifier.weight(1f),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp7)){Bi("brand");Bt(stringResource(R.string.copy_mam_xanh_692a0a),size=AppTypography.Size18,bold=true,spacing=AppTypography.TrackingMinus_7);Box(Modifier.padding(bottom=AppDimensions.Dp15).size(AppDimensions.Dp5).background(bp.deep,RoundedCornerShape(50)))}}
+            if(primary){Row(Modifier.weight(1f),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp7)){Bi("brand");Bt(stringResource(R.string.app_name),size=AppTypography.Size18,bold=true,spacing=AppTypography.TrackingMinus_7);Box(Modifier.padding(bottom=AppDimensions.Dp15).size(AppDimensions.Dp5).background(bp.deep,RoundedCornerShape(50)))}}
             else{BioIconButton("back",onBack);Bt(title,Modifier.weight(1f),size=AppTypography.Size15,semi=true,maxLines=1)}
             if(showWallet)Row(Modifier.background(AppColors.SwatchFFFFFDF5,RoundedCornerShape(AppDimensions.Dp30)).border(AppDimensions.Dp1,AppColors.SwatchFFD8D0BD,RoundedCornerShape(AppDimensions.Dp30)).padding(horizontal=AppDimensions.Dp10,vertical=AppDimensions.Dp7),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp5)){Bi("coin",size=AppIcons.Size15,tint=AppColors.SwatchFF765F27);Bt(coins.toString(),size=AppTypography.Size12,mono=true)}
             if(primary)BioIconButton("more",onMore)
@@ -114,6 +115,7 @@ fun Modifier.bioLift(shape:Shape,tint:Color)=drawBehind{
         Box(Modifier.padding(horizontal=AppDimensions.Dp24).fillMaxWidth().height(AppDimensions.Dp1).background(Brush.horizontalGradient(listOf(bp.line,AppColors.Transparent))))
     }
 }
+
 @Composable fun BioIntro(title:String,eyebrow:String="",subtitle:String="",action:(@Composable () -> Unit)?=null) {
     Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.Top,horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp14)){
         Column(Modifier.weight(1f)){
@@ -170,4 +172,16 @@ fun Modifier.bioLift(shape:Shape,tint:Color)=drawBehind{
 }
 @Composable fun BioFacts(values:List<Pair<String,String>>) {
     Column{values.forEachIndexed{i,(label,value)->if(i>0)HorizontalDivider(color=bp.line,thickness=AppDimensions.Dp1);Row(Modifier.fillMaxWidth().heightIn(min=AppDimensions.Dp39).padding(vertical=AppDimensions.Dp10),horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp12)){Bt(label,Modifier.weight(1f),size=AppTypography.Size12,tint=bp.muted);Bt(bioDisplayDate(value),Modifier.weight(1f),size=AppTypography.Size12,align=TextAlign.End)}}}
+}
+
+@Preview(name = "Home app header", widthDp = 375, showBackground = true)
+@Composable
+private fun BioHeaderPreview() {
+    BioHeader(stringResource(R.string.app_name), coins = 620, primary = true, onBack = {}, onMore = {})
+}
+
+@Preview(name = "Home metrics", widthDp = 335, showBackground = true)
+@Composable
+private fun BioMetricsPreview() {
+    BioMetrics(listOf("Today’s tasks" to "1/4", "Coins today" to "8/50", "Streak" to "3"))
 }

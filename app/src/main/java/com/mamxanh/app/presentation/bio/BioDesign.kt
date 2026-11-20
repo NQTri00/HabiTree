@@ -117,3 +117,9 @@ private fun BioNavigationIconStrokePreview() {
         )
     }
 }
+
+@Preview(name = "Home bottom navigation", widthDp = 375, showBackground = true)
+@Composable
+private fun BioNavPreview() {
+    BioNav(route = "home", onGo = {})
+}

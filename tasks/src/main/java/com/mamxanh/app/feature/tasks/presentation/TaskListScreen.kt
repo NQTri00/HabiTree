@@ -95,3 +95,14 @@ private fun TaskListScreenPreview() {
         TaskListScreen(TaskListState("today", emptyList(), 0, 4, 0, false), {}, {})
     }
 }
+
+@Preview(name = "Next task", widthDp = 335, showBackground = true)
+@Composable
+private fun TaskListRowPreview() {
+    TaskListRow(
+        TaskListItem("1", "Read ten pages", AppText.canonical(TextKey.CopyHocTapA51516), 0, 8, false, false, true),
+        busy = false,
+        onOpen = {},
+        onComplete = {},
+    )
+}

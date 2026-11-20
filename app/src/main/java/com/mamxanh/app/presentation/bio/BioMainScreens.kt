@@ -8,6 +8,7 @@ import com.mamxanh.app.feature.shop.presentation.ShopTreeContext
 import com.mamxanh.app.feature.inventory.presentation.navigation.InventoryRouteContent
 import com.mamxanh.app.feature.home.presentation.navigation.HomeRouteContent
 import com.mamxanh.app.feature.home.presentation.HomeScreenAction
+import com.mamxanh.app.feature.home.presentation.HomeReward
 import com.mamxanh.app.feature.home.presentation.HomeScreenState
 import com.mamxanh.app.feature.tasks.presentation.TaskListAction
 import com.mamxanh.app.feature.tasks.presentation.TaskListItem
@@ -27,12 +28,9 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.*
-import androidx.compose.ui.draw.*
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.semantics.*
 import androidx.compose.ui.unit.*
@@ -43,52 +41,10 @@ internal fun taskReward(t:JSONObject)=if(t.s("verification")=="TIMER")when{t.i("
 internal fun growthCaption(t:JSONObject)=when(t.s("state")){"dead"->AppText.text(TextKey.CopyMamXanhDaDungLai6dabc6);"mature"->AppText.text(TextKey.CopyDaTruongThanh54f165);else->AppText.text(TextKey.CopyDangLonCungBan6913c2)}
 internal fun accessoryIcon(id:String)=when(id){"tree_ribbon"->"gift";"tree_lantern"->"sun";else->"spark"}
 
-@Composable internal fun BioHero(world:BioWorld,ui:BioController,t:JSONObject,home:Boolean=false,short:Boolean=false){
-    val p=bp;val narrow=LocalConfiguration.current.screenWidthDp<AppThemeEffects.CompactWidth;val shape=bioShape(AppRadii.Value26);val dead=t.s("state")=="dead"
-    Column(Modifier.fillMaxWidth().shadow(AppDimensions.Dp5,shape,ambientColor=p.deep.copy(alpha=AppOpacity.Value_35),spotColor=p.deep.copy(alpha=AppOpacity.Value_30)).background(remember(p){bioHeroBrush(p)},shape).border(AppDimensions.Dp1,AppColors.White.copy(alpha=AppOpacity.Value_75),shape).clip(shape).drawBehind {
-        val step=AppDimensions.Dp24.toPx();var x=0f;while(x<size.width){drawLine(AppColors.White.copy(alpha=AppOpacity.Value_08),Offset(x,0f),Offset(x,size.height),1f);x+=step};var y=0f;while(y<size.height){drawLine(AppColors.White.copy(alpha=AppOpacity.Value_08),Offset(0f,y),Offset(size.width,y),1f);y+=step}
-        val right=size.width-AppDimensions.Dp12.toPx();val top=AppDimensions.Dp12.toPx();val len=AppDimensions.Dp18.toPx();drawLine(p.deep.copy(alpha=AppOpacity.Value_45),Offset(right-len,top),Offset(right,top),AppDimensions.Dp1.toPx());drawLine(p.deep.copy(alpha=AppOpacity.Value_45),Offset(right,top),Offset(right,top+len),AppDimensions.Dp1.toPx())
-    }.padding(start=if(narrow)AppDimensions.Dp15 else AppDimensions.Dp19,end=if(narrow)AppDimensions.Dp15 else AppDimensions.Dp19,top=AppDimensions.Dp15,bottom=AppDimensions.Dp19)){
-        Row(Modifier.fillMaxWidth().height(AppDimensions.Dp48),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.SpaceBetween){
-            BioTag(treeState(t),dot=true)
-            if(home)BioTextAction(stringResource(R.string.copy_doi_cay_fada9c),{ui.show("tree-picker")},"next")
-            else BioTextAction(if(ui.homeTreeState.selectedId==t.s("id"))stringResource(R.string.copy_tren_trang_chu_e7c2f5) else stringResource(R.string.copy_dat_o_trang_chu_d8241c),{ui.act("bio-pin:"+t.s("id"))})
-        }
-        Spacer(Modifier.height(AppDimensions.Dp2))
-        val landscape=LocalConfiguration.current.screenHeightDp<AppThemeEffects.CompactHeight
-        val artHeight = when {
-            landscape -> AppDimensions.Dp100
-            home && short -> AppDimensions.HomeShortHeroArtworkHeight
-            home -> AppDimensions.HomeHeroArtworkHeight
-            short -> AppDimensions.TreeShortHeroArtworkHeight
-            narrow -> AppDimensions.TreeNarrowHeroArtworkHeight
-            else -> AppDimensions.Dp220
-        }
-        Box(Modifier.fillMaxWidth().height(artHeight).then(if(home)Modifier.clickable{ui.go("tree",t.s("id"))}else Modifier),contentAlignment=Alignment.Center){
-            val plantHeight = if (home) artHeight else artHeight - AppDimensions.Dp12
-            BioPlant(t.s("species"),Modifier.height(plantHeight).fillMaxWidth(),dead)
-            val accessory=t.s("decor").takeIf{it.isNotBlank()&&world.owned(it)>0}
-            if(accessory!=null&&!dead)Box(Modifier.align(Alignment.TopEnd).padding(top=AppDimensions.Dp55,end=AppDimensions.Dp14).size(AppDimensions.Dp32).background(AppColors.White.copy(alpha=AppOpacity.Value_6),RoundedCornerShape(50)).border(AppDimensions.Dp1,p.accent,RoundedCornerShape(50)),contentAlignment=Alignment.Center){Bi(accessoryIcon(accessory),size=AppIcons.Size23)}
-            if(!home&&world.trees.size>1){BioIconButton("back",{ui.act("tree-prev")},Modifier.align(Alignment.CenterStart).offset(x=AppDimensions.DpMinus6),boxed=true,iconSize=AppIcons.Size18,tint=p.deep,label=stringResource(R.string.copy_cay_truoc_6648b1));BioIconButton("next",{ui.act("tree-next")},Modifier.align(Alignment.CenterEnd).offset(x=AppDimensions.Dp6),boxed=true,iconSize=AppIcons.Size18,tint=p.deep,label=stringResource(R.string.copy_cay_tiep_theo_242116))}
-        }
-        Spacer(Modifier.height(AppDimensions.Dp10))
-        Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp8)){
-            Column(Modifier.weight(1f)){Bt(t.s("name"),size=AppTypography.Size21,line=AppTypography.LineHeight28_35,bold=true,spacing=AppTypography.TrackingMinus_7);Bt(stringResource(R.string.copy_0_1_giai_doan_869247, t.i("stage",1),world.species(t.s("species")).i("stages",6)),size=AppTypography.Size12,tint=p.muted,line=AppTypography.LineHeight21_7)}
-            BioTag(if(dead)stringResource(R.string.copy_kho_heo_bf546a) else if(t.b("watered"))stringResource(R.string.copy_du_nuoc_c17aa8) else stringResource(R.string.copy_can_tuoi_a0957f),"water")
-        }
-        Spacer(Modifier.height(AppDimensions.Dp12));BioProgress(t.i("progress")/100f,white=true)
-        Spacer(Modifier.height(AppDimensions.Dp6));Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween){Bt(growthCaption(t),size=AppTypography.Size10,tint=p.muted,line=AppTypography.LineHeight18_6);Bt("${t.i("progress")}%",size=AppTypography.Size11,tint=p.deep,mono=true,line=AppTypography.LineHeight18_6)}
-        if(home){Spacer(Modifier.height(AppDimensions.Dp13));if(LocalDensity.current.fontScale>AppThemeEffects.LargeFontScale)Column(verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp10)){
-            BioButton(if(t.b("watered"))stringResource(R.string.copy_da_tuoi_de2042) else stringResource(R.string.copy_tuoi_cay_0990f6),{ui.send("water:"+t.s("id"))},Modifier.fillMaxWidth(),"water",enabled=!t.b("watered")&&!dead&&!ui.busy)
-            BioButton(stringResource(R.string.copy_trang_tri_d48231),{ui.act("bio-tree-decor:"+t.s("id"))},Modifier.fillMaxWidth(),"spark",secondary=true,enabled=!dead&&!ui.busy)
-        }else Row(Modifier.height(IntrinsicSize.Min),horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp10)){
-            BioButton(if(t.b("watered"))stringResource(R.string.copy_da_tuoi_de2042) else stringResource(R.string.copy_tuoi_cay_0990f6),{ui.send("water:"+t.s("id"))},Modifier.weight(1f).fillMaxHeight(),"water",enabled=!t.b("watered")&&!dead&&!ui.busy,labelSize=if(narrow)12 else 14)
-            BioButton(stringResource(R.string.copy_trang_tri_d48231),{ui.act("bio-tree-decor:"+t.s("id"))},Modifier.weight(1f).fillMaxHeight(),"spark",secondary=true,enabled=!dead&&!ui.busy,labelSize=if(narrow)12 else 14)
-        }}
-    }
+@Composable
+private fun BioReward(world: BioWorld, ui: BioController) {
+    HomeReward(world.state.b("claimed"), world.data.o("phase").b("canClaim")) { ui.send("claim") }
 }
-
-@Composable internal fun BioReward(world:BioWorld,ui:BioController){BioCard(Modifier.fillMaxWidth(),AppColors.RewardSurface,padding=AppSpacing.Value14,radius=AppRadii.Value18){Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp12)){Bi("gift",tint=bp.ink);Column(Modifier.weight(1f)){Bt(stringResource(R.string.copy_thuong_hom_nay_c015c6),size=AppTypography.Size12,semi=true);Bt(stringResource(R.string.copy_8_xu_3a7892),size=AppTypography.Size11)};BioButton(if(world.state.b("claimed"))stringResource(R.string.copy_da_nhan_1d62ad) else stringResource(R.string.copy_nhan_8518f2),{ui.send("claim")},enabled=world.data.o("phase").b("canClaim")&&!world.state.b("claimed"))}}}
 
 @Composable internal fun BioProduct(world:BioWorld,ui:BioController,item:JSONObject,modifier:Modifier=Modifier,inventory:Boolean=false,target:String="",encyclopedia:Boolean=false){
     val id=item.s("id");val seed=world.species.any{it.s("id")==id};val accessory=item.s("category")=="TREE";val owned=(if(inventory)world.inventoryCount(id, accessory) else world.owned(id))>0;val equipped=world.trees.any{it.s("decor")==id};val known=world.record(id).b("discovered")||world.record(id).i("planted")>0||world.count(id)>0
