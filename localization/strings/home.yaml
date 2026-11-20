@@ -36,8 +36,10 @@ copy_tien_do_giai_doan_c1f3ab:
   source: home/src/main/java/com/mamxanh/app/feature/home/presentation/HomeScreen.kt
 copy_bon_phan_0_95a3dd:
   order: 532
-  vi: Bón phân · {0}
-  en: Fertilize · {0}
+  vi: Bón phân · {quantity}
+  en: Fertilize · {quantity}
+  placeholders:
+    quantity: integer
   canonical: false
   source: home/src/main/java/com/mamxanh/app/feature/home/presentation/HomeScreen.kt
 copy_gieo_mot_khoi_dau_82f23a:
@@ -108,8 +110,10 @@ copy_ghe_tiem_nho_8395ee:
   source: home/src/main/java/com/mamxanh/app/feature/home/presentation/HomeScreen.kt
 copy_da_nhan_0_xu_9e4321:
   order: 544
-  vi: Đã nhận +{0} xu
-  en: Claimed +{0} coins
+  vi: Đã nhận +{coins} xu
+  en: Claimed +{coins} coins
+  placeholders:
+    coins: integer
   canonical: false
   source: home/src/main/java/com/mamxanh/app/feature/home/presentation/HomeScreen.kt
 copy_bat_dau_tap_trung_d198d9:

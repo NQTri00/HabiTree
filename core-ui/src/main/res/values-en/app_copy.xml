@@ -173,7 +173,7 @@
     <string name="copy_phu_kien_0852d7" formatted="false">Accessories</string>
     <string name="copy_nhin_lai_tuan_ff3f0c" formatted="false">Weekly review</string>
     <string name="copy_nhung_dieu_nho_da_lon_len_882792" formatted="false">Small things that have grown</string>
-    <string name="copy_0_phut_c0bcb0" formatted="false"> · {0} min</string>
+    <string name="copy_0_phut_c0bcb0">" · %1$d min"</string>
     <string name="copy_da_hoan_thanh_1911fc">Completed: %1$s</string>
     <string name="copy_tap_trung_71ae4b">Focus: %1$s</string>
     <string name="copy_hoan_thanh_f183ae">Complete: %1$s</string>
@@ -537,7 +537,7 @@
     <string name="copy_mam_xanh_dang_lon_len_tung_ngay_6feecd" formatted="false">Your little sprouts grow each day.</string>
     <string name="copy_vuon_uom_cd0b43" formatted="false">Nursery</string>
     <string name="copy_gieo_mot_viec_nho_227fcc" formatted="false">Plant a little task</string>
-    <string name="copy_chon_0_85cbcf" formatted="false">Choose {0}</string>
+    <string name="copy_chon_0_85cbcf">Choose %1$s</string>
     <string name="copy_da_64a504" formatted="false">Done</string>
     <string name="copy_moi_viec_nho_mot_buoc_lon_len_80104a" formatted="false">Every small task helps you grow</string>
     <string name="copy_mot_ngay_moi_cc8267" formatted="false">A NEW DAY</string>
@@ -545,7 +545,7 @@
     <string name="copy_moi_viec_nho_mot_mam_lon_f6a672" formatted="false">One small task. One growing sprout.</string>
     <string name="copy_cham_soc_5b1872" formatted="false">Care for </string>
     <string name="copy_tien_do_giai_doan_c1f3ab" formatted="false">Stage progress</string>
-    <string name="copy_bon_phan_0_95a3dd" formatted="false">Fertilize · {0}</string>
+    <string name="copy_bon_phan_0_95a3dd">Fertilize · %1$d</string>
     <string name="copy_gieo_mot_khoi_dau_82f23a" formatted="false">Plant a beginning</string>
     <string name="copy_chon_hat_3d6476" formatted="false">Choose seed</string>
     <string name="copy_viec_da_xong_4cbf90" formatted="false">Completed tasks</string>
@@ -557,7 +557,7 @@
     <string name="copy_mot_tuan_nhieu_dieu_nho_4ca68f" formatted="false">One week, many little things</string>
     <string name="copy_chon_hat_giong_eebad6" formatted="false">Choose seeds</string>
     <string name="copy_ghe_tiem_nho_8395ee" formatted="false">Visit the little shop</string>
-    <string name="copy_da_nhan_0_xu_9e4321" formatted="false">Claimed +{0} coins</string>
+    <string name="copy_da_nhan_0_xu_9e4321">Claimed +%1$d coins</string>
     <string name="copy_bat_dau_tap_trung_d198d9" formatted="false">Start focusing</string>
     <string name="copy_hoan_thanh_viec_a2a386" formatted="false">Complete task</string>
     <string name="copy_chon_hat_cho_goc_vuon_3c30f3" formatted="false">Choose a seed for your garden</string>
@@ -572,30 +572,30 @@
     <string name="copy_doc_mot_dieu_ban_yeu_thich_7a7dfc" formatted="false">Read something you love</string>
     <string name="copy_ky_niem_se_xuat_hien_tu_nhung_viec_ban_thuc_su_da_la_df826a" formatted="false">Memories will appear from things you have actually done.</string>
     <string name="copy_xem_lien_quan_127914" formatted="false">View related ›</string>
-    <string name="copy_ghi_chu_0_e5b4bc" formatted="false">Note: {0}</string>
+    <string name="copy_ghi_chu_0_e5b4bc">Note: %1$s</string>
     <string name="copy_cham_mot_chut_moi_ngay_e8732c" formatted="false">A little care, every day.</string>
     <string name="copy_mot_nhip_song_vua_suc_theo_cach_cua_ban_0f4521" formatted="false">A manageable rhythm, your way.</string>
     <string name="copy_them_tu_viec_mau_4e3260" formatted="false">Add from templates</string>
     <string name="copy_nhip_tung_thoi_quen_8481ee" formatted="false">Each habit\'s rhythm</string>
     <string name="copy_bo_dem_c8def0" formatted="false">Timer</string>
     <string name="copy_cham_36a8bd" formatted="false">Tap</string>
-    <string name="copy_khung_gio_0_1_c4abe6" formatted="false">Time window {0}–{1}</string>
+    <string name="copy_khung_gio_0_1_c4abe6">Time window %1$s–%2$s</string>
     <string name="copy_nghi_mot_chut_khong_tinh_thoi_gian_nghi_a616c7" formatted="false">Take a break · Break time does not count</string>
     <string name="copy_roi_ung_dung_se_tam_dung_phan_da_lam_luon_duoc_luu_381f0a" formatted="false">Leaving the app pauses your session. Your progress is always saved.</string>
     <string name="copy_phut_tap_trung_459fbd" formatted="false">Focus minutes</string>
     <string name="copy_5_120_phut_0c4b29" formatted="false">5–120 minutes</string>
-    <string name="copy_da_hoan_thanh_0_phien_3aedba" formatted="false">Completed sessions: {0}</string>
-    <string name="copy_0_1_2_phut_3_1cab4a" formatted="false">{0} · {1} / {2} min · {3}</string>
+    <string name="copy_da_hoan_thanh_0_phien_3aedba">Completed sessions: %1$d</string>
+    <string name="copy_0_1_2_phut_3_1cab4a">%1$s · %2$s / %3$d min · %4$s</string>
     <string name="copy_tron_ven_2a4501" formatted="false">Complete</string>
     <string name="copy_da_luu_phan_da_lam_0f9d18" formatted="false">Progress saved</string>
     <string name="copy_dang_chay_cd07e6" formatted="false">Running</string>
-    <string name="copy_tuan_tu_0_55af46" formatted="false">WEEK OF {0}</string>
+    <string name="copy_tuan_tu_0_55af46">WEEK OF %1$s</string>
     <string name="copy_chua_du_du_lieu_de_so_sanh_tuan_truoc_63f9c2" formatted="false">Not enough data to compare with last week.</string>
-    <string name="copy_tuan_truoc_0_so_lieu_den_hom_nay_1201e0" formatted="false">Last week: {0}% · Data through today.</string>
-    <string name="copy_0_ngay_cham_cay_1_moc_truong_thanh_eb3af0" formatted="false">Tree-care days: {0} · Maturity milestones: {1}</string>
+    <string name="copy_tuan_truoc_0_so_lieu_den_hom_nay_1201e0">Last week: %1$d%% · Data through today.</string>
+    <string name="copy_0_ngay_cham_cay_1_moc_truong_thanh_eb3af0">Tree-care days: %1$d · Maturity milestones: %2$d</string>
     <string name="copy_chua_du_du_lieu_ve_nhom_thoi_quen_2068bb" formatted="false">Not enough habit-category data yet.</string>
-    <string name="copy_deu_dan_nhat_0_b18f80" formatted="false">Most consistent: {0}</string>
-    <string name="copy_co_the_dieu_chinh_nhe_0_c674c2" formatted="false">A little room to adjust: {0}</string>
+    <string name="copy_deu_dan_nhat_0_b18f80">Most consistent: %1$s</string>
+    <string name="copy_co_the_dieu_chinh_nhe_0_c674c2">A little room to adjust: %1$s</string>
     <string name="copy_dieu_gi_khien_tuan_nay_de_dang_hon_72fdd9" formatted="false">What made this week easier?</string>
     <string name="copy_suy_ngam_tuan_75229e" formatted="false">Weekly reflection</string>
     <string name="copy_ghi_lai_cho_rieng_ban_da0345" formatted="false">Write something just for you</string>
@@ -606,7 +606,7 @@
     <string name="copy_nhip_thoi_quen_9c03a7" formatted="false">HABIT RHYTHM</string>
     <string name="copy_them_mot_viec_de_bat_dau_ghi_lai_nhip_thoi_quen_5bc1b9" formatted="false">Add a task to start recording your habit rhythm.</string>
     <string name="copy_hien_tai_027390" formatted="false">Current</string>
-    <string name="copy_tap_trung_0_phut_gio_thuong_hoan_thanh_1_e3e85d" formatted="false">Focus: {0} min · Usual completion time: {1}</string>
+    <string name="copy_tap_trung_0_phut_gio_thuong_hoan_thanh_1_e3e85d">Focus: %1$d min · Usual completion time: %2$s</string>
     <string name="copy_chua_du_du_lieu_348596" formatted="false">not enough data yet</string>
     <string name="copy_xem_dieu_chinh_a56d7a" formatted="false">View adjustment</string>
     <string name="copy_mac_dinh_tat_bat_quyen_va_nhac_toan_cuc_trong_tuy_ch_703a98" formatted="false">Off by default. Enable notification permission and app reminders in Settings if you want reminders.</string>
@@ -642,25 +642,33 @@
     <string name="copy_chuoi_8f6fe1" formatted="false">Streak</string>
     <string name="copy_lich_xac_nhan_263bc4" formatted="false">Schedule &amp; completion</string>
     <string name="copy_thu_hai_den_thu_sau_78c8f6" formatted="false">Monday to Friday</string>
-    <string name="copy_ngay_0_d9f894" formatted="false">Days: {0}</string>
-    <string name="copy_mot_lan_han_0_0809b4" formatted="false">One-time · Due {0}</string>
-    <string name="copy_timer_0_phut_hoat_dong_0027f1" formatted="false">Timer · {0} active minutes</string>
+    <string name="copy_ngay_0_d9f894">Days: %1$s</string>
+    <string name="copy_mot_lan_han_0_0809b4">One-time · Due %1$s</string>
+    <string name="copy_timer_0_phut_hoat_dong_0027f1">Timer · %1$d active minutes</string>
     <string name="copy_click_xac_nhan_mot_lan_8007ac" formatted="false">Tap · Confirm once</string>
     <string name="copy_dang_tam_dung_e40cc1" formatted="false">Paused</string>
     <string name="copy_da_luu_tru_6aff2a" formatted="false">Archived</string>
-    <string name="copy_lan_cuoi_0_97f1a4" formatted="false">Last completed {0}</string>
-    <string name="copy_hoat_dong_0_1_2_phut_79ed9b" formatted="false">Active {0}:{1} / {2} min</string>
+    <string name="copy_lan_cuoi_0_97f1a4">Last completed %1$s</string>
+    <string name="copy_hoat_dong_0_1_2_phut_79ed9b">Active %1$d:%2$s / %3$d min</string>
     <string name="copy_ra_nen_se_tam_dung_khoi_dong_lai_can_tiep_tuc_thu_co_560f6d" formatted="false">Going to the background pauses the timer. After restarting, resume it manually.</string>
     <string name="copy_bat_dau_timer_141cca" formatted="false">Start timer</string>
     <string name="copy_sua_d4e076" formatted="false">Edit</string>
     <string name="copy_tam_dung_viec_c4c909" formatted="false">Pause task</string>
     <string name="copy_tiep_tuc_viec_255a2e" formatted="false">Resume task</string>
     <string name="copy_quan_ly_viec_64cecb" formatted="false">Manage tasks</string>
-    <string name="copy_0_1_viec_bat_buoc_da_xong_0ffc34" formatted="false">{0}/{1} required tasks done</string>
+    <string name="copy_0_1_viec_bat_buoc_da_xong_0ffc34">%1$d/%2$d required tasks done</string>
+    <plurals name="copy_0_1_viec_bat_buoc_da_xong_0ffc34">
+        <item quantity="one">%1$d/%2$d required task done</item>
+        <item quantity="other">%1$d/%2$d required tasks done</item>
+    </plurals>
     <string name="copy_chua_co_viec_nao_2c72b0" formatted="false">No tasks yet</string>
     <string name="copy_hay_them_viec_nho_de_xay_dung_thoi_quen_moi_ngay_8aeb29" formatted="false">Add a small task to build a daily habit.</string>
     <string name="copy_them_viec_3e34ed" formatted="false">+ Add task</string>
-    <string name="copy_da_hoan_thanh_0_1_viec_e78274" formatted="false">Completed {0} / {1} tasks</string>
+    <string name="copy_da_hoan_thanh_0_1_viec_e78274">Completed %1$d / %2$d tasks</string>
+    <plurals name="copy_da_hoan_thanh_0_1_viec_e78274">
+        <item quantity="one">Completed %1$d / %2$d task</item>
+        <item quantity="other">Completed %1$d / %2$d tasks</item>
+    </plurals>
     <string name="copy_da_nhan_thuong_98b708" formatted="false">Reward claimed</string>
     <string name="copy_bo_eecf2d" formatted="false">walk</string>
     <string name="copy_nuoc_a2a970" formatted="false">water</string>
@@ -669,7 +677,7 @@
     <string name="copy_chuan_bi_e65470" formatted="false">Prepare</string>
     <string name="copy_hoc_380b3f" formatted="false">Study</string>
     <string name="copy_han_59b874" formatted="false">Due: </string>
-    <string name="copy_0_1_2_phut_b73be0" formatted="false">{0}:{1} / {2} min</string>
+    <string name="copy_0_1_2_phut_b73be0">%1$d:%2$s / %3$d min</string>
     <string name="copy_tam_dung_bo_dem_e82e42" formatted="false">Pause timer</string>
     <string name="copy_bat_dau_bo_dem_35c256" formatted="false">Start timer</string>
     <string name="copy_hoan_thanh_nhiem_vu_e5ef43" formatted="false">Complete task</string>
@@ -678,7 +686,7 @@
     <string name="copy_don_goc_hoc_tap_e45d91" formatted="false">Tidy the study space</string>
     <string name="copy_giu_gon_gang_63ed82" formatted="false">Keep things tidy</string>
     <string name="copy_chuan_bi_bai_cho_ngay_mai_0c86eb" formatted="false">Prepare tomorrow\'s lesson</string>
-    <string name="copy_daily_clear_0_xu_gioi_han_1_xu_ngay_6fe04e" formatted="false">Daily Clear +{0} coins · Limit {1} coins/day</string>
+    <string name="copy_daily_clear_0_xu_gioi_han_1_xu_ngay_6fe04e">Daily Clear +%1$d coins · Limit %2$d coins/day</string>
     <string name="copy_hoan_thanh_ke_hoach_bat_buoc_5342d8" formatted="false">Complete the required plan</string>
     <string name="copy_luu_e91f26" formatted="false">Save</string>
     <string name="copy_viec_moi_la_tuy_chon_hom_nay_lich_moi_tu_ngay_mai_984ba2" formatted="false">New tasks are optional today. Their schedule starts tomorrow.</string>
@@ -691,28 +699,28 @@
     <string name="copy_ket_thuc_hh_mm_8a0762" formatted="false">End (HH:mm)</string>
     <string name="copy_nhac_viec_hh_mm_tuy_chon_952c81" formatted="false">Reminder (HH:mm, optional)</string>
     <string name="copy_thong_bao_can_quyen_he_thong_tu_choi_quyen_van_luu_d_26414d" formatted="false">Notifications need system permission. You can still save the task without it.</string>
-    <string name="copy_thuong_0_xu_tong_toi_da_1_xu_ngay_717b49" formatted="false">Reward: {0} coins · Daily total up to {1} coins</string>
+    <string name="copy_thuong_0_xu_tong_toi_da_1_xu_ngay_717b49">Reward: %1$d coins · Daily total up to %2$d coins</string>
     <string name="copy_tiep_tuc_sua_13f645" formatted="false">Keep editing</string>
     <string name="copy_noi_dung_chua_luu_se_bi_mat_4228e1" formatted="false">Your unsaved changes will be lost.</string>
     <string name="copy_goc_nho_cua_ban_ba1417" formatted="false">YOUR LITTLE CORNER</string>
-    <string name="copy_0_cay_1_o_mo_528d81" formatted="false">Trees: {0} · Open plots: {1}</string>
+    <string name="copy_0_cay_1_o_mo_528d81">Trees: %1$d · Open plots: %2$d</string>
     <string name="copy_goc_vuon_f4c049" formatted="false">Garden corner</string>
     <string name="copy_chua_co_cay_phu_hop_75e67d" formatted="false">No matching trees yet.</string>
     <string name="copy_chua_mo_b744b3" formatted="false">Locked</string>
     <string name="copy_chi_tuoi_cay_con_song_dang_can_nuoc_thoi_gian_tuoi_k_958a7a" formatted="false">Only living trees that need water are watered. Watering time does not stack.</string>
     <string name="copy_mo_o_trong_11b979" formatted="false">Unlock planting plot</string>
-    <string name="copy_o_0_3d2411" formatted="false">Plot {0}</string>
+    <string name="copy_o_0_3d2411">Plot %1$s</string>
     <string name="copy_vi_cua_ban_d87c21" formatted="false">Your wallet</string>
     <string name="copy_hat_van_o_trong_tui_mo_them_o_trong_de_gieo_cay_54d8b7" formatted="false">Your seed stays in inventory. Unlock another planting plot to grow it.</string>
-    <string name="copy_0_cay_dang_lon_c1217a" formatted="false">🌿  Growing trees: {0}  🌿</string>
-    <string name="copy_0_can_tuoi_425a0d" formatted="false">Need water: {0}</string>
-    <string name="copy_0_hat_b54ddd" formatted="false">Seeds: {0}</string>
-    <string name="copy_cham_soc_0_e5e78b" formatted="false">Care for {0}</string>
+    <string name="copy_0_cay_dang_lon_c1217a">🌿  Growing trees: %1$d  🌿</string>
+    <string name="copy_0_can_tuoi_425a0d">Need water: %1$d</string>
+    <string name="copy_0_hat_b54ddd">Seeds: %1$d</string>
+    <string name="copy_cham_soc_0_e5e78b">Care for %1$s</string>
     <string name="copy_da_tuoi_d97f10" formatted="false">✓ Watered</string>
     <string name="copy_cho_tuoi_79f9ea" formatted="false">💧 Needs water</string>
     <string name="copy_ten_cay_tuy_chon_3f3d38" formatted="false">Optional tree name</string>
     <string name="copy_bo_trong_de_dung_ten_loai_cay_a7e5fc" formatted="false">Leave empty to use the species name.</string>
-    <string name="copy_o_trong_0_174f9e" formatted="false">Planting plot · {0}</string>
+    <string name="copy_o_trong_0_174f9e">Planting plot · %1$s</string>
     <string name="copy_dung_1_hat_trong_tui_de_bat_dau_trong_bde1a7" formatted="false">Use 1 seed from inventory to start growing.</string>
     <string name="copy_dao_hong_76f74f" formatted="false">Pink cherry</string>
     <string name="copy_da_gieo_cay_da_trong_e209c5" formatted="false">Seed planted!\nPlanted </string>
@@ -740,12 +748,12 @@
     <string name="copy_huy_bo_tri_ea6ca2" formatted="false">Cancel arrangement</string>
     <string name="copy_hoan_tac_e72ff6" formatted="false">Undo</string>
     <string name="copy_khong_gian_cua_ban_d45f67" formatted="false">YOUR SPACE</string>
-    <string name="copy_khu_0_dang_khoa_bdcfda" formatted="false">Section {0} is locked</string>
-    <string name="copy_0_xu_them_6_o_bd7dbb" formatted="false">{0} coins · 6 more plots</string>
+    <string name="copy_khu_0_dang_khoa_bdcfda">Section %1$d is locked</string>
+    <string name="copy_0_xu_them_6_o_bd7dbb">%1$d coins · 6 more plots</string>
     <string name="copy_xem_mo_khu_28c09c" formatted="false">View section unlock</string>
     <string name="copy_o_dang_khoa_0b475c" formatted="false">Locked plot</string>
-    <string name="copy_0_trang_tri_a468bd" formatted="false">Decorations: {0}</string>
-    <string name="copy_so_huu_0_a67ee0" formatted="false">Owned · {0}</string>
+    <string name="copy_0_trang_tri_a468bd">Decorations: %1$d</string>
+    <string name="copy_so_huu_0_a67ee0">Owned · %1$d</string>
     <string name="copy_qua_suu_tam_218de5" formatted="false">Collection reward</string>
     <string name="copy_chua_co_trang_tri_c94f39" formatted="false">No decorations yet</string>
     <string name="copy_vat_pham_chua_duoc_ho_tro_5099e1" formatted="false">This item is not supported yet.</string>
@@ -753,15 +761,15 @@
     <string name="copy_vi_tri_cach_dung_82d89c" formatted="false">Placement &amp; use</string>
     <string name="copy_chi_trang_tri_khong_doi_toc_do_cay_mua_de_cat_vao_tu_58883c" formatted="false">Decoration only; tree growth is unchanged. Buy it to keep in inventory.</string>
     <string name="copy_mo_khoa_qua_suu_tam_12f128" formatted="false">Unlock through your collection</string>
-    <string name="copy_uoc_tinh_0_ngay_1_b69012" formatted="false">Estimated {0} days · {1}</string>
+    <string name="copy_uoc_tinh_0_ngay_1_b69012">Estimated %1$d days · %2$s</string>
     <string name="copy_tham_khao_40_xu_ngay_c8596f" formatted="false">based on 40 coins/day</string>
     <string name="copy_theo_thu_nhap_7_ngay_f72e2b" formatted="false">based on 7-day earnings</string>
     <string name="copy_chon_chu_de_c1f89a" formatted="false">Choose theme</string>
-    <string name="copy_0_loai_trong_danh_muc_giu_lich_su_khi_don_hoac_ban_c_ac2aaf" formatted="false">Species in catalog: {0} · History stays when you clear or sell a tree</string>
+    <string name="copy_0_loai_trong_danh_muc_giu_lich_su_khi_don_hoac_ban_c_ac2aaf">Species in catalog: %1$d · History stays when you clear or sell a tree</string>
     <string name="copy_loai_chua_duoc_ho_tro_9107c4" formatted="false">This species is not supported yet.</string>
     <string name="copy_cac_giai_doan_d4547f" formatted="false">Growth stages</string>
     <string name="copy_binh_tuoi_8_12_18_24_gio_phan_bon_dung_khi_cay_dang_de84c6" formatted="false">Watering cans: 8 / 12 / 18 / 24 hours · Fertilizer is for growing, watered trees; effects do not stack.</string>
-    <string name="copy_tu_0_7eb90b" formatted="false">Since {0}</string>
+    <string name="copy_tu_0_7eb90b">Since %1$s</string>
     <string name="copy_ten_vuon_1b0761" formatted="false">Garden name</string>
     <string name="copy_loai_cay_dd9342" formatted="false">Plant species</string>
     <string name="copy_dong_co_09da3d" formatted="false">Meadow</string>
@@ -771,19 +779,19 @@
     <string name="copy_tiet_kiem_pin_b1018c" formatted="false">Battery saver</string>
     <string name="copy_giam_chuyen_dong_hoac_tiet_kiem_pin_tat_hat_bay_am_t_91e597" formatted="false">Reduced motion or battery saver turns off floating particles. Sound is off.</string>
     <string name="copy_luu_dien_mao_105663" formatted="false">Save appearance</string>
-    <string name="copy_khu_vuon_0_c58827" formatted="false">Garden section {0}</string>
+    <string name="copy_khu_vuon_0_c58827">Garden section %1$d</string>
     <string name="copy_them_6_o_giu_nguyen_cay_hien_co_f944b2" formatted="false">6 more plots · Existing trees stay</string>
     <string name="copy_gia_mo_khu_d7a20a" formatted="false">Section unlock price</string>
-    <string name="copy_mo_khu_0_xu_d27450" formatted="false">Unlock section · {0} coins</string>
-    <string name="copy_can_them_0_xu_8837ee" formatted="false">Need {0} more coins</string>
+    <string name="copy_mo_khu_0_xu_d27450">Unlock section · %1$d coins</string>
+    <string name="copy_can_them_0_xu_8837ee">Need %1$d more coins</string>
     <string name="copy_chon_chu_de_tai_dien_mao_bff149" formatted="false">Choose a theme in Appearance</string>
     <string name="copy_chon_o_co_cay_con_song_c0f228" formatted="false">Choose a plot with a living tree</string>
     <string name="copy_vat_pham_da_duoc_dat_het_57767b" formatted="false">All copies of this item have been placed</string>
     <string name="copy_o_nay_da_co_vat_pham_cung_loai_a47c7d" formatted="false">This plot already has an item of the same type</string>
     <string name="copy_dang_mua_c2f9ae" formatted="false">Buying…</string>
-    <string name="copy_0_xu_mon_d8d2ec" formatted="false">{0} coins / item</string>
-    <string name="copy_0_1_dang_c7b549" formatted="false">{0} · Forms: {1}</string>
-    <string name="copy_khoang_0_ngay_tich_xu_uoc_tinh_1_xu_ngay_8fd2f8" formatted="false">About {0} days of saving · Estimated {1} coins/day</string>
+    <string name="copy_0_xu_mon_d8d2ec">%1$d coins / item</string>
+    <string name="copy_0_1_dang_c7b549">%1$s · Forms: %2$d</string>
+    <string name="copy_khoang_0_ngay_tich_xu_uoc_tinh_1_xu_ngay_8fd2f8">About %1$d days of saving · Estimated %2$d coins/day</string>
     <string name="copy_so_luong_bdb17c" formatted="false">Quantity</string>
     <string name="copy_tang_so_luong_f05853" formatted="false">Increase quantity</string>
     <string name="copy_giam_so_luong_9abe78" formatted="false">Decrease quantity</string>
@@ -791,7 +799,7 @@
     <string name="copy_binh_tuoi_keo_dai_thoi_gian_cham_soc_khong_can_mua_n_d611f4" formatted="false">Watering cans extend care time; no need to buy water. Fertilizer is optional.</string>
     <string name="copy_exclusive_sap_ra_mat_chua_mo_ban_366438" formatted="false">Exclusive · Coming soon. Not for sale yet.</string>
     <string name="copy_ghe_vuon_uom_ca45c6" formatted="false">Visit nursery</string>
-    <string name="copy_da_them_0_vao_tui_fe68af" formatted="false">Added {0} to inventory</string>
+    <string name="copy_da_them_0_vao_tui_fe68af">Added %1$s to inventory</string>
     <string name="copy_chon_mot_loai_phan_trong_tui_8bb0e2" formatted="false">Choose fertilizer from your inventory.</string>
     <string name="copy_cho_8de7e9" formatted="false">Wait</string>
     <string name="copy_bo_sung_vat_pham_0a35b0" formatted="false">Get more supplies  ›</string>
@@ -803,7 +811,7 @@
     <string name="copy_tien_do_e59478" formatted="false">Progress</string>
     <string name="copy_giu_lai_3c3ba2" formatted="false">Keep</string>
     <string name="copy_cay_se_roi_o_trong_vinh_vien_khong_hoan_lai_hat_hoac_9f6b91" formatted="false">This tree will leave its plot permanently. Its seed and progress are not refunded.</string>
-    <string name="copy_phan_vuot_gioi_han_0_xu_ngay_se_mat_khong_de_danh_cdcca8" formatted="false">Anything above the {0}-coin daily cap is lost and cannot be saved for later.</string>
+    <string name="copy_phan_vuot_gioi_han_0_xu_ngay_se_mat_khong_de_danh_cdcca8">Anything above the %1$d-coin daily cap is lost and cannot be saved for later.</string>
     <string name="copy_don_cay_khong_hoan_xu_hoac_hat_cdff29" formatted="false">Clearing a tree returns no coins or seeds</string>
     <string name="copy_da_tuoi_cay_cua_so_tang_truong_da_bat_dau_1da977" formatted="false">Tree watered · Growth window started</string>
     <string name="copy_cay_dang_duoc_tuoi_thoi_gian_khong_cong_don_a33cd0" formatted="false">The tree is already watered; watering time does not stack</string>
@@ -824,7 +832,11 @@
     <string name="copy_lam_moi_thong_ke_f1683d" formatted="false">Refresh statistics</string>
     <string name="copy_hay_bat_dau_cham_cay_de_ghi_lai_hanh_trinh_cua_ban_n_e6b786" formatted="false">🌱 Start caring for a tree to record your journey!</string>
     <string name="copy_so_lieu_duoc_luu_tren_thiet_bi_f6ac69" formatted="false">Data is stored on this device</string>
-    <string name="copy_0_1_viec_ec6e1e" formatted="false">{0}: {1} tasks</string>
+    <string name="copy_0_1_viec_ec6e1e">%1$s: %2$d tasks</string>
+    <plurals name="copy_0_1_viec_ec6e1e">
+        <item quantity="one">%1$s: %2$d task</item>
+        <item quantity="other">%1$s: %2$d tasks</item>
+    </plurals>
     <string name="copy_trang_tri_da_so_huu_a10e7a" formatted="false">Owned decorations</string>
     <string name="copy_chon_hat_de_gieo_tai_o_183f3d" formatted="false">Choose a seed for plot </string>
     <string name="copy_cham_de_dung_ed92ea" formatted="false">Tap to use</string>
@@ -920,15 +932,15 @@
     <string name="copy_phan_co_ban_ed015b" formatted="false">Basic fertilizer</string>
     <string name="copy_phan_giau_duong_4c481b" formatted="false">Rich fertilizer</string>
     <string name="copy_phan_cao_cap_7d6d08" formatted="false">Premium fertilizer</string>
-    <string name="copy_tuoi_giup_cay_phat_trien_trong_0_gio_dung_cu_dung_la_42bc3f" formatted="false">Waters the tree for {0} hours. A reusable tool.</string>
-    <string name="copy_tang_toc_0_trong_1_gio_khi_cay_duoc_tuoi_moi_cay_dun_f78504" formatted="false">{0}× growth for {1} hours on a watered tree. Use once per tree every 24 hours.</string>
-    <string name="copy_giai_doan_0_1_c0a0f8" formatted="false">Stage {0}/{1}</string>
+    <string name="copy_tuoi_giup_cay_phat_trien_trong_0_gio_dung_cu_dung_la_42bc3f">Waters the tree for %1$d hours. A reusable tool.</string>
+    <string name="copy_tang_toc_0_trong_1_gio_khi_cay_duoc_tuoi_moi_cay_dun_f78504">%1$s× growth for %2$d hours on a watered tree. Use once per tree every 24 hours.</string>
+    <string name="copy_giai_doan_0_1_c0a0f8">Stage %1$d/%2$d</string>
     <string name="copy_khong_the_tuoi_4bd57f" formatted="false">Cannot water</string>
-    <string name="copy_0_dang_co_tac_dung_f8943e" formatted="false">{0} is active</string>
+    <string name="copy_0_dang_co_tac_dung_f8943e">%1$s is active</string>
     <string name="copy_phan_bon_29fa19" formatted="false">Fertilizer</string>
-    <string name="copy_0_gio_1_phut_b72ee2" formatted="false">{0} hr {1} min</string>
-    <string name="copy_co_the_chon_hat_0_e01474" formatted="false">You can choose a seed: {0}</string>
-    <string name="copy_con_0_xu_de_chon_1_133bcf" formatted="false">You need {0} more coins to choose {1}</string>
+    <string name="copy_0_gio_1_phut_b72ee2">%1$d hr %2$d min</string>
+    <string name="copy_co_the_chon_hat_0_e01474">You can choose a seed: %1$s</string>
+    <string name="copy_con_0_xu_de_chon_1_133bcf">You need %1$d more coins to choose %2$s</string>
     <string name="copy_dong_ho_da_lui_cho_gio_thuc_bat_kip_1475f3" formatted="false">The clock moved backward; wait for real time to catch up</string>
     <string name="copy_huong_dan_da_hoan_tat_dung_thu_vien_de_them_viec_beee35" formatted="false">Introduction already completed; use templates to add tasks</string>
     <string name="copy_chon_cay_va_2_5_viec_phu_hop_b6e17e" formatted="false">Choose a tree and 2–5 manageable tasks</string>
@@ -947,7 +959,7 @@
     <string name="copy_ngay_nay_da_duoc_bao_ve_836dc8" formatted="false">This day is already protected</string>
     <string name="copy_chua_co_ve_bao_ve_515182" formatted="false">No protection tickets available</string>
     <string name="copy_mot_ngay_duoc_bao_ve_f0f58e" formatted="false">One protected day</string>
-    <string name="copy_da_bao_ve_ngay_0_khong_nhan_daily_clear_f822ac" formatted="false">Protected {0}; no Daily Clear reward</string>
+    <string name="copy_da_bao_ve_ngay_0_khong_nhan_daily_clear_f822ac">Protected %1$s; no Daily Clear reward</string>
     <string name="copy_ghi_chu_toi_da_2000_ky_tu_f518c7" formatted="false">Notes can contain up to 2000 characters</string>
     <string name="copy_da_luu_suy_ngam_tren_thiet_bi_eba47d" formatted="false">Reflection saved on this device</string>
     <string name="copy_ghi_chu_toi_da_1000_ky_tu_fc83f2" formatted="false">Notes can contain up to 1000 characters</string>
@@ -969,23 +981,23 @@
     <string name="copy_da_luu_phan_thoi_gian_da_lam_1eecbe" formatted="false">Active time saved</string>
     <string name="copy_nghi_mot_chut_khi_ban_muon_d17dee" formatted="false">Take a break whenever you want</string>
     <string name="copy_da_cap_nhat_phien_31f373" formatted="false">Session updated</string>
-    <string name="copy_viec_dau_tien_0_dd1cd5" formatted="false">First task: {0}</string>
+    <string name="copy_viec_dau_tien_0_dd1cd5">First task: %1$s</string>
     <string name="copy_mam_cay_dau_tien_e1297d" formatted="false">First little tree</string>
-    <string name="copy_loai_cay_moi_0_0d5d82" formatted="false">New species: {0}</string>
-    <string name="copy_cay_truong_thanh_0_d56fbb" formatted="false">Mature tree: {0}</string>
+    <string name="copy_loai_cay_moi_0_0d5d82">New species: %1$s</string>
+    <string name="copy_cay_truong_thanh_0_d56fbb">Mature tree: %1$s</string>
     <string name="copy_phien_tap_trung_dau_tien_951e5b" formatted="false">First focus session</string>
-    <string name="copy_cot_moc_0_ngay_4c76f2" formatted="false">A {0}-day milestone</string>
+    <string name="copy_cot_moc_0_ngay_4c76f2">A %1$d-day milestone</string>
     <string name="copy_mot_loai_co_hoa_dat_giai_doan_cuoi_27bd13" formatted="false">Grow a flowering species to its final stage</string>
     <string name="copy_mot_loai_khong_co_hoa_dat_giai_doan_cuoi_149d7d" formatted="false">Grow a non-flowering species to its final stage</string>
     <string name="copy_ban_co_muon_chuyen_sang_cac_ngay_trong_tuan_02f638" formatted="false">Would you like to switch to weekdays?</string>
-    <string name="copy_tuoi_cay_0_82b107" formatted="false">Water tree · {0}</string>
+    <string name="copy_tuoi_cay_0_82b107">Water tree · %1$s</string>
     <string name="copy_doc_hoac_hoc_tap_trung_25_phut_17d4f4" formatted="false">Read or study with focus for 25 minutes</string>
     <string name="copy_di_bo_hoac_van_dong_20_phut_af92a4" formatted="false">Walk or exercise for 20 minutes</string>
     <string name="copy_viet_nhat_ky_5_phut_8db8cf" formatted="false">Write in a journal for 5 minutes</string>
     <string name="copy_phat_trien_ban_than_fb249c" formatted="false">Personal growth</string>
     <string name="copy_hoan_thanh_mot_viec_quan_trong_e90d48" formatted="false">Finish one important task</string>
     <string name="copy_cong_viec_91d0a9" formatted="false">Work</string>
-    <string name="copy_bo_suu_tam_0_c3b9c2" formatted="false">Collection · {0}</string>
+    <string name="copy_bo_suu_tam_0_c3b9c2">Collection · %1$s</string>
     <string name="copy_khong_tim_thay_vat_pham_dedf1b" formatted="false">Item not found</string>
     <string name="copy_mo_khoa_qua_bo_suu_tam_6250f5" formatted="false">Unlock through the collection</string>
     <string name="copy_giao_dich_da_xu_ly_aa0715" formatted="false">Transaction already processed</string>
@@ -1000,7 +1012,7 @@
     <string name="copy_khu_nay_da_mo_2ff645" formatted="false">This section is already unlocked</string>
     <string name="copy_mo_khu_lien_truoc_truoc_a99157" formatted="false">Unlock the previous section first</string>
     <string name="copy_chua_du_xu_hoac_giao_dich_da_xu_ly_495f51" formatted="false">Not enough coins, or transaction already processed</string>
-    <string name="copy_mo_khu_vuon_0_a2449d" formatted="false">Unlock garden section {0}</string>
+    <string name="copy_mo_khu_vuon_0_a2449d">Unlock garden section %1$d</string>
     <string name="copy_da_mo_khu_moi_b8cb58" formatted="false">New section unlocked</string>
     <string name="copy_tuy_chon_khong_hop_le_a00925" formatted="false">Invalid setting</string>
     <string name="copy_chua_so_huu_chu_de_8c023b" formatted="false">You do not own this theme yet</string>
@@ -1013,7 +1025,7 @@
     <string name="copy_phu_kien_can_cay_con_song_dung_o_4da152" formatted="false">Accessories need a living tree in the matching plot</string>
     <string name="copy_vat_pham_nay_khong_gan_len_cay_c204fc" formatted="false">This item cannot be attached to a tree</string>
     <string name="copy_vi_tri_da_co_vat_pham_cung_loai_c6d15a" formatted="false">This position already has an item of the same type</string>
-    <string name="copy_kha_dung_0_1_783020" formatted="false">Available {0}–{1}</string>
+    <string name="copy_kha_dung_0_1_783020">Available %1$s–%2$s</string>
     <string name="copy_qua_dem_a64d5b" formatted="false"> (overnight)</string>
     <string name="copy_khong_du_thoi_gian_truoc_khi_dong_khung_gio_6e982b" formatted="false"> · Not enough time before the window closes</string>
     <string name="copy_giu_kieu_xac_nhan_va_thoi_luong_cua_phien_hom_nay_co_c75815" formatted="false">Today\'s session keeps its completion method and duration; you can change them tomorrow</string>
@@ -1022,15 +1034,15 @@
     <string name="copy_da_cap_nhat_trang_thai_22624d" formatted="false">Status updated</string>
     <string name="copy_dong_ho_da_lui_chua_the_nhan_xu_65d491" formatted="false">The clock moved backward; coins cannot be claimed yet</string>
     <string name="copy_giao_dich_da_duoc_xu_ly_1e67a0" formatted="false">This transaction was already processed</string>
-    <string name="copy_nhan_0_1_xu_67503c" formatted="false">Received {0} / {1} coins</string>
+    <string name="copy_nhan_0_1_xu_67503c">Received %1$d / %2$d coins</string>
     <string name="copy_viec_dang_tam_dung_hoac_luu_tru_85fe1f" formatted="false">This task is paused or archived</string>
     <string name="copy_hom_nay_khong_co_lich_e78d95" formatted="false">Not scheduled today</string>
-    <string name="copy_ngoai_khung_gio_0_1_5fdd69" formatted="false">Outside the time window {0}–{1}</string>
+    <string name="copy_ngoai_khung_gio_0_1_5fdd69">Outside the time window %1$s–%2$s</string>
     <string name="copy_da_hoan_thanh_khong_nhan_thuong_hai_lan_76cddc" formatted="false">Already completed; rewards cannot be claimed twice</string>
     <string name="copy_dong_ho_da_lui_cho_gio_thuc_bat_kip_de_nhan_thuong_c05c9d" formatted="false">The clock moved backward; wait for real time to catch up before claiming rewards</string>
     <string name="copy_chua_du_thoi_gian_hoat_dong_8dbf00" formatted="false">Not enough active time yet</string>
     <string name="copy_khung_gio_hoac_mui_gio_da_thay_doi_279590" formatted="false">The time window or time zone has changed</string>
-    <string name="copy_gioi_han_0_xu_ngay_b0d660" formatted="false"> · Limit {0} coins/day</string>
+    <string name="copy_gioi_han_0_xu_ngay_b0d660">" · Limit %1$d coins/day"</string>
     <string name="copy_viec_nay_dung_click_24a178" formatted="false">This task uses Tap</string>
     <string name="copy_kiem_tra_lai_dong_ho_62f8b9" formatted="false">Check the clock</string>
     <string name="copy_bo_dem_dang_dung_c643e1" formatted="false">The timer is paused</string>
@@ -1039,20 +1051,20 @@
     <string name="copy_mui_gio_thay_doi_tiep_tuc_vao_ngay_phu_hop_40beb2" formatted="false">The time zone changed; continue on an eligible day</string>
     <string name="copy_dang_tap_trung_chi_tinh_khi_ung_dung_o_phia_truoc_84a504" formatted="false">Focusing · Only time in the foreground counts</string>
     <string name="copy_hoan_thanh_ke_hoach_bat_buoc_de_nhan_thuong_36d27a" formatted="false">Finish the required plan to claim the reward</string>
-    <string name="copy_cot_moc_0_xu_ea5633" formatted="false"> · Milestone +{0} coins</string>
+    <string name="copy_cot_moc_0_xu_ea5633">" · Milestone +%1$d coins"</string>
     <string name="copy_giao_dich_nay_da_duoc_xu_ly_e67a4b" formatted="false">This transaction has already been processed</string>
     <string name="copy_so_luong_tu_1_den_99_415614" formatted="false">Quantity must be 1–99</string>
     <string name="copy_binh_tuoi_da_so_huu_hoac_so_luong_khong_hop_le_f1595c" formatted="false">Watering can already owned, or invalid quantity</string>
     <string name="copy_khong_tim_thay_san_pham_c994c3" formatted="false">Product not found</string>
     <string name="copy_khong_du_xu_tui_do_khong_thay_doi_457d06" formatted="false">Not enough coins; your inventory is unchanged</string>
-    <string name="copy_da_mua_0_tong_1_xu_con_2_xu_032b7f" formatted="false">Bought {0} · Total {1} coins · Balance {2} coins</string>
+    <string name="copy_da_mua_0_tong_1_xu_con_2_xu_032b7f">Bought %1$s · Total %2$d coins · Balance %3$d coins</string>
     <string name="copy_khong_tim_thay_binh_tuoi_6f9090" formatted="false">Watering can not found</string>
     <string name="copy_ban_chua_so_huu_binh_tuoi_nay_dddea8" formatted="false">You do not own this watering can yet</string>
-    <string name="copy_da_trang_bi_0_thoi_gian_tuoi_moi_1_gio_5b667d" formatted="false">Equipped {0}; new watering duration: {1} hours</string>
+    <string name="copy_da_trang_bi_0_thoi_gian_tuoi_moi_1_gio_5b667d">Equipped %1$s; new watering duration: %2$d hours</string>
     <string name="copy_dong_ho_da_lui_chua_the_tuoi_304eb9" formatted="false">The clock moved backward; watering is not available yet</string>
     <string name="copy_luot_tuoi_nay_da_duoc_xu_ly_0137a8" formatted="false">This watering action was already processed</string>
     <string name="copy_khong_co_cay_can_tuoi_e80eed" formatted="false">No trees need water</string>
-    <string name="copy_da_tuoi_0_cay_bo_qua_1_cay_dang_duoc_tuoi_va_2_cay_k_2a0dbb" formatted="false">Trees watered: {0} · Already watered: {1} · Withered: {2}</string>
+    <string name="copy_da_tuoi_0_cay_bo_qua_1_cay_dang_duoc_tuoi_va_2_cay_k_2a0dbb">Trees watered: %1$d · Already watered: %2$d · Withered: %3$d</string>
     <string name="copy_khong_tim_thay_cay_2ef08e" formatted="false">Tree not found</string>
     <string name="copy_dong_ho_da_lui_chua_the_bon_phan_df5146" formatted="false">The clock moved backward; fertilizer is not available yet</string>
     <string name="copy_khong_dung_phan_cho_cay_truong_thanh_hoac_kho_heo_c74b0f" formatted="false">Do not fertilize mature or withered trees</string>
@@ -1060,30 +1072,30 @@
     <string name="copy_cay_dang_co_tac_dung_phan_bon_khong_the_cong_don_1a8a0b" formatted="false">Fertilizer is already active; effects cannot stack</string>
     <string name="copy_moi_cay_chi_dung_phan_mot_lan_trong_24_gio_9f8cec" formatted="false">Each tree can receive fertilizer once every 24 hours</string>
     <string name="copy_ban_chua_co_phan_bon_phu_hop_f65443" formatted="false">You do not have the right fertilizer yet</string>
-    <string name="copy_da_het_0_af2b3b" formatted="false">No {0} left</string>
-    <string name="copy_da_dung_0_1_trong_2_gio_khi_duoc_tuoi_8de41c" formatted="false">Applied {0} · {1}× for {2} hours while watered</string>
+    <string name="copy_da_het_0_af2b3b">No %1$s left</string>
+    <string name="copy_da_dung_0_1_trong_2_gio_khi_duoc_tuoi_8de41c">Applied %1$s · %2$s× for %3$d hours while watered</string>
     <string name="copy_chi_ban_cay_truong_thanh_con_song_9b1510" formatted="false">Only living, mature trees can be sold</string>
-    <string name="copy_gia_0_xu_thuc_nhan_1_xu_hom_nay_197b09" formatted="false">Price {0} coins · Receive {1} coins today</string>
+    <string name="copy_gia_0_xu_thuc_nhan_1_xu_hom_nay_197b09">Price %1$d coins · Receive %2$d coins today</string>
     <string name="copy_cay_da_duoc_ban_hoac_don_ac3091" formatted="false">This tree was already sold or cleared</string>
     <string name="copy_dong_ho_da_lui_chua_the_thuc_hien_c3bb22" formatted="false">The clock moved backward; this action is not available yet</string>
-    <string name="copy_da_ban_cay_nhan_0_1_xu_phan_vuot_gioi_han_khong_duoc_5316e3" formatted="false">Tree sold · Received {0} / {1} coins. Anything above the cap is not kept.</string>
+    <string name="copy_da_ban_cay_nhan_0_1_xu_phan_vuot_gioi_han_khong_duoc_5316e3">Tree sold · Received %1$d / %2$d coins. Anything above the cap is not kept.</string>
     <string name="copy_da_don_cay_o_trong_da_trong_khong_hoan_xu_hoac_hat_4e6810" formatted="false">Tree cleared · Plot is empty; no coins or seeds returned</string>
-    <string name="copy_0_xu_7c2391" formatted="false">+{0} coins</string>
+    <string name="copy_0_xu_7c2391">+%1$d coins</string>
     <string name="copy_0_1_xu_8c9c4c">%1$d/%2$d coins</string>
     <string name="copy_0_xu_251e68">%1$d coins</string>
-    <string name="copy_0_xu_9c90c1" formatted="false"> · +{0} coins</string>
+    <string name="copy_0_xu_9c90c1">" · +%1$d coins"</string>
     <string name="copy_8_xu_3a7892" formatted="false">+8 coins</string>
     <string name="copy_mua_250_xu_aa5fe3" formatted="false">Buy · 250 coins</string>
     <string name="copy_500_ml_120_xu_cf988e" formatted="false">💧 500 ml  ·  🪙 120 coins</string>
-    <string name="copy_0_xu_279a5c" formatted="false">🪙 {0} coins</string>
+    <string name="copy_0_xu_279a5c">🪙 %1$d coins</string>
     <string name="copy_10_xu_8c4bbf" formatted="false">+10 coins</string>
-    <string name="copy_0_1_xu_8a2ae4" formatted="false">{0} · +{1} coins</string>
-    <string name="copy_thu_0_xu_chi_1_xu_d34d57" formatted="false">Earned {0} coins · Spent {1} coins</string>
-    <string name="copy_0_1_2_3_xu_98b335" formatted="false">{0} · {1} · {2} · +{3} coins</string>
-    <string name="copy_0_1_2_xu_9a6d2e" formatted="false">{0}: {1}/{2} coins</string>
-    <string name="copy_mua_0_xu_39faa9" formatted="false">Buy · {0} coins</string>
-    <string name="copy_0_xu_1_xu_3d5c4b" formatted="false">+{0} coins / {1} coins</string>
-    <string name="copy_daily_clear_0_xu_c4bb64" formatted="false">Daily Clear +{0} coins</string>
+    <string name="copy_0_1_xu_8a2ae4">%1$s · +%2$d coins</string>
+    <string name="copy_thu_0_xu_chi_1_xu_d34d57">Earned %1$d coins · Spent %2$d coins</string>
+    <string name="copy_0_1_2_3_xu_98b335">%1$s · %2$s · %3$s · +%4$d coins</string>
+    <string name="copy_0_1_2_xu_9a6d2e">%1$s: %2$d/%3$d coins</string>
+    <string name="copy_mua_0_xu_39faa9">Buy · %1$d coins</string>
+    <string name="copy_0_xu_1_xu_3d5c4b">+%1$d coins / %2$d coins</string>
+    <string name="copy_daily_clear_0_xu_c4bb64">Daily Clear +%1$d coins</string>
     <string name="copy_sac_anh_dao_b69c5c" formatted="false">Cherry pink</string>
     <string name="copy_sac_oai_huong_3130e6" formatted="false">Lavender purple</string>
     <string name="copy_sac_quyt_nang_246c71" formatted="false">Sunny orange</string>
@@ -1102,8 +1114,8 @@
     <string name="calendar_rest_marker" formatted="false">R</string>
     <string name="legal_technology_credits" formatted="false">Kotlin · AndroidX · Koin · Ktor · SQLDelight\nApache 2.0</string>
     <string name="date_iso_placeholder" formatted="false">YYYY-MM-DD</string>
-    <string name="history_tree_sold" formatted="false">Tree sold · {0}</string>
-    <string name="history_tree_removed" formatted="false">Tree cleared · {0}</string>
+    <string name="history_tree_sold">Tree sold · %1$s</string>
+    <string name="history_tree_removed">Tree cleared · %1$s</string>
     <string name="copy_mua_c86bcd" formatted="false">Buy</string>
     <string name="copy_mua_gieo_754323" formatted="false">Buy &amp; plant</string>
     <string name="copy_mua_gieo_1_690d4f" formatted="false">Buy &amp; plant 1</string>

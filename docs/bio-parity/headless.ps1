@@ -9,6 +9,8 @@ $bioProject=(Resolve-Path -LiteralPath $ProjectDirectory).Path.Replace('\','/')
 $bioArgs=@('preview','render','--sdk=E:/Android/Sdk',"gradle://${bioProject}?:app","--output=$bioOutput",'--format=json')
 if($ComponentTree){$bioArgs+='--component-tree'}
 $bioSelectedJobs = @($bioJobs | Where-Object { $Names.Count -eq 0 -or $_.name -in $Names })
+$bioMissingJobs = @($Names | Where-Object { $_ -notin $bioSelectedJobs.name })
+if ($bioMissingJobs.Count -gt 0) { throw "Unknown preview names: $($bioMissingJobs -join ', ')." }
 if ($bioSelectedJobs.Count -eq 0) { throw 'No previews matched the manifest selection.' }
 $bioPreviewOwners = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
 foreach ($bioJob in $bioSelectedJobs) {

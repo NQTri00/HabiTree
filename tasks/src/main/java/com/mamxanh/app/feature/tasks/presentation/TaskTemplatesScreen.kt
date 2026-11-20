@@ -22,7 +22,7 @@ import com.mamxanh.shared.localization.TextKey
         Column(Modifier.weight(1f),verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp4)){
             Bt(t.title,size=AppTypography.Size13,semi=true)
             Bt(AppText.category(t.category)+" · "+(if(t.timer)stringResource(R.string.copy_bo_dem_0_phut_a99be5, t.minutes)else AppText.text(TextKey.CopyChamF4623f)+t.effort),size=AppTypography.Size12,tint=bp.muted)
-            Bt((if(t.weekends)stringResource(R.string.copy_cuoi_tuan_a0fb27)else stringResource(R.string.copy_moi_ngay_8270cb))+AppText.text(TextKey.Copy0Xu9c90c1,t.reward),size=AppTypography.Size12,tint=bp.muted)
+            Bt((if(t.weekends)stringResource(R.string.copy_cuoi_tuan_a0fb27)else stringResource(R.string.copy_moi_ngay_8270cb))+stringResource(R.string.copy_0_xu_9c90c1, t.reward),size=AppTypography.Size12,tint=bp.muted)
         }
         Box(Modifier.size(AppDimensions.Dp20).background(if(selected)bp.deep else AppColors.Transparent,RoundedCornerShape(AppDimensions.Dp3)).border(AppDimensions.Dp1,if(selected)bp.deep else bp.control,RoundedCornerShape(AppDimensions.Dp3)),contentAlignment=Alignment.Center){if(selected)Bi("check",size=AppIcons.Size14,tint=AppColors.White)}
     }}

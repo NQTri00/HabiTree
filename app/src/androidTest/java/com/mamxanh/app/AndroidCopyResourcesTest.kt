@@ -50,6 +50,10 @@ class AndroidCopyResourcesTest {
                 AppText.forLanguage(TextKey.CopyTuanTruoc0SoLieuDenHomNay87b0c8, language, 75),
                 resources.getString(R.string.copy_tuan_truoc_0_so_lieu_den_hom_nay_87b0c8, 75),
             )
+            assertEquals(
+                AppText.forLanguage(TextKey.Copy0PhutC0bcb0, language, 25),
+                resources.getString(R.string.copy_0_phut_c0bcb0, 25),
+            )
         }
     }
 }

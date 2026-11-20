@@ -36,9 +36,12 @@ copy_so_lieu_duoc_luu_tren_thiet_bi_f6ac69:
   source: stats/src/main/java/com/mamxanh/app/feature/stats/presentation/StatsScreen.kt
 copy_0_1_viec_ec6e1e:
   order: 811
-  vi: '{0}: {1} việc'
-  en: '{0}: {1} tasks'
+  vi: '{label}: {tasks} việc'
+  en: '{label}: {tasks} tasks'
+  placeholders:
+    label: string
+    tasks: integer
   canonical: false
   source: stats/src/main/java/com/mamxanh/app/feature/stats/presentation/WeekSproutChart.kt
   pluralArgument: 1
-  en_one: '{0}: {1} task'
+  en_one: '{label}: {tasks} task'

@@ -6,8 +6,11 @@ copy_goc_nho_cua_ban_ba1417:
   source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/GardenScreen.kt
 copy_0_cay_1_o_mo_528d81:
   order: 682
-  vi: '{0} cây · {1} ô mở'
-  en: 'Trees: {0} · Open plots: {1}'
+  vi: '{trees} cây · {plots} ô mở'
+  en: 'Trees: {trees} · Open plots: {plots}'
+  placeholders:
+    trees: integer
+    plots: integer
   canonical: false
   source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/GardenScreen.kt
 copy_goc_vuon_f4c049:
@@ -42,8 +45,10 @@ copy_mo_o_trong_11b979:
   source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/GardenScreen.kt
 copy_o_0_3d2411:
   order: 688
-  vi: Ô {0}
-  en: Plot {0}
+  vi: Ô {plot}
+  en: Plot {plot}
+  placeholders:
+    plot: string
   canonical: false
   source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/GardenScreen.kt
 copy_vi_cua_ban_d87c21:
@@ -60,26 +65,34 @@ copy_hat_van_o_trong_tui_mo_them_o_trong_de_gieo_cay_54d8b7:
   source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/GardenScreen.kt
 copy_0_cay_dang_lon_c1217a:
   order: 691
-  vi: 🌿  {0} cây đang lớn  🌿
-  en: '🌿  Growing trees: {0}  🌿'
+  vi: 🌿  {trees} cây đang lớn  🌿
+  en: '🌿  Growing trees: {trees}  🌿'
+  placeholders:
+    trees: integer
   canonical: false
   source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/GardenScreen.kt
 copy_0_can_tuoi_425a0d:
   order: 692
-  vi: '{0} cần tưới'
-  en: 'Need water: {0}'
+  vi: '{trees} cần tưới'
+  en: 'Need water: {trees}'
+  placeholders:
+    trees: integer
   canonical: false
   source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/GardenScreen.kt
 copy_0_hat_b54ddd:
   order: 693
-  vi: '{0} hạt'
-  en: 'Seeds: {0}'
+  vi: '{seeds} hạt'
+  en: 'Seeds: {seeds}'
+  placeholders:
+    seeds: integer
   canonical: false
   source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/GardenScreen.kt
 copy_cham_soc_0_e5e78b:
   order: 694
-  vi: Chăm sóc {0}
-  en: Care for {0}
+  vi: Chăm sóc {tree}
+  en: Care for {tree}
+  placeholders:
+    tree: string
   canonical: false
   source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/GardenScreen.kt
 copy_da_tuoi_d97f10:
@@ -108,8 +121,10 @@ copy_bo_trong_de_dung_ten_loai_cay_a7e5fc:
   source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/GardenScreen.kt
 copy_o_trong_0_174f9e:
   order: 699
-  vi: Ô trồng · {0}
-  en: Planting plot · {0}
+  vi: Ô trồng · {plot}
+  en: Planting plot · {plot}
+  placeholders:
+    plot: string
   canonical: false
   source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/GardenScreen.kt
 copy_dung_1_hat_trong_tui_de_bat_dau_trong_bde1a7:
@@ -280,14 +295,18 @@ copy_khong_gian_cua_ban_d45f67:
   source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
 copy_khu_0_dang_khoa_bdcfda:
   order: 727
-  vi: Khu {0} đang khóa
-  en: Section {0} is locked
+  vi: Khu {section} đang khóa
+  en: Section {section} is locked
+  placeholders:
+    section: integer
   canonical: false
   source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
 copy_0_xu_them_6_o_bd7dbb:
   order: 728
-  vi: '{0} xu · Thêm 6 ô'
-  en: '{0} coins · 6 more plots'
+  vi: '{price} xu · Thêm 6 ô'
+  en: '{price} coins · 6 more plots'
+  placeholders:
+    price: integer
   canonical: false
   source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
 copy_xem_mo_khu_28c09c:
@@ -304,14 +323,18 @@ copy_o_dang_khoa_0b475c:
   source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
 copy_0_trang_tri_a468bd:
   order: 731
-  vi: '{0} trang trí'
-  en: 'Decorations: {0}'
+  vi: '{decorations} trang trí'
+  en: 'Decorations: {decorations}'
+  placeholders:
+    decorations: integer
   canonical: false
   source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
 copy_so_huu_0_a67ee0:
   order: 732
-  vi: Sở hữu · {0}
-  en: Owned · {0}
+  vi: Sở hữu · {quantity}
+  en: Owned · {quantity}
+  placeholders:
+    quantity: integer
   canonical: false
   source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
 copy_qua_suu_tam_218de5:
@@ -358,8 +381,11 @@ copy_mo_khoa_qua_suu_tam_12f128:
   source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
 copy_uoc_tinh_0_ngay_1_b69012:
   order: 740
-  vi: Ước tính {0} ngày · {1}
-  en: Estimated {0} days · {1}
+  vi: Ước tính {days} ngày · {detail}
+  en: Estimated {days} days · {detail}
+  placeholders:
+    days: integer
+    detail: string
   canonical: false
   source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
 copy_tham_khao_40_xu_ngay_c8596f:
@@ -382,8 +408,10 @@ copy_chon_chu_de_c1f89a:
   source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
 copy_0_loai_trong_danh_muc_giu_lich_su_khi_don_hoac_ban_c_ac2aaf:
   order: 744
-  vi: '{0} loài trong danh mục · Giữ lịch sử khi dọn hoặc bán cây'
-  en: 'Species in catalog: {0} · History stays when you clear or sell a tree'
+  vi: '{species} loài trong danh mục · Giữ lịch sử khi dọn hoặc bán cây'
+  en: 'Species in catalog: {species} · History stays when you clear or sell a tree'
+  placeholders:
+    species: integer
   canonical: false
   source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
 copy_loai_chua_duoc_ho_tro_9107c4:
@@ -406,8 +434,10 @@ copy_binh_tuoi_8_12_18_24_gio_phan_bon_dung_khi_cay_dang_de84c6:
   source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
 copy_tu_0_7eb90b:
   order: 748
-  vi: Từ {0}
-  en: Since {0}
+  vi: Từ {date}
+  en: Since {date}
+  placeholders:
+    date: string
   canonical: false
   source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
 copy_ten_vuon_1b0761:
@@ -466,8 +496,10 @@ copy_luu_dien_mao_105663:
   source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
 copy_khu_vuon_0_c58827:
   order: 758
-  vi: Khu vườn {0}
-  en: Garden section {0}
+  vi: Khu vườn {section}
+  en: Garden section {section}
+  placeholders:
+    section: integer
   canonical: false
   source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
 copy_them_6_o_giu_nguyen_cay_hien_co_f944b2:
@@ -484,14 +516,18 @@ copy_gia_mo_khu_d7a20a:
   source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
 copy_mo_khu_0_xu_d27450:
   order: 761
-  vi: Mở khu · {0} xu
-  en: Unlock section · {0} coins
+  vi: Mở khu · {price} xu
+  en: Unlock section · {price} coins
+  placeholders:
+    price: integer
   canonical: false
   source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
 copy_can_them_0_xu_8837ee:
   order: 762
-  vi: Cần thêm {0} xu
-  en: Need {0} more coins
+  vi: Cần thêm {coins} xu
+  en: Need {coins} more coins
+  placeholders:
+    coins: integer
   canonical: false
   source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt
 copy_chon_chu_de_tai_dien_mao_bff149:
@@ -520,7 +556,9 @@ copy_o_nay_da_co_vat_pham_cung_loai_a47c7d:
   source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenViewModel.kt
 copy_mua_0_xu_39faa9:
   order: 1068
-  vi: Mua · {0} xu
-  en: Buy · {0} coins
+  vi: Mua · {price} xu
+  en: Buy · {price} coins
+  placeholders:
+    price: integer
   canonical: false
   source: garden/src/main/java/com/mamxanh/app/feature/garden/presentation/LivingGardenScreens.kt

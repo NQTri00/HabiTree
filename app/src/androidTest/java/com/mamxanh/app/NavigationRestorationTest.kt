@@ -160,6 +160,31 @@ class NavigationRestorationTest {
         }
     }
 
+    @Test
+    fun focusPresetUpdatesTheTimerAndSurvivesActivityRecreation() {
+        check(context.packageName != "com.mamxanh.app") { "Use the isolated verification app." }
+        GardenDatabase(context).use { database ->
+            val storage = GameStorage(database)
+            if (!storage.engagementSnapshot().onboarded) {
+                assertTrue(storage.engage(
+                    EngagementAction.Onboard("succulent", "", emptyList(), "focus-preset-onboard", skip = true),
+                ).success)
+            }
+        }
+
+        val intent = Intent(context, MainActivity::class.java)
+        ActivityScenario.launch<MainActivity>(intent).use { scenario ->
+            clickLabel(AppText.text(TextKey.CopyViec818768))
+            clickLabel(AppText.text(TextKey.CopyTapTrung964002))
+            clickLabel(AppText.text(TextKey.Copy0Phut2596d2, 15))
+            awaitLabel("15:00")
+
+            scenario.recreate()
+            awaitLabel("15:00")
+            awaitLabel(AppText.text(TextKey.CopyBatDauB3cacc))
+        }
+    }
+
     private fun reminderIntent(entity: Long) =
         Intent(context, MainActivity::class.java).putExtra("engagement_task", entity)
 

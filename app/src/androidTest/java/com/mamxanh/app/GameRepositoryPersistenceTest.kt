@@ -139,6 +139,16 @@ class GameRepositoryPersistenceTest {
             assertEquals((before.inventory[seed] ?: 0) + 2, inventory.quantities()[seed])
             assertTrue(shop.purchase(seed, 2, "purchase") is RepositoryResult.Error)
             assertEquals(after, shop.loadWallet())
+
+            val fertilizer = "fertilizer_rich"
+            assertTrue(shop.purchase(fertilizer, 1, "purchase-fertilizer") is RepositoryResult.Success)
+            val restoredStorage = GameStorage(SqlGameDatabase(connection))
+            val restoredWallet = ShopRepositoryImpl(restoredStorage).loadWallet()
+            assertTrue(restoredWallet.coins < after.coins)
+            assertEquals(
+                (after.inventory[fertilizer] ?: 0) + 1,
+                InventoryRepositoryImpl(restoredStorage).quantities()[fertilizer],
+            )
         }
     }
 

@@ -231,8 +231,13 @@ def index(project, revision):
                 if job.get("source") in by_path:
                     by_path[job["source"]].sample_of.append(f"{file.path} / {job['name']}")
             continue
+        resource_code = code
+        if file.path.endswith(".kt"):
+            for imported, alias in kotlin_imports[file.path]:
+                if alias and imported.endswith(".R"):
+                    resource_code = re.sub(rf"\b{re.escape(alias)}\.", "R.", resource_code)
         resource_links[file.path] = {
-            f"{a or c}/{b or d}" for a, b, c, d in RESOURCE_USE.findall(code)
+            f"{a or c}/{b or d}" for a, b, c, d in RESOURCE_USE.findall(resource_code)
         }
 
     reverse = defaultdict(set)

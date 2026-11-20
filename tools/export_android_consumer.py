@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 import re
 import subprocess
-import zipfile
+import tarfile
 
 
 GROUP = "com.mamxanh.habitree.android"
@@ -14,8 +14,7 @@ PROJECT_DEPENDENCY = re.compile(r'project\("(:[a-z:-]+)"\)')
 
 
 def export(source: Path, ref: str, output: Path, repository: Path, module: str = "app") -> None:
-    staging_archive = output.with_name(output.name + ".zip")
-    if output.exists() or staging_archive.exists():
+    if output.exists():
         raise FileExistsError(f"Use a new export directory: {output}")
     if output.is_relative_to(source):
         raise ValueError("Export to a directory outside the source checkout.")
@@ -46,17 +45,23 @@ def export(source: Path, ref: str, output: Path, repository: Path, module: str =
     extra_inputs = ["mics/tree growth.gif"] if module == "core-ui" else []
 
     output.parent.mkdir(parents=True, exist_ok=True)
-    try:
-        subprocess.run(
-            ["git", "archive", "--format=zip", f"--output={staging_archive}", revision,
-             directory, "gradle", "gradlew", "gradlew.bat", "gradle.properties",
-             "settings.gradle.kts", "build.gradle.kts", *extra_inputs],
-            cwd=source, check=True,
-        )
-        with zipfile.ZipFile(staging_archive) as archive:
-            archive.extractall(output)
-    finally:
-        staging_archive.unlink(missing_ok=True)
+    archive_command = [
+        "git", "archive", "--format=tar", revision,
+        directory, "gradle", "gradlew", "gradlew.bat", "gradle.properties",
+        "settings.gradle.kts", "build.gradle.kts", ".gitignore", *extra_inputs,
+    ]
+    with subprocess.Popen(archive_command, cwd=source, stdout=subprocess.PIPE) as process:
+        assert process.stdout is not None
+        try:
+            with tarfile.open(fileobj=process.stdout, mode="r|") as archive:
+                archive.extractall(output, filter="data")
+            # Git can still be writing tar padding after the end marker.
+            while process.stdout.read(64 * 1024):
+                pass
+        finally:
+            process.stdout.close()
+        if process.wait():
+            raise subprocess.CalledProcessError(process.returncode, archive_command)
 
     root_build = output / "build.gradle.kts"
     if module == "app":

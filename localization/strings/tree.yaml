@@ -66,8 +66,10 @@ copy_cay_se_roi_o_trong_vinh_vien_khong_hoan_lai_hat_hoac_9f6b91:
   source: tree/src/main/java/com/mamxanh/app/feature/tree/presentation/TreeInteractionScreen.kt
 copy_phan_vuot_gioi_han_0_xu_ngay_se_mat_khong_de_danh_cdcca8:
   order: 790
-  vi: Phần vượt giới hạn {0} xu/ngày sẽ mất, không để dành.
-  en: Anything above the {0}-coin daily cap is lost and cannot be saved for later.
+  vi: Phần vượt giới hạn {daily_limit} xu/ngày sẽ mất, không để dành.
+  en: Anything above the {daily_limit}-coin daily cap is lost and cannot be saved for later.
+  placeholders:
+    daily_limit: integer
   canonical: false
   source: tree/src/main/java/com/mamxanh/app/feature/tree/presentation/TreeInteractionScreen.kt
 copy_don_cay_khong_hoan_xu_hoac_hat_cdff29:

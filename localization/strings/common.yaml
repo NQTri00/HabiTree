@@ -985,8 +985,10 @@ copy_nhung_dieu_nho_da_lon_len_882792:
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioMainScreens.kt
 copy_0_phut_c0bcb0:
   order: 172
-  vi: ' · {0} phút'
-  en: ' · {0} min'
+  vi: ' · {minutes} phút'
+  en: ' · {minutes} min'
+  placeholders:
+    minutes: integer
   canonical: false
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioMainScreens.kt
 copy_da_hoan_thanh_1911fc:
@@ -3163,8 +3165,10 @@ copy_gieo_mot_viec_nho_227fcc:
   source: core-ui/src/main/java/com/mamxanh/app/presentation/ui/components/GardenPaintedControls.kt
 copy_chon_0_85cbcf:
   order: 524
-  vi: Chọn {0}
-  en: Choose {0}
+  vi: Chọn {name}
+  en: Choose {name}
+  placeholders:
+    name: string
   canonical: false
   source: core-ui/src/main/java/com/mamxanh/app/presentation/ui/components/MintDetailComponents.kt
 copy_da_64a504:
@@ -3697,20 +3701,28 @@ copy_phan_cao_cap_7d6d08:
   source: shared/src/commonMain/kotlin/com/mamxanh/shared/model/TreeLifecycle.kt
 copy_tuoi_giup_cay_phat_trien_trong_0_gio_dung_cu_dung_la_42bc3f:
   order: 907
-  vi: Tưới giúp cây phát triển trong {0} giờ. Dụng cụ dùng lâu dài.
-  en: Waters the tree for {0} hours. A reusable tool.
+  vi: Tưới giúp cây phát triển trong {hours} giờ. Dụng cụ dùng lâu dài.
+  en: Waters the tree for {hours} hours. A reusable tool.
+  placeholders:
+    hours: integer
   canonical: false
   source: shared/src/commonMain/kotlin/com/mamxanh/shared/model/TreeLifecycle.kt
 copy_tang_toc_0_trong_1_gio_khi_cay_duoc_tuoi_moi_cay_dun_f78504:
   order: 908
-  vi: Tăng tốc {0}× trong {1} giờ khi cây được tưới. Mỗi cây dùng một lần trong 24 giờ.
-  en: '{0}× growth for {1} hours on a watered tree. Use once per tree every 24 hours.'
+  vi: Tăng tốc {multiplier}× trong {hours} giờ khi cây được tưới. Mỗi cây dùng một lần trong 24 giờ.
+  en: '{multiplier}× growth for {hours} hours on a watered tree. Use once per tree every 24 hours.'
+  placeholders:
+    multiplier: string
+    hours: integer
   canonical: false
   source: shared/src/commonMain/kotlin/com/mamxanh/shared/model/TreeLifecycle.kt
 copy_giai_doan_0_1_c0a0f8:
   order: 909
-  vi: Giai đoạn {0}/{1}
-  en: Stage {0}/{1}
+  vi: Giai đoạn {stage}/{total}
+  en: Stage {stage}/{total}
+  placeholders:
+    stage: integer
+    total: integer
   canonical: false
   source: shared/src/commonMain/kotlin/com/mamxanh/shared/model/TreeLifecycle.kt
 copy_khong_the_tuoi_4bd57f:
@@ -3721,8 +3733,10 @@ copy_khong_the_tuoi_4bd57f:
   source: shared/src/commonMain/kotlin/com/mamxanh/shared/model/TreeLifecycle.kt
 copy_0_dang_co_tac_dung_f8943e:
   order: 911
-  vi: '{0} đang có tác dụng'
-  en: '{0} is active'
+  vi: '{product} đang có tác dụng'
+  en: '{product} is active'
+  placeholders:
+    product: string
   canonical: false
   source: shared/src/commonMain/kotlin/com/mamxanh/shared/model/TreeLifecycle.kt
 copy_phan_bon_29fa19:
@@ -3733,20 +3747,28 @@ copy_phan_bon_29fa19:
   source: shared/src/commonMain/kotlin/com/mamxanh/shared/model/TreeLifecycle.kt
 copy_0_gio_1_phut_b72ee2:
   order: 913
-  vi: '{0} giờ {1} phút'
-  en: '{0} hr {1} min'
+  vi: '{hours} giờ {minutes} phút'
+  en: '{hours} hr {minutes} min'
+  placeholders:
+    hours: integer
+    minutes: integer
   canonical: false
   source: shared/src/commonMain/kotlin/com/mamxanh/shared/model/TreeLifecycle.kt
 copy_co_the_chon_hat_0_e01474:
   order: 914
-  vi: 'Có thể chọn hạt: {0}'
-  en: 'You can choose a seed: {0}'
+  vi: 'Có thể chọn hạt: {species}'
+  en: 'You can choose a seed: {species}'
+  placeholders:
+    species: string
   canonical: false
   source: shared/src/commonMain/kotlin/com/mamxanh/shared/feature/home/data/OfflineHomeDashboardRepository.kt
 copy_con_0_xu_de_chon_1_133bcf:
   order: 915
-  vi: Còn {0} xu để chọn {1}
-  en: You need {0} more coins to choose {1}
+  vi: Còn {coins} xu để chọn {item}
+  en: You need {coins} more coins to choose {item}
+  placeholders:
+    coins: integer
+    item: string
   canonical: false
   source: shared/src/commonMain/kotlin/com/mamxanh/shared/feature/home/data/OfflineHomeDashboardRepository.kt
 copy_dong_ho_da_lui_cho_gio_thuc_bat_kip_1475f3:
@@ -3859,8 +3881,10 @@ copy_mot_ngay_duoc_bao_ve_f0f58e:
   source: shared/src/commonMain/kotlin/com/mamxanh/shared/data/sql/EngagementEngine.kt
 copy_da_bao_ve_ngay_0_khong_nhan_daily_clear_f822ac:
   order: 934
-  vi: Đã bảo vệ ngày {0}; không nhận Daily Clear
-  en: Protected {0}; no Daily Clear reward
+  vi: Đã bảo vệ ngày {date}; không nhận Daily Clear
+  en: Protected {date}; no Daily Clear reward
+  placeholders:
+    date: string
   canonical: false
   source: shared/src/commonMain/kotlin/com/mamxanh/shared/data/sql/EngagementEngine.kt
 copy_ghi_chu_toi_da_2000_ky_tu_f518c7:
@@ -3991,8 +4015,10 @@ copy_da_cap_nhat_phien_31f373:
   source: shared/src/commonMain/kotlin/com/mamxanh/shared/data/sql/EngagementEngine.kt
 copy_viec_dau_tien_0_dd1cd5:
   order: 956
-  vi: 'Việc đầu tiên: {0}'
-  en: 'First task: {0}'
+  vi: 'Việc đầu tiên: {title}'
+  en: 'First task: {title}'
+  placeholders:
+    title: string
   canonical: false
   source: shared/src/commonMain/kotlin/com/mamxanh/shared/data/sql/EngagementEngine.kt
 copy_mam_cay_dau_tien_e1297d:
@@ -4003,14 +4029,18 @@ copy_mam_cay_dau_tien_e1297d:
   source: shared/src/commonMain/kotlin/com/mamxanh/shared/data/sql/EngagementEngine.kt
 copy_loai_cay_moi_0_0d5d82:
   order: 958
-  vi: 'Loài cây mới: {0}'
-  en: 'New species: {0}'
+  vi: 'Loài cây mới: {species}'
+  en: 'New species: {species}'
+  placeholders:
+    species: string
   canonical: false
   source: shared/src/commonMain/kotlin/com/mamxanh/shared/data/sql/EngagementEngine.kt
 copy_cay_truong_thanh_0_d56fbb:
   order: 959
-  vi: 'Cây trưởng thành: {0}'
-  en: 'Mature tree: {0}'
+  vi: 'Cây trưởng thành: {tree}'
+  en: 'Mature tree: {tree}'
+  placeholders:
+    tree: string
   canonical: false
   source: shared/src/commonMain/kotlin/com/mamxanh/shared/data/sql/EngagementEngine.kt
 copy_phien_tap_trung_dau_tien_951e5b:
@@ -4021,8 +4051,10 @@ copy_phien_tap_trung_dau_tien_951e5b:
   source: shared/src/commonMain/kotlin/com/mamxanh/shared/data/sql/EngagementEngine.kt
 copy_cot_moc_0_ngay_4c76f2:
   order: 961
-  vi: Cột mốc {0} ngày
-  en: A {0}-day milestone
+  vi: Cột mốc {days} ngày
+  en: A {days}-day milestone
+  placeholders:
+    days: integer
   canonical: false
   source: shared/src/commonMain/kotlin/com/mamxanh/shared/data/sql/EngagementEngine.kt
 copy_mot_loai_co_hoa_dat_giai_doan_cuoi_27bd13:
@@ -4045,8 +4077,10 @@ copy_ban_co_muon_chuyen_sang_cac_ngay_trong_tuan_02f638:
   source: shared/src/commonMain/kotlin/com/mamxanh/shared/data/sql/EngagementEngine.kt
 copy_tuoi_cay_0_82b107:
   order: 965
-  vi: Tưới cây · {0}
-  en: Water tree · {0}
+  vi: Tưới cây · {tree}
+  en: Water tree · {tree}
+  placeholders:
+    tree: string
   canonical: false
   source: shared/src/commonMain/kotlin/com/mamxanh/shared/data/sql/EngagementEngine.kt
 copy_doc_hoac_hoc_tap_trung_25_phut_17d4f4:
@@ -4089,8 +4123,10 @@ copy_cong_viec_91d0a9:
   storageValue: Công việc
 copy_bo_suu_tam_0_c3b9c2:
   order: 972
-  vi: Bộ sưu tầm · {0}
-  en: Collection · {0}
+  vi: Bộ sưu tầm · {collection}
+  en: Collection · {collection}
+  placeholders:
+    collection: string
   canonical: false
   source: shared/src/commonMain/kotlin/com/mamxanh/shared/data/sql/LivingGardenEngine.kt
 copy_khong_tim_thay_vat_pham_dedf1b:
@@ -4179,8 +4215,10 @@ copy_chua_du_xu_hoac_giao_dich_da_xu_ly_495f51:
   source: shared/src/commonMain/kotlin/com/mamxanh/shared/data/sql/LivingGardenEngine.kt
 copy_mo_khu_vuon_0_a2449d:
   order: 987
-  vi: Mở khu vườn {0}
-  en: Unlock garden section {0}
+  vi: Mở khu vườn {section}
+  en: Unlock garden section {section}
+  placeholders:
+    section: integer
   canonical: false
   source: shared/src/commonMain/kotlin/com/mamxanh/shared/data/sql/LivingGardenEngine.kt
 copy_da_mo_khu_moi_b8cb58:
@@ -4257,8 +4295,11 @@ copy_vi_tri_da_co_vat_pham_cung_loai_c6d15a:
   source: shared/src/commonMain/kotlin/com/mamxanh/shared/data/sql/LivingGardenEngine.kt
 copy_kha_dung_0_1_783020:
   order: 1000
-  vi: Khả dụng {0}–{1}
-  en: Available {0}–{1}
+  vi: Khả dụng {start}–{end}
+  en: Available {start}–{end}
+  placeholders:
+    start: string
+    end: string
   canonical: false
   source: shared/src/commonMain/kotlin/com/mamxanh/shared/data/sql/PhaseOneEngine.kt
 copy_qua_dem_a64d5b:
@@ -4311,8 +4352,11 @@ copy_giao_dich_da_duoc_xu_ly_1e67a0:
   source: shared/src/commonMain/kotlin/com/mamxanh/shared/data/sql/PhaseOneEngine.kt
 copy_nhan_0_1_xu_67503c:
   order: 1009
-  vi: Nhận {0} / {1} xu
-  en: Received {0} / {1} coins
+  vi: Nhận {received} / {offered} xu
+  en: Received {received} / {offered} coins
+  placeholders:
+    received: integer
+    offered: integer
   canonical: false
   source: shared/src/commonMain/kotlin/com/mamxanh/shared/data/sql/PhaseOneEngine.kt
 copy_viec_dang_tam_dung_hoac_luu_tru_85fe1f:
@@ -4329,8 +4373,11 @@ copy_hom_nay_khong_co_lich_e78d95:
   source: shared/src/commonMain/kotlin/com/mamxanh/shared/data/sql/PhaseOneEngine.kt
 copy_ngoai_khung_gio_0_1_5fdd69:
   order: 1012
-  vi: Ngoài khung giờ {0}–{1}
-  en: Outside the time window {0}–{1}
+  vi: Ngoài khung giờ {start}–{end}
+  en: Outside the time window {start}–{end}
+  placeholders:
+    start: string
+    end: string
   canonical: false
   source: shared/src/commonMain/kotlin/com/mamxanh/shared/data/sql/PhaseOneEngine.kt
 copy_da_hoan_thanh_khong_nhan_thuong_hai_lan_76cddc:
@@ -4359,8 +4406,10 @@ copy_khung_gio_hoac_mui_gio_da_thay_doi_279590:
   source: shared/src/commonMain/kotlin/com/mamxanh/shared/data/sql/PhaseOneEngine.kt
 copy_gioi_han_0_xu_ngay_b0d660:
   order: 1017
-  vi: ' · Giới hạn {0} xu/ngày'
-  en: ' · Limit {0} coins/day'
+  vi: ' · Giới hạn {daily_limit} xu/ngày'
+  en: ' · Limit {daily_limit} coins/day'
+  placeholders:
+    daily_limit: integer
   canonical: false
   source: shared/src/commonMain/kotlin/com/mamxanh/shared/data/sql/PhaseOneEngine.kt
 copy_viec_nay_dung_click_24a178:
@@ -4413,8 +4462,10 @@ copy_hoan_thanh_ke_hoach_bat_buoc_de_nhan_thuong_36d27a:
   source: shared/src/commonMain/kotlin/com/mamxanh/shared/data/sql/PhaseOneEngine.kt
 copy_cot_moc_0_xu_ea5633:
   order: 1026
-  vi: ' · Cột mốc +{0} xu'
-  en: ' · Milestone +{0} coins'
+  vi: ' · Cột mốc +{coins} xu'
+  en: ' · Milestone +{coins} coins'
+  placeholders:
+    coins: integer
   canonical: false
   source: shared/src/commonMain/kotlin/com/mamxanh/shared/data/sql/PhaseOneEngine.kt
 copy_giao_dich_nay_da_duoc_xu_ly_e67a4b:
@@ -4449,8 +4500,12 @@ copy_khong_du_xu_tui_do_khong_thay_doi_457d06:
   source: shared/src/commonMain/kotlin/com/mamxanh/shared/data/sql/PhaseOneEngine.kt
 copy_da_mua_0_tong_1_xu_con_2_xu_032b7f:
   order: 1032
-  vi: Đã mua {0} · Tổng {1} xu · Còn {2} xu
-  en: Bought {0} · Total {1} coins · Balance {2} coins
+  vi: Đã mua {item} · Tổng {total} xu · Còn {balance} xu
+  en: Bought {item} · Total {total} coins · Balance {balance} coins
+  placeholders:
+    item: string
+    total: integer
+    balance: integer
   canonical: false
   source: shared/src/commonMain/kotlin/com/mamxanh/shared/data/sql/PhaseOneEngine.kt
 copy_khong_tim_thay_binh_tuoi_6f9090:
@@ -4467,8 +4522,11 @@ copy_ban_chua_so_huu_binh_tuoi_nay_dddea8:
   source: shared/src/commonMain/kotlin/com/mamxanh/shared/data/sql/TreeLifecycleEngine.kt
 copy_da_trang_bi_0_thoi_gian_tuoi_moi_1_gio_5b667d:
   order: 1035
-  vi: Đã trang bị {0}; thời gian tưới mới {1} giờ
-  en: 'Equipped {0}; new watering duration: {1} hours'
+  vi: Đã trang bị {item}; thời gian tưới mới {duration} giờ
+  en: 'Equipped {item}; new watering duration: {duration} hours'
+  placeholders:
+    item: string
+    duration: integer
   canonical: false
   source: shared/src/commonMain/kotlin/com/mamxanh/shared/data/sql/TreeLifecycleEngine.kt
 copy_dong_ho_da_lui_chua_the_tuoi_304eb9:
@@ -4491,8 +4549,12 @@ copy_khong_co_cay_can_tuoi_e80eed:
   source: shared/src/commonMain/kotlin/com/mamxanh/shared/data/sql/TreeLifecycleEngine.kt
 copy_da_tuoi_0_cay_bo_qua_1_cay_dang_duoc_tuoi_va_2_cay_k_2a0dbb:
   order: 1039
-  vi: Đã tưới {0} cây · Bỏ qua {1} cây đang được tưới và {2} cây khô héo
-  en: 'Trees watered: {0} · Already watered: {1} · Withered: {2}'
+  vi: Đã tưới {watered} cây · Bỏ qua {already_watered} cây đang được tưới và {withered} cây khô héo
+  en: 'Trees watered: {watered} · Already watered: {already_watered} · Withered: {withered}'
+  placeholders:
+    watered: integer
+    already_watered: integer
+    withered: integer
   canonical: false
   source: shared/src/commonMain/kotlin/com/mamxanh/shared/data/sql/TreeLifecycleEngine.kt
 copy_khong_tim_thay_cay_2ef08e:
@@ -4539,14 +4601,20 @@ copy_ban_chua_co_phan_bon_phu_hop_f65443:
   source: shared/src/commonMain/kotlin/com/mamxanh/shared/data/sql/TreeLifecycleEngine.kt
 copy_da_het_0_af2b3b:
   order: 1047
-  vi: Đã hết {0}
-  en: No {0} left
+  vi: Đã hết {item}
+  en: No {item} left
+  placeholders:
+    item: string
   canonical: false
   source: shared/src/commonMain/kotlin/com/mamxanh/shared/data/sql/TreeLifecycleEngine.kt
 copy_da_dung_0_1_trong_2_gio_khi_duoc_tuoi_8de41c:
   order: 1048
-  vi: Đã dùng {0} · {1}× trong {2} giờ khi được tưới
-  en: Applied {0} · {1}× for {2} hours while watered
+  vi: Đã dùng {product} · {multiplier}× trong {hours} giờ khi được tưới
+  en: Applied {product} · {multiplier}× for {hours} hours while watered
+  placeholders:
+    product: string
+    multiplier: string
+    hours: integer
   canonical: false
   source: shared/src/commonMain/kotlin/com/mamxanh/shared/data/sql/TreeLifecycleEngine.kt
 copy_chi_ban_cay_truong_thanh_con_song_9b1510:
@@ -4557,8 +4625,11 @@ copy_chi_ban_cay_truong_thanh_con_song_9b1510:
   source: shared/src/commonMain/kotlin/com/mamxanh/shared/data/sql/TreeLifecycleEngine.kt
 copy_gia_0_xu_thuc_nhan_1_xu_hom_nay_197b09:
   order: 1050
-  vi: Giá {0} xu · Thực nhận {1} xu hôm nay
-  en: Price {0} coins · Receive {1} coins today
+  vi: Giá {price} xu · Thực nhận {received} xu hôm nay
+  en: Price {price} coins · Receive {received} coins today
+  placeholders:
+    price: integer
+    received: integer
   canonical: false
   source: shared/src/commonMain/kotlin/com/mamxanh/shared/data/sql/TreeLifecycleEngine.kt
 copy_cay_da_duoc_ban_hoac_don_ac3091:
@@ -4575,8 +4646,11 @@ copy_dong_ho_da_lui_chua_the_thuc_hien_c3bb22:
   source: shared/src/commonMain/kotlin/com/mamxanh/shared/data/sql/TreeLifecycleEngine.kt
 copy_da_ban_cay_nhan_0_1_xu_phan_vuot_gioi_han_khong_duoc_5316e3:
   order: 1053
-  vi: Đã bán cây · Nhận {0} / {1} xu. Phần vượt giới hạn không được giữ lại.
-  en: Tree sold · Received {0} / {1} coins. Anything above the cap is not kept.
+  vi: Đã bán cây · Nhận {received} / {price} xu. Phần vượt giới hạn không được giữ lại.
+  en: Tree sold · Received {received} / {price} coins. Anything above the cap is not kept.
+  placeholders:
+    received: integer
+    price: integer
   canonical: false
   source: shared/src/commonMain/kotlin/com/mamxanh/shared/data/sql/TreeLifecycleEngine.kt
 copy_da_don_cay_o_trong_da_trong_khong_hoan_xu_hoac_hat_4e6810:
@@ -4587,8 +4661,10 @@ copy_da_don_cay_o_trong_da_trong_khong_hoan_xu_hoac_hat_4e6810:
   source: shared/src/commonMain/kotlin/com/mamxanh/shared/data/sql/TreeLifecycleEngine.kt
 copy_0_xu_7c2391:
   order: 1055
-  vi: +{0} xu
-  en: +{0} coins
+  vi: +{coins} xu
+  en: +{coins} coins
+  placeholders:
+    coins: integer
   canonical: false
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioForms.kt
 copy_0_1_xu_8c9c4c:
@@ -4610,8 +4686,10 @@ copy_0_xu_251e68:
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioForms.kt
 copy_0_xu_9c90c1:
   order: 1058
-  vi: ' · +{0} xu'
-  en: ' · +{0} coins'
+  vi: ' · +{coins} xu'
+  en: ' · +{coins} coins'
+  placeholders:
+    coins: integer
   canonical: false
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioForms.kt
 copy_8_xu_3a7892:
@@ -4634,20 +4712,27 @@ copy_500_ml_120_xu_cf988e:
   source: core-ui/src/main/java/com/mamxanh/app/presentation/ui/components/GardenRichText.kt
 copy_0_xu_279a5c:
   order: 1062
-  vi: 🪙 {0} xu
-  en: 🪙 {0} coins
+  vi: 🪙 {coins} xu
+  en: 🪙 {coins} coins
+  placeholders:
+    coins: integer
   canonical: false
   source: core-ui/src/main/java/com/mamxanh/app/presentation/ui/components/MintComponents.kt
 copy_0_xu_1_xu_3d5c4b:
   order: 1069
-  vi: +{0} xu / {1} xu
-  en: +{0} coins / {1} coins
+  vi: +{earned} xu / {limit} xu
+  en: +{earned} coins / {limit} coins
+  placeholders:
+    earned: integer
+    limit: integer
   canonical: false
   source: shared/src/commonMain/kotlin/com/mamxanh/shared/data/sql/PhaseOneEngine.kt
 copy_daily_clear_0_xu_c4bb64:
   order: 1070
-  vi: Daily Clear +{0} xu
-  en: Daily Clear +{0} coins
+  vi: Daily Clear +{coins} xu
+  en: Daily Clear +{coins} coins
+  placeholders:
+    coins: integer
   canonical: false
   source: shared/src/commonMain/kotlin/com/mamxanh/shared/data/sql/PhaseOneEngine.kt
 copy_sac_anh_dao_b69c5c:
@@ -4758,14 +4843,18 @@ legal_technology_credits:
   source: app/src/main/java/com/mamxanh/app/presentation/ui/DataSettingsScreen.kt
 history_tree_sold:
   order: 1089
-  vi: Đã bán cây · {0}
-  en: Tree sold · {0}
+  vi: Đã bán cây · {tree}
+  en: Tree sold · {tree}
+  placeholders:
+    tree: string
   canonical: false
   source: legacy tree disposition history
 history_tree_removed:
   order: 1090
-  vi: Đã dọn cây · {0}
-  en: Tree cleared · {0}
+  vi: Đã dọn cây · {tree}
+  en: Tree cleared · {tree}
+  placeholders:
+    tree: string
   canonical: false
   source: legacy tree disposition history
 copy_mua_c86bcd:

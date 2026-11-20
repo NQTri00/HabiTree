@@ -18,8 +18,10 @@ copy_xem_lien_quan_127914:
   source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
 copy_ghi_chu_0_e5b4bc:
   order: 559
-  vi: 'Ghi chú: {0}'
-  en: 'Note: {0}'
+  vi: 'Ghi chú: {note}'
+  en: 'Note: {note}'
+  placeholders:
+    note: string
   canonical: false
   source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
 copy_cham_mot_chut_moi_ngay_e8732c:
@@ -60,8 +62,11 @@ copy_cham_36a8bd:
   source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
 copy_khung_gio_0_1_c4abe6:
   order: 566
-  vi: Khung giờ {0}–{1}
-  en: Time window {0}–{1}
+  vi: Khung giờ {start}–{end}
+  en: Time window {start}–{end}
+  placeholders:
+    start: string
+    end: string
   canonical: false
   source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
 copy_nghi_mot_chut_khong_tinh_thoi_gian_nghi_a616c7:
@@ -90,14 +95,21 @@ copy_5_120_phut_0c4b29:
   source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
 copy_da_hoan_thanh_0_phien_3aedba:
   order: 571
-  vi: Đã hoàn thành {0} phiên
-  en: 'Completed sessions: {0}'
+  vi: Đã hoàn thành {sessions} phiên
+  en: 'Completed sessions: {sessions}'
+  placeholders:
+    sessions: integer
   canonical: false
   source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
 copy_0_1_2_phut_3_1cab4a:
   order: 572
-  vi: '{0} · {1} / {2} phút · {3}'
-  en: '{0} · {1} / {2} min · {3}'
+  vi: '{title} · {elapsed} / {duration} phút · {status}'
+  en: '{title} · {elapsed} / {duration} min · {status}'
+  placeholders:
+    title: string
+    elapsed: string
+    duration: integer
+    status: string
   canonical: false
   source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
 copy_tron_ven_2a4501:
@@ -120,8 +132,10 @@ copy_dang_chay_cd07e6:
   source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
 copy_tuan_tu_0_55af46:
   order: 576
-  vi: TUẦN TỪ {0}
-  en: WEEK OF {0}
+  vi: TUẦN TỪ {date}
+  en: WEEK OF {date}
+  placeholders:
+    date: string
   canonical: false
   source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
 copy_chua_du_du_lieu_de_so_sanh_tuan_truoc_63f9c2:
@@ -132,14 +146,19 @@ copy_chua_du_du_lieu_de_so_sanh_tuan_truoc_63f9c2:
   source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
 copy_tuan_truoc_0_so_lieu_den_hom_nay_1201e0:
   order: 578
-  vi: 'Tuần trước: {0}% · Số liệu đến hôm nay.'
-  en: 'Last week: {0}% · Data through today.'
+  vi: 'Tuần trước: {completion_rate}% · Số liệu đến hôm nay.'
+  en: 'Last week: {completion_rate}% · Data through today.'
+  placeholders:
+    completion_rate: integer
   canonical: false
   source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
 copy_0_ngay_cham_cay_1_moc_truong_thanh_eb3af0:
   order: 579
-  vi: '{0} ngày chăm cây · {1} mốc trưởng thành'
-  en: 'Tree-care days: {0} · Maturity milestones: {1}'
+  vi: '{care_days} ngày chăm cây · {milestones} mốc trưởng thành'
+  en: 'Tree-care days: {care_days} · Maturity milestones: {milestones}'
+  placeholders:
+    care_days: integer
+    milestones: integer
   canonical: false
   source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
 copy_chua_du_du_lieu_ve_nhom_thoi_quen_2068bb:
@@ -150,14 +169,18 @@ copy_chua_du_du_lieu_ve_nhom_thoi_quen_2068bb:
   source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
 copy_deu_dan_nhat_0_b18f80:
   order: 581
-  vi: 'Đều đặn nhất: {0}'
-  en: 'Most consistent: {0}'
+  vi: 'Đều đặn nhất: {task}'
+  en: 'Most consistent: {task}'
+  placeholders:
+    task: string
   canonical: false
   source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
 copy_co_the_dieu_chinh_nhe_0_c674c2:
   order: 582
-  vi: 'Có thể điều chỉnh nhẹ: {0}'
-  en: 'A little room to adjust: {0}'
+  vi: 'Có thể điều chỉnh nhẹ: {task}'
+  en: 'A little room to adjust: {task}'
+  placeholders:
+    task: string
   canonical: false
   source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
 copy_dieu_gi_khien_tuan_nay_de_dang_hon_72fdd9:
@@ -222,8 +245,11 @@ copy_hien_tai_027390:
   source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
 copy_tap_trung_0_phut_gio_thuong_hoan_thanh_1_e3e85d:
   order: 593
-  vi: 'Tập trung: {0} phút · Giờ thường hoàn thành: {1}'
-  en: 'Focus: {0} min · Usual completion time: {1}'
+  vi: 'Tập trung: {minutes} phút · Giờ thường hoàn thành: {completion_time}'
+  en: 'Focus: {minutes} min · Usual completion time: {completion_time}'
+  placeholders:
+    minutes: integer
+    completion_time: string
   canonical: false
   source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
 copy_chua_du_du_lieu_348596:
@@ -438,20 +464,26 @@ copy_thu_hai_den_thu_sau_78c8f6:
   source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TaskDetails.kt
 copy_ngay_0_d9f894:
   order: 629
-  vi: 'Ngày: {0}'
-  en: 'Days: {0}'
+  vi: 'Ngày: {days}'
+  en: 'Days: {days}'
+  placeholders:
+    days: string
   canonical: false
   source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TaskDetails.kt
 copy_mot_lan_han_0_0809b4:
   order: 630
-  vi: Một lần · Hạn {0}
-  en: One-time · Due {0}
+  vi: Một lần · Hạn {date}
+  en: One-time · Due {date}
+  placeholders:
+    date: string
   canonical: false
   source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TaskDetails.kt
 copy_timer_0_phut_hoat_dong_0027f1:
   order: 631
-  vi: Timer · {0} phút hoạt động
-  en: Timer · {0} active minutes
+  vi: Timer · {minutes} phút hoạt động
+  en: Timer · {minutes} active minutes
+  placeholders:
+    minutes: integer
   canonical: false
   source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TaskDetails.kt
 copy_click_xac_nhan_mot_lan_8007ac:
@@ -474,14 +506,20 @@ copy_da_luu_tru_6aff2a:
   source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TaskDetails.kt
 copy_lan_cuoi_0_97f1a4:
   order: 635
-  vi: Lần cuối {0}
-  en: Last completed {0}
+  vi: Lần cuối {date}
+  en: Last completed {date}
+  placeholders:
+    date: string
   canonical: false
   source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TaskDetails.kt
 copy_hoat_dong_0_1_2_phut_79ed9b:
   order: 636
-  vi: Hoạt động {0}:{1} / {2} phút
-  en: Active {0}:{1} / {2} min
+  vi: Hoạt động {minutes}:{seconds} / {duration} phút
+  en: Active {minutes}:{seconds} / {duration} min
+  placeholders:
+    minutes: integer
+    seconds: string
+    duration: integer
   canonical: false
   source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TaskDetails.kt
 copy_ra_nen_se_tam_dung_khoi_dong_lai_can_tiep_tuc_thu_co_560f6d:
@@ -522,12 +560,15 @@ copy_quan_ly_viec_64cecb:
   source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TaskDetails.kt
 copy_0_1_viec_bat_buoc_da_xong_0ffc34:
   order: 643
-  vi: '{0}/{1} việc bắt buộc đã xong'
-  en: '{0}/{1} required tasks done'
+  vi: '{completed}/{required} việc bắt buộc đã xong'
+  en: '{completed}/{required} required tasks done'
+  placeholders:
+    completed: integer
+    required: integer
   canonical: false
   source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TasksScreen.kt
   pluralArgument: 1
-  en_one: '{0}/{1} required task done'
+  en_one: '{completed}/{required} required task done'
 copy_chua_co_viec_nao_2c72b0:
   order: 644
   vi: Chưa có việc nào
@@ -548,12 +589,15 @@ copy_them_viec_3e34ed:
   source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TasksScreen.kt
 copy_da_hoan_thanh_0_1_viec_e78274:
   order: 647
-  vi: Đã hoàn thành {0} / {1} việc
-  en: Completed {0} / {1} tasks
+  vi: Đã hoàn thành {completed} / {required} việc
+  en: Completed {completed} / {required} tasks
+  placeholders:
+    completed: integer
+    required: integer
   canonical: false
   source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TasksScreen.kt
   pluralArgument: 1
-  en_one: Completed {0} / {1} task
+  en_one: Completed {completed} / {required} task
 copy_da_nhan_thuong_98b708:
   order: 648
   vi: Đã nhận thưởng
@@ -605,8 +649,12 @@ copy_han_59b874:
   source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TasksScreen.kt
 copy_0_1_2_phut_b73be0:
   order: 656
-  vi: '{0}:{1} / {2} phút'
-  en: '{0}:{1} / {2} min'
+  vi: '{minutes}:{seconds} / {duration} phút'
+  en: '{minutes}:{seconds} / {duration} min'
+  placeholders:
+    minutes: integer
+    seconds: string
+    duration: integer
   canonical: false
   source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TasksScreen.kt
 copy_tam_dung_bo_dem_e82e42:
@@ -659,8 +707,11 @@ copy_chuan_bi_bai_cho_ngay_mai_0c86eb:
   source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TasksScreen.kt
 copy_daily_clear_0_xu_gioi_han_1_xu_ngay_6fe04e:
   order: 665
-  vi: Daily Clear +{0} xu · Giới hạn {1} xu/ngày
-  en: Daily Clear +{0} coins · Limit {1} coins/day
+  vi: Daily Clear +{reward} xu · Giới hạn {daily_limit} xu/ngày
+  en: Daily Clear +{reward} coins · Limit {daily_limit} coins/day
+  placeholders:
+    reward: integer
+    daily_limit: integer
   canonical: false
   source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TasksViewModel.kt
 copy_hoan_thanh_ke_hoach_bat_buoc_5342d8:
@@ -737,8 +788,11 @@ copy_thong_bao_can_quyen_he_thong_tu_choi_quyen_van_luu_d_26414d:
   source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/dialog/AddTaskDialog.kt
 copy_thuong_0_xu_tong_toi_da_1_xu_ngay_717b49:
   order: 678
-  vi: 'Thưởng: {0} xu · Tổng tối đa {1} xu/ngày'
-  en: 'Reward: {0} coins · Daily total up to {1} coins'
+  vi: 'Thưởng: {reward} xu · Tổng tối đa {daily_limit} xu/ngày'
+  en: 'Reward: {reward} coins · Daily total up to {daily_limit} coins'
+  placeholders:
+    reward: integer
+    daily_limit: integer
   canonical: false
   source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/dialog/AddTaskDialog.kt
 copy_tiep_tuc_sua_13f645:
@@ -755,26 +809,41 @@ copy_noi_dung_chua_luu_se_bi_mat_4228e1:
   source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/dialog/AddTaskDialog.kt
 copy_0_1_xu_8a2ae4:
   order: 1064
-  vi: '{0} · +{1} xu'
-  en: '{0} · +{1} coins'
+  vi: '{recurrence} · +{coins} xu'
+  en: '{recurrence} · +{coins} coins'
+  placeholders:
+    recurrence: string
+    coins: integer
   canonical: false
   source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
 copy_thu_0_xu_chi_1_xu_d34d57:
   order: 1065
-  vi: Thu {0} xu · Chi {1} xu
-  en: Earned {0} coins · Spent {1} coins
+  vi: Thu {earned} xu · Chi {spent} xu
+  en: Earned {earned} coins · Spent {spent} coins
+  placeholders:
+    earned: integer
+    spent: integer
   canonical: false
   source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt
 copy_0_1_2_3_xu_98b335:
   order: 1066
-  vi: '{0} · {1} · {2} · +{3} xu'
-  en: '{0} · {1} · {2} · +{3} coins'
+  vi: '{category} · {effort} · {recurrence} · +{coins} xu'
+  en: '{category} · {effort} · {recurrence} · +{coins} coins'
+  placeholders:
+    category: string
+    effort: string
+    recurrence: string
+    coins: integer
   canonical: false
   source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/OnboardingSettings.kt
 copy_0_1_2_xu_9a6d2e:
   order: 1067
-  vi: '{0}: {1}/{2} xu'
-  en: '{0}: {1}/{2} coins'
+  vi: '{date}: {earned}/{limit} xu'
+  en: '{date}: {earned}/{limit} coins'
+  placeholders:
+    date: string
+    earned: integer
+    limit: integer
   canonical: false
   source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TaskDetails.kt
 date_iso_placeholder:

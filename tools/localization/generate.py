@@ -18,6 +18,10 @@ def enum_name(key):
 def normalize_placeholders(key, item):
     placeholders = item.get('placeholders')
     if placeholders is None:
+        for locale in ("vi", "en", "en_one"):
+            label = item.get(locale) or ""
+            if POSITIONAL_PLACEHOLDER.search(label) or NAMED_PLACEHOLDER.search(label):
+                raise ValueError(f"Declare named placeholders in {key} ({locale})")
         return item, {}
     if not isinstance(placeholders, dict) or not placeholders:
         raise ValueError(f'Expected named placeholders in {key}')
@@ -54,6 +58,9 @@ def android_text(text, formats):
     text = text.replace('\n', '\\n').replace('\r', '\\r').replace('\t', '\\t')
     if text.startswith(('@', '?')):
         text = '\\' + text
+    if formats and text != text.strip():
+        # Quoting a formatted resource keeps Android from trimming a separator.
+        text = '"' + text + '"'
     return escape(text)
 
 def generate(allow_incomplete=False):

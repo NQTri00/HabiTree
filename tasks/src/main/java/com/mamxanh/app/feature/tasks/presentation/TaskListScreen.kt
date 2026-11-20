@@ -64,7 +64,7 @@ fun TaskListRow(task: TaskListItem, busy: Boolean, onOpen: () -> Unit, onComplet
             Column(Modifier.weight(1f).heightIn(min=AppDimensions.Dp48).clickable(onClick = onOpen),verticalArrangement=Arrangement.Center){
                 if(done)Text(task.title,color=bp.muted,fontFamily=com.mamxanh.app.presentation.ui.GardenFontFamily,fontSize=AppTypography.Sp13,fontWeight=androidx.compose.ui.text.font.FontWeight.SemiBold,textDecoration=androidx.compose.ui.text.style.TextDecoration.LineThrough)
                 else Bt(task.title,size=AppTypography.Size14,line=AppTypography.LineHeight21,semi=true)
-                Bt(if(done)stringResource(R.string.copy_da_xong_565e93) else AppText.category(task.category)+(if(timer)AppText.text(TextKey.Copy0PhutC0bcb0,task.minutes)else ""),size=AppTypography.Size11,tint=bp.muted)
+                Bt(if(done)stringResource(R.string.copy_da_xong_565e93) else AppText.category(task.category)+(if(timer)stringResource(R.string.copy_0_phut_c0bcb0, task.minutes)else ""),size=AppTypography.Size11,tint=bp.muted)
             }
             Bt("+${task.reward}",size=AppTypography.Size10,tint=AppColors.SwatchFF946A0E)
             Box(

@@ -6,20 +6,28 @@ copy_dang_mua_c2f9ae:
   source: shop/src/main/java/com/mamxanh/app/feature/shop/presentation/PurchaseConfirmation.kt
 copy_0_xu_mon_d8d2ec:
   order: 768
-  vi: '{0} xu / món'
-  en: '{0} coins / item'
+  vi: '{price} xu / món'
+  en: '{price} coins / item'
+  placeholders:
+    price: integer
   canonical: false
   source: shop/src/main/java/com/mamxanh/app/feature/shop/presentation/PurchaseConfirmation.kt
 copy_0_1_dang_c7b549:
   order: 769
-  vi: '{0} · {1} dáng'
-  en: '{0} · Forms: {1}'
+  vi: '{tier} · {forms} dáng'
+  en: '{tier} · Forms: {forms}'
+  placeholders:
+    tier: string
+    forms: integer
   canonical: false
   source: shop/src/main/java/com/mamxanh/app/feature/shop/presentation/PurchaseConfirmation.kt
 copy_khoang_0_ngay_tich_xu_uoc_tinh_1_xu_ngay_8fd2f8:
   order: 770
-  vi: Khoảng {0} ngày tích xu · Ước tính {1} xu/ngày
-  en: About {0} days of saving · Estimated {1} coins/day
+  vi: Khoảng {days} ngày tích xu · Ước tính {coins_per_day} xu/ngày
+  en: About {days} days of saving · Estimated {coins_per_day} coins/day
+  placeholders:
+    days: integer
+    coins_per_day: integer
   canonical: false
   source: shop/src/main/java/com/mamxanh/app/feature/shop/presentation/PurchaseConfirmation.kt
 copy_so_luong_bdb17c:
@@ -66,7 +74,9 @@ copy_ghe_vuon_uom_ca45c6:
   source: shop/src/main/java/com/mamxanh/app/feature/shop/presentation/ShopScreen.kt
 copy_da_them_0_vao_tui_fe68af:
   order: 778
-  vi: Đã thêm {0} vào túi
-  en: Added {0} to inventory
+  vi: Đã thêm {item} vào túi
+  en: Added {item} to inventory
+  placeholders:
+    item: string
   canonical: false
   source: shop/src/main/java/com/mamxanh/app/feature/shop/presentation/ShopScreen.kt
