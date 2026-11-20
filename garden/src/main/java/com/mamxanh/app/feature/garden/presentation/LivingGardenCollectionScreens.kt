@@ -1,5 +1,6 @@
 package com.mamxanh.app.feature.garden.presentation
 
+import com.mamxanh.app.presentation.ui.design.AppThemeEffects
 import com.mamxanh.app.presentation.ui.design.AppColors
 import com.mamxanh.app.presentation.ui.design.AppDimensions
 import com.mamxanh.app.presentation.ui.design.AppOpacity
@@ -40,7 +41,7 @@ import com.mamxanh.shared.model.*
         GardenCaption(AppText.text(TextKey.Copy0LoaiTrongDanhMucGiuLichSuKhiDonHoacBanCAc2aaf,catalog.size))
     }
     BoxWithConstraints(Modifier.fillMaxWidth()) {
-        val columns=if(maxWidth<AppDimensions.Dp340 || LocalDensity.current.fontScale>1.25f)2 else 3
+        val columns=if(maxWidth<AppDimensions.Dp340 || LocalDensity.current.fontScale>AppThemeEffects.CollectionLargeFontScale)2 else 3
         Column(verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp12)) {
             catalog.chunked(columns).forEach{row->Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp12)) {
                 row.forEach{s->

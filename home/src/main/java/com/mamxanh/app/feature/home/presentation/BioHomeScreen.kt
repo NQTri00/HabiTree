@@ -21,10 +21,10 @@ fun BioHomeScreen(
     nextTask: (@Composable () -> Unit)?,
     reward: (@Composable () -> Unit)?,
 ) {
-    val narrow = LocalConfiguration.current.screenWidthDp < 359
-    val landscape=LocalConfiguration.current.screenHeightDp<500
+    val narrow = LocalConfiguration.current.screenWidthDp < AppThemeEffects.CompactWidth
+    val landscape=LocalConfiguration.current.screenHeightDp<AppThemeEffects.CompactHeight
     Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.Top,horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp14)){
-        Column(Modifier.weight(1f)){if(!landscape){Bt(stringResource(R.string.copy_mot_nhip_xanh_4e8208),size=AppTypography.Size10,tint=bp.muted,mono=true,spacing=AppTypography.Tracking1_8);Spacer(Modifier.height(AppDimensions.Dp7))};Bt(stringResource(R.string.copy_ngay_moi_mam_moi_236a07),size=if(narrow||landscape)22 else 25,line=if(narrow||landscape)28.6f else 32.5f,bold=true,spacing=AppTypography.TrackingMinus1)}
+        Column(Modifier.weight(1f)){if(!landscape){Bt(stringResource(R.string.copy_mot_nhip_xanh_4e8208),size=AppTypography.Size10,tint=bp.muted,mono=true,spacing=AppTypography.Tracking1_8);Spacer(Modifier.height(AppDimensions.Dp7))};Bt(stringResource(R.string.copy_ngay_moi_mam_moi_236a07),size=if(narrow||landscape)AppTypography.Size22 else AppTypography.HomeGreetingSize,line=if(narrow||landscape)AppTypography.HomeGreetingCompactLineHeight else AppTypography.HomeGreetingLineHeight,bold=true,spacing=AppTypography.TrackingMinus1)}
         Box(Modifier.padding(top=if(landscape)AppDimensions.Dp0 else AppDimensions.Dp19).background(AppColors.White.copy(alpha=AppOpacity.Value_25),RoundedCornerShape(AppDimensions.Dp8)).border(AppDimensions.Dp1,bp.line,RoundedCornerShape(AppDimensions.Dp8)).padding(horizontal=AppDimensions.Dp10,vertical=AppDimensions.Dp9)){Bt(state.date,size=AppTypography.Size11,tint=bp.muted,mono=true,line=AppTypography.LineHeight14_3)}
     }
     val sectionSpacing = if (tree != null && !narrow && !landscape) AppDimensions.Dp10 else AppDimensions.Dp18

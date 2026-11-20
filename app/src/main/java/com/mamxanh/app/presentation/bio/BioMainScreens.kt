@@ -44,7 +44,7 @@ internal fun growthCaption(t:JSONObject)=when(t.s("state")){"dead"->AppText.text
 internal fun accessoryIcon(id:String)=when(id){"tree_ribbon"->"gift";"tree_lantern"->"sun";else->"spark"}
 
 @Composable internal fun BioHero(world:BioWorld,ui:BioController,t:JSONObject,home:Boolean=false,short:Boolean=false){
-    val p=bp;val narrow=LocalConfiguration.current.screenWidthDp<359;val shape=bioShape(AppRadii.Value26);val dead=t.s("state")=="dead"
+    val p=bp;val narrow=LocalConfiguration.current.screenWidthDp<AppThemeEffects.CompactWidth;val shape=bioShape(AppRadii.Value26);val dead=t.s("state")=="dead"
     Column(Modifier.fillMaxWidth().shadow(AppDimensions.Dp5,shape,ambientColor=p.deep.copy(alpha=AppOpacity.Value_35),spotColor=p.deep.copy(alpha=AppOpacity.Value_30)).background(remember(p){bioHeroBrush(p)},shape).border(AppDimensions.Dp1,AppColors.White.copy(alpha=AppOpacity.Value_75),shape).clip(shape).drawBehind {
         val step=AppDimensions.Dp24.toPx();var x=0f;while(x<size.width){drawLine(AppColors.White.copy(alpha=AppOpacity.Value_08),Offset(x,0f),Offset(x,size.height),1f);x+=step};var y=0f;while(y<size.height){drawLine(AppColors.White.copy(alpha=AppOpacity.Value_08),Offset(0f,y),Offset(size.width,y),1f);y+=step}
         val right=size.width-AppDimensions.Dp12.toPx();val top=AppDimensions.Dp12.toPx();val len=AppDimensions.Dp18.toPx();drawLine(p.deep.copy(alpha=AppOpacity.Value_45),Offset(right-len,top),Offset(right,top),AppDimensions.Dp1.toPx());drawLine(p.deep.copy(alpha=AppOpacity.Value_45),Offset(right,top),Offset(right,top+len),AppDimensions.Dp1.toPx())
@@ -55,7 +55,7 @@ internal fun accessoryIcon(id:String)=when(id){"tree_ribbon"->"gift";"tree_lante
             else BioTextAction(if(ui.homeTreeState.selectedId==t.s("id"))stringResource(R.string.copy_tren_trang_chu_e7c2f5) else stringResource(R.string.copy_dat_o_trang_chu_d8241c),{ui.act("bio-pin:"+t.s("id"))})
         }
         Spacer(Modifier.height(AppDimensions.Dp2))
-        val landscape=LocalConfiguration.current.screenHeightDp<500
+        val landscape=LocalConfiguration.current.screenHeightDp<AppThemeEffects.CompactHeight
         val artHeight = when {
             landscape -> AppDimensions.Dp100
             home && short -> AppDimensions.HomeShortHeroArtworkHeight
@@ -78,7 +78,7 @@ internal fun accessoryIcon(id:String)=when(id){"tree_ribbon"->"gift";"tree_lante
         }
         Spacer(Modifier.height(AppDimensions.Dp12));BioProgress(t.i("progress")/100f,white=true)
         Spacer(Modifier.height(AppDimensions.Dp6));Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween){Bt(growthCaption(t),size=AppTypography.Size10,tint=p.muted,line=AppTypography.LineHeight18_6);Bt("${t.i("progress")}%",size=AppTypography.Size11,tint=p.deep,mono=true,line=AppTypography.LineHeight18_6)}
-        if(home){Spacer(Modifier.height(AppDimensions.Dp13));if(LocalDensity.current.fontScale>1.2f)Column(verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp10)){
+        if(home){Spacer(Modifier.height(AppDimensions.Dp13));if(LocalDensity.current.fontScale>AppThemeEffects.LargeFontScale)Column(verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp10)){
             BioButton(if(t.b("watered"))stringResource(R.string.copy_da_tuoi_de2042) else stringResource(R.string.copy_tuoi_cay_0990f6),{ui.send("water:"+t.s("id"))},Modifier.fillMaxWidth(),"water",enabled=!t.b("watered")&&!dead&&!ui.busy)
             BioButton(stringResource(R.string.copy_trang_tri_d48231),{ui.act("bio-tree-decor:"+t.s("id"))},Modifier.fillMaxWidth(),"spark",secondary=true,enabled=!dead&&!ui.busy)
         }else Row(Modifier.height(IntrinsicSize.Min),horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp10)){
@@ -95,7 +95,7 @@ internal fun accessoryIcon(id:String)=when(id){"tree_ribbon"->"gift";"tree_lante
     val action={if(encyclopedia)ui.go("species",id)else if(accessory)ui.act("accessory:$id:$target")else if(inventory){if(seed)ui.act("plant:$id:${ui.plantingSelection.plotKey}")else if(item.b("permanent"))ui.send("equip:$id")else ui.show("fertilizer-help")}else ui.show("purchase",id)}
     BioCard(modifier,padding=AppSpacing.Value12,onClick=action){
         val backdrop=Brush.linearGradient(if(seed&&(!encyclopedia||known))listOf(AppColors.SwatchFFFAFAF8,bp.soft)else listOf(bp.soft,bp.soft))
-        Box(Modifier.fillMaxWidth().height(if(LocalConfiguration.current.screenWidthDp<359)AppDimensions.Dp95 else AppDimensions.Dp112).background(backdrop,bioShape(AppRadii.Value15)),contentAlignment=Alignment.Center){if(seed&&(!encyclopedia||known))BioPlant(id,Modifier.fillMaxSize())else Bi(if(seed)"leaf"else if(accessory)accessoryIcon(id)else if(item.b("permanent"))"water"else "fertilizer",size=if(accessory)32 else 43)}
+        Box(Modifier.fillMaxWidth().height(if(LocalConfiguration.current.screenWidthDp<AppThemeEffects.CompactWidth)AppDimensions.Dp95 else AppDimensions.Dp112).background(backdrop,bioShape(AppRadii.Value15)),contentAlignment=Alignment.Center){if(seed&&(!encyclopedia||known))BioPlant(id,Modifier.fillMaxSize())else Bi(if(seed)"leaf"else if(accessory)accessoryIcon(id)else if(item.b("permanent"))"water"else "fertilizer",size=if(accessory)AppIcons.Size32 else AppIcons.ProductArtworkSize)}
         Spacer(Modifier.height(AppDimensions.Dp10));Bt(item.s("name"),Modifier.heightIn(min=AppDimensions.Dp36),size=AppTypography.Size13,line=AppTypography.LineHeight18_85,semi=true);Spacer(Modifier.height(AppDimensions.Dp10))
         if(encyclopedia)Bt(world.record(id).s("status",stringResource(R.string.copy_chua_kham_pha_c0b0cb)),size=AppTypography.Size11,tint=bp.muted,line=AppTypography.LineHeight15_4)
         else if(accessory){Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically){Bt(if(equipped)stringResource(R.string.copy_dang_dung_275ca2)else if(owned)stringResource(R.string.copy_da_so_huu_822625)else stringResource(R.string.copy_0_xu_251e68, item.i("price")),Modifier.weight(1f),size=AppTypography.Size13,tint=bp.deep);Box(Modifier.size(AppDimensions.Dp27).border(AppDimensions.Dp1,bp.line,RoundedCornerShape(AppDimensions.Dp8)),contentAlignment=Alignment.Center){Bi(if(equipped)"check"else if(owned)"next"else "plus",size=AppIcons.Size14)}}}

@@ -20,6 +20,9 @@ object AppTypography {
     const val LineHeight30_8 = 30.8f
     const val LineHeight35_1 = 35.1f
     const val LineHeight37_7 = 37.7f
+    const val HomeGreetingSize = 25
+    const val HomeGreetingCompactLineHeight = 28.6f
+    const val HomeGreetingLineHeight = 32.5f
     const val FocusTimerCompactLineHeight = 46f
     const val FocusTimerLineHeight = 60f
     const val FocusTimerCompactSize = 36

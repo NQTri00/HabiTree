@@ -33,7 +33,7 @@ fun EncyclopediaScreen(
     Bt(stringResource(R.string.copy_moi_loai_mot_cau_chuyen_3baf0d),size=AppTypography.Size27,bold=true,spacing=AppTypography.TrackingMinus1)
     val n = discovered
     BioCard(Modifier.fillMaxWidth(),bp.soft,padding=AppSpacing.Value18){Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween){Bt(stringResource(R.string.copy_bo_suu_tam_539bd6),semi=true);Bt("$n/${speciesCount} · ${n*100/speciesCount.coerceAtLeast(1)}%",semi=true)};BioProgress(n.toFloat()/speciesCount.coerceAtLeast(1));Bt(stringResource(R.string.copy_giu_lich_su_khi_don_hoac_ban_cay_42a565),size=AppTypography.Size12,tint=bp.muted)}
-    val columns = if (LocalConfiguration.current.screenWidthDp >= 360 && LocalDensity.current.fontScale <= 1.2f) 3 else 2
+    val columns = if (LocalConfiguration.current.screenWidthDp >= AppThemeEffects.ThreeColumnCatalogWidth && LocalDensity.current.fontScale <= AppThemeEffects.LargeFontScale) 3 else 2
     BioGrid(speciesCount, columns, content = item)
     BioSection(stringResource(R.string.copy_dau_moc_suu_tam_1b494b))
     Column(verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp12)){
@@ -55,7 +55,7 @@ fun EncyclopediaScreen(
 fun SpeciesScreen(state: SpeciesDisplay, onTree: (String) -> Unit, onShop: () -> Unit) {
     BioCard(Modifier.fillMaxWidth(),bp.soft,padding=AppSpacing.Value18,radius=AppRadii.Value26){Column(Modifier.fillMaxWidth(),horizontalAlignment=Alignment.CenterHorizontally){BioTag(state.tier+" · "+state.status);if(state.discovered){Spacer(Modifier.height(AppDimensions.Dp2));BioPlant(state.id,Modifier.fillMaxWidth().height(AppDimensions.Dp220))}else Box(Modifier.fillMaxWidth().height(AppDimensions.Dp140),contentAlignment=Alignment.Center){Bi("leaf",size=AppIcons.Size36)};Bt(state.name,size=AppTypography.Size27,bold=true,spacing=AppTypography.TrackingMinus1,align=TextAlign.Center);Bt(state.description,size=AppTypography.Size12,tint=bp.muted,align=TextAlign.Center)}}
     BioSection(stringResource(R.string.copy_cac_giai_doan_0_1_bee217, state.highest,state.stages))
-    BioGrid(state.stages, if (LocalDensity.current.fontScale > 1.2f) 2 else 3) { index, modifier ->
+    BioGrid(state.stages, if (LocalDensity.current.fontScale > AppThemeEffects.LargeFontScale) 2 else 3) { index, modifier ->
         val reached = index < state.highest
         val status = stringResource(if (reached) R.string.copy_da_dat_1b9e88 else R.string.copy_chua_dat_f4aa8f)
         Column(

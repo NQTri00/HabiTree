@@ -48,7 +48,7 @@ import com.mamxanh.app.presentation.ui.design.*
     }
 }
 @Composable internal fun BioNav(route:String,onGo:(String)->Unit) {
-    val largeText=LocalDensity.current.fontScale>1.2f
+    val largeText=LocalDensity.current.fontScale>AppThemeEffects.LargeFontScale
     val parent=when(route){"home","tasks","garden","shop","stats"->route;"task","task-new","focus","templates","insights"->"tasks";"tree","inventory","species","encyclopedia"->"garden";"more"->"";else->"stats"}
     Column(Modifier.fillMaxWidth().background(lerp(bp.bg,AppColors.White,.10f))){HorizontalDivider(color=bp.line,thickness=AppDimensions.Dp1)
         Row(Modifier.fillMaxWidth().height(if(largeText)AppDimensions.Dp110 else AppDimensions.Dp79).padding(horizontal=if(LocalConfiguration.current.screenWidthDp<AppThemeEffects.CompactWidth)AppDimensions.Dp6 else AppDimensions.Dp10,vertical=AppDimensions.Dp10),horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp4)){

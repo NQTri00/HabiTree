@@ -34,16 +34,6 @@ import androidx.compose.ui.unit.sp
 import com.mamxanh.app.presentation.ui.*
 import com.mamxanh.app.presentation.ui.components.*
 
-data class InventorySeed(val id: String, val name: String, val count: Int)
-data class InventoryItem(val id: String, val name: String, val count: Int, val isCan: Boolean, val equipped: Boolean = false)
-data class InventoryUiState(
-    val seeds: List<InventorySeed> = emptyList(),
-    val items: List<InventoryItem> = emptyList(),
-    val coins: Int = 0,
-    val isLoading: Boolean = false
-)
-enum class InventoryTab { ITEMS, SEEDS }
-
 /** Reads existing inventory; only the host owns planting and purchase mutations. */
 @Composable
 fun InventoryScreen(

@@ -15,4 +15,8 @@ object AppThemeEffects {
     const val BodyLineHeight = 1.55f
     const val MonospaceTrackingCorrection = .05f
     const val CompactWidth = 359
+    const val CompactHeight = 500
+    const val ThreeColumnCatalogWidth = 360
+    const val LargeFontScale = 1.2f
+    const val CollectionLargeFontScale = 1.25f
 }

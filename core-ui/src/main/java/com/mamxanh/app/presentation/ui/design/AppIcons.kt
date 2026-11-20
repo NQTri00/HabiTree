@@ -14,6 +14,7 @@ object AppIcons {
     const val Size23 = 23
     const val Size28 = 28
     const val Size32 = 32
+    const val ProductArtworkSize = 43
     const val Size36 = 36
     const val Size44 = 44
     const val Size56 = 56

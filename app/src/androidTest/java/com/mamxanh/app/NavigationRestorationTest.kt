@@ -1,6 +1,7 @@
 package com.mamxanh.app
 
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.SystemClock
 import android.view.KeyEvent
 import android.view.accessibility.AccessibilityNodeInfo
@@ -10,11 +11,15 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.platform.app.InstrumentationRegistry
 import com.mamxanh.app.data.local.GardenDatabase
 import com.mamxanh.app.presentation.bio.BioController
+import com.mamxanh.app.presentation.ui.localization.AppLanguageController
+import com.mamxanh.core.ui.R as CopyR
 import com.mamxanh.shared.data.GameStorage
+import com.mamxanh.shared.localization.AppLanguage
 import com.mamxanh.shared.localization.AppText
 import com.mamxanh.shared.localization.TextKey
 import com.mamxanh.shared.model.EngagementAction
 import com.mamxanh.shared.model.TaskConfig
+import java.util.Locale
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
@@ -182,6 +187,81 @@ class NavigationRestorationTest {
             scenario.recreate()
             awaitLabel("15:00")
             awaitLabel(AppText.text(TextKey.CopyBatDauB3cacc))
+        }
+    }
+
+    @Test
+    fun languageSelectionRefreshesCatalogNamesAndSurvivesRecreation() {
+        check(context.packageName != "com.mamxanh.app") { "Use the isolated verification app." }
+        GardenDatabase(context).use { database ->
+            val storage = GameStorage(database)
+            if (!storage.engagementSnapshot().onboarded) {
+                assertTrue(storage.engage(
+                    EngagementAction.Onboard("succulent", "", emptyList(), "locale-onboard", skip = true),
+                ).success)
+            }
+        }
+
+        val original = AppLanguageController.current(context)
+        val target = AppLanguage.entries.single { it != original }
+        val configuration = Configuration(context.resources.configuration).apply {
+            setLocale(Locale.forLanguageTag(original.tag))
+        }
+        val originalResources = context.createConfigurationContext(configuration).resources
+        val option = if (target == AppLanguage.English) CopyR.string.app_language_en else CopyR.string.app_language_vi
+        val settingsTitle = AppText.forLanguage(TextKey.CopyTheoNhipCuaBan8e2e15, target)
+        val plantName = AppText.forLanguage(TextKey.CopySenDaNgocAba46f, target)
+        try {
+            ActivityScenario.launch<MainActivity>(Intent(context, MainActivity::class.java)).use { scenario ->
+                clickLabel(AppText.forLanguage(TextKey.CopyNhatKy1e6c3c, original))
+                clickLabel(AppText.forLanguage(TextKey.CopyTuyChon598c1b, original))
+                clickLabel(originalResources.getString(CopyR.string.app_language_title))
+                clickLabel(originalResources.getString(option))
+                awaitLabel(settingsTitle)
+                scenario.recreate()
+                awaitLabel(settingsTitle)
+                assertEquals(target, AppLanguageController.current(context))
+
+                clickLabel(AppText.forLanguage(TextKey.CopyTiemF1ee00, target))
+                awaitLabel(plantName)
+                awaitLabel("HabiTree")
+            }
+        } finally {
+            instrumentation.runOnMainSync { AppLanguageController.select(context, original.tag) }
+        }
+    }
+
+    @Test
+    fun cancellingFinalClearConfirmationPreservesSavedData() {
+        check(context.packageName != "com.mamxanh.app") { "Use the isolated verification app." }
+        GardenDatabase(context).use { database ->
+            val storage = GameStorage(database)
+            if (!storage.engagementSnapshot().onboarded) {
+                assertTrue(storage.engage(
+                    EngagementAction.Onboard("succulent", "", emptyList(), "clear-onboard", skip = true),
+                ).success)
+            }
+            val taskIds = storage.tasks().map { it.id }
+            val treeIds = storage.garden().trees.map { it.id }
+
+            ActivityScenario.launch<MainActivity>(Intent(context, MainActivity::class.java)).use {
+                clickLabel(AppText.text(TextKey.CopyNhatKy1e6c3c))
+                clickLabel(AppText.text(TextKey.CopyTuyChon598c1b))
+                val dataLink = AppText.text(TextKey.CopyDuLieuUngDung9843b7)
+                repeat(3) { if (appRoot()?.findLabel(dataLink) == null) scrollForward() }
+                clickLabel(dataLink)
+                clickLabel(AppText.text(TextKey.CopyXoaDuLieu398085))
+                awaitLabel(AppText.text(TextKey.CopyBanCoTheXuatBanSaoTruocKhiTiepTuc60f8b1))
+                clickLabel(AppText.text(TextKey.CopyTiepTuc87a7ae))
+                val finalConfirmation = AppText.text(TextKey.CopyXacNhanLanCuoi8421a1)
+                awaitLabel(finalConfirmation)
+                clickLabel(AppText.text(TextKey.CopyHuy74fcd3))
+                awaitLabelGone(finalConfirmation)
+            }
+
+            assertTrue(storage.engagementSnapshot().onboarded)
+            assertEquals(taskIds, storage.tasks().map { it.id })
+            assertEquals(treeIds, storage.garden().trees.map { it.id })
         }
     }
 

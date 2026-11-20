@@ -19,13 +19,13 @@ fun ColumnScope.FocusScreen(state: FocusDisplay, onTask: (String) -> Unit, onMin
     val present = state.present
     val minutes = state.minutes
     val configuration = LocalConfiguration.current
-    val landscape = configuration.screenHeightDp < 500
+    val landscape = configuration.screenHeightDp < AppThemeEffects.CompactHeight
     val ringSize = when {
         landscape -> AppDimensions.Dp140
         configuration.screenWidthDp < AppThemeEffects.CompactWidth -> AppDimensions.Dp200
         else -> AppDimensions.Dp240
     }
-    if(present){if(!landscape)Bt(stringResource(R.string.copy_khoang_thoi_gian_cua_ban_a0e014),size=AppTypography.Size10,mono=true,tint=bp.muted,spacing=AppTypography.Tracking1_8);Bt(state.title,Modifier.fillMaxWidth(),size=if(landscape)22 else 27,bold=true,align=TextAlign.Center)}else if(landscape)Bt(stringResource(R.string.copy_tap_trung_964002),size=AppTypography.Size22,bold=true)else BioIntro(stringResource(R.string.copy_tap_trung_964002),stringResource(R.string.copy_chi_mot_viec_thoi_83ccd7),stringResource(R.string.copy_danh_mot_khoang_cho_dieu_quan_trong_dfd9b6),{Bi("sun")})
+    if(present){if(!landscape)Bt(stringResource(R.string.copy_khoang_thoi_gian_cua_ban_a0e014),size=AppTypography.Size10,mono=true,tint=bp.muted,spacing=AppTypography.Tracking1_8);Bt(state.title,Modifier.fillMaxWidth(),size=if(landscape)AppTypography.Size22 else AppTypography.Size27,bold=true,align=TextAlign.Center)}else if(landscape)Bt(stringResource(R.string.copy_tap_trung_964002),size=AppTypography.Size22,bold=true)else BioIntro(stringResource(R.string.copy_tap_trung_964002),stringResource(R.string.copy_chi_mot_viec_thoi_83ccd7),stringResource(R.string.copy_danh_mot_khoang_cho_dieu_quan_trong_dfd9b6),{Bi("sun")})
     val remaining=if(present)state.remaining else (minutes.toIntOrNull()?:0).coerceIn(0,240)*60
     if (!present && landscape && configuration.screenWidthDp >= AppDimensions.Dp600.value) {
         Row(
