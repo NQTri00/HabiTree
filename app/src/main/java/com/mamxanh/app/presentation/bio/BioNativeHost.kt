@@ -24,7 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import com.mamxanh.app.BuildConfig
 import com.mamxanh.app.data.BackupService
-import com.mamxanh.app.feature.garden.domain.GardenCollectionRepository
+import com.mamxanh.app.feature.catalog.domain.GardenCollectionRepository
 import com.mamxanh.app.feature.garden.domain.GardenRepository
 import com.mamxanh.app.feature.garden.domain.availablePlantingPlots
 import com.mamxanh.app.feature.inventory.domain.InventoryRepository

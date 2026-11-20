@@ -31,7 +31,7 @@ def export(source: Path, ref: str, output: Path, repository: Path, module: str =
     publication = original[original.index("val androidArtifactVersions"):original.index("val localPublicationRepository")]
     versions = dict(VERSION_ENTRY.findall(publication))
     settings_text = read_source("settings.gradle.kts")
-    feature_names = set(re.findall(r'include\("(:[a-z-]+):domain"', settings_text))
+    feature_names = set(re.findall(r'"(:[a-z-]+):domain"', settings_text))
     owner = ":" + module
     if module != "app" and owner not in versions:
         raise ValueError(f"Unknown Android module: {module}")

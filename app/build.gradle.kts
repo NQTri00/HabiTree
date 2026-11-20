@@ -85,6 +85,8 @@ dependencies {
     implementation(project(":tasks:data"))
     implementation(project(":garden"))
     implementation(project(":garden:data"))
+    implementation(project(":catalog"))
+    implementation(project(":catalog:data"))
     implementation(project(":shop"))
     implementation(project(":shop:data"))
     implementation(project(":tree"))

@@ -2,12 +2,12 @@ package com.mamxanh.app.presentation.bio
 
 import androidx.compose.ui.res.stringResource
 import com.mamxanh.core.ui.R
-import com.mamxanh.app.feature.garden.presentation.CollectionGoalDisplay
-import com.mamxanh.app.feature.garden.presentation.speciesDisplay
-import com.mamxanh.app.feature.garden.presentation.toEncyclopediaGoals
-import com.mamxanh.app.feature.garden.presentation.SpeciesTreeDisplay
-import com.mamxanh.app.feature.garden.presentation.navigation.EncyclopediaRouteContent
-import com.mamxanh.app.feature.garden.presentation.navigation.SpeciesRouteContent
+import com.mamxanh.app.feature.catalog.presentation.CollectionGoalDisplay
+import com.mamxanh.app.feature.catalog.presentation.speciesDisplay
+import com.mamxanh.app.feature.catalog.presentation.toEncyclopediaGoals
+import com.mamxanh.app.feature.catalog.presentation.SpeciesTreeDisplay
+import com.mamxanh.app.feature.catalog.presentation.navigation.EncyclopediaRouteContent
+import com.mamxanh.app.feature.catalog.presentation.navigation.SpeciesRouteContent
 import com.mamxanh.app.feature.stats.presentation.AchievementDisplay
 import com.mamxanh.app.feature.stats.presentation.TimelineMemory
 import com.mamxanh.app.feature.stats.domain.TimelineRelated

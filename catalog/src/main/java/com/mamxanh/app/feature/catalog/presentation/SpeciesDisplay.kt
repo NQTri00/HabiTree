@@ -1,6 +1,6 @@
-package com.mamxanh.app.feature.garden.presentation
+package com.mamxanh.app.feature.catalog.presentation
 
-import com.mamxanh.app.feature.garden.domain.CollectedSpecies
+import com.mamxanh.app.feature.catalog.domain.CollectedSpecies
 
 data class SpeciesTreeDisplay(
     val id: String,

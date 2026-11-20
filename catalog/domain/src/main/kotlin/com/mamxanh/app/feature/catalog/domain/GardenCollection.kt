@@ -1,4 +1,4 @@
-package com.mamxanh.app.feature.garden.domain
+package com.mamxanh.app.feature.catalog.domain
 
 data class GardenCollection(
     val species: List<CollectedSpecies>,

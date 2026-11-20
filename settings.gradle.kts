@@ -14,6 +14,7 @@ include(":shared", ":app", ":core-ui", ":core-presentation", ":core-network", ":
 include(":home:domain", ":home:data")
 include(":tasks:domain", ":tasks:data")
 include(":garden:domain", ":garden:data")
+include(":catalog", ":catalog:domain", ":catalog:data")
 include(":shop:domain", ":shop:data")
 include(":tree:domain", ":tree:data")
 include(":stats:domain", ":stats:data")

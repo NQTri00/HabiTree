@@ -27,6 +27,7 @@ val androidArtifactVersions = mapOf(
     ":shared" to "0.1.1",
     ":home" to "0.1.1",
     ":garden" to "0.1.1",
+    ":catalog" to "0.1.0",
     ":tasks" to "0.1.1",
     ":shop" to "0.1.1",
     ":tree" to "0.1.1",
@@ -85,7 +86,7 @@ subprojects {
 tasks.register("verifyArchitecture") {
     group = "verification"
     doLast {
-        val features=setOf("home","tasks","garden","shop","tree","stats","inventory","settings")
+        val features=setOf("home","tasks","garden","catalog","shop","tree","stats","inventory","settings")
         val violations=mutableListOf<String>()
         val declarationSuffixes = listOf("api", "implementation", "compileOnly", "runtimeOnly")
         fun declarations(path: String) = project(path).configurations
@@ -120,7 +121,7 @@ tasks.register("verifyArchitecture") {
                     else -> emptySet()
                 },
                 ":$owner:data" to (setOf(":$owner:domain") + when (owner) {
-                    "inventory", "shop", "tree", "settings", "home", "garden", "tasks" -> setOf(":shared")
+                    "inventory", "shop", "tree", "settings", "home", "garden", "catalog", "tasks" -> setOf(":shared")
                     "stats" -> setOf(":core-data", ":shared")
                     else -> emptySet()
                 }),

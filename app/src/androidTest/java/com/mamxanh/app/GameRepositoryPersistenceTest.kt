@@ -3,8 +3,8 @@ package com.mamxanh.app
 import android.database.sqlite.SQLiteConstraintException
 import android.database.sqlite.SQLiteDatabase
 import com.mamxanh.app.core.domain.RepositoryResult
-import com.mamxanh.app.feature.garden.data.GardenCollectionRepositoryImpl
-import com.mamxanh.app.feature.garden.domain.GardenCollectionRepository
+import com.mamxanh.app.feature.catalog.data.GardenCollectionRepositoryImpl
+import com.mamxanh.app.feature.catalog.domain.GardenCollectionRepository
 import com.mamxanh.app.feature.inventory.data.InventoryRepositoryImpl
 import com.mamxanh.app.feature.inventory.domain.InventoryRepository
 import com.mamxanh.app.feature.shop.data.ShopRepositoryImpl

@@ -1,9 +1,9 @@
-package com.mamxanh.app.feature.garden.data
+package com.mamxanh.app.feature.catalog.data
 
-import com.mamxanh.app.feature.garden.domain.CollectedSpecies
-import com.mamxanh.app.feature.garden.domain.CollectionMilestone
-import com.mamxanh.app.feature.garden.domain.GardenCollection
-import com.mamxanh.app.feature.garden.domain.GardenCollectionRepository
+import com.mamxanh.app.feature.catalog.domain.CollectedSpecies
+import com.mamxanh.app.feature.catalog.domain.CollectionMilestone
+import com.mamxanh.app.feature.catalog.domain.GardenCollection
+import com.mamxanh.app.feature.catalog.domain.GardenCollectionRepository
 import com.mamxanh.shared.data.GameStorage
 import com.mamxanh.shared.model.gardenCosmetics
 import org.koin.dsl.module
@@ -35,6 +35,6 @@ class GardenCollectionRepositoryImpl(private val storage: GameStorage) : GardenC
     }
 }
 
-val gardenCollectionDataModule = module {
+val catalogDataModule = module {
     single<GardenCollectionRepository> { GardenCollectionRepositoryImpl(get()) }
 }

@@ -16,9 +16,9 @@ import com.mamxanh.app.core.presentation.navigation.HabiTreeRouteRegistry
 import com.mamxanh.app.di.previewRouteRegistry
 import com.mamxanh.app.feature.stats.presentation.StatisticsLink
 import com.mamxanh.app.feature.stats.presentation.navigation.LocalWeeklyReviewRouteContent
-import com.mamxanh.app.feature.garden.presentation.navigation.LocalEncyclopediaRouteContent
+import com.mamxanh.app.feature.catalog.presentation.navigation.LocalEncyclopediaRouteContent
 import com.mamxanh.app.feature.garden.presentation.navigation.LocalGardenRouteContent
-import com.mamxanh.app.feature.garden.presentation.navigation.LocalSpeciesRouteContent
+import com.mamxanh.app.feature.catalog.presentation.navigation.LocalSpeciesRouteContent
 import com.mamxanh.app.feature.settings.presentation.navigation.LocalBackupRouteContent
 import com.mamxanh.app.feature.settings.presentation.navigation.LocalSettingsRouteContent
 import com.mamxanh.app.feature.tasks.presentation.navigation.LocalRestRouteContent

@@ -21,7 +21,7 @@
 - [x] **S03 · Garden and Encyclopedia.** Move plot selection, planting eligibility, collection queries, and species state. Verify empty and locked plots, planting from owned inventory, inventory decrement, and retained species history after removing or selling a tree.
 - [x] **S04 · Shop and Inventory.** Move tabs, quantities, affordability, target-tree selection, and purchase results. Preserve transactions. Verify purchases by category, insufficient funds, duplicate taps, direct accessory purchase or equip, and persisted balances and equipment.
 - [x] **S05 · Statistics and Journal.** The live Statistics query and both journal writes use feature use cases and repositories. Tests cover empty and populated summaries, persisted notes, rejected replacements, and Timeline targets that retain their task or tree IDs.
-- [ ] **S06 · Settings, Backup, Onboarding.** Move language, reminders, onboarding, and backup request state. Use typed results for shell-owned permissions and document pickers. Verify restart persistence, permission grant and denial, valid and invalid backups, destructive confirmations, onboarding completion and skip, and reopening with an existing garden.
+- [x] **S06 · Settings, Backup, Onboarding.** Settings owns reminder and backup request state, and Home owns onboarding choices. The hosted Android 15 run at `eb4bf04` verified language and reminder persistence after recreation, notification denial and grant, and cancellation of the final destructive confirmation. The SQLite suite verified valid and invalid backups, safety restore and recovery, and onboarding completion and skip. The installed-app suite also reopened existing saved gardens. [Android CI](https://github.com/NQTri00/HabiTree/actions/runs/44749455197)
 
 Each flow uses immutable state, typed actions, lifecycle-aware collection, and one-time events through `BaseViewModel`. Remove each shell adapter only after its final caller migrates.
 
@@ -98,7 +98,7 @@ Each flow uses immutable state, typed actions, lifecycle-aware collection, and o
 
 ## Guide-to-check mapping
 
-The route inventory starts with the 22 IDs in `BioRoute`. Home owns `home` and `onboard`. Tasks owns `tasks`, `task`, `task-new`, `focus`, `templates`, `rest`, and `insights`. Garden owns `garden`, `encyclopedia`, and `species`. Statistics owns `stats`, `review`, `achievements`, and `timeline`. Shop, Inventory, and Tree own their namesake IDs. Settings owns `settings` and `data`. The shell owns `more`. The registry test covers key and renderer registration. V01 and V02 track the broader visual scenario inventory and comparisons.
+The route inventory starts with the 22 IDs in `BioRoute`. Home owns `home` and `onboard`. Tasks owns `tasks`, `task`, `task-new`, `focus`, `templates`, `rest`, and `insights`. Garden owns `garden`. Catalog owns `encyclopedia` and `species`. Statistics owns `stats`, `review`, `achievements`, and `timeline`. Shop, Inventory, and Tree own their namesake IDs. Settings owns `settings` and `data`. The shell owns `more`. The registry test covers key and renderer registration. V01 and V02 track the broader visual scenario inventory and comparisons.
 
 | Guide rule | Implementation owner | Acceptance and evidence |
 |---|---|---|
@@ -242,3 +242,9 @@ The final answer shows the top-level module tree, representative Kotlin and XML 
 - V05 component preview coverage. The text field, validation error, dropdown, toggles, date and time fields now have same-file previews with empty, populated, error and large-text examples. D01 now resolves unique Kotlin references in wildcard imports and links each reference to the declaring file and the source lines where the name occurs.
 
 - M05 publication versioning. The next export pins the changed shared and Core Components libraries, Core Storage with its updated shared dependency, and all eight affected feature publications at `0.1.1`. Unaffected core libraries remain at `0.1.0`. This allows the clean checkout to distinguish these artifacts from the earlier local publication.
+
+- V02 Tasks and Garden filter spacing. Comparing the Vietnamese Compose PNGs against `tasks.png` and `garden.png` showed the first content card 4 px and 6 px lower, respectively, in Android. Removed a 4 dp bottom inset from the shared chip row. Its 48 dp touch height is preserved. The integrated render will measure the updated alignment.
+
+- V05 Focus action dock. The Tasks module owns the Start, Pause, Resume and End controls, typed action callbacks, and same-file setup and running previews. The shell provides the current session and translates actions into the existing timer commands and confirmation route.
+
+- M01 and M05 Catalog boundary. The live Encyclopedia and Species screens, route registrations, collection contract and SQLite-backed adapter moved to Catalog's presentation, domain and data modules. Garden still owns its plot actions and legacy Garden previews. Catalog preserves the existing string route IDs, Species argument, serialization names, resource IDs and storage. The app composition root includes Catalog and the architecture gate checks its layer dependencies.

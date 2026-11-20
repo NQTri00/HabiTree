@@ -5,6 +5,9 @@ import com.mamxanh.core.ui.R
 import com.mamxanh.app.presentation.ui.design.*
 
 import com.mamxanh.app.presentation.ui.design.AppDimensions
+import com.mamxanh.app.feature.tasks.presentation.FocusDock
+import com.mamxanh.app.feature.tasks.presentation.FocusDockAction
+import com.mamxanh.app.feature.tasks.presentation.FocusDockState
 import com.mamxanh.app.feature.tasks.presentation.TaskFormField
 
 import com.mamxanh.shared.localization.TextKey
@@ -16,6 +19,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 
 @Composable internal fun BioActionDock(content:@Composable ()->Unit){
     Column(Modifier.fillMaxWidth().background(bp.bg)){
@@ -53,15 +57,33 @@ internal fun selectedBioTemplates(ui:BioController)=ui.taskSelection.selectedTem
 internal fun focusTask(ui:BioController,argument:String=ui.param)=ui.taskSelection.focusTask?:argument.ifBlank{"0"}
 internal fun focusMinutes(world:BioWorld,ui:BioController,argument:String=ui.param)=world.task(focusTask(ui,argument))?.i("minutes")?.toString()?:ui.taskSelection.focusMinutes?:"25"
 @Composable internal fun BioFocusActions(world:BioWorld,ui:BioController){
-    val focus=world.state.o("focus")
-    if(focus.s("id").isNotBlank()){
-        val running=focus.s("state")=="RUNNING"
-        Row(horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp12)){
-            BioButton(if(running)stringResource(R.string.copy_tam_dung_676358)else stringResource(R.string.copy_tiep_tuc_87a7ae),{ui.send("focus-toggle")},Modifier.weight(1f),if(running)"pause"else "play",enabled=!ui.busy)
-            BioButton(stringResource(R.string.copy_ket_thuc_351849),{ui.show("focus-end")},Modifier.weight(1f),secondary=true,enabled=!ui.busy)
+    val focus = world.state.o("focus")
+    val taskId = focusTask(ui)
+    val task = world.task(taskId)
+    val minutes = focusMinutes(world, ui)
+    FocusDock(
+        FocusDockState(
+            hasSession = focus.s("id").isNotBlank(),
+            running = focus.s("state") == "RUNNING",
+            canStart = task?.let { it.b("available", true) && !it.b("done") }
+                ?: ((minutes.toIntOrNull() ?: 0) in 5..120),
+            busy = ui.busy,
+        ),
+    ) { action ->
+        when (action) {
+            FocusDockAction.Start -> ui.send(
+                "start-focus", mapOf("minutes" to (if (task != null) "25" else minutes), "task" to taskId),
+            )
+            FocusDockAction.Toggle -> ui.send("focus-toggle")
+            FocusDockAction.End -> ui.show("focus-end")
         }
-    }else{
-        val task=world.task(focusTask(ui))
-        BioButton(stringResource(R.string.copy_bat_dau_b3cacc),{ui.send("start-focus",mapOf("minutes" to if(task!=null)"25"else focusMinutes(world,ui),"task" to focusTask(ui)))},Modifier.fillMaxWidth(),"play",enabled=(if(task!=null)task.b("available",true)&&!task.b("done") else (focusMinutes(world,ui).toIntOrNull()?:0)in 5..120)&&!ui.busy)
+    }
+}
+
+@Preview(name = "Focus action dock", widthDp = 375, showBackground = true)
+@Composable
+private fun BioActionDockPreview() {
+    BioActionDock {
+        FocusDock(FocusDockState(hasSession = false, running = false, canStart = true, busy = false)) {}
     }
 }

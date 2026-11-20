@@ -21,7 +21,6 @@ import androidx.compose.ui.tooling.preview.Preview
 
 private object ChipTokens {
     val TopInset = AppDimensions.Dp2
-    val BottomInset = AppDimensions.Dp4
     val Gap = AppDimensions.Dp8
     val MinimumHeight = AppDimensions.Dp48
     val HorizontalPadding = AppDimensions.Dp12
@@ -35,7 +34,7 @@ private object ChipTokens {
 fun BioChips(options: List<Pair<String, String>>, selected: String, onSelect: (String) -> Unit) {
     Row(
         modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState())
-            .padding(top = ChipTokens.TopInset, bottom = ChipTokens.BottomInset),
+            .padding(top = ChipTokens.TopInset),
         horizontalArrangement = Arrangement.spacedBy(ChipTokens.Gap),
     ) {
         options.forEach { (id, label) ->

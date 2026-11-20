@@ -5,6 +5,7 @@ import com.mamxanh.app.feature.settings.presentation.navigation.settingsFeatureN
 import com.mamxanh.app.feature.home.presentation.navigation.homeFeatureNavigation
 import com.mamxanh.app.feature.tasks.presentation.navigation.tasksFeatureNavigation
 import com.mamxanh.app.feature.garden.presentation.navigation.gardenFeatureNavigation
+import com.mamxanh.app.feature.catalog.presentation.navigation.catalogFeatureNavigation
 import com.mamxanh.app.feature.shop.presentation.navigation.shopFeatureNavigation
 import com.mamxanh.app.feature.inventory.presentation.navigation.inventoryFeatureNavigation
 import com.mamxanh.app.feature.tree.presentation.navigation.treeFeatureNavigation
@@ -14,6 +15,7 @@ internal val featureNavigation = listOf(
     homeFeatureNavigation,
     tasksFeatureNavigation,
     gardenFeatureNavigation,
+    catalogFeatureNavigation,
     shopFeatureNavigation,
     inventoryFeatureNavigation,
     treeFeatureNavigation,
