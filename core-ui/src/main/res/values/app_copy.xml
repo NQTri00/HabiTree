@@ -1150,4 +1150,7 @@
     <string name="data_diagnostics" formatted="false">Xuất chẩn đoán</string>
     <string name="data_diagnostics_note" formatted="false">Chỉ xuất phiên bản, API Android, dung lượng và số dòng; không gồm tên việc, ghi chú, số dư hay trạng thái cây riêng tư.</string>
     <string name="data_safety_note" formatted="false">Khôi phục bản an toàn sẽ thay dữ liệu hiện tại. Hãy xuất bản sao hiện tại trước nếu muốn giữ cả hai.</string>
+    <string name="shop_purchase_quantity" formatted="false">Số lượng mua</string>
+    <string name="shop_decrease_quantity" formatted="false">Giảm số lượng</string>
+    <string name="shop_increase_quantity" formatted="false">Tăng số lượng</string>
 </resources>

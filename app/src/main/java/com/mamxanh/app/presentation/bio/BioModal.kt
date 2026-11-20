@@ -24,6 +24,10 @@ import androidx.compose.ui.*
 import androidx.compose.ui.draw.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 
 @Composable internal fun BioModal(world:BioWorld,ui:BioController){
@@ -62,7 +66,11 @@ import androidx.compose.ui.unit.*
                         }
                         Bt(item.s("description").ifBlank{if(permanent)stringResource(R.string.copy_tuoi_trong_0_gio_dung_lau_dai_7c36d5, item.i("hours"))else stringResource(R.string.copy_0_trong_1_gio_dung_khi_cay_da_tuoi_mot_lan_moi_24_gi_acf259, item.s("rate"),item.i("hours"))},size=AppTypography.Size12,tint=bp.muted)
                         if(seed)BioTag(stringResource(R.string.copy_0_giai_doan_26f2b4, bioTier(item.s("tier")), item.i("stages")),modifier=Modifier.fillMaxWidth())
-                        if(!permanent)Row(Modifier.fillMaxWidth().heightIn(min=AppDimensions.Dp52),horizontalArrangement=Arrangement.Center,verticalAlignment=Alignment.CenterVertically){Box(Modifier.size(AppDimensions.Dp48).alpha(if(ui.shopSelection.quantity>1&&!ui.busy)AppOpacity.Value1 else AppOpacity.Value_45).background(bp.surface,bioShape(AppRadii.Value12)).border(AppDimensions.Dp1,bp.line,bioShape(AppRadii.Value12)).clickable(enabled=ui.shopSelection.quantity>1&&!ui.busy){ui.shopSelection.updateQuantity(ui.shopSelection.quantity - 1)},contentAlignment=Alignment.Center){Bt("\u2212",size=AppTypography.Size22,tint=bp.deep)};Spacer(Modifier.width(AppDimensions.Dp25));BioField("",ui.shopSelection.quantity.toString(),{ui.shopSelection.updateQuantity(it.toIntOrNull() ?: 1)},Modifier.width(AppDimensions.Dp65),number=true,centered=true);Spacer(Modifier.width(AppDimensions.Dp25));BioIconButton("plus",{ui.shopSelection.updateQuantity(ui.shopSelection.quantity + 1)},boxed=true,enabled=ui.shopSelection.quantity<99&&!ui.busy)}
+                        if (!permanent) BioPurchaseQuantity(
+                            quantity = ui.shopSelection.quantity,
+                            busy = ui.busy,
+                            onQuantity = { ui.shopSelection.updateQuantity(it) },
+                        )
                         BioMetrics(listOf(stringResource(R.string.copy_tong_13fdba) to total.toString(),stringResource(R.string.copy_vi_39a29f) to world.coins.toString(),(if(world.coins<total)stringResource(R.string.copy_can_them_e011ae)else stringResource(R.string.copy_con_lai_b3edb1)) to kotlin.math.abs(world.coins-total).toString()))
                         if(world.coins<total)Bt(stringResource(R.string.copy_khoang_0_ngay_uoc_tinh_40_xu_ngay_8be6c6, kotlin.math.ceil((total-world.coins)/40.0).toInt()),size=AppTypography.Size12,tint=bp.muted)
                         if(seed&&full)Bt(stringResource(R.string.copy_vuon_da_day_ban_van_co_the_mua_hat_vao_tui_e14bdf),size=AppTypography.Size12,tint=bp.muted)
@@ -135,4 +143,52 @@ import androidx.compose.ui.unit.*
     Row(Modifier.fillMaxWidth().heightIn(min=AppDimensions.Dp76).background(if(selected)bp.soft else bp.surface,bioShape(AppRadii.Value16)).border(AppDimensions.Dp1,if(selected)bp.deep else bp.line,bioShape(AppRadii.Value16)).clickable(onClick=onClick).padding(AppDimensions.Dp12),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp12)){
         BioPlant(species,Modifier.size(AppDimensions.Dp50));Column(Modifier.weight(1f)){Bt(title,size=AppTypography.Size13,semi=true);Spacer(Modifier.height(AppDimensions.Dp3));Bt(subtitle,size=AppTypography.Size11,tint=bp.muted)};Bi(if(selected)"check"else icon,size=AppIcons.Size18)
     }
+}
+
+@Composable
+private fun BioPurchaseQuantity(quantity: Int, busy: Boolean, onQuantity: (Int) -> Unit) {
+    val canDecrease = quantity > 1 && !busy
+    val decreaseLabel = stringResource(R.string.shop_decrease_quantity)
+    Row(
+        Modifier.fillMaxWidth().heightIn(min = AppDimensions.Dp52),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        val shape = bioShape(AppRadii.Value12)
+        Box(
+            Modifier.size(AppDimensions.Dp48)
+                .alpha(if (canDecrease) AppOpacity.Value1 else AppOpacity.Value_45)
+                .background(bp.surface, shape)
+                .border(AppDimensions.Dp1, bp.line, shape)
+                .semantics { contentDescription = decreaseLabel }
+                .clickable(enabled = canDecrease, role = Role.Button) { onQuantity(quantity - 1) },
+            contentAlignment = Alignment.Center,
+        ) {
+            Bt("\u2212", size = AppTypography.Size22, tint = bp.deep)
+        }
+        Spacer(Modifier.width(AppDimensions.Dp25))
+        BioField(
+            "",
+            quantity.toString(),
+            { onQuantity(it.toIntOrNull() ?: 1) },
+            Modifier.width(AppDimensions.Dp65),
+            number = true,
+            centered = true,
+            accessibilityLabel = stringResource(R.string.shop_purchase_quantity),
+        )
+        Spacer(Modifier.width(AppDimensions.Dp25))
+        BioIconButton(
+            "plus",
+            { onQuantity(quantity + 1) },
+            boxed = true,
+            enabled = quantity < 99 && !busy,
+            label = stringResource(R.string.shop_increase_quantity),
+        )
+    }
+}
+
+@Preview(name = "Purchase quantity", widthDp = 335, showBackground = true)
+@Composable
+private fun BioPurchaseQuantityPreview() {
+    BioPurchaseQuantity(quantity = 1, busy = false) {}
 }

@@ -18,6 +18,7 @@ TYPE = re.compile(r"\b(enum\s+class|class|interface|typealias|object)\s+(\w+)")
 FUNCTION = re.compile(r"\bfun\s+(?:<[^>\n]+>\s+)?(?:[\w?<>]+\.)*(\w+)\s*(?=\()")
 PROPERTY = re.compile(r"(?m)^(?:public\s+|internal\s+|private\s+|const\s+|lateinit\s+)*(val|var)\s+(\w+)")
 RESOURCE_USE = re.compile(r"(?:\bR\.(\w+)\.(\w+)|(?<![\w.])[@?](?:\+)?(\w+)/(\w+))")
+RESOURCE_LOOKUP = re.compile(r'\bgetIdentifier\(\s*"([\w]+)(\$[\w]+)?"\s*,\s*"(\w+)"')
 IDENTIFIER = re.compile(r"\b[A-Za-z_][A-Za-z0-9_]*\b")
 GENERATED_COPY = {
     "shared/src/commonMain/kotlin/com/mamxanh/shared/localization/GeneratedCopy.kt",
@@ -45,6 +46,7 @@ class TrackedFile:
     referenced_by: list = field(default_factory=list)
     gradle_projects: list = field(default_factory=list)
     resource_references: list = field(default_factory=list)
+    resource_lookup_patterns: list = field(default_factory=list)
     sample_of: list = field(default_factory=list)
     generated_from: list = field(default_factory=list)
     verified_by: list = field(default_factory=list)
@@ -202,6 +204,10 @@ def index(project, revision):
     for file, source in source_blobs(project, inputs):
         if file.path.endswith(".kt"):
             code = record_kotlin(file, source)
+            file.resource_lookup_patterns = sorted({
+                f"{kind}/{name}{'*' if interpolation else ''}"
+                for name, interpolation, kind in RESOURCE_LOOKUP.findall(source)
+            })
             identifiers = defaultdict(set)
             for line, text in enumerate(code.splitlines(), 1):
                 if not text.lstrip().startswith(("package ", "import ")):
@@ -294,6 +300,13 @@ def index(project, revision):
         ]
         for used in resource_links.get(file.path, ()):
             dependencies.update(resources.get(used, ()))
+        for pattern in file.resource_lookup_patterns:
+            if pattern.endswith("*"):
+                for resource, declarations in resources.items():
+                    if resource.startswith(pattern[:-1]):
+                        dependencies.update(declarations)
+            else:
+                dependencies.update(resources.get(pattern, ()))
         file.resource_references = sorted(resource_links.get(file.path, ()))
         dependencies.update(build_paths[path] for path in file.gradle_projects if path in build_paths)
         dependencies.discard(file.path)
@@ -335,7 +348,7 @@ def write_reports(output, revision, files):
     module_pages = []
     for owner, members in groups.items():
         lines = [f"# {owner}", "", f"Source commit `{revision}`", ""]
-        lines += ["Links record explicit imports, uniquely identifiable types in the same package, resource identifiers, and generator inputs in tracked source. Source occurrences identify symbol names and lines. Runtime dispatch is recorded separately by tests and preview evidence.", ""]
+        lines += ["Links record explicit imports, uniquely identifiable declarations in the same package or wildcard imports, resource identifiers, and generator inputs. Resource lookup patterns include possible consumers of dynamically named Android resources. Runtime behavior is recorded by tests and preview evidence.", ""]
         for file in members:
             url = f"https://github.com/NQTri00/HabiTree/blob/{revision}/{quote(file.path)}"
             lines += [f"## {PurePosixPath(file.path).name}", "", f"[`{file.path}`]({url})", ""]
@@ -349,6 +362,7 @@ def write_reports(output, revision, files):
             for name, values in (
                 ("Resources", file.resources),
                 ("Resource references", file.resource_references),
+                ("Android resource lookup patterns", file.resource_lookup_patterns),
                 ("Gradle projects", file.gradle_projects),
                 ("Preview manifest scenarios", file.sample_of),
                 ("Generator and inputs", file.generated_from),

@@ -1132,5 +1132,8 @@ enum class TextKey {
     DataLicenses,
     DataDiagnostics,
     DataDiagnosticsNote,
-    DataSafetyNote
+    DataSafetyNote,
+    ShopPurchaseQuantity,
+    ShopDecreaseQuantity,
+    ShopIncreaseQuantity
 }

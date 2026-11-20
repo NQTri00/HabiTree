@@ -1156,4 +1156,7 @@
     <string name="data_diagnostics" formatted="false">Export diagnostics</string>
     <string name="data_diagnostics_note" formatted="false">Exports version, Android API, size and row counts only; excludes task names, notes, balance and private tree state.</string>
     <string name="data_safety_note" formatted="false">Recovering the safety copy replaces current data. Export current data first to keep both.</string>
+    <string name="shop_purchase_quantity" formatted="false">Purchase quantity</string>
+    <string name="shop_decrease_quantity" formatted="false">Decrease quantity</string>
+    <string name="shop_increase_quantity" formatted="false">Increase quantity</string>
 </resources>

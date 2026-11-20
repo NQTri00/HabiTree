@@ -80,3 +80,21 @@ copy_da_them_0_vao_tui_fe68af:
     item: string
   canonical: false
   source: shop/src/main/java/com/mamxanh/app/feature/shop/presentation/ShopScreen.kt
+shop_purchase_quantity:
+  order: 1131
+  vi: Số lượng mua
+  en: Purchase quantity
+  canonical: false
+  source: app/src/main/java/com/mamxanh/app/presentation/bio/BioModal.kt
+shop_decrease_quantity:
+  order: 1132
+  vi: Giảm số lượng
+  en: Decrease quantity
+  canonical: false
+  source: app/src/main/java/com/mamxanh/app/presentation/bio/BioModal.kt
+shop_increase_quantity:
+  order: 1133
+  vi: Tăng số lượng
+  en: Increase quantity
+  canonical: false
+  source: app/src/main/java/com/mamxanh/app/presentation/bio/BioModal.kt

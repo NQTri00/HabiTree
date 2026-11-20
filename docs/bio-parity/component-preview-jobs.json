@@ -43,5 +43,10 @@
     "name": "home-bottom-navigation",
     "preview": "BioNavPreview",
     "source": "app/src/main/java/com/mamxanh/app/presentation/bio/BioDesign.kt"
+  },
+  {
+    "name": "purchase-quantity",
+    "preview": "BioPurchaseQuantityPreview",
+    "source": "app/src/main/java/com/mamxanh/app/presentation/bio/BioModal.kt"
   }
 ]
