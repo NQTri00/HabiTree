@@ -92,10 +92,20 @@ def export(source: Path, ref: str, output: Path, repository: Path, module: str =
     remainder = remainder.replace(repository_marker, repository_block, 1)
     text = prefix + section + remainder
     start = text.index("rootProject.name")
-    end = text.index("\n", start)
     includes = ", ".join(json.dumps(path) for path in sorted(local_projects))
     overrides = '\nproject(":core-storage").projectDir = file("data")' if module == "core-storage" else ""
-    settings.write_text(text[:end] + f"\ninclude({includes}){overrides}\n", encoding="utf-8")
+    if owner in feature_names:
+        project_name = f"habitree.android.feature.{module}"
+    elif module.startswith("core-"):
+        project_name = f"habitree.android.core.{module.removeprefix('core-')}"
+    elif module == "shared":
+        project_name = "habitree.android.shared"
+    else:
+        project_name = "HabiTree"
+    settings.write_text(
+        text[:start] + f"rootProject.name = {json.dumps(project_name)}\ninclude({includes}){overrides}\n",
+        encoding="utf-8",
+    )
 
     def coordinate(match: re.Match[str]) -> str:
         path = match.group(1)

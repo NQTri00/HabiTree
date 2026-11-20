@@ -118,7 +118,7 @@ private fun FocusSetupFields(
                 horizontalArrangement = Arrangement.spacedBy(AppDimensions.Dp12),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Box(Modifier.weight(1.35f)) { BioChips(presets, minutes, onMinutes) }
+                Box(Modifier.weight(1.6f)) { BioChips(presets, minutes, onMinutes) }
                 FocusDurationField(minutes, onMinutes, Modifier.weight(1f))
             }
         } else {

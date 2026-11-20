@@ -321,6 +321,7 @@ def write_reports(output, revision, files):
     groups = defaultdict(list)
     for file in files:
         groups[file.owner].append(file)
+    module_pages = []
     for owner, members in groups.items():
         lines = [f"# {owner}", "", f"Source commit `{revision}`", ""]
         lines += ["Links record explicit imports, uniquely identifiable types in the same package, resource identifiers, and generator inputs in tracked source. Source occurrences identify symbol names and lines. Runtime dispatch is recorded separately by tests and preview evidence.", ""]
@@ -361,7 +362,28 @@ def write_reports(output, revision, files):
                     lines.append(f"- `{reference['symbol']}` → `{target}` at lines {sites}")
             lines.append("")
         name = re.sub(r"[^\w.-]+", "-", owner).strip("-") or "root"
-        (output / f"{name}.md").write_text("\n".join(lines), encoding="utf-8")
+        page = f"{name}.md"
+        (output / page).write_text("\n".join(lines), encoding="utf-8")
+        module_pages.append((owner, page, len(members)))
+
+    overview = [
+        "# HabiTree Android architecture",
+        "",
+        f"Source commit `{revision}`",
+        "",
+        f"{len(files):,} tracked paths across {len(module_pages)} owners.",
+        "",
+        "- [Directory tree](file-tree.txt)",
+        "- [Machine-readable file index](file-index.json)",
+        "- [Coverage verification](coverage.json)",
+        "",
+        "## File details by owner",
+        "",
+        "| Owner | Tracked paths |",
+        "| --- | ---: |",
+    ]
+    overview += [f"| [{owner}]({quote(page)}) | {count:,} |" for owner, page, count in sorted(module_pages)]
+    (output / "README.md").write_text("\n".join(overview) + "\n", encoding="utf-8")
 
     paths = {file.path for file in files}
     markdown_paths = Counter()

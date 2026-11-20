@@ -141,7 +141,7 @@ fun Modifier.bioLift(shape:Shape,tint:Color)=drawBehind{
 }
 @Composable fun BioChips(options:List<Pair<String,String>>,selected:String,onSelect:(String)->Unit) {
     Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(top=AppDimensions.Dp2,bottom=AppDimensions.Dp4),horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp8)){
-        options.forEach{(id,label)->Box(Modifier.heightIn(min=AppDimensions.Dp48).background(if(id==selected)bp.accent else AppColors.White.copy(alpha=AppOpacity.Value_55),bioShape(AppRadii.Value13)).border(AppDimensions.Dp1,if(id==selected)bp.control else bp.line,bioShape(AppRadii.Value13)).semantics{this.selected=id==selected}.clickable(role=Role.RadioButton){onSelect(id)}.padding(horizontal=AppDimensions.Dp12,vertical=AppDimensions.Dp9),contentAlignment=Alignment.Center){Bt(label,size=AppTypography.Size12,maxLines=1)}}
+        options.forEach{(id,label)->Box(Modifier.heightIn(min=AppDimensions.Dp48).background(if(id==selected)bp.accent else AppColors.White.copy(alpha=AppOpacity.Value_55),bioShape(AppRadii.Value13)).border(AppDimensions.Dp1,if(id==selected)bp.control else bp.line,bioShape(AppRadii.Value13)).semantics{this.selected=id==selected}.clickable(role=Role.RadioButton){onSelect(id)}.padding(horizontal=AppDimensions.Dp12,vertical=AppDimensions.Dp9),contentAlignment=Alignment.Center){Bt(label,size=AppTypography.Size11,maxLines=1)}}
     }
 }
 @Composable fun BioMetrics(metrics:List<Pair<String,String>>,soft:Boolean=false) {

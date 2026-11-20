@@ -21,7 +21,6 @@ import com.mamxanh.shared.model.EngagementAction
 import com.mamxanh.shared.model.TaskConfig
 import java.util.Locale
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -151,8 +150,9 @@ class NavigationRestorationTest {
                     clickLabel(AppText.text(TextKey.CopyTuyChon598c1b))
                     val option = AppText.text(TextKey.CopyGoiYNghiSau25Phut6e7319)
                     clickLabel(option)
-                    scrollForward()
-                    clickLabel(AppText.text(TextKey.CopyLuuTuyChon3847ca))
+                    val save = AppText.text(TextKey.CopyLuuTuyChon3847ca)
+                    revealLabel(save)
+                    clickLabel(save)
                     awaitLabel(AppText.text(TextKey.CopyDaLuuTuyChon6ceb29))
 
                     scenario.recreate()
@@ -248,7 +248,7 @@ class NavigationRestorationTest {
                 clickLabel(AppText.text(TextKey.CopyNhatKy1e6c3c))
                 clickLabel(AppText.text(TextKey.CopyTuyChon598c1b))
                 val dataLink = AppText.text(TextKey.CopyDuLieuUngDung9843b7)
-                repeat(3) { if (appRoot()?.findLabel(dataLink) == null) scrollForward() }
+                revealLabel(dataLink)
                 clickLabel(dataLink)
                 clickLabel(AppText.text(TextKey.CopyXoaDuLieu398085))
                 awaitLabel(AppText.text(TextKey.CopyBanCoTheXuatBanSaoTruocKhiTiepTuc60f8b1))
@@ -268,10 +268,10 @@ class NavigationRestorationTest {
     private fun reminderIntent(entity: Long) =
         Intent(context, MainActivity::class.java).putExtra("engagement_task", entity)
 
-    private fun awaitLabel(label: String): AccessibilityNodeInfo {
+    private fun awaitLabel(label: String, clickable: Boolean = false): AccessibilityNodeInfo {
         val deadline = SystemClock.uptimeMillis() + 20_000
         while (SystemClock.uptimeMillis() < deadline) {
-            appRoot()?.findLabel(label)?.let { return it }
+            appRoot()?.findLabel(label, clickable)?.let { return it }
             SystemClock.sleep(100)
         }
         error("Timed out waiting for Android accessibility label: $label")
@@ -291,16 +291,22 @@ class NavigationRestorationTest {
         ?.takeIf { it.packageName?.toString() == context.packageName }
 
     private fun clickLabel(label: String) {
-        var node: AccessibilityNodeInfo? = awaitLabel(label)
-        while (node != null && !node.isClickable) node = node.parent
-        assertNotNull("No clickable accessibility node for $label", node)
-        assertTrue(node!!.performAction(AccessibilityNodeInfo.ACTION_CLICK))
+        val target = awaitLabel(label, clickable = true)
+        assertTrue("Android rejected click for $label", target.performAction(AccessibilityNodeInfo.ACTION_CLICK))
     }
 
-    private fun scrollForward() {
+    private fun revealLabel(label: String) {
         val action = AccessibilityNodeInfo.ACTION_SCROLL_FORWARD
-        val scrollable = checkNotNull(appRoot()?.findAction(action)) { "No scrollable Android settings content" }
-        assertTrue(scrollable.performAction(action))
+        val deadline = SystemClock.uptimeMillis() + 20_000
+        while (SystemClock.uptimeMillis() < deadline) {
+            val root = appRoot()
+            if (root?.findLabel(label, clickable = true) != null) return
+            if (root?.findAction(action)?.performAction(action) == true) {
+                instrumentation.waitForIdleSync()
+            }
+            SystemClock.sleep(250)
+        }
+        error("Timed out scrolling to Android accessibility label: $label")
     }
 
     private fun AccessibilityNodeInfo.findAction(action: Int): AccessibilityNodeInfo? {
@@ -311,10 +317,15 @@ class NavigationRestorationTest {
         return null
     }
 
-    private fun AccessibilityNodeInfo.findLabel(label: String): AccessibilityNodeInfo? {
-        if (text?.toString() == label || contentDescription?.toString() == label) return this
+    private fun AccessibilityNodeInfo.findLabel(label: String, clickable: Boolean = false): AccessibilityNodeInfo? {
+        if (isVisibleToUser && (text?.toString() == label || contentDescription?.toString() == label)) {
+            if (!clickable) return this
+            var target: AccessibilityNodeInfo? = this
+            while (target != null && !target.isClickable) target = target.parent
+            if (target != null && target.isEnabled) return target
+        }
         for (index in 0 until childCount) {
-            getChild(index)?.findLabel(label)?.let { return it }
+            getChild(index)?.findLabel(label, clickable)?.let { return it }
         }
         return null
     }
