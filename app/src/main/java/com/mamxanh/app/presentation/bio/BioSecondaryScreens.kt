@@ -1,5 +1,7 @@
 package com.mamxanh.app.presentation.bio
 
+import androidx.compose.ui.res.stringResource
+import com.mamxanh.core.ui.R
 import com.mamxanh.app.feature.garden.presentation.CollectionGoalDisplay
 import com.mamxanh.app.feature.garden.presentation.speciesDisplay
 import com.mamxanh.app.feature.garden.presentation.toEncyclopediaGoals
@@ -18,14 +20,10 @@ import com.mamxanh.app.feature.tasks.presentation.InsightTaskLink
 import com.mamxanh.app.feature.tasks.presentation.TaskInsightsDisplay
 import com.mamxanh.app.feature.tasks.presentation.navigation.InsightsRouteContent
 
-import com.mamxanh.app.feature.stats.presentation.StatisticsBars
 import com.mamxanh.app.presentation.ui.design.*
 
 import com.mamxanh.app.presentation.ui.design.AppColors
 import com.mamxanh.app.presentation.ui.design.AppDimensions
-import com.mamxanh.app.presentation.ui.design.AppIcons
-import com.mamxanh.app.presentation.ui.design.AppRadii
-import com.mamxanh.app.presentation.ui.design.AppSpacing
 import com.mamxanh.app.presentation.ui.design.AppTypography
 
 import com.mamxanh.shared.localization.TextKey
@@ -35,18 +33,11 @@ import com.mamxanh.shared.localization.AppText
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.*
-import org.json.JSONObject
 import org.json.JSONArray
 import java.text.SimpleDateFormat
 import java.util.*
@@ -59,9 +50,9 @@ internal fun bioDates(date:String,count:Int):List<String>{val format=SimpleDateF
     Column(verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp8)){
         Bt(bioDisplayDate(dates.first())+" – "+bioDisplayDate(dates.last()),size=AppTypography.Size12,tint=bp.muted)
         Row(horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp6)){dates.take(7).forEach{date->val calendar=Calendar.getInstance().apply{time=SimpleDateFormat("yyyy-MM-dd",Locale.US).parse(date)!!};val day=calendar.get(Calendar.DAY_OF_WEEK);Bt(bioWeekday(day),Modifier.weight(1f),size=AppTypography.Size11,tint=bp.muted,align=TextAlign.Center)}}
-        values.chunked(7).forEach{row->Row(horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp6)){repeat(7){i->if(i<row.size){val(date,state)=row[i];val fill=when(state){"SUCCESS"->bp.deep;"REST"->AppColors.SwatchFFE7E1F5;"PROTECTED"->AppColors.RewardSurface;else->AppColors.SwatchFFF0F2EB};Column(Modifier.weight(1f).heightIn(min=AppDimensions.Dp44).background(fill,RoundedCornerShape(AppDimensions.Dp10)).padding(vertical=AppDimensions.Dp4),horizontalAlignment=Alignment.CenterHorizontally){Bt(date.takeLast(2),size=AppTypography.Size12,tint=if(state=="SUCCESS")AppColors.White else bp.ink,line=AppTypography.LineHeight16);Bt(when(state){"SUCCESS"->"✓";"REST"->AppText.text(TextKey.CalendarRestMarker);"PROTECTED"->"◇";"MISSED"->"×";else->"—"},size=AppTypography.Size10,tint=if(state=="SUCCESS")AppColors.White else bp.muted,line=AppTypography.LineHeight14)}}else Spacer(Modifier.weight(1f))}}}
-        Bt(AppText.text(TextKey.CopyXongNNghiBaoVeC04e4f),size=AppTypography.Size11,tint=bp.muted)
-        Bt(AppText.text(TextKey.CopyBoLoChuaGhiNhan70b04e),size=AppTypography.Size11,tint=bp.muted)
+        values.chunked(7).forEach{row->Row(horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp6)){repeat(7){i->if(i<row.size){val(date,state)=row[i];val fill=when(state){"SUCCESS"->bp.deep;"REST"->AppColors.SwatchFFE7E1F5;"PROTECTED"->AppColors.RewardSurface;else->AppColors.SwatchFFF0F2EB};Column(Modifier.weight(1f).heightIn(min=AppDimensions.Dp44).background(fill,RoundedCornerShape(AppDimensions.Dp10)).padding(vertical=AppDimensions.Dp4),horizontalAlignment=Alignment.CenterHorizontally){Bt(date.takeLast(2),size=AppTypography.Size12,tint=if(state=="SUCCESS")AppColors.White else bp.ink,line=AppTypography.LineHeight16);Bt(when(state){"SUCCESS"->"✓";"REST"->stringResource(R.string.calendar_rest_marker);"PROTECTED"->"◇";"MISSED"->"×";else->"—"},size=AppTypography.Size10,tint=if(state=="SUCCESS")AppColors.White else bp.muted,line=AppTypography.LineHeight14)}}else Spacer(Modifier.weight(1f))}}}
+        Bt(stringResource(R.string.copy_xong_n_nghi_bao_ve_c04e4f),size=AppTypography.Size11,tint=bp.muted)
+        Bt(stringResource(R.string.copy_bo_lo_chua_ghi_nhan_70b04e),size=AppTypography.Size11,tint=bp.muted)
     }
 }
 internal fun weeklyReviewRouteContent(world: BioWorld, ui: BioController): WeeklyReviewRouteContent {

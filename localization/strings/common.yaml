@@ -25,8 +25,10 @@ copy_chon_viec_de_them_a9f4fc:
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioActionDock.kt
 copy_them_0_viec_d0390c:
   order: 4
-  vi: Thêm {0} việc
-  en: Add tasks ({0})
+  vi: Thêm {count} việc
+  en: Add tasks ({count})
+  placeholders:
+    count: integer
   canonical: false
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioActionDock.kt
 copy_tam_dung_676358:
@@ -271,8 +273,10 @@ copy_xac_nhan_1503b0:
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioForms.kt
 copy_0_phut_2596d2:
   order: 45
-  vi: '{0} phút'
-  en: '{0} min'
+  vi: '{minutes} phút'
+  en: '{minutes} min'
+  placeholders:
+    minutes: integer
   canonical: false
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioForms.kt
 copy_cham_de_hoan_thanh_856927:
@@ -595,8 +599,10 @@ copy_phien_dang_luu_d6c8c9:
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioForms.kt
 copy_roi_trang_se_tam_dung_phan_da_lam_luon_duoc_giu_lai_c6be38:
   order: 98
-  vi: ' · Rời trang sẽ tạm dừng. Phần đã làm luôn được giữ lại. Phiên tự do không thưởng xu.'
-  en: ' · Leaving this screen pauses the session. Your progress is kept. Free sessions do not earn coins.'
+  vi: '{date} · Rời trang sẽ tạm dừng. Phần đã làm luôn được giữ lại. Phiên tự do không thưởng xu.'
+  en: '{date} · Leaving this screen pauses the session. Your progress is kept. Free sessions do not earn coins.'
+  placeholders:
+    date: string
   canonical: false
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioForms.kt
 copy_danh_cho_ff565f:
@@ -613,8 +619,11 @@ copy_tu_do_khong_thuong_xu_113e54:
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioForms.kt
 copy_0_1_phut_ce85cf:
   order: 101
-  vi: '{0} · {1} phút'
-  en: '{0} · {1} min'
+  vi: '{title} · {minutes} phút'
+  en: '{title} · {minutes} min'
+  placeholders:
+    title: string
+    minutes: integer
   canonical: false
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioForms.kt
 copy_phut_tap_trung_5_120_ca7d24:
@@ -631,8 +640,10 @@ copy_nhap_so_phut_tu_5_120_2b514d:
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioForms.kt
 copy_0_phut_theo_thoi_gian_cua_viec_e07f34:
   order: 104
-  vi: '{0} phút · theo thời gian của việc'
-  en: '{0} min · set by the task'
+  vi: '{minutes} phút · theo thời gian của việc'
+  en: '{minutes} min · set by the task'
+  placeholders:
+    minutes: string
   canonical: false
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioForms.kt
 copy_sua_thoi_gian_trong_chi_tiet_viec_940772:
@@ -643,8 +654,10 @@ copy_sua_thoi_gian_trong_chi_tiet_viec_940772:
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioForms.kt
 copy_cac_phien_da_luu_0_hoan_thanh_bb1ef4:
   order: 106
-  vi: Các phiên đã lưu · {0} hoàn thành
-  en: Saved sessions · {0} completed
+  vi: Các phiên đã lưu · {sessions} hoàn thành
+  en: Saved sessions · {sessions} completed
+  placeholders:
+    sessions: integer
   canonical: false
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioForms.kt
 copy_chua_co_phien_hoan_thanh_fd9386:
@@ -837,8 +850,11 @@ copy_cay_tiep_theo_242116:
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioMainScreens.kt
 copy_0_1_giai_doan_869247:
   order: 150
-  vi: '{0}/{1} giai đoạn'
-  en: Stage {0}/{1}
+  vi: '{stage}/{total} giai đoạn'
+  en: Stage {stage}/{total}
+  placeholders:
+    stage: integer
+    total: integer
   canonical: false
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioMainScreens.kt
 copy_kho_heo_bf546a:
@@ -975,20 +991,26 @@ copy_0_phut_c0bcb0:
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioMainScreens.kt
 copy_da_hoan_thanh_1911fc:
   order: 173
-  vi: 'Đã hoàn thành: '
-  en: 'Completed: '
+  vi: 'Đã hoàn thành: {title}'
+  en: 'Completed: {title}'
+  placeholders:
+    title: string
   canonical: false
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioMainScreens.kt
 copy_tap_trung_71ae4b:
   order: 174
-  vi: 'Tập trung: '
-  en: 'Focus: '
+  vi: 'Tập trung: {title}'
+  en: 'Focus: {title}'
+  placeholders:
+    title: string
   canonical: false
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioMainScreens.kt
 copy_hoan_thanh_f183ae:
   order: 175
-  vi: 'Hoàn thành: '
-  en: 'Complete: '
+  vi: 'Hoàn thành: {title}'
+  en: 'Complete: {title}'
+  placeholders:
+    title: string
   canonical: false
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioMainScreens.kt
 copy_thuong_hom_nay_c015c6:
@@ -1083,8 +1105,11 @@ copy_tung_mam_dang_lon_4a30e9:
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioMainScreens.kt
 copy_0_cay_1_o_trong_964022:
   order: 192
-  vi: '{0} cây · {1} ô trống'
-  en: 'Trees: {0} · Empty plots: {1}'
+  vi: '{trees} cây · {empty_plots} ô trống'
+  en: 'Trees: {trees} · Empty plots: {empty_plots}'
+  placeholders:
+    trees: integer
+    empty_plots: integer
   canonical: false
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioMainScreens.kt
 copy_tuoi_tat_ca_3d814a:
@@ -1131,8 +1156,10 @@ copy_bach_thao_f2ed64:
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioMainScreens.kt
 copy_0_loai_cay_921e87:
   order: 200
-  vi: '{0} loài cây'
-  en: 'Species: {0}'
+  vi: '{species} loài cây'
+  en: 'Species: {species}'
+  placeholders:
+    species: integer
   canonical: false
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioMainScreens.kt
 copy_chua_kham_pha_c0b0cb:
@@ -1329,8 +1356,12 @@ copy_chon_phan_dang_co_de_bon_cho_cay_540e72:
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioMainScreens.kt
 copy_0_1_gio_con_2_52cf45:
   order: 233
-  vi: '{0}× · {1} giờ · Còn {2}'
-  en: '{0}× · {1} hr · Left: {2}'
+  vi: '{rate}× · {hours} giờ · Còn {quantity}'
+  en: '{rate}× · {hours} hr · Left: {quantity}'
+  placeholders:
+    rate: string
+    hours: integer
+    quantity: integer
   canonical: false
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioMainScreens.kt
 copy_het_a89ea0:
@@ -1371,8 +1402,10 @@ copy_thao_d39d4a:
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioMainScreens.kt
 copy_dang_dung_b6dcf3:
   order: 240
-  vi: 'Đang dùng '
-  en: 'Using '
+  vi: 'Đang dùng {equipment}'
+  en: 'Using {equipment}'
+  placeholders:
+    equipment: string
   canonical: false
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioMainScreens.kt
 copy_tiem_phu_kien_e4d7d0:
@@ -1425,12 +1458,15 @@ copy_don_cay_e3d410:
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioMainScreens.kt
 copy_0_1_viec_hoan_thanh_0bc363:
   order: 249
-  vi: '{0}: {1} việc hoàn thành'
-  en: '{0}: {1} tasks completed'
+  vi: '{day}: {count} việc hoàn thành'
+  en: '{day}: {count} tasks completed'
+  placeholders:
+    day: string
+    count: integer
   canonical: false
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioMainScreens.kt
   pluralArgument: 1
-  en_one: '{0}: {1} task completed'
+  en_one: '{day}: {count} task completed'
 copy_nhat_ky_xanh_aa1337:
   order: 250
   vi: Nhật ký xanh
@@ -1559,8 +1595,10 @@ copy_tuoi_ca_vuon_20a14a:
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioModal.kt
 copy_mo_o_0_01668e:
   order: 271
-  vi: Mở ô {0}
-  en: Unlock plot {0}
+  vi: Mở ô {plot}
+  en: Unlock plot {plot}
+  placeholders:
+    plot: string
   canonical: false
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioModal.kt
 copy_dung_phan_bon_79fd5f:
@@ -1655,8 +1693,10 @@ copy_hat_dang_co_chon_de_gieo_237689:
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioModal.kt
 copy_con_0_hat_149c5e:
   order: 287
-  vi: Còn {0} hạt
-  en: 'Seeds left: {0}'
+  vi: Còn {count} hạt
+  en: 'Seeds left: {count}'
+  placeholders:
+    count: integer
   canonical: false
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioModal.kt
 copy_chua_co_hat_trong_tui_095661:
@@ -1673,32 +1713,44 @@ copy_chon_hat_o_tiem_a4c334:
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioModal.kt
 copy_0_xu_mon_3dd1cb:
   order: 290
-  vi: '{0} xu/món'
-  en: '{0} coins/item'
+  vi: '{price} xu/món'
+  en: '{price} coins/item'
+  placeholders:
+    price: integer
   canonical: false
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioModal.kt
 copy_trong_tui_0_79a061:
   order: 291
-  vi: 'Trong túi: {0}'
-  en: 'In inventory: {0}'
+  vi: 'Trong túi: {count}'
+  en: 'In inventory: {count}'
+  placeholders:
+    count: integer
   canonical: false
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioModal.kt
 copy_tuoi_trong_0_gio_dung_lau_dai_7c36d5:
   order: 292
-  vi: Tưới trong {0} giờ. Dùng lâu dài.
-  en: Waters for {0} hours. Reusable.
+  vi: Tưới trong {hours} giờ. Dùng lâu dài.
+  en: Waters for {hours} hours. Reusable.
+  placeholders:
+    hours: integer
   canonical: false
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioModal.kt
 copy_0_trong_1_gio_dung_khi_cay_da_tuoi_mot_lan_moi_24_gi_acf259:
   order: 293
-  vi: '{0}× trong {1} giờ. Dùng khi cây đã tưới, một lần mỗi 24 giờ.'
-  en: '{0}× for {1} hours. Use on a watered tree, once every 24 hours.'
+  vi: '{rate}× trong {hours} giờ. Dùng khi cây đã tưới, một lần mỗi 24 giờ.'
+  en: '{rate}× for {hours} hours. Use on a watered tree, once every 24 hours.'
+  placeholders:
+    rate: string
+    hours: integer
   canonical: false
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioModal.kt
 copy_0_giai_doan_26f2b4:
   order: 294
-  vi: ' · {0} giai đoạn'
-  en: ' · Stages: {0}'
+  vi: '{tier} · {stages} giai đoạn'
+  en: '{tier} · Stages: {stages}'
+  placeholders:
+    tier: string
+    stages: integer
   canonical: false
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioModal.kt
 copy_tong_13fdba:
@@ -1727,8 +1779,10 @@ copy_con_lai_b3edb1:
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioModal.kt
 copy_khoang_0_ngay_uoc_tinh_40_xu_ngay_8be6c6:
   order: 299
-  vi: Khoảng {0} ngày · ước tính 40 xu/ngày
-  en: About {0} days · estimated at 40 coins/day
+  vi: Khoảng {days} ngày · ước tính 40 xu/ngày
+  en: About {days} days · estimated at 40 coins/day
+  placeholders:
+    days: integer
   canonical: false
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioModal.kt
 copy_vuon_da_day_ban_van_co_the_mua_hat_vao_tui_e14bdf:
@@ -1751,8 +1805,10 @@ copy_gieo_mot_cay_truoc_khi_deo_phu_kien_a3a9b9:
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioModal.kt
 copy_chuyen_tu_0_khong_mat_them_xu_c8b60f:
   order: 303
-  vi: Chuyển từ {0}. Không mất thêm xu.
-  en: Move from {0}. No extra coins needed.
+  vi: Chuyển từ {tree}. Không mất thêm xu.
+  en: Move from {tree}. No extra coins needed.
+  placeholders:
+    tree: string
   canonical: false
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioModal.kt
 copy_chi_trang_tri_khong_thay_doi_toc_do_lon_c1bae1:
@@ -1763,8 +1819,10 @@ copy_chi_trang_tri_khong_thay_doi_toc_do_lon_c1bae1:
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioModal.kt
 copy_can_them_0_xu_d7d41b:
   order: 305
-  vi: Cần thêm {0} xu.
-  en: You need {0} more coins.
+  vi: Cần thêm {coins} xu.
+  en: You need {coins} more coins.
+  placeholders:
+    coins: integer
   canonical: false
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioModal.kt
 copy_mua_deo_d9c74d:
@@ -1787,8 +1845,10 @@ copy_hat_van_o_trong_tui_mo_them_o_de_gieo_17fb08:
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioModal.kt
 copy_trong_tui_0_hat_d56e0e:
   order: 309
-  vi: 'Trong túi: {0} hạt'
-  en: 'Seeds in inventory: {0}'
+  vi: 'Trong túi: {count} hạt'
+  en: 'Seeds in inventory: {count}'
+  placeholders:
+    count: integer
   canonical: false
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioModal.kt
 copy_ten_cay_tuy_chon_1af251:
@@ -1811,8 +1871,10 @@ copy_o_trong_5da6bd:
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioModal.kt
 copy_o_5b7240:
   order: 313
-  vi: 'Ô '
-  en: 'Plot '
+  vi: 'Ô {plot}'
+  en: 'Plot {plot}'
+  placeholders:
+    plot: string
   canonical: false
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioModal.kt
 copy_dung_1_hat_de_trong_ten_de_dung_ten_loai_61bbff:
@@ -2238,8 +2300,10 @@ copy_chon_tep_sao_luu_truoc_71112e:
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioNativeHost.kt
 copy_da_chon_0_5_chon_it_nhat_2_viec_e813b8:
   order: 384
-  vi: Đã chọn {0}/5 · chọn ít nhất 2 việc
-  en: Selected {0}/5 · choose at least 2
+  vi: Đã chọn {count}/5 · chọn ít nhất 2 việc
+  en: Selected {count}/5 · choose at least 2
+  placeholders:
+    count: integer
   canonical: false
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioOnboarding.kt
 copy_vao_vuon_b6df0e:
@@ -2314,8 +2378,12 @@ copy_san_sang_nay_mam_8ad6e8:
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioOnboarding.kt
 copy_0_1_viec_2_189a78:
   order: 396
-  vi: '{0} · {1} việc · {2}'
-  en: '{0} · Tasks: {1} · {2}'
+  vi: '{seed} · {count} việc · {category}'
+  en: '{seed} · Tasks: {count} · {category}'
+  placeholders:
+    seed: string
+    count: integer
+    category: string
   canonical: false
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioOnboarding.kt
 copy_moi_ngay_2c37dd:
@@ -2404,8 +2472,10 @@ copy_7_ngay_gan_nhat_442aa3:
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioSecondaryScreens.kt
 copy_tuan_truoc_0_so_lieu_den_hom_nay_87b0c8:
   order: 411
-  vi: Tuần trước {0}% · Số liệu đến hôm nay.
-  en: 'Last week: {0}% · Data through today.'
+  vi: Tuần trước {rate}% · Số liệu đến hôm nay.
+  en: 'Last week: {rate}% · Data through today.'
+  placeholders:
+    rate: integer
   canonical: false
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioSecondaryScreens.kt
 copy_chua_du_du_lieu_so_sanh_24d4ce:
@@ -2434,12 +2504,14 @@ copy_cham_cay_fff511:
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioSecondaryScreens.kt
 copy_0_ngay_45fa48:
   order: 416
-  vi: '{0} ngày'
-  en: '{0} days'
+  vi: '{days} ngày'
+  en: '{days} days'
+  placeholders:
+    days: integer
   canonical: false
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioSecondaryScreens.kt
   pluralArgument: 0
-  en_one: '{0} day'
+  en_one: '{days} day'
 copy_moc_truong_thanh_b6cf90:
   order: 417
   vi: Mốc trưởng thành
@@ -2490,8 +2562,10 @@ copy_lich_nghi_bao_ve_8eda57:
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioSecondaryScreens.kt
 copy_0_ve_bao_ve_8bf912:
   order: 425
-  vi: '{0} vé bảo vệ'
-  en: 'Protection tickets: {0}'
+  vi: '{tickets} vé bảo vệ'
+  en: 'Protection tickets: {tickets}'
+  placeholders:
+    tickets: integer
   canonical: false
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioSecondaryScreens.kt
 copy_nghi_cung_la_mot_nhip_e4f3b6:
@@ -2532,8 +2606,10 @@ copy_ve_bao_ve_5a852e:
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioSecondaryScreens.kt
 copy_0_ve_604049:
   order: 432
-  vi: '{0} vé'
-  en: 'Tickets: {0}'
+  vi: '{tickets} vé'
+  en: 'Tickets: {tickets}'
+  placeholders:
+    tickets: integer
   canonical: false
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioSecondaryScreens.kt
 copy_ngay_da_bo_lo_9f55ee:
@@ -2880,8 +2956,11 @@ copy_huy_hieu_bo_suu_tam_521407:
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioSecondaryScreens.kt
 copy_cac_giai_doan_0_1_bee217:
   order: 490
-  vi: Các giai đoạn · {0}/{1}
-  en: Stages · {0}/{1}
+  vi: Các giai đoạn · {highest}/{total}
+  en: Stages · {highest}/{total}
+  placeholders:
+    highest: integer
+    total: integer
   canonical: false
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioSecondaryScreens.kt
 copy_da_dat_1b9e88:
@@ -4514,14 +4593,19 @@ copy_0_xu_7c2391:
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioForms.kt
 copy_0_1_xu_8c9c4c:
   order: 1056
-  vi: '{0}/{1} xu'
-  en: '{0}/{1} coins'
+  vi: '{granted}/{nominal} xu'
+  en: '{granted}/{nominal} coins'
+  placeholders:
+    granted: integer
+    nominal: integer
   canonical: false
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioForms.kt
 copy_0_xu_251e68:
   order: 1057
-  vi: '{0} xu'
-  en: '{0} coins'
+  vi: '{coins} xu'
+  en: '{coins} coins'
+  placeholders:
+    coins: integer
   canonical: false
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioForms.kt
 copy_0_xu_9c90c1:

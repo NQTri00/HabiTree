@@ -24,6 +24,9 @@ object AppDimensions {
     val Dp15 = 15.dp
     val Dp150 = 150.dp
     val HomeHeroArtworkHeight = 170.dp
+    val HomeShortHeroArtworkHeight = 130.dp
+    val TreeShortHeroArtworkHeight = 160.dp
+    val TreeNarrowHeroArtworkHeight = 190.dp
     val Dp16 = 16.dp
     val Dp17 = 17.dp
     val Dp18 = 18.dp

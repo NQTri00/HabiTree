@@ -1,5 +1,7 @@
 package com.mamxanh.app.presentation.bio
 
+import androidx.compose.ui.res.stringResource
+import com.mamxanh.core.ui.R
 import com.mamxanh.app.presentation.ui.design.*
 
 import com.mamxanh.app.presentation.ui.design.AppDimensions
@@ -14,7 +16,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 
 @Composable internal fun BioActionDock(content:@Composable ()->Unit){
     Column(Modifier.fillMaxWidth().background(bp.bg)){
@@ -31,8 +32,8 @@ private fun taskFormValue(world: BioWorld, ui: BioController, field: TaskFormFie
     fun value(field: TaskFormField) =
         taskFormValue(world, ui, field, if (field == TaskFormField.Minutes) "5" else "")
     Row(horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp12)){
-        BioButton(AppText.text(TextKey.CopyHuy74fcd3),{ui.back()},Modifier.weight(1f),secondary=true,enabled=!ui.busy)
-        BioButton(AppText.text(TextKey.CopyLuuViec522a3d),{
+        BioButton(stringResource(R.string.copy_huy_74fcd3),{ui.back()},Modifier.weight(1f),secondary=true,enabled=!ui.busy)
+        BioButton(stringResource(R.string.copy_luu_viec_522a3d),{
             if (ui.taskDraft.validate(::value)) {
                 val values = TaskFormField.entries.associate { field ->
                     field.savedKey to taskFormValue(world, ui, field)
@@ -46,7 +47,7 @@ private fun taskFormValue(world: BioWorld, ui: BioController, field: TaskFormFie
 internal fun selectedBioTemplates(ui:BioController)=ui.taskSelection.selectedTemplates()
 @Composable internal fun BioTemplateActions(ui:BioController){
     val chosen=selectedBioTemplates(ui)
-    BioButton(if(chosen.isEmpty())AppText.text(TextKey.CopyChonViecDeThemA9f4fc)else AppText.text(TextKey.CopyThem0ViecD0390c,chosen.size),{ui.send("templates",mapOf("ids" to chosen.joinToString(",")))},Modifier.fillMaxWidth(),enabled=chosen.isNotEmpty()&&!ui.busy)
+    BioButton(if(chosen.isEmpty())stringResource(R.string.copy_chon_viec_de_them_a9f4fc)else stringResource(R.string.copy_them_0_viec_d0390c, chosen.size),{ui.send("templates",mapOf("ids" to chosen.joinToString(",")))},Modifier.fillMaxWidth(),enabled=chosen.isNotEmpty()&&!ui.busy)
 }
 
 internal fun focusTask(ui:BioController,argument:String=ui.param)=ui.taskSelection.focusTask?:argument.ifBlank{"0"}
@@ -56,11 +57,11 @@ internal fun focusMinutes(world:BioWorld,ui:BioController,argument:String=ui.par
     if(focus.s("id").isNotBlank()){
         val running=focus.s("state")=="RUNNING"
         Row(horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp12)){
-            BioButton(if(running)AppText.text(TextKey.CopyTamDung676358)else AppText.text(TextKey.CopyTiepTuc87a7ae),{ui.send("focus-toggle")},Modifier.weight(1f),if(running)"pause"else "play",enabled=!ui.busy)
-            BioButton(AppText.text(TextKey.CopyKetThuc351849),{ui.show("focus-end")},Modifier.weight(1f),secondary=true,enabled=!ui.busy)
+            BioButton(if(running)stringResource(R.string.copy_tam_dung_676358)else stringResource(R.string.copy_tiep_tuc_87a7ae),{ui.send("focus-toggle")},Modifier.weight(1f),if(running)"pause"else "play",enabled=!ui.busy)
+            BioButton(stringResource(R.string.copy_ket_thuc_351849),{ui.show("focus-end")},Modifier.weight(1f),secondary=true,enabled=!ui.busy)
         }
     }else{
         val task=world.task(focusTask(ui))
-        BioButton(AppText.text(TextKey.CopyBatDauB3cacc),{ui.send("start-focus",mapOf("minutes" to if(task!=null)"25"else focusMinutes(world,ui),"task" to focusTask(ui)))},Modifier.fillMaxWidth(),"play",enabled=(if(task!=null)task.b("available",true)&&!task.b("done") else (focusMinutes(world,ui).toIntOrNull()?:0)in 5..120)&&!ui.busy)
+        BioButton(stringResource(R.string.copy_bat_dau_b3cacc),{ui.send("start-focus",mapOf("minutes" to if(task!=null)"25"else focusMinutes(world,ui),"task" to focusTask(ui)))},Modifier.fillMaxWidth(),"play",enabled=(if(task!=null)task.b("available",true)&&!task.b("done") else (focusMinutes(world,ui).toIntOrNull()?:0)in 5..120)&&!ui.busy)
     }
 }

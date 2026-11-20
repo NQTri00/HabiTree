@@ -1,13 +1,10 @@
 package com.mamxanh.app.feature.garden.presentation
 
-import com.mamxanh.app.core.presentation.UiAction
-
-sealed interface GardenIntent : UiAction {
-    data object Refresh : GardenIntent
-    data class WaterAll(val key: String) : GardenIntent
-    data object OpenShop : GardenIntent
-    data class Plant(val speciesId: String, val name: String, val plotId: Int? = null) : GardenIntent
-    data class UnlockPlot(val plotId: Int) : GardenIntent
-    data object DismissMessage : GardenIntent
-    data class OpenTree(val id: Long) : GardenIntent
+sealed interface GardenAction {
+    data object Inventory : GardenAction
+    data object WaterAll : GardenAction
+    data object PickSeed : GardenAction
+    data object Encyclopedia : GardenAction
+    data class Filter(val value: String) : GardenAction
+    data class Plot(val value: GardenDisplayPlot) : GardenAction
 }

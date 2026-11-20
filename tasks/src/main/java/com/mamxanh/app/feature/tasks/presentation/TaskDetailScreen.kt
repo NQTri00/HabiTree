@@ -1,5 +1,7 @@
 package com.mamxanh.app.feature.tasks.presentation
 
+import com.mamxanh.core.ui.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -8,28 +10,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.mamxanh.app.presentation.ui.design.*
 import com.mamxanh.shared.localization.AppText
 import com.mamxanh.shared.localization.TextKey
-
-data class TaskCompletionDisplay(val date: String, val granted: Int, val nominal: Int)
-
-data class TaskDetailDisplay(
-    val category: String,
-    val title: String,
-    val kind: String,
-    val frequency: String,
-    val days: String,
-    val description: String,
-    val start: String,
-    val end: String,
-    val due: String,
-    val lastDone: String,
-    val lifecycle: String,
-    val minutes: Int,
-    val streak: Int,
-    val reward: Int,
-    val done: Boolean,
-    val timer: Boolean,
-    val history: List<TaskCompletionDisplay>,
-)
 
 @Composable
 fun TaskDetailScreen(
@@ -41,15 +21,15 @@ fun TaskDetailScreen(
     onLifecycle: (String) -> Unit,
     onArchive: () -> Unit,
 ) {
-    if(t==null){BioEmpty(AppText.text(TextKey.CopyViecKhongConODay7f288d),icon="tasks",action=AppText.text(TextKey.CopyVeDanhSach5c7bca),onClick=onTasks);return}
+    if(t==null){BioEmpty(stringResource(R.string.copy_viec_khong_con_o_day_7f288d),icon="tasks",action=stringResource(R.string.copy_ve_danh_sach_5c7bca),onClick=onTasks);return}
     Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.Top,horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp12)){Column(Modifier.weight(1f)){Bt(AppText.category(t.category),size=AppTypography.Size10,tint=bp.muted,mono=true,spacing=AppTypography.Tracking1_8);Spacer(Modifier.height(AppDimensions.Dp7));Bt(t.title,size=AppTypography.Size27,line=AppTypography.LineHeight35_1,bold=true,spacing=AppTypography.TrackingMinus1)};BioTag(AppText.text(TextKey.Copy0Xu7c2391,t.reward))}
     val lifecycle=t.lifecycle;val done=t.done;val timer=t.timer
-    BioCard(Modifier.fillMaxWidth()){BioFacts(listOf(AppText.text(TextKey.CopyLoai3bfbf9) to when(t.kind){"HABIT"->AppText.text(TextKey.CopyThoiQuenE6e6e8);"TODO"->AppText.text(TextKey.CopyMotLanCa8e62);else->AppText.text(TextKey.CopyHangNgay545b54)},AppText.text(TextKey.CopyLichBe87b3) to when(t.frequency){"WEEKDAYS"->AppText.text(TextKey.CopyNgayThuongEf45e7);"WEEKENDS"->AppText.text(TextKey.CopyCuoiTuanA0fb27);"CUSTOM"->AppText.text(TextKey.CopyNgay96007e)+t.days;"ONCE"->AppText.text(TextKey.CopyMotLanCa8e62);else->AppText.text(TextKey.CopyMoiNgay8270cb)},AppText.text(TextKey.CopyXacNhan1503b0) to if(timer)AppText.text(TextKey.Copy0Phut2596d2,t.minutes)else AppText.text(TextKey.CopyChamDeHoanThanh856927),AppText.text(TextKey.CopyTrangThaiCb31de) to if(done)AppText.text(TextKey.CopyDaXong565e93)else if(lifecycle=="PAUSED")AppText.text(TextKey.TabPaused)else if(lifecycle=="ARCHIVED")AppText.text(TextKey.CopyLuuTru7e7c5f)else AppText.text(TextKey.CopyDangHoatDong767d67)));if(t.description.isNotBlank())Bt(t.description,size=AppTypography.Size12,tint=bp.muted)}
-    BioDetails(AppText.text(TextKey.CopyLichLichSu7153b3)){BioFacts(listOf(AppText.text(TextKey.CopyKhungGio78354f) to if(t.start.isBlank())AppText.text(TextKey.CopyCaNgay891abb)else t.start+"–"+t.end,AppText.text(TextKey.CopyHanChot8a5e27) to t.due,AppText.text(TextKey.CopyChuoiNgay5ad2e6) to t.streak.toString(),AppText.text(TextKey.CopyLanCuoiAdde92) to t.lastDone.ifBlank{if(done)AppText.text(TextKey.CopyHomNayE6747a)else AppText.text(TextKey.CopyChuaGhiNhanF7654d)}));Bt(AppText.text(TextKey.Copy7NgayGanDay486803),size=AppTypography.Size12);if(t.history.isEmpty())Bt(AppText.text(TextKey.CopyChuaCoLanHoanThanh5b7c8b),size=AppTypography.Size12,tint=bp.muted)else BioFacts(t.history.map { it.date to AppText.text(TextKey.Copy01Xu8c9c4c, it.granted, it.nominal) })}
-    BioButton(if(timer)AppText.text(TextKey.CopyTapTrung964002)else if(done)AppText.text(TextKey.CopyDaHoanThanh14eefb)else AppText.text(TextKey.CopyHoanThanh5eb36f),onComplete,Modifier.fillMaxWidth(),if(timer)"clock"else "check",enabled=!done&&lifecycle=="ACTIVE")
-    BioButton(AppText.text(TextKey.CopySuaViec55ba70),onEdit,Modifier.fillMaxWidth(),"edit",true)
-    BioLink(AppText.text(TextKey.CopyNhipThoiQuen1b8324),"chart",onInsights)
-    Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween){BioTextAction(if(lifecycle=="ACTIVE")AppText.text(TextKey.CopyTamDung676358)else AppText.text(TextKey.CopyTiepTuc87a7ae),{ onLifecycle(if (lifecycle == "ACTIVE") "PAUSED" else "ACTIVE") });BioTextAction(AppText.text(TextKey.ActionArchive),onArchive)}
+    BioCard(Modifier.fillMaxWidth()){BioFacts(listOf(stringResource(R.string.copy_loai_3bfbf9) to when(t.kind){"HABIT"->stringResource(R.string.copy_thoi_quen_e6e6e8);"TODO"->stringResource(R.string.copy_mot_lan_ca8e62);else->stringResource(R.string.copy_hang_ngay_545b54)},stringResource(R.string.copy_lich_be87b3) to when(t.frequency){"WEEKDAYS"->stringResource(R.string.copy_ngay_thuong_ef45e7);"WEEKENDS"->stringResource(R.string.copy_cuoi_tuan_a0fb27);"CUSTOM"->AppText.text(TextKey.CopyNgay96007e)+t.days;"ONCE"->stringResource(R.string.copy_mot_lan_ca8e62);else->stringResource(R.string.copy_moi_ngay_8270cb)},stringResource(R.string.copy_xac_nhan_1503b0) to if(timer)stringResource(R.string.copy_0_phut_2596d2, t.minutes)else stringResource(R.string.copy_cham_de_hoan_thanh_856927),stringResource(R.string.copy_trang_thai_cb31de) to if(done)stringResource(R.string.copy_da_xong_565e93)else if(lifecycle=="PAUSED")stringResource(R.string.tab_paused)else if(lifecycle=="ARCHIVED")stringResource(R.string.copy_luu_tru_7e7c5f)else stringResource(R.string.copy_dang_hoat_dong_767d67)));if(t.description.isNotBlank())Bt(t.description,size=AppTypography.Size12,tint=bp.muted)}
+    BioDetails(stringResource(R.string.copy_lich_lich_su_7153b3)){BioFacts(listOf(stringResource(R.string.copy_khung_gio_78354f) to if(t.start.isBlank())stringResource(R.string.copy_ca_ngay_891abb)else t.start+"–"+t.end,stringResource(R.string.copy_han_chot_8a5e27) to t.due,stringResource(R.string.copy_chuoi_ngay_5ad2e6) to t.streak.toString(),stringResource(R.string.copy_lan_cuoi_adde92) to t.lastDone.ifBlank{if(done)stringResource(R.string.copy_hom_nay_e6747a)else stringResource(R.string.copy_chua_ghi_nhan_f7654d)}));Bt(stringResource(R.string.copy_7_ngay_gan_day_486803),size=AppTypography.Size12);if(t.history.isEmpty())Bt(stringResource(R.string.copy_chua_co_lan_hoan_thanh_5b7c8b),size=AppTypography.Size12,tint=bp.muted)else BioFacts(t.history.map { it.date to stringResource(R.string.copy_0_1_xu_8c9c4c, it.granted, it.nominal) })}
+    BioButton(if(timer)stringResource(R.string.copy_tap_trung_964002)else if(done)stringResource(R.string.copy_da_hoan_thanh_14eefb)else stringResource(R.string.copy_hoan_thanh_5eb36f),onComplete,Modifier.fillMaxWidth(),if(timer)"clock"else "check",enabled=!done&&lifecycle=="ACTIVE")
+    BioButton(stringResource(R.string.copy_sua_viec_55ba70),onEdit,Modifier.fillMaxWidth(),"edit",true)
+    BioLink(stringResource(R.string.copy_nhip_thoi_quen_1b8324),"chart",onInsights)
+    Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween){BioTextAction(if(lifecycle=="ACTIVE")stringResource(R.string.copy_tam_dung_676358)else stringResource(R.string.copy_tiep_tuc_87a7ae),{ onLifecycle(if (lifecycle == "ACTIVE") "PAUSED" else "ACTIVE") });BioTextAction(stringResource(R.string.action_archive),onArchive)}
 }
 
 @Preview(showBackground = true, widthDp = 375)

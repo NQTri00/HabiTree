@@ -7,13 +7,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalInputModeManager
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.input.InputMode
 import androidx.compose.ui.input.InputModeManager
-import androidx.compose.ui.tooling.preview.Preview
 import com.mamxanh.shared.localization.AppLanguage
 import com.mamxanh.shared.localization.AppText
 import com.mamxanh.shared.localization.TextKey
@@ -34,7 +33,7 @@ import android.content.res.Configuration
  }}
  val world=remember(context){BioWorld.reference(context).also{if(modal=="focus-end")it.state.put("focus",json("id" to "reference","title" to AppText.forLanguage(TextKey.CopyMotKhoangChoRiengMinhCcf66e, language),"state" to "RUNNING","remaining" to 1500))}}
  val ui=remember{BioController(route,param,modal).apply{modalId=id;homeTreeState.selectedId=home;onboarding.step=step;this.busy=requestedBusy;restoreFields(referenceFields);if(expanded)tabs["expanded"]="true";if(bottom)tabs["scrollBottom"]="true";if(sheetBottom)tabs["sheetBottom"]="true";if(tab.isNotBlank()){val parts=tab.split(':');setTab(parts[0],parts[1])}}}
- CompositionLocalProvider(LocalInputModeManager provides touch,LocalContext provides context){
+ CompositionLocalProvider(LocalInputModeManager provides touch,LocalContext provides context,LocalResources provides context.resources){
   Box(Modifier.fillMaxSize().focusRequester(initialFocus).focusable()){BioApplication(world,ui)}
  }
  LaunchedEffect(Unit){initialFocus.requestFocus();keyboard?.hide()}

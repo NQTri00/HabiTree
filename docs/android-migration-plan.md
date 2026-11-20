@@ -9,7 +9,7 @@
 ## Implementation and verification schedule
 
 - Complete all available migration edits first. Group related moves, package declarations, imports, resources, and Gradle wiring. Use source inspection and Git diffs while editing.
-- Defer builds, automated tests, emulator runs, and Compose preview renders until implementation is integrated. Run a focused check earlier only if a concrete blocker prevents further implementation without it.
+- Defer builds, automated tests, emulator runs, and Compose preview renders until implementation is integrated. Keep new Gradle jobs, suites, emulators, and preview renders queued until the remaining migration edits are integrated. Finish source review and record the revision before running the verification sequence.
 - After implementation, run the architecture gate, tests, APK build, and screen-by-screen comparisons sequentially. Reuse results from the same revision and rerun affected checks after fixes. Publish the matching verified source and APK.
 
 ## Navigation and feature state
@@ -27,7 +27,7 @@ Each flow uses immutable state, typed actions, lifecycle-aware collection, and o
 
 ## Domain, data, and delivery boundaries
 
-- [ ] **M01 · Canonical domain ownership.** Replace Android feature-domain aliases to `shared` with canonical platform-independent contracts and models. Update repositories, bindings, and callers, preserving stored names and IDs. Verify one definition per type and no Android dependencies in domain.
+- [x] **M01 · Canonical domain ownership.** Replace Android feature-domain aliases to `shared` with canonical platform-independent contracts and models. Update repositories, bindings, and callers, preserving stored names and IDs. Verify one definition per type and no Android dependencies in domain.
 - [x] **M02 · Inventory layers.** Add `:inventory:domain` and `:inventory:data`. Back owned-item queries and mutations with existing persistence operations. Wire the live route to these bindings. Test counts, empty categories, rejected actions, and rollback.
 - [x] **M03 · Core libraries.** The composition root, journal and Settings writes, Statistics mapper, and locale UI use the configuration, result, mapping, and formatting libraries. Tests cover their adapters and formatters. The Android 15 SQLite suite at `50b7398` passed the existing-save and backup cases.
 - [x] **M04 · Architecture gate.** CI runs `verifyArchitecture` and the feature navigation tests. The gate checks imports and Gradle dependency declarations. Local probes rejected sibling imports, a platform import, a sibling project dependency, a domain-to-presentation dependency, and an AndroidX dependency in domain. The registry test rejects duplicate route owners.
@@ -154,3 +154,47 @@ The final answer shows the top-level module tree, representative Kotlin and XML 
 - Integrated checkpoint at `1eb3a9f`. The architecture gate, 17 local app unit tests, debug APK, and instrumentation APK assembly passed. Hosted Android 15 verification passed 14 app and 128 SQLite tests, including restored planting selection. The installed CI APK was verified at SHA-256 `727aca04edb0100bc1d1dd84e2b8aa9b4870a87177a3c3d82ff0bf77d81dd6d4`. All 432 Compose renders matched the preceding Android baseline. Direct web comparison exposed differences still being addressed under V02. The release includes the exact CI-tested APK, the separately built local APK, all 432 renders, 126 web reference images, and the hierarchy for 1,480 tracked paths. The downloaded CI artifact, installed-device report, and GitHub release asset agree on the CI APK checksum. [GitHub release](https://github.com/NQTri00/HabiTree/releases/tag/android-integrated-1eb3a9f8). [Android CI](https://github.com/NQTri00/HabiTree/actions/runs/44652341447).
 
 - Home and purchase visual follow-up. The Vietnamese Compose render places the cherry blossom artwork, hero card bottom, and first task row at the web reference positions on the 375 dp portrait canvas. The purchase popup places price and stock together. Across the Vietnamese batch, 127 scenarios matched the preceding Android baseline and 17 changed with these two surfaces. The approved web header still shows its old brand and some icons and type details differ. V02 remains open.
+
+- V06 source migration. Home, Garden, and Tree resolve 65 static labels from existing bilingual Android resource IDs. Garden and Tree also resolve five formatted messages through the same resources. Named parameters carry plot and species counts, price, fertilizer details, and the equipment name. Build and locale verification follow the remaining implementation edits.
+
+- V06 navigation and Settings follow-up. Bottom navigation, task and focus actions, reminders, and backup now use 30 additional generated Android labels, including the selected-template count. Existing canonical task categories and dynamic backup data retain their storage and presentation contracts.
+
+- V06 accessibility and task list follow-up. Shared icon controls, disclosure states, date/time controls, and the task list resolve 38 more labels from generated resources. Task completion descriptions format the task title verbatim through a named string placeholder.
+
+- V06 task routes follow-up. Task Form, Task Detail, Task Insights, Focus, and Rest resolve 112 additional Android resource references. The form preserves stored category identifiers and sends task names and notes through the existing callbacks unchanged.
+
+- V06 collection and journal follow-up. Statistics, Weekly Review, Timeline, Achievements, Encyclopedia, and Species resolve 61 additional generated Android resource references. Species milestones use localized accessibility descriptions, and journal notes retain their original text.
+
+- V06 popup follow-up. BioModal resolves its visible labels through generated Android resource IDs. Named parameters preserve zero-padded plot labels, the tier and stage count, and selected item and tree details.
+
+- V06 dynamic labels follow-up. The Focus, Task Detail, Task Insights, Rest, Weekly Review, Statistics, and Species screens format minutes, counts, rewards, and weekly rates through the generated resources. The statistics chart accessibility description uses the same catalog and keeps its day and count together.
+
+- V06 app composition follow-up. The tree hero, product cards, reward card, More menu, and calendar now resolve 39 additional static Android resource references. Route data mappers continue to supply localized data outside composition.
+
+- V06 onboarding and resource regression coverage. The onboarding screen uses generated strings for its prompts and selection summaries. The preview composition explicitly supplies resources for its selected language. The installed resource test now covers both languages, unmodified user text, a zero-padded plot number, and a percentage label. It will run with the integrated Android batch.
+
+- M05 portable consumer settings. Exported checkouts can override the local Maven location with `-PhabitreeDependencyRepository=<repository URI>` without editing settings or changing pinned coordinates. The repository content filter routes only HabiTree's group to that location.
+
+- V05 screen contract extraction. Home, Onboarding, Garden, Statistics, Settings, Backup, and Task List keep their state, action, and list item declarations in named files in the owning feature package. The composables, previews, and public type names are preserved. GardenIntent now also lives in its matching file.
+
+- V05 follow-up. Achievement, Weekly Review, Timeline, Focus, Task Detail, Task Insights, Rest, Task Templates, and Shop move 12 display-model declarations into named files in their existing feature packages.
+
+- V02 Task List visual follow-up. The Vietnamese portrait comparison showed a check inside each unfinished manual task and a filled, wider control compared with the approved web reference. The Android row now shows an empty outlined control for unfinished manual tasks and preserves play and completion icons. The drawn outline is 44 dp wide within a 48 dp touch target. Fresh Compose comparison follows the implementation batch.
+
+- V02 Garden and Shop comparison. The Garden empty plot now places the number above the outlined planting area and uses a lighter card surface, following the Vietnamese web capture. Shared tabs have a 54 dp minimum frame to align the Shop grid more closely while retaining 48 dp targets. Final renders must verify both changes and the other shared tab consumers.
+
+- V02 Statistics chart follow-up. The Vietnamese Compose comparison showed a one-completion bar roughly three times the height of its web counterpart, zero bars stretched across each column, and a shorter plot. Android now uses the web chart scale with a minimum axis of four, 24 dp bar width cap, 4 dp zero markers, and a 140 dp plot. The localized accessibility summaries remain attached to the days.
+
+- M05 standalone app verification. The clean app export created from the same source tree as `3dea359` consumed 24 pinned coordinates from the local Maven repository. Without library source directories, `:app:testDebugUnitTest` and `:app:packageDebug` passed. The separate Tasks consumer and remote publication are tracked independently under M05.
+
+- V02 Focus comparison. The standard portrait timer ring and free-session field order now follow the Vietnamese web image. Compact and landscape ring sizes and the Android action dock remain in place. Re-render both languages and responsive variants in the combined verification.
+
+- Device evidence for `3dea359`. The exact source revision passed hosted Android 15 verification. The downloaded JUnit reports record 14 app tests and 128 SQLite tests with zero failures or errors. This evidence predates the current localization and layout batch. [Android CI](https://github.com/NQTri00/HabiTree/actions/runs/44700671422).
+
+- M01 verification. All eight feature-domain Gradle projects use Kotlin/JVM. The source audit covered 26 Kotlin files and 56 distinct top-level type declarations, with no shared-storage type aliases or Android platform imports. The architecture gate and Android 15 existing-save suite passed at `3dea359`. [Android CI](https://github.com/NQTri00/HabiTree/actions/runs/44700671422).
+
+- V01 current source inventory. The combined localization and layout checkout enumerates 432 preview scenarios, with 22 routes and 23 popup types in each default, English, and Vietnamese batch. The report was regenerated after the screen state and action moves. Rendering that revision remains part of V01 and V02.
+
+- M05 standalone Tasks verification. The independent Tasks checkout built the Kotlin/JVM domain JAR, presentation release AAR, and data release AAR with four pinned local Maven dependencies. Along with standalone app packaging and unit tests, this proves both consumer types work in isolation. Remote publication and verification across the remaining individual producers are still covered by M05.
+
+- Combined localization and layout verification. The verification variant runs with one Gradle worker after the standalone builds. The architecture gate and all 17 app unit tests passed, and the debug APK assembled. The installed Android resource test and direct comparison of the new Compose images remain part of the checkpoint.

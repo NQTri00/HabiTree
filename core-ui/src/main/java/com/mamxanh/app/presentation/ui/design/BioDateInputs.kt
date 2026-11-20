@@ -1,11 +1,12 @@
 package com.mamxanh.app.presentation.ui.design
 
+import com.mamxanh.core.ui.R
+import androidx.compose.ui.res.stringResource
 
 import com.mamxanh.app.presentation.ui.design.AppDimensions
 import com.mamxanh.app.presentation.ui.design.AppIcons
 import com.mamxanh.app.presentation.ui.design.AppTypography
 
-import com.mamxanh.shared.localization.TextKey
 
 import com.mamxanh.shared.localization.AppText
 
@@ -22,8 +23,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.semantics.*
-import androidx.compose.ui.unit.dp
-import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
@@ -42,12 +41,13 @@ import java.util.Locale
     val iso=remember{bioIsoDateFormat()}
     val display=remember(AppText.language){bioDateFormat()}
     val shown=remember(value,AppText.language){runCatching{display.format(iso.parse(value)!!)}.getOrDefault(value)}
-    BioPickerField(label,shown,AppText.text(TextKey.CopyChonNgayD724ec),"calendar",modifier){
+    val clearLabel = stringResource(R.string.copy_xoa_57435a)
+    BioPickerField(label,shown,stringResource(R.string.copy_chon_ngay_d724ec),"calendar",modifier){
             if(!inspection){
                 val calendar=Calendar.getInstance();runCatching{calendar.time=iso.parse(value)!!}
                 val picker=DatePickerDialog(context,{_,year,month,day->onChange(String.format(Locale.US,"%04d-%02d-%02d",year,month+1,day))},calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH))
                 if(futureOnly){val tomorrow=Calendar.getInstance().apply{add(Calendar.DATE,1);set(Calendar.HOUR_OF_DAY,0);set(Calendar.MINUTE,0);set(Calendar.SECOND,0);set(Calendar.MILLISECOND,0)};picker.datePicker.minDate=tomorrow.timeInMillis}
-                if(!futureOnly)picker.setButton(android.content.DialogInterface.BUTTON_NEUTRAL,AppText.text(TextKey.CopyXoa57435a)){_,_->onChange("")}
+                if(!futureOnly)picker.setButton(android.content.DialogInterface.BUTTON_NEUTRAL,clearLabel){_,_->onChange("")}
                 picker.show()
             }
     }
@@ -58,7 +58,8 @@ import java.util.Locale
     val hour=value.substringBefore(':').toIntOrNull()?.coerceIn(0,23)?:9
     val minute=value.substringAfter(':',"0").toIntOrNull()?.coerceIn(0,59)?:0
     val shown=if(value.isBlank())""else String.format(Locale.US,"%02d:%02d",hour,minute)
-    BioPickerField(label,shown,AppText.text(TextKey.CopyChonGioB73bd9),"clock",modifier){
-        if(!inspection){val picker=TimePickerDialog(context,{_,h,m->onChange(String.format(Locale.US,"%02d:%02d",h,m))},hour,minute,true);picker.setButton(android.content.DialogInterface.BUTTON_NEUTRAL,AppText.text(TextKey.CopyXoa57435a)){_,_->onChange("")};picker.show()}
+    val clearLabel = stringResource(R.string.copy_xoa_57435a)
+    BioPickerField(label,shown,stringResource(R.string.copy_chon_gio_b73bd9),"clock",modifier){
+        if(!inspection){val picker=TimePickerDialog(context,{_,h,m->onChange(String.format(Locale.US,"%02d:%02d",h,m))},hour,minute,true);picker.setButton(android.content.DialogInterface.BUTTON_NEUTRAL,clearLabel){_,_->onChange("")};picker.show()}
     }
 }

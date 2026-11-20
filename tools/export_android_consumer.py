@@ -70,14 +70,21 @@ def export(source: Path, ref: str, output: Path, repository: Path, module: str =
 
     settings = output / "settings.gradle.kts"
     repo_uri = json.dumps(repository.as_uri())
+    repository_block = (
+        'repositories { google(); mavenCentral(); maven { '
+        'url = uri(providers.gradleProperty("habitreeDependencyRepository").orElse('
+        + repo_uri
+        + ').get()); content { includeGroup("'
+        + GROUP
+        + '") } } }'
+    )
     prefix, section, remainder = settings_text.partition("dependencyResolutionManagement {")
     if not section:
         raise ValueError("The source is missing centralized dependency repositories.")
-    remainder = remainder.replace(
-        "repositories { google(); mavenCentral() }",
-        f"repositories {{ google(); mavenCentral(); maven {{ url = uri({repo_uri}) }} }}",
-        1,
-    )
+    repository_marker = "repositories { google(); mavenCentral() }"
+    if repository_marker not in remainder:
+        raise ValueError("The source changed its centralized dependency repositories.")
+    remainder = remainder.replace(repository_marker, repository_block, 1)
     text = prefix + section + remainder
     start = text.index("rootProject.name")
     end = text.index("\n", start)

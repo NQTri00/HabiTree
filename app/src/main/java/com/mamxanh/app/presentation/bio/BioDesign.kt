@@ -1,39 +1,31 @@
 package com.mamxanh.app.presentation.bio
 
+import androidx.compose.ui.res.stringResource
+import com.mamxanh.core.ui.R
 import com.mamxanh.app.presentation.ui.design.AppThemeEffects
 import com.mamxanh.app.presentation.ui.design.AppColors
 import com.mamxanh.app.presentation.ui.design.AppDimensions
 import com.mamxanh.app.presentation.ui.design.AppIcons
 import com.mamxanh.app.presentation.ui.design.AppOpacity
 import com.mamxanh.app.presentation.ui.design.AppRadii
-import com.mamxanh.app.presentation.ui.design.AppSpacing
 import com.mamxanh.app.presentation.ui.design.AppTypography
 
-import com.mamxanh.shared.localization.TextKey
 
-import com.mamxanh.shared.localization.AppText
 
 import androidx.compose.foundation.*
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.*
 import androidx.compose.ui.draw.*
 import androidx.compose.ui.graphics.*
-import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.*
 import androidx.compose.ui.text.font.*
 import androidx.compose.ui.text.style.*
 import androidx.compose.ui.unit.*
-import com.mamxanh.app.presentation.ui.GardenFontFamily
 import com.mamxanh.app.presentation.ui.GardenTypography
 
 import com.mamxanh.app.presentation.ui.design.*
@@ -58,7 +50,7 @@ import com.mamxanh.app.presentation.ui.design.*
     val parent=when(route){"home","tasks","garden","shop","stats"->route;"task","task-new","focus","templates","insights"->"tasks";"tree","inventory","species","encyclopedia"->"garden";"more"->"";else->"stats"}
     Column(Modifier.fillMaxWidth().background(lerp(bp.bg,AppColors.White,.10f))){HorizontalDivider(color=bp.line,thickness=AppDimensions.Dp1)
         Row(Modifier.fillMaxWidth().height(if(largeText)AppDimensions.Dp110 else AppDimensions.Dp79).padding(horizontal=if(LocalConfiguration.current.screenWidthDp<AppThemeEffects.CompactWidth)AppDimensions.Dp6 else AppDimensions.Dp10,vertical=AppDimensions.Dp10),horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp4)){
-            listOf(Triple("home","home",AppText.text(TextKey.CopyHomNayE6747a)),Triple("tasks","tasks",AppText.text(TextKey.CopyViec818768)),Triple("garden","garden",AppText.text(TextKey.CopyVuon9e4c10)),Triple("shop","shop",AppText.text(TextKey.CopyTiemF1ee00)),Triple("stats","book",AppText.text(TextKey.CopyNhatKy1e6c3c))).forEach{(r,icon,label)->
+            listOf(Triple("home","home",stringResource(R.string.copy_hom_nay_e6747a)),Triple("tasks","tasks",stringResource(R.string.copy_viec_818768)),Triple("garden","garden",stringResource(R.string.copy_vuon_9e4c10)),Triple("shop","shop",stringResource(R.string.copy_tiem_f1ee00)),Triple("stats","book",stringResource(R.string.copy_nhat_ky_1e6c3c))).forEach{(r,icon,label)->
                 val active=parent==r
                 Column(Modifier.weight(1f).fillMaxHeight().background(if(active)AppColors.White.copy(alpha=AppOpacity.Value_6)else AppColors.Transparent,bioShape(AppRadii.Value15)).semantics{selected=active}.clickable(role=Role.Tab){onGo(r)}.padding(top=AppDimensions.Dp5,bottom=AppDimensions.Dp4),horizontalAlignment=Alignment.CenterHorizontally,verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp4)){
                     Bi(icon,size=AppIcons.Size21,tint=if(active)bp.deep else bp.muted);Bt(label,size=AppTypography.Size11,line=AppTypography.LineHeight15_4,tint=if(active)bp.deep else bp.muted,semi=active,maxLines=if(largeText)2 else 1,align=TextAlign.Center)

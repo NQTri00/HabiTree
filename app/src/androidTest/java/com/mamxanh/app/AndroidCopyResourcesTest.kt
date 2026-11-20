@@ -27,4 +27,29 @@ class AndroidCopyResourcesTest {
             }
         }
     }
+
+    @Test
+    fun formattedResourcesPreserveUserTextNumbersAndLiteralPercentSigns() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val title = "Plan 100% + review"
+        for (language in AppLanguage.entries) {
+            val configuration = Configuration(context.resources.configuration).apply {
+                setLocale(Locale.forLanguageTag(language.tag))
+            }
+            val resources = context.createConfigurationContext(configuration).resources
+
+            assertEquals(
+                AppText.forLanguage(TextKey.CopyHoanThanhF183ae, language, title),
+                resources.getString(R.string.copy_hoan_thanh_f183ae, title),
+            )
+            assertEquals(
+                AppText.forLanguage(TextKey.CopyO5b7240, language, "03"),
+                resources.getString(R.string.copy_o_5b7240, "03"),
+            )
+            assertEquals(
+                AppText.forLanguage(TextKey.CopyTuanTruoc0SoLieuDenHomNay87b0c8, language, 75),
+                resources.getString(R.string.copy_tuan_truoc_0_so_lieu_den_hom_nay_87b0c8, 75),
+            )
+        }
+    }
 }

@@ -16,17 +16,6 @@ import com.mamxanh.core.ui.R
 import com.mamxanh.shared.localization.AppText
 import com.mamxanh.shared.localization.TextKey
 
-data class TaskTemplateDisplay(
-    val id: String,
-    val title: String,
-    val category: String,
-    val minutes: Int,
-    val effort: String,
-    val timer: Boolean,
-    val weekends: Boolean,
-    val reward: Int,
-)
-
 @Composable fun TemplateRow(t: TaskTemplateDisplay,selected:Boolean,onboarding:Boolean=false,onChange:()->Unit){
     BioCard(Modifier.fillMaxWidth().semantics{toggleableState=if(selected)ToggleableState.On else ToggleableState.Off;role=Role.Checkbox},padding=if(onboarding)12 else 14,radius=AppRadii.Value18,tint=if(selected)bp.soft else bp.surface,onClick=onChange,borderColor=if(selected)bp.deep else bp.line){Row(Modifier.fillMaxWidth().heightIn(min=if(onboarding)AppDimensions.Dp65 else AppDimensions.Dp60),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp10)){
         if(!onboarding)Box(Modifier.width(AppDimensions.Dp20).height(AppDimensions.Dp28).background(bp.soft,bioShape(AppRadii.Value8)),contentAlignment=Alignment.Center){Bi(if(t.timer)"clock"else "leaf",size=AppIcons.Size20)}

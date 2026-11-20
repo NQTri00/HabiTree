@@ -13,8 +13,6 @@ import androidx.compose.ui.text.style.TextAlign
 import com.mamxanh.app.presentation.ui.design.*
 import com.mamxanh.core.ui.R
 
-data class ShopTreeContext(val id: String, val name: String, val species: String)
-
 @Composable
 fun BioShopScreen(
     tab: String,

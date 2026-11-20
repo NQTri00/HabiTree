@@ -1,5 +1,7 @@
 package com.mamxanh.app.presentation.ui.design
 
+import com.mamxanh.core.ui.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.toggleable
@@ -11,15 +13,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.semantics.*
-import com.mamxanh.shared.localization.AppText
-import com.mamxanh.shared.localization.TextKey
 
 @Composable fun BioSelect(label:String,options:List<Pair<String,String>>,value:String,modifier:Modifier=Modifier,onSelect:(String)->Unit){
     var open by remember{mutableStateOf(false)}
     Column(modifier.fillMaxWidth(),verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp7)){
         if(label.isNotBlank())Bt(label,size=AppTypography.Size12)
         Box{
-            Row(Modifier.fillMaxWidth().heightIn(min=AppDimensions.Dp48).background(bp.surface,RoundedCornerShape(AppDimensions.Dp12)).border(AppDimensions.Dp1,bp.control,RoundedCornerShape(AppDimensions.Dp12)).semantics{if(label.isNotBlank())contentDescription=label;stateDescription=if(open)AppText.text(TextKey.CopyDaMo617b34)else AppText.text(TextKey.CopyDaDong6b9194)}.clickable(role=Role.DropdownList){open=true}.padding(AppDimensions.Dp12),verticalAlignment=Alignment.CenterVertically){Bt(options.firstOrNull{it.first==value}?.second?:options.firstOrNull()?.second.orEmpty(),Modifier.weight(1f),size=AppTypography.Size14);Bi("next",Modifier.rotate(90f),tint=bp.ink,size=AppIcons.Size15)}
+            val disclosureState = if(open)stringResource(R.string.copy_da_mo_617b34)else stringResource(R.string.copy_da_dong_6b9194)
+        Row(Modifier.fillMaxWidth().heightIn(min=AppDimensions.Dp48).background(bp.surface,RoundedCornerShape(AppDimensions.Dp12)).border(AppDimensions.Dp1,bp.control,RoundedCornerShape(AppDimensions.Dp12)).semantics{if(label.isNotBlank())contentDescription=label;stateDescription=disclosureState}.clickable(role=Role.DropdownList){open=true}.padding(AppDimensions.Dp12),verticalAlignment=Alignment.CenterVertically){Bt(options.firstOrNull{it.first==value}?.second?:options.firstOrNull()?.second.orEmpty(),Modifier.weight(1f),size=AppTypography.Size14);Bi("next",Modifier.rotate(90f),tint=bp.ink,size=AppIcons.Size15)}
             DropdownMenu(open,{open=false},containerColor=bp.surface){options.forEach{(id,title)->DropdownMenuItem(text={Bt(title)},onClick={onSelect(id);open=false})}}
         }
     }

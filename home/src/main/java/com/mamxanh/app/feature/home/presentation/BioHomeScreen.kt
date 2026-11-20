@@ -1,5 +1,7 @@
 package com.mamxanh.app.feature.home.presentation
 
+import androidx.compose.ui.res.stringResource
+import com.mamxanh.core.ui.R
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -10,18 +12,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.style.TextAlign
 import com.mamxanh.app.presentation.ui.design.*
-import com.mamxanh.shared.localization.AppText
-import com.mamxanh.shared.localization.TextKey
-
-data class HomeScreenState(
-    val date: String,
-    val completed: Int,
-    val required: Int,
-    val earned: Int,
-    val streak: Int,
-)
-
-enum class HomeScreenAction { PickSeed, ViewTasks, AddTask, BrowseSeeds, BrowseAccessories, Review }
 
 @Composable
 fun BioHomeScreen(
@@ -34,26 +24,26 @@ fun BioHomeScreen(
     val narrow = LocalConfiguration.current.screenWidthDp < 359
     val landscape=LocalConfiguration.current.screenHeightDp<500
     Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.Top,horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp14)){
-        Column(Modifier.weight(1f)){if(!landscape){Bt(AppText.text(TextKey.CopyMotNhipXanh4e8208),size=AppTypography.Size10,tint=bp.muted,mono=true,spacing=AppTypography.Tracking1_8);Spacer(Modifier.height(AppDimensions.Dp7))};Bt(AppText.text(TextKey.CopyNgayMoiMamMoi236a07),size=if(narrow||landscape)22 else 25,line=if(narrow||landscape)28.6f else 32.5f,bold=true,spacing=AppTypography.TrackingMinus1)}
+        Column(Modifier.weight(1f)){if(!landscape){Bt(stringResource(R.string.copy_mot_nhip_xanh_4e8208),size=AppTypography.Size10,tint=bp.muted,mono=true,spacing=AppTypography.Tracking1_8);Spacer(Modifier.height(AppDimensions.Dp7))};Bt(stringResource(R.string.copy_ngay_moi_mam_moi_236a07),size=if(narrow||landscape)22 else 25,line=if(narrow||landscape)28.6f else 32.5f,bold=true,spacing=AppTypography.TrackingMinus1)}
         Box(Modifier.padding(top=if(landscape)AppDimensions.Dp0 else AppDimensions.Dp19).background(AppColors.White.copy(alpha=AppOpacity.Value_25),RoundedCornerShape(AppDimensions.Dp8)).border(AppDimensions.Dp1,bp.line,RoundedCornerShape(AppDimensions.Dp8)).padding(horizontal=AppDimensions.Dp10,vertical=AppDimensions.Dp9)){Bt(state.date,size=AppTypography.Size11,tint=bp.muted,mono=true,line=AppTypography.LineHeight14_3)}
     }
     val sectionSpacing = if (tree != null && !narrow && !landscape) AppDimensions.Dp10 else AppDimensions.Dp18
     Column(verticalArrangement = Arrangement.spacedBy(sectionSpacing)) {
-        if (tree != null) tree() else BioEmpty(AppText.text(TextKey.CopyBatDauBangMotMamXanhCd3b5c),AppText.text(TextKey.CopyMotHatNhoMotChutMoiNgayBcf756),action=AppText.text(TextKey.CopyGieoCayDauTienAfd3c1),onClick={onAction(HomeScreenAction.PickSeed)})
-        BioSection(AppText.text(TextKey.CopyViecTiepTheoEa34c3),AppText.text(TextKey.CopyXemTatCa44aeb8)){onAction(HomeScreenAction.ViewTasks)}
+        if (tree != null) tree() else BioEmpty(stringResource(R.string.copy_bat_dau_bang_mot_mam_xanh_cd3b5c),stringResource(R.string.copy_mot_hat_nho_mot_chut_moi_ngay_bcf756),action=stringResource(R.string.copy_gieo_cay_dau_tien_afd3c1),onClick={onAction(HomeScreenAction.PickSeed)})
+        BioSection(stringResource(R.string.copy_viec_tiep_theo_ea34c3),stringResource(R.string.copy_xem_tat_ca_44aeb8)){onAction(HomeScreenAction.ViewTasks)}
         if (nextTask != null) nextTask() else
-            BioLink(AppText.text(TextKey.CopyMotViecNhoHomNay3c953f), "plus", { onAction(HomeScreenAction.AddTask) })
+            BioLink(stringResource(R.string.copy_mot_viec_nho_hom_nay_3c953f), "plus", { onAction(HomeScreenAction.AddTask) })
     }
     BioMetrics(listOf(
-        AppText.text(TextKey.CopyViecHomNay22a0a4) to "${state.completed}/${state.required}",
-        AppText.text(TextKey.CopyXuHomNay0c44ed) to "${state.earned}/50",
-        AppText.text(TextKey.CopyNgayDeuDan31b8f2) to state.streak.toString(),
+        stringResource(R.string.copy_viec_hom_nay_22a0a4) to "${state.completed}/${state.required}",
+        stringResource(R.string.copy_xu_hom_nay_0c44ed) to "${state.earned}/50",
+        stringResource(R.string.copy_ngay_deu_dan_31b8f2) to state.streak.toString(),
     ))
     reward?.invoke()
     Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp10)){
-        listOf(Triple("plus",AppText.text(TextKey.CopyThemViecC371c2),HomeScreenAction.AddTask),Triple("garden",AppText.text(TextKey.CopyGieoCay31adde),HomeScreenAction.BrowseSeeds),Triple("spark",AppText.text(TextKey.CopyPhuKien0852d7),HomeScreenAction.BrowseAccessories)).forEach{(icon,title,action)->Column(Modifier.weight(1f).heightIn(min=AppDimensions.Dp76).background(AppColors.White.copy(alpha=AppOpacity.Value_25),bioShape(AppRadii.Value14)).border(AppDimensions.Dp1,bp.line,bioShape(AppRadii.Value14)).clickable{onAction(action)}.padding(AppDimensions.Dp10),horizontalAlignment=Alignment.CenterHorizontally,verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp7)){Bi(icon);Bt(title,size=AppTypography.Size11,tint=bp.deep,align=TextAlign.Center)}}
+        listOf(Triple("plus",stringResource(R.string.copy_them_viec_c371c2),HomeScreenAction.AddTask),Triple("garden",stringResource(R.string.copy_gieo_cay_31adde),HomeScreenAction.BrowseSeeds),Triple("spark",stringResource(R.string.copy_phu_kien_0852d7),HomeScreenAction.BrowseAccessories)).forEach{(icon,title,action)->Column(Modifier.weight(1f).heightIn(min=AppDimensions.Dp76).background(AppColors.White.copy(alpha=AppOpacity.Value_25),bioShape(AppRadii.Value14)).border(AppDimensions.Dp1,bp.line,bioShape(AppRadii.Value14)).clickable{onAction(action)}.padding(AppDimensions.Dp10),horizontalAlignment=Alignment.CenterHorizontally,verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp7)){Bi(icon);Bt(title,size=AppTypography.Size11,tint=bp.deep,align=TextAlign.Center)}}
     }
-    BioLink(AppText.text(TextKey.CopyNhinLaiTuanFf3f0c),"calendar",{onAction(HomeScreenAction.Review)},AppText.text(TextKey.CopyNhungDieuNhoDaLonLen882792))
+    BioLink(stringResource(R.string.copy_nhin_lai_tuan_ff3f0c),"calendar",{onAction(HomeScreenAction.Review)},stringResource(R.string.copy_nhung_dieu_nho_da_lon_len_882792))
 }
 
 @Preview(showBackground = true, widthDp = 375)

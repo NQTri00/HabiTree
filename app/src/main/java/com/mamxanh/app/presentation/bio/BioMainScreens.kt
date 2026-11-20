@@ -1,5 +1,7 @@
 package com.mamxanh.app.presentation.bio
 
+import androidx.compose.ui.res.stringResource
+import com.mamxanh.core.ui.R
 import com.mamxanh.app.presentation.ui.design.*
 import com.mamxanh.app.feature.shop.presentation.navigation.ShopRouteContent
 import com.mamxanh.app.feature.shop.presentation.ShopTreeContext
@@ -49,44 +51,44 @@ internal fun accessoryIcon(id:String)=when(id){"tree_ribbon"->"gift";"tree_lante
     }.padding(start=if(narrow)AppDimensions.Dp15 else AppDimensions.Dp19,end=if(narrow)AppDimensions.Dp15 else AppDimensions.Dp19,top=AppDimensions.Dp15,bottom=AppDimensions.Dp19)){
         Row(Modifier.fillMaxWidth().height(AppDimensions.Dp48),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.SpaceBetween){
             BioTag(treeState(t),dot=true)
-            if(home)BioTextAction(AppText.text(TextKey.CopyDoiCayFada9c),{ui.show("tree-picker")},"next")
-            else BioTextAction(if(ui.homeTreeState.selectedId==t.s("id"))AppText.text(TextKey.CopyTrenTrangChuE7c2f5) else AppText.text(TextKey.CopyDatOTrangChuD8241c),{ui.act("bio-pin:"+t.s("id"))})
+            if(home)BioTextAction(stringResource(R.string.copy_doi_cay_fada9c),{ui.show("tree-picker")},"next")
+            else BioTextAction(if(ui.homeTreeState.selectedId==t.s("id"))stringResource(R.string.copy_tren_trang_chu_e7c2f5) else stringResource(R.string.copy_dat_o_trang_chu_d8241c),{ui.act("bio-pin:"+t.s("id"))})
         }
         Spacer(Modifier.height(AppDimensions.Dp2))
         val landscape=LocalConfiguration.current.screenHeightDp<500
         val artHeight = when {
-            landscape -> 100.dp
-            home && short -> 130.dp
+            landscape -> AppDimensions.Dp100
+            home && short -> AppDimensions.HomeShortHeroArtworkHeight
             home -> AppDimensions.HomeHeroArtworkHeight
-            short -> 160.dp
-            narrow -> 190.dp
-            else -> 220.dp
+            short -> AppDimensions.TreeShortHeroArtworkHeight
+            narrow -> AppDimensions.TreeNarrowHeroArtworkHeight
+            else -> AppDimensions.Dp220
         }
         Box(Modifier.fillMaxWidth().height(artHeight).then(if(home)Modifier.clickable{ui.go("tree",t.s("id"))}else Modifier),contentAlignment=Alignment.Center){
             val plantHeight = if (home) artHeight else artHeight - AppDimensions.Dp12
             BioPlant(t.s("species"),Modifier.height(plantHeight).fillMaxWidth(),dead)
             val accessory=t.s("decor").takeIf{it.isNotBlank()&&world.owned(it)>0}
             if(accessory!=null&&!dead)Box(Modifier.align(Alignment.TopEnd).padding(top=AppDimensions.Dp55,end=AppDimensions.Dp14).size(AppDimensions.Dp32).background(AppColors.White.copy(alpha=AppOpacity.Value_6),RoundedCornerShape(50)).border(AppDimensions.Dp1,p.accent,RoundedCornerShape(50)),contentAlignment=Alignment.Center){Bi(accessoryIcon(accessory),size=AppIcons.Size23)}
-            if(!home&&world.trees.size>1){BioIconButton("back",{ui.act("tree-prev")},Modifier.align(Alignment.CenterStart).offset(x=AppDimensions.DpMinus6),boxed=true,iconSize=AppIcons.Size18,tint=p.deep,label=AppText.text(TextKey.CopyCayTruoc6648b1));BioIconButton("next",{ui.act("tree-next")},Modifier.align(Alignment.CenterEnd).offset(x=AppDimensions.Dp6),boxed=true,iconSize=AppIcons.Size18,tint=p.deep,label=AppText.text(TextKey.CopyCayTiepTheo242116))}
+            if(!home&&world.trees.size>1){BioIconButton("back",{ui.act("tree-prev")},Modifier.align(Alignment.CenterStart).offset(x=AppDimensions.DpMinus6),boxed=true,iconSize=AppIcons.Size18,tint=p.deep,label=stringResource(R.string.copy_cay_truoc_6648b1));BioIconButton("next",{ui.act("tree-next")},Modifier.align(Alignment.CenterEnd).offset(x=AppDimensions.Dp6),boxed=true,iconSize=AppIcons.Size18,tint=p.deep,label=stringResource(R.string.copy_cay_tiep_theo_242116))}
         }
         Spacer(Modifier.height(AppDimensions.Dp10))
         Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp8)){
-            Column(Modifier.weight(1f)){Bt(t.s("name"),size=AppTypography.Size21,line=AppTypography.LineHeight28_35,bold=true,spacing=AppTypography.TrackingMinus_7);Bt(AppText.text(TextKey.Copy01GiaiDoan869247,t.i("stage",1),world.species(t.s("species")).i("stages",6)),size=AppTypography.Size12,tint=p.muted,line=AppTypography.LineHeight21_7)}
-            BioTag(if(dead)AppText.text(TextKey.CopyKhoHeoBf546a) else if(t.b("watered"))AppText.text(TextKey.CopyDuNuocC17aa8) else AppText.text(TextKey.CopyCanTuoiA0957f),"water")
+            Column(Modifier.weight(1f)){Bt(t.s("name"),size=AppTypography.Size21,line=AppTypography.LineHeight28_35,bold=true,spacing=AppTypography.TrackingMinus_7);Bt(stringResource(R.string.copy_0_1_giai_doan_869247, t.i("stage",1),world.species(t.s("species")).i("stages",6)),size=AppTypography.Size12,tint=p.muted,line=AppTypography.LineHeight21_7)}
+            BioTag(if(dead)stringResource(R.string.copy_kho_heo_bf546a) else if(t.b("watered"))stringResource(R.string.copy_du_nuoc_c17aa8) else stringResource(R.string.copy_can_tuoi_a0957f),"water")
         }
         Spacer(Modifier.height(AppDimensions.Dp12));BioProgress(t.i("progress")/100f,white=true)
         Spacer(Modifier.height(AppDimensions.Dp6));Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween){Bt(growthCaption(t),size=AppTypography.Size10,tint=p.muted,line=AppTypography.LineHeight18_6);Bt("${t.i("progress")}%",size=AppTypography.Size11,tint=p.deep,mono=true,line=AppTypography.LineHeight18_6)}
         if(home){Spacer(Modifier.height(AppDimensions.Dp13));if(LocalDensity.current.fontScale>1.2f)Column(verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp10)){
-            BioButton(if(t.b("watered"))AppText.text(TextKey.CopyDaTuoiDe2042) else AppText.text(TextKey.CopyTuoiCay0990f6),{ui.send("water:"+t.s("id"))},Modifier.fillMaxWidth(),"water",enabled=!t.b("watered")&&!dead&&!ui.busy)
-            BioButton(AppText.text(TextKey.CopyTrangTriD48231),{ui.act("bio-tree-decor:"+t.s("id"))},Modifier.fillMaxWidth(),"spark",secondary=true,enabled=!dead&&!ui.busy)
+            BioButton(if(t.b("watered"))stringResource(R.string.copy_da_tuoi_de2042) else stringResource(R.string.copy_tuoi_cay_0990f6),{ui.send("water:"+t.s("id"))},Modifier.fillMaxWidth(),"water",enabled=!t.b("watered")&&!dead&&!ui.busy)
+            BioButton(stringResource(R.string.copy_trang_tri_d48231),{ui.act("bio-tree-decor:"+t.s("id"))},Modifier.fillMaxWidth(),"spark",secondary=true,enabled=!dead&&!ui.busy)
         }else Row(Modifier.height(IntrinsicSize.Min),horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp10)){
-            BioButton(if(t.b("watered"))AppText.text(TextKey.CopyDaTuoiDe2042) else AppText.text(TextKey.CopyTuoiCay0990f6),{ui.send("water:"+t.s("id"))},Modifier.weight(1f).fillMaxHeight(),"water",enabled=!t.b("watered")&&!dead&&!ui.busy,labelSize=if(narrow)12 else 14)
-            BioButton(AppText.text(TextKey.CopyTrangTriD48231),{ui.act("bio-tree-decor:"+t.s("id"))},Modifier.weight(1f).fillMaxHeight(),"spark",secondary=true,enabled=!dead&&!ui.busy,labelSize=if(narrow)12 else 14)
+            BioButton(if(t.b("watered"))stringResource(R.string.copy_da_tuoi_de2042) else stringResource(R.string.copy_tuoi_cay_0990f6),{ui.send("water:"+t.s("id"))},Modifier.weight(1f).fillMaxHeight(),"water",enabled=!t.b("watered")&&!dead&&!ui.busy,labelSize=if(narrow)12 else 14)
+            BioButton(stringResource(R.string.copy_trang_tri_d48231),{ui.act("bio-tree-decor:"+t.s("id"))},Modifier.weight(1f).fillMaxHeight(),"spark",secondary=true,enabled=!dead&&!ui.busy,labelSize=if(narrow)12 else 14)
         }}
     }
 }
 
-@Composable internal fun BioReward(world:BioWorld,ui:BioController){BioCard(Modifier.fillMaxWidth(),AppColors.RewardSurface,padding=AppSpacing.Value14,radius=AppRadii.Value18){Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp12)){Bi("gift",tint=bp.ink);Column(Modifier.weight(1f)){Bt(AppText.text(TextKey.CopyThuongHomNayC015c6),size=AppTypography.Size12,semi=true);Bt(AppText.text(TextKey.Copy8Xu3a7892),size=AppTypography.Size11)};BioButton(if(world.state.b("claimed"))AppText.text(TextKey.CopyDaNhan1d62ad) else AppText.text(TextKey.CopyNhan8518f2),{ui.send("claim")},enabled=world.data.o("phase").b("canClaim")&&!world.state.b("claimed"))}}}
+@Composable internal fun BioReward(world:BioWorld,ui:BioController){BioCard(Modifier.fillMaxWidth(),AppColors.RewardSurface,padding=AppSpacing.Value14,radius=AppRadii.Value18){Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp12)){Bi("gift",tint=bp.ink);Column(Modifier.weight(1f)){Bt(stringResource(R.string.copy_thuong_hom_nay_c015c6),size=AppTypography.Size12,semi=true);Bt(stringResource(R.string.copy_8_xu_3a7892),size=AppTypography.Size11)};BioButton(if(world.state.b("claimed"))stringResource(R.string.copy_da_nhan_1d62ad) else stringResource(R.string.copy_nhan_8518f2),{ui.send("claim")},enabled=world.data.o("phase").b("canClaim")&&!world.state.b("claimed"))}}}
 
 @Composable internal fun BioProduct(world:BioWorld,ui:BioController,item:JSONObject,modifier:Modifier=Modifier,inventory:Boolean=false,target:String="",encyclopedia:Boolean=false){
     val id=item.s("id");val seed=world.species.any{it.s("id")==id};val accessory=item.s("category")=="TREE";val owned=(if(inventory)world.inventoryCount(id, accessory) else world.owned(id))>0;val equipped=world.trees.any{it.s("decor")==id};val known=world.record(id).b("discovered")||world.record(id).i("planted")>0||world.count(id)>0
@@ -95,9 +97,9 @@ internal fun accessoryIcon(id:String)=when(id){"tree_ribbon"->"gift";"tree_lante
         val backdrop=Brush.linearGradient(if(seed&&(!encyclopedia||known))listOf(AppColors.SwatchFFFAFAF8,bp.soft)else listOf(bp.soft,bp.soft))
         Box(Modifier.fillMaxWidth().height(if(LocalConfiguration.current.screenWidthDp<359)AppDimensions.Dp95 else AppDimensions.Dp112).background(backdrop,bioShape(AppRadii.Value15)),contentAlignment=Alignment.Center){if(seed&&(!encyclopedia||known))BioPlant(id,Modifier.fillMaxSize())else Bi(if(seed)"leaf"else if(accessory)accessoryIcon(id)else if(item.b("permanent"))"water"else "fertilizer",size=if(accessory)32 else 43)}
         Spacer(Modifier.height(AppDimensions.Dp10));Bt(item.s("name"),Modifier.heightIn(min=AppDimensions.Dp36),size=AppTypography.Size13,line=AppTypography.LineHeight18_85,semi=true);Spacer(Modifier.height(AppDimensions.Dp10))
-        if(encyclopedia)Bt(world.record(id).s("status",AppText.text(TextKey.CopyChuaKhamPhaC0b0cb)),size=AppTypography.Size11,tint=bp.muted,line=AppTypography.LineHeight15_4)
-        else if(accessory){Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically){Bt(if(equipped)AppText.text(TextKey.CopyDangDung275ca2)else if(owned)AppText.text(TextKey.CopyDaSoHuu822625)else AppText.text(TextKey.Copy0Xu251e68,item.i("price")),Modifier.weight(1f),size=AppTypography.Size13,tint=bp.deep);Box(Modifier.size(AppDimensions.Dp27).border(AppDimensions.Dp1,bp.line,RoundedCornerShape(AppDimensions.Dp8)),contentAlignment=Alignment.Center){Bi(if(equipped)"check"else if(owned)"next"else "plus",size=AppIcons.Size14)}}}
-        else{Bt(if(inventory)if(item.b("permanent"))if(world.state.s("equipped")==id)AppText.text(TextKey.CopyDangDung275ca2)else AppText.text(TextKey.CopyTrangBi9e8e12)else "×${world.inventoryCount(id, accessory)}"else if(item.b("permanent")&&world.count(id)>0)if(world.state.s("equipped")==id)AppText.text(TextKey.CopyDangDung275ca2)else AppText.text(TextKey.CopyDaSoHuu822625)else AppText.text(TextKey.Copy0Xu251e68,item.i("price")),size=AppTypography.Size13,tint=bp.deep);if(seed&&!inventory)Bt(bioTier(item.s("tier")),size=AppTypography.Size12,line=AppTypography.LineHeight17,tint=bp.muted)}
+        if(encyclopedia)Bt(world.record(id).s("status",stringResource(R.string.copy_chua_kham_pha_c0b0cb)),size=AppTypography.Size11,tint=bp.muted,line=AppTypography.LineHeight15_4)
+        else if(accessory){Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically){Bt(if(equipped)stringResource(R.string.copy_dang_dung_275ca2)else if(owned)stringResource(R.string.copy_da_so_huu_822625)else stringResource(R.string.copy_0_xu_251e68, item.i("price")),Modifier.weight(1f),size=AppTypography.Size13,tint=bp.deep);Box(Modifier.size(AppDimensions.Dp27).border(AppDimensions.Dp1,bp.line,RoundedCornerShape(AppDimensions.Dp8)),contentAlignment=Alignment.Center){Bi(if(equipped)"check"else if(owned)"next"else "plus",size=AppIcons.Size14)}}}
+        else{Bt(if(inventory)if(item.b("permanent"))if(world.state.s("equipped")==id)stringResource(R.string.copy_dang_dung_275ca2)else stringResource(R.string.copy_trang_bi_9e8e12)else "×${world.inventoryCount(id, accessory)}"else if(item.b("permanent")&&world.count(id)>0)if(world.state.s("equipped")==id)stringResource(R.string.copy_dang_dung_275ca2)else stringResource(R.string.copy_da_so_huu_822625)else stringResource(R.string.copy_0_xu_251e68, item.i("price")),size=AppTypography.Size13,tint=bp.deep);if(seed&&!inventory)Bt(bioTier(item.s("tier")),size=AppTypography.Size12,line=AppTypography.LineHeight17,tint=bp.muted)}
     }
 }
 private fun catalogProducts(world: BioWorld, tab: String): List<JSONObject> =
@@ -146,7 +148,7 @@ internal fun shopRouteContent(world: BioWorld, ui: BioController, argument: Stri
     )
 }
 
-@Composable internal fun ColumnScope.BioMore(ui:BioController){BioIntro(AppText.text(TextKey.CopyThemMotChut006e8b),AppText.text(TextKey.CopyTheoNhipCuaBan5a2ada));Column(verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp12)){listOf(Triple("focus","clock",AppText.text(TextKey.CopyTapTrung964002)),Triple("templates","plus",AppText.text(TextKey.CopyViecMau535dc1)),Triple("review","calendar",AppText.text(TextKey.CopyNhinLaiTuanFf3f0c)),Triple("achievements","award",AppText.text(TextKey.CopyDauMocDffd66)),Triple("timeline","book",AppText.text(TextKey.CopyKyNiemE3e113)),Triple("insights","chart",AppText.text(TextKey.CopyNhipThoiQuen1b8324)),Triple("encyclopedia","book",AppText.text(TextKey.CopyBachThaoF2ed64)),Triple("settings","settings",AppText.text(TextKey.CopyTuyChonNhacViecA44d85)),Triple("data","download",AppText.text(TextKey.CopyDuLieuUngDung9843b7))).forEach{(r,i,t)->BioLink(t,i,{ui.go(r)})}}}
+@Composable internal fun ColumnScope.BioMore(ui:BioController){BioIntro(stringResource(R.string.copy_them_mot_chut_006e8b),stringResource(R.string.copy_theo_nhip_cua_ban_5a2ada));Column(verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp12)){listOf(Triple("focus","clock",stringResource(R.string.copy_tap_trung_964002)),Triple("templates","plus",stringResource(R.string.copy_viec_mau_535dc1)),Triple("review","calendar",stringResource(R.string.copy_nhin_lai_tuan_ff3f0c)),Triple("achievements","award",stringResource(R.string.copy_dau_moc_dffd66)),Triple("timeline","book",stringResource(R.string.copy_ky_niem_e3e113)),Triple("insights","chart",stringResource(R.string.copy_nhip_thoi_quen_1b8324)),Triple("encyclopedia","book",stringResource(R.string.copy_bach_thao_f2ed64)),Triple("settings","settings",stringResource(R.string.copy_tuy_chon_nhac_viec_a44d85)),Triple("data","download",stringResource(R.string.copy_du_lieu_ung_dung_9843b7))).forEach{(r,i,t)->BioLink(t,i,{ui.go(r)})}}}
 
 
 internal fun homeRouteContent(world: BioWorld, ui: BioController, short: Boolean): HomeRouteContent {

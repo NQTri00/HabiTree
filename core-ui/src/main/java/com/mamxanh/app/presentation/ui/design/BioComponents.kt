@@ -1,9 +1,9 @@
 package com.mamxanh.app.presentation.ui.design
 
+import com.mamxanh.core.ui.R
+import androidx.compose.ui.res.stringResource
 
-import com.mamxanh.shared.localization.TextKey
 
-import com.mamxanh.shared.localization.AppText
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -19,7 +19,6 @@ import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.*
 import androidx.compose.ui.text.font.*
@@ -88,7 +87,7 @@ fun Modifier.bioLift(shape:Shape,tint:Color)=drawBehind{
         Bt(label,size=labelSize,semi=true,tint=if(danger)AppColors.SwatchFF8C363B else bp.ink,align=TextAlign.Center)
     }
 }
-@Composable fun BioIconButton(icon:String,onClick:()->Unit,modifier:Modifier=Modifier,boxed:Boolean=false,enabled:Boolean=true,iconSize:Int=AppIcons.Size20,tint:Color=bp.ink,label:String=when(icon){"close"->AppText.text(TextKey.CopyDong5d54c2);"back"->AppText.text(TextKey.CopyQuayLai6d7935);"next"->AppText.text(TextKey.CopyTiepTheo1c33a9);"more"->AppText.text(TextKey.CopyThemChucNang545f7b);"plus"->AppText.text(TextKey.CopyThemDd9262);"bag"->AppText.text(TextKey.CopyMoTuiDoF3f7f9);"settings"->AppText.text(TextKey.CopyTuyChon598c1b);"refresh"->AppText.text(TextKey.CopyLamMoiB4c613);else->icon}) {
+@Composable fun BioIconButton(icon:String,onClick:()->Unit,modifier:Modifier=Modifier,boxed:Boolean=false,enabled:Boolean=true,iconSize:Int=AppIcons.Size20,tint:Color=bp.ink,label:String=when(icon){"close"->stringResource(R.string.copy_dong_5d54c2);"back"->stringResource(R.string.copy_quay_lai_6d7935);"next"->stringResource(R.string.copy_tiep_theo_1c33a9);"more"->stringResource(R.string.copy_them_chuc_nang_545f7b);"plus"->stringResource(R.string.copy_them_dd9262);"bag"->stringResource(R.string.copy_mo_tui_do_f3f7f9);"settings"->stringResource(R.string.copy_tuy_chon_598c1b);"refresh"->stringResource(R.string.copy_lam_moi_b4c613);else->icon}) {
     Box(modifier.size(AppDimensions.Dp48).alpha(if(enabled)AppOpacity.Value1 else AppOpacity.Value_45).then(if(boxed)Modifier.background(bp.surface,bioShape(AppRadii.Value12)).border(AppDimensions.Dp1,bp.line,bioShape(AppRadii.Value12))else Modifier).semantics{contentDescription=label}.clickable(enabled=enabled,role=Role.Button,onClick=onClick),contentAlignment=Alignment.Center){Bi(icon,size=iconSize,tint=tint)}
 }
 @Composable fun BioTextAction(label:String,onClick:()->Unit,icon:String="",tint:Color=bp.deep,modifier:Modifier=Modifier,iconFirst:Boolean=false) {
@@ -107,7 +106,7 @@ fun Modifier.bioLift(shape:Shape,tint:Color)=drawBehind{
 @Composable fun BioHeader(title:String,coins:Int,primary:Boolean,onBack:()->Unit,onMore:()->Unit,showWallet:Boolean=true) {
     Column(Modifier.fillMaxWidth()){
         Row(Modifier.fillMaxWidth().height(AppDimensions.Dp71).padding(start=if(LocalConfiguration.current.screenWidthDp<AppThemeEffects.CompactWidth)AppDimensions.Dp14 else AppDimensions.Dp20,end=if(LocalConfiguration.current.screenWidthDp<AppThemeEffects.CompactWidth)AppDimensions.Dp14 else AppDimensions.Dp20,top=AppDimensions.Dp10,bottom=AppDimensions.Dp8),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp4)) {
-            if(primary){Row(Modifier.weight(1f),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp7)){Bi("brand");Bt(AppText.text(TextKey.CopyMamXanh692a0a),size=AppTypography.Size18,bold=true,spacing=AppTypography.TrackingMinus_7);Box(Modifier.padding(bottom=AppDimensions.Dp15).size(AppDimensions.Dp5).background(bp.deep,RoundedCornerShape(50)))}}
+            if(primary){Row(Modifier.weight(1f),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp7)){Bi("brand");Bt(stringResource(R.string.copy_mam_xanh_692a0a),size=AppTypography.Size18,bold=true,spacing=AppTypography.TrackingMinus_7);Box(Modifier.padding(bottom=AppDimensions.Dp15).size(AppDimensions.Dp5).background(bp.deep,RoundedCornerShape(50)))}}
             else{BioIconButton("back",onBack);Bt(title,Modifier.weight(1f),size=AppTypography.Size15,semi=true,maxLines=1)}
             if(showWallet)Row(Modifier.background(AppColors.SwatchFFFFFDF5,RoundedCornerShape(AppDimensions.Dp30)).border(AppDimensions.Dp1,AppColors.SwatchFFD8D0BD,RoundedCornerShape(AppDimensions.Dp30)).padding(horizontal=AppDimensions.Dp10,vertical=AppDimensions.Dp7),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp5)){Bi("coin",size=AppIcons.Size15,tint=AppColors.SwatchFF765F27);Bt(coins.toString(),size=AppTypography.Size12,mono=true)}
             if(primary)BioIconButton("more",onMore)
@@ -136,7 +135,7 @@ fun Modifier.bioLift(shape:Shape,tint:Color)=drawBehind{
     }}
 }
 @Composable fun BioTabs(options:List<Pair<String,String>>,selected:String,onSelect:(String)->Unit) {
-    Row(Modifier.fillMaxWidth().background(lerp(bp.bg,bp.accent,.4f),RoundedCornerShape(AppDimensions.Dp15)).border(AppDimensions.Dp1,AppColors.White.copy(alpha=AppOpacity.Value_5),RoundedCornerShape(AppDimensions.Dp15)).padding(AppDimensions.Dp5),horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp3)){
+    Row(Modifier.fillMaxWidth().background(lerp(bp.bg,bp.accent,.4f),RoundedCornerShape(AppDimensions.Dp15)).border(AppDimensions.Dp1,AppColors.White.copy(alpha=AppOpacity.Value_5),RoundedCornerShape(AppDimensions.Dp15)).padding(horizontal = AppDimensions.Dp5, vertical = AppDimensions.Dp3),horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp3)){
         options.forEach{(id,label)->Box(Modifier.weight(1f).heightIn(min=AppDimensions.Dp48).background(if(id==selected)bp.surface else AppColors.Transparent,RoundedCornerShape(AppDimensions.Dp11)).semantics{this.selected=id==selected}.clickable(role=Role.Tab){onSelect(id)}.padding(horizontal=AppDimensions.Dp6,vertical=AppDimensions.Dp9),contentAlignment=Alignment.Center){Bt(label,size=AppTypography.Size12,tint=if(id==selected)bp.deep else bp.muted,align=TextAlign.Center,maxLines=1)}}
     }
 }
@@ -169,7 +168,8 @@ fun Modifier.bioLift(shape:Shape,tint:Color)=drawBehind{
     var open by rememberSaveable(title){mutableStateOf(initial)}
     Column(Modifier.fillMaxWidth()){
         HorizontalDivider(color=bp.line,thickness=AppDimensions.Dp1)
-        Row(Modifier.fillMaxWidth().heightIn(min=AppDimensions.Dp60).padding(top=AppDimensions.Dp10).semantics{stateDescription=if(open)AppText.text(TextKey.CopyDaMoRongC5e118)else AppText.text(TextKey.CopyDaThuGon9b8c90)}.clickable(role=Role.Button){open=!open},verticalAlignment=Alignment.CenterVertically){Bt(title,Modifier.weight(1f),size=AppTypography.Size13,semi=true);Bi("next",Modifier.rotate(if(open)270f else 90f),size=AppIcons.Size18,tint=bp.muted)}
+        val disclosureState = if(open)stringResource(R.string.copy_da_mo_rong_c5e118)else stringResource(R.string.copy_da_thu_gon_9b8c90)
+        Row(Modifier.fillMaxWidth().heightIn(min=AppDimensions.Dp60).padding(top=AppDimensions.Dp10).semantics{stateDescription=disclosureState}.clickable(role=Role.Button){open=!open},verticalAlignment=Alignment.CenterVertically){Bt(title,Modifier.weight(1f),size=AppTypography.Size13,semi=true);Bi("next",Modifier.rotate(if(open)270f else 90f),size=AppIcons.Size18,tint=bp.muted)}
         if(open)Column(Modifier.padding(top=AppDimensions.Dp10,bottom=AppDimensions.Dp4),verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp12),content=content)
     }
 }

@@ -330,7 +330,6 @@ def write_reports(output, revision, files):
             if file.xml_root:
                 lines.append(f"XML root `{file.xml_root}`, qualifier `{file.resource_qualifier or 'default'}`.")
             for name, values in (
-                ("Declarations", [f"{d['kind']} {d['name']}" for d in file.declarations]),
                 ("Resources", file.resources),
                 ("Resource references", file.resource_references),
                 ("Gradle projects", file.gradle_projects),
@@ -342,6 +341,13 @@ def write_reports(output, revision, files):
             ):
                 if values:
                     lines.append(f"**{name}** " + ", ".join(f"`{value}`" for value in values))
+            if file.declarations:
+                lines.extend(("", "**Declarations**", ""))
+                for declaration in file.declarations:
+                    label = f"`{declaration['kind']} {declaration['name']}`"
+                    line = declaration.get("line")
+                    location = f" at [line {line}]({url}#L{line})" if line else ""
+                    lines.append(f"- {label}{location}")
             if file.symbol_references:
                 lines.extend(("", "**Symbol occurrences**", ""))
                 for reference in file.symbol_references:

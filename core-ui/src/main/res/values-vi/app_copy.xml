@@ -5,7 +5,7 @@
     <string name="copy_huy_74fcd3" formatted="false">Hủy</string>
     <string name="copy_luu_viec_522a3d" formatted="false">Lưu việc</string>
     <string name="copy_chon_viec_de_them_a9f4fc" formatted="false">Chọn việc để thêm</string>
-    <string name="copy_them_0_viec_d0390c" formatted="false">Thêm {0} việc</string>
+    <string name="copy_them_0_viec_d0390c">Thêm %1$d việc</string>
     <string name="copy_tam_dung_676358" formatted="false">Tạm dừng</string>
     <string name="copy_tiep_tuc_87a7ae" formatted="false">Tiếp tục</string>
     <string name="copy_ket_thuc_351849" formatted="false">Kết thúc</string>
@@ -46,7 +46,7 @@
     <string name="copy_ngay_96007e" formatted="false">Ngày </string>
     <string name="copy_moi_ngay_8270cb" formatted="false">Mỗi ngày</string>
     <string name="copy_xac_nhan_1503b0" formatted="false">Xác nhận</string>
-    <string name="copy_0_phut_2596d2" formatted="false">{0} phút</string>
+    <string name="copy_0_phut_2596d2">%1$d phút</string>
     <string name="copy_cham_de_hoan_thanh_856927" formatted="false">Chạm để hoàn thành</string>
     <string name="copy_trang_thai_cb31de" formatted="false">Trạng thái</string>
     <string name="copy_da_xong_565e93" formatted="false">Đã xong</string>
@@ -99,15 +99,15 @@
     <string name="copy_da_tam_dung_a919ce" formatted="false">Đã tạm dừng</string>
     <string name="copy_bat_dau_khi_ban_san_sang_3d0a9a" formatted="false">Bắt đầu khi bạn sẵn sàng</string>
     <string name="copy_phien_dang_luu_d6c8c9" formatted="false">Phiên đang lưu</string>
-    <string name="copy_roi_trang_se_tam_dung_phan_da_lam_luon_duoc_giu_lai_c6be38" formatted="false"> · Rời trang sẽ tạm dừng. Phần đã làm luôn được giữ lại. Phiên tự do không thưởng xu.</string>
+    <string name="copy_roi_trang_se_tam_dung_phan_da_lam_luon_duoc_giu_lai_c6be38">%1$s · Rời trang sẽ tạm dừng. Phần đã làm luôn được giữ lại. Phiên tự do không thưởng xu.</string>
     <string name="copy_danh_cho_ff565f" formatted="false">Dành cho</string>
     <string name="copy_tu_do_khong_thuong_xu_113e54" formatted="false">Tự do · không thưởng xu</string>
-    <string name="copy_0_1_phut_ce85cf" formatted="false">{0} · {1} phút</string>
+    <string name="copy_0_1_phut_ce85cf">%1$s · %2$d phút</string>
     <string name="copy_phut_tap_trung_5_120_ca7d24" formatted="false">Phút tập trung · 5–120</string>
     <string name="copy_nhap_so_phut_tu_5_120_2b514d" formatted="false">Nhập số phút từ 5–120.</string>
-    <string name="copy_0_phut_theo_thoi_gian_cua_viec_e07f34" formatted="false">{0} phút · theo thời gian của việc</string>
+    <string name="copy_0_phut_theo_thoi_gian_cua_viec_e07f34">%1$s phút · theo thời gian của việc</string>
     <string name="copy_sua_thoi_gian_trong_chi_tiet_viec_940772" formatted="false">Sửa thời gian trong chi tiết việc.</string>
-    <string name="copy_cac_phien_da_luu_0_hoan_thanh_bb1ef4" formatted="false">Các phiên đã lưu · {0} hoàn thành</string>
+    <string name="copy_cac_phien_da_luu_0_hoan_thanh_bb1ef4">Các phiên đã lưu · %1$d hoàn thành</string>
     <string name="copy_chua_co_phien_hoan_thanh_fd9386" formatted="false">Chưa có phiên hoàn thành.</string>
     <string name="copy_bo_dem_0_phut_a99be5">Bộ đếm · %1$d phút</string>
     <string name="copy_cham_f4623f" formatted="false">Chạm · </string>
@@ -151,7 +151,7 @@
     <string name="copy_dat_o_trang_chu_d8241c" formatted="false">Đặt ở trang chủ</string>
     <string name="copy_cay_truoc_6648b1" formatted="false">Cây trước</string>
     <string name="copy_cay_tiep_theo_242116" formatted="false">Cây tiếp theo</string>
-    <string name="copy_0_1_giai_doan_869247" formatted="false">{0}/{1} giai đoạn</string>
+    <string name="copy_0_1_giai_doan_869247">%1$d/%2$d giai đoạn</string>
     <string name="copy_kho_heo_bf546a" formatted="false">Khô héo</string>
     <string name="copy_du_nuoc_c17aa8" formatted="false">Đủ nước</string>
     <string name="copy_can_tuoi_a0957f" formatted="false">Cần tưới</string>
@@ -174,9 +174,9 @@
     <string name="copy_nhin_lai_tuan_ff3f0c" formatted="false">Nhìn lại tuần</string>
     <string name="copy_nhung_dieu_nho_da_lon_len_882792" formatted="false">Những điều nhỏ đã lớn lên</string>
     <string name="copy_0_phut_c0bcb0" formatted="false"> · {0} phút</string>
-    <string name="copy_da_hoan_thanh_1911fc" formatted="false">Đã hoàn thành: </string>
-    <string name="copy_tap_trung_71ae4b" formatted="false">Tập trung: </string>
-    <string name="copy_hoan_thanh_f183ae" formatted="false">Hoàn thành: </string>
+    <string name="copy_da_hoan_thanh_1911fc">Đã hoàn thành: %1$s</string>
+    <string name="copy_tap_trung_71ae4b">Tập trung: %1$s</string>
+    <string name="copy_hoan_thanh_f183ae">Hoàn thành: %1$s</string>
     <string name="copy_thuong_hom_nay_c015c6" formatted="false">Thưởng hôm nay</string>
     <string name="copy_da_nhan_1d62ad" formatted="false">Đã nhận</string>
     <string name="copy_nhan_8518f2" formatted="false">Nhận</string>
@@ -196,7 +196,7 @@
     <string name="copy_ve_hom_nay_08154e" formatted="false">Về hôm nay</string>
     <string name="copy_vuon_cua_ban_ad1c1b" formatted="false">Vườn của bạn</string>
     <string name="copy_tung_mam_dang_lon_4a30e9" formatted="false">TỪNG MẦM ĐANG LỚN</string>
-    <string name="copy_0_cay_1_o_trong_964022" formatted="false">{0} cây · {1} ô trống</string>
+    <string name="copy_0_cay_1_o_trong_964022">%1$d cây · %2$d ô trống</string>
     <string name="copy_tuoi_tat_ca_3d814a" formatted="false">Tưới tất cả</string>
     <string name="copy_tat_ca_49c73a" formatted="false">Tất cả</string>
     <string name="copy_them_o_trong_9979ac" formatted="false">Thêm ô trồng</string>
@@ -204,7 +204,7 @@
     <string name="copy_chua_co_cay_o_day_1f9b1f" formatted="false">Chưa có cây ở đây</string>
     <string name="copy_chon_bo_loc_khac_de_xem_6bf49e" formatted="false">Chọn bộ lọc khác để xem.</string>
     <string name="copy_bach_thao_f2ed64" formatted="false">Bách thảo</string>
-    <string name="copy_0_loai_cay_921e87" formatted="false">{0} loài cây</string>
+    <string name="copy_0_loai_cay_921e87">%1$d loài cây</string>
     <string name="copy_chua_kham_pha_c0b0cb" formatted="false">Chưa khám phá</string>
     <string name="copy_dang_dung_275ca2" formatted="false">Đang dùng</string>
     <string name="copy_da_so_huu_822625" formatted="false">Đã sở hữu</string>
@@ -237,14 +237,14 @@
     <string name="copy_tuoi_cay_truoc_khi_bon_phan_cfd0cb" formatted="false">Tưới cây trước khi bón phân.</string>
     <string name="copy_cay_dang_duoc_bon_cho_het_thoi_gian_truoc_khi_dung_t_72bbf2" formatted="false">Cây đang được bón. Chờ hết thời gian trước khi dùng tiếp.</string>
     <string name="copy_chon_phan_dang_co_de_bon_cho_cay_540e72" formatted="false">Chọn phân đang có để bón cho cây.</string>
-    <string name="copy_0_1_gio_con_2_52cf45" formatted="false">{0}× · {1} giờ · Còn {2}</string>
+    <string name="copy_0_1_gio_con_2_52cf45">%1$s× · %2$d giờ · Còn %3$d</string>
     <string name="copy_het_a89ea0" formatted="false">Hết</string>
     <string name="copy_bon_4fd741" formatted="false">Bón</string>
     <string name="copy_bo_sung_vat_pham_a4c18c" formatted="false">Bổ sung vật phẩm</string>
     <string name="copy_cay_da_kho_heo_khong_the_deo_phu_kien_7658f1" formatted="false">Cây đã khô héo không thể đeo phụ kiện.</string>
     <string name="copy_diem_to_cho_cay_027c8d" formatted="false">Điểm tô cho cây</string>
     <string name="copy_thao_d39d4a" formatted="false">Tháo</string>
-    <string name="copy_dang_dung_b6dcf3" formatted="false">Đang dùng </string>
+    <string name="copy_dang_dung_b6dcf3">Đang dùng %1$s</string>
     <string name="copy_tiem_phu_kien_e4d7d0" formatted="false">Tiệm phụ kiện</string>
     <string name="copy_loai_d0aa6d" formatted="false">Loài</string>
     <string name="copy_giai_doan_aa70a1" formatted="false">Giai đoạn</string>
@@ -253,7 +253,10 @@
     <string name="copy_ho_so_loai_cfff22" formatted="false">Hồ sơ loài</string>
     <string name="copy_ban_cay_5210c7" formatted="false">Bán cây</string>
     <string name="copy_don_cay_e3d410" formatted="false">Dọn cây</string>
-    <string name="copy_0_1_viec_hoan_thanh_0bc363" formatted="false">{0}: {1} việc hoàn thành</string>
+    <string name="copy_0_1_viec_hoan_thanh_0bc363">%1$s: %2$d việc hoàn thành</string>
+    <plurals name="copy_0_1_viec_hoan_thanh_0bc363">
+        <item quantity="other">%1$s: %2$d việc hoàn thành</item>
+    </plurals>
     <string name="copy_nhat_ky_xanh_aa1337" formatted="false">Nhật ký xanh</string>
     <string name="copy_nhung_dieu_da_lon_len_2c3892" formatted="false">NHỮNG ĐIỀU ĐÃ LỚN LÊN</string>
     <string name="copy_moi_buoc_nho_deu_duoc_ghi_nhan_b0ce5b" formatted="false">Mỗi bước nhỏ đều được ghi nhận.</string>
@@ -275,7 +278,7 @@
     <string name="copy_chua_co_o_trong_6abd67" formatted="false">Chưa có ô trống</string>
     <string name="copy_gieo_mot_mam_xanh_776075" formatted="false">Gieo một mầm xanh</string>
     <string name="copy_tuoi_ca_vuon_20a14a" formatted="false">Tưới cả vườn</string>
-    <string name="copy_mo_o_0_01668e" formatted="false">Mở ô {0}</string>
+    <string name="copy_mo_o_0_01668e">Mở ô %1$s</string>
     <string name="copy_dung_phan_bon_79fd5f" formatted="false">Dùng phân bón</string>
     <string name="copy_luu_tru_viec_50123f" formatted="false">Lưu trữ việc?</string>
     <string name="copy_bo_thay_doi_b07820" formatted="false">Bỏ thay đổi?</string>
@@ -291,33 +294,33 @@
     <string name="copy_ket_thuc_phien_7ea116" formatted="false">Kết thúc phiên?</string>
     <string name="copy_chon_cay_sac_mau_se_di_cung_ban_58b284" formatted="false">Chọn cây. Sắc màu sẽ đi cùng bạn.</string>
     <string name="copy_hat_dang_co_chon_de_gieo_237689" formatted="false">Hạt đang có · chọn để gieo.</string>
-    <string name="copy_con_0_hat_149c5e" formatted="false">Còn {0} hạt</string>
+    <string name="copy_con_0_hat_149c5e">Còn %1$d hạt</string>
     <string name="copy_chua_co_hat_trong_tui_095661" formatted="false">Chưa có hạt trong túi.</string>
     <string name="copy_chon_hat_o_tiem_a4c334" formatted="false">Chọn hạt ở tiệm</string>
-    <string name="copy_0_xu_mon_3dd1cb" formatted="false">{0} xu/món</string>
-    <string name="copy_trong_tui_0_79a061" formatted="false">Trong túi: {0}</string>
-    <string name="copy_tuoi_trong_0_gio_dung_lau_dai_7c36d5" formatted="false">Tưới trong {0} giờ. Dùng lâu dài.</string>
-    <string name="copy_0_trong_1_gio_dung_khi_cay_da_tuoi_mot_lan_moi_24_gi_acf259" formatted="false">{0}× trong {1} giờ. Dùng khi cây đã tưới, một lần mỗi 24 giờ.</string>
-    <string name="copy_0_giai_doan_26f2b4" formatted="false"> · {0} giai đoạn</string>
+    <string name="copy_0_xu_mon_3dd1cb">%1$d xu/món</string>
+    <string name="copy_trong_tui_0_79a061">Trong túi: %1$d</string>
+    <string name="copy_tuoi_trong_0_gio_dung_lau_dai_7c36d5">Tưới trong %1$d giờ. Dùng lâu dài.</string>
+    <string name="copy_0_trong_1_gio_dung_khi_cay_da_tuoi_mot_lan_moi_24_gi_acf259">%1$s× trong %2$d giờ. Dùng khi cây đã tưới, một lần mỗi 24 giờ.</string>
+    <string name="copy_0_giai_doan_26f2b4">%1$s · %2$d giai đoạn</string>
     <string name="copy_tong_13fdba" formatted="false">Tổng</string>
     <string name="copy_vi_39a29f" formatted="false">Ví</string>
     <string name="copy_can_them_e011ae" formatted="false">Cần thêm</string>
     <string name="copy_con_lai_b3edb1" formatted="false">Còn lại</string>
-    <string name="copy_khoang_0_ngay_uoc_tinh_40_xu_ngay_8be6c6" formatted="false">Khoảng {0} ngày · ước tính 40 xu/ngày</string>
+    <string name="copy_khoang_0_ngay_uoc_tinh_40_xu_ngay_8be6c6">Khoảng %1$d ngày · ước tính 40 xu/ngày</string>
     <string name="copy_vuon_da_day_ban_van_co_the_mua_hat_vao_tui_e14bdf" formatted="false">Vườn đã đầy. Bạn vẫn có thể mua hạt vào túi.</string>
     <string name="copy_deo_cho_cay_afc821" formatted="false">Đeo cho cây</string>
     <string name="copy_gieo_mot_cay_truoc_khi_deo_phu_kien_a3a9b9" formatted="false">Gieo một cây trước khi đeo phụ kiện.</string>
-    <string name="copy_chuyen_tu_0_khong_mat_them_xu_c8b60f" formatted="false">Chuyển từ {0}. Không mất thêm xu.</string>
+    <string name="copy_chuyen_tu_0_khong_mat_them_xu_c8b60f">Chuyển từ %1$s. Không mất thêm xu.</string>
     <string name="copy_chi_trang_tri_khong_thay_doi_toc_do_lon_c1bae1" formatted="false">Chỉ trang trí. Không thay đổi tốc độ lớn.</string>
-    <string name="copy_can_them_0_xu_d7d41b" formatted="false">Cần thêm {0} xu.</string>
+    <string name="copy_can_them_0_xu_d7d41b">Cần thêm %1$d xu.</string>
     <string name="copy_mua_deo_d9c74d" formatted="false">Mua &amp; đeo</string>
     <string name="copy_chi_mua_vao_tui_cbc02d" formatted="false">Chỉ mua vào túi</string>
     <string name="copy_hat_van_o_trong_tui_mo_them_o_de_gieo_17fb08" formatted="false">Hạt vẫn ở trong túi. Mở thêm ô để gieo.</string>
-    <string name="copy_trong_tui_0_hat_d56e0e" formatted="false">Trong túi: {0} hạt</string>
+    <string name="copy_trong_tui_0_hat_d56e0e">Trong túi: %1$d hạt</string>
     <string name="copy_ten_cay_tuy_chon_1af251" formatted="false">Tên cây · tùy chọn</string>
     <string name="copy_mam_binh_yen_df7062" formatted="false">Mầm bình yên</string>
     <string name="copy_o_trong_5da6bd" formatted="false">Ô trồng</string>
-    <string name="copy_o_5b7240" formatted="false">Ô </string>
+    <string name="copy_o_5b7240">Ô %1$s</string>
     <string name="copy_dung_1_hat_de_trong_ten_de_dung_ten_loai_61bbff" formatted="false">Dùng 1 hạt. Để trống tên để dùng tên loài.</string>
     <string name="copy_gieo_hat_6d82a9" formatted="false">Gieo hạt</string>
     <string name="copy_mien_phi_dfc4f7" formatted="false">Miễn phí</string>
@@ -388,7 +391,7 @@
     <string name="copy_da_xoa_du_lieu_1841a6" formatted="false">Đã xóa dữ liệu</string>
     <string name="copy_da_khoi_phuc_du_lieu_b0b459" formatted="false">Đã khôi phục dữ liệu</string>
     <string name="copy_chon_tep_sao_luu_truoc_71112e" formatted="false">Chọn tệp sao lưu trước</string>
-    <string name="copy_da_chon_0_5_chon_it_nhat_2_viec_e813b8" formatted="false">Đã chọn {0}/5 · chọn ít nhất 2 việc</string>
+    <string name="copy_da_chon_0_5_chon_it_nhat_2_viec_e813b8">Đã chọn %1$d/5 · chọn ít nhất 2 việc</string>
     <string name="copy_vao_vuon_b6df0e" formatted="false">Vào vườn</string>
     <string name="copy_mot_viec_nho_mot_mam_xanh_225e73" formatted="false">Một việc nhỏ.\nMột mầm xanh.</string>
     <string name="copy_chon_cay_chon_viec_lon_len_moi_ngay_b1308a" formatted="false">Chọn cây, chọn việc, lớn lên mỗi ngày.</string>
@@ -400,7 +403,7 @@
     <string name="copy_vua_suc_thoi_co_the_sua_sau_c7359e" formatted="false">Vừa sức thôi, có thể sửa sau.</string>
     <string name="copy_ban_da_chon_5_viec_bo_chon_mot_viec_de_doi_95f1ae" formatted="false">Bạn đã chọn 5 việc. Bỏ chọn một việc để đổi.</string>
     <string name="copy_san_sang_nay_mam_8ad6e8" formatted="false">Sẵn sàng nảy mầm</string>
-    <string name="copy_0_1_viec_2_189a78" formatted="false">{0} · {1} việc · {2}</string>
+    <string name="copy_0_1_viec_2_189a78">%1$s · %2$d việc · %3$s</string>
     <string name="copy_moi_ngay_2c37dd" formatted="false"> · Mỗi ngày</string>
     <string name="copy_nhac_nhe_luc_09_00_cda6e7" formatted="false">Nhắc nhẹ lúc 09:00</string>
     <string name="copy_khong_can_tai_khoan_cap_quyen_trong_tuy_chon_de_nhan_cc9847" formatted="false">Không cần tài khoản. Cấp quyền trong Tùy chọn để nhận thông báo; từ chối vẫn dùng việc và bộ đếm.</string>
@@ -415,12 +418,15 @@
     <string name="copy_tuan_cua_ban_c82d43" formatted="false">Tuần của bạn</string>
     <string name="copy_ty_le_e86c12" formatted="false">Tỷ lệ</string>
     <string name="copy_7_ngay_gan_nhat_442aa3" formatted="false">7 ngày gần nhất</string>
-    <string name="copy_tuan_truoc_0_so_lieu_den_hom_nay_87b0c8" formatted="false">Tuần trước {0}% · Số liệu đến hôm nay.</string>
+    <string name="copy_tuan_truoc_0_so_lieu_den_hom_nay_87b0c8">Tuần trước %1$d%% · Số liệu đến hôm nay.</string>
     <string name="copy_chua_du_du_lieu_so_sanh_24d4ce" formatted="false">Chưa đủ dữ liệu so sánh.</string>
     <string name="copy_nhung_dieu_da_lam_9f52b2" formatted="false">Những điều đã làm</string>
     <string name="copy_xu_nhan_chi_548b91" formatted="false">Xu nhận / chi</string>
     <string name="copy_cham_cay_fff511" formatted="false">Chăm cây</string>
-    <string name="copy_0_ngay_45fa48" formatted="false">{0} ngày</string>
+    <string name="copy_0_ngay_45fa48">%1$d ngày</string>
+    <plurals name="copy_0_ngay_45fa48">
+        <item quantity="other">%1$d ngày</item>
+    </plurals>
     <string name="copy_moc_truong_thanh_b6cf90" formatted="false">Mốc trưởng thành</string>
     <string name="copy_deu_dan_nhat_2e2e31" formatted="false">Đều đặn nhất</string>
     <string name="copy_chua_du_du_lieu_414142" formatted="false">Chưa đủ dữ liệu</string>
@@ -429,14 +435,14 @@
     <string name="copy_tuan_nay_minh_e6de5c" formatted="false">Tuần này, mình…</string>
     <string name="copy_luu_suy_ngam_18cdd3" formatted="false">Lưu suy ngẫm</string>
     <string name="copy_lich_nghi_bao_ve_8eda57" formatted="false">Lịch nghỉ &amp; bảo vệ</string>
-    <string name="copy_0_ve_bao_ve_8bf912" formatted="false">{0} vé bảo vệ</string>
+    <string name="copy_0_ve_bao_ve_8bf912">%1$d vé bảo vệ</string>
     <string name="copy_nghi_cung_la_mot_nhip_e4f3b6" formatted="false">Nghỉ cũng là một nhịp.</string>
     <string name="copy_ngay_nghi_sap_toi_a8efda" formatted="false">Ngày nghỉ sắp tới</string>
     <string name="copy_toi_da_2_ngay_thang_dat_truoc_ngay_nghi_khong_thuong_8811c2" formatted="false">Tối đa 2 ngày/tháng. Đặt trước ngày nghỉ; không thưởng xu.</string>
     <string name="copy_len_lich_nghi_d71876" formatted="false">Lên lịch nghỉ</string>
     <string name="copy_nghi_f0aa0a" formatted="false">Nghỉ</string>
     <string name="copy_ve_bao_ve_5a852e" formatted="false">Vé bảo vệ</string>
-    <string name="copy_0_ve_604049" formatted="false">{0} vé</string>
+    <string name="copy_0_ve_604049">%1$d vé</string>
     <string name="copy_ngay_da_bo_lo_9f55ee" formatted="false">Ngày đã bỏ lỡ</string>
     <string name="copy_dung_ve_767d96" formatted="false">Dùng vé</string>
     <string name="copy_chua_co_nhip_thoi_quen_c06c83" formatted="false">Chưa có nhịp thói quen</string>
@@ -494,7 +500,7 @@
     <string name="copy_bien_nha_vuon_d2e9b7" formatted="false">Biển nhà vườn</string>
     <string name="copy_canh_hoa_137700" formatted="false">Cánh hoa</string>
     <string name="copy_huy_hieu_bo_suu_tam_521407" formatted="false">Huy hiệu bộ sưu tầm</string>
-    <string name="copy_cac_giai_doan_0_1_bee217" formatted="false">Các giai đoạn · {0}/{1}</string>
+    <string name="copy_cac_giai_doan_0_1_bee217">Các giai đoạn · %1$d/%2$d</string>
     <string name="copy_da_dat_1b9e88" formatted="false">Đã đạt</string>
     <string name="copy_chua_dat_f4aa8f" formatted="false">Chưa đạt</string>
     <string name="copy_da_trong_42fa2b" formatted="false">Đã trồng</string>
@@ -1060,8 +1066,8 @@
     <string name="copy_da_ban_cay_nhan_0_1_xu_phan_vuot_gioi_han_khong_duoc_5316e3" formatted="false">Đã bán cây · Nhận {0} / {1} xu. Phần vượt giới hạn không được giữ lại.</string>
     <string name="copy_da_don_cay_o_trong_da_trong_khong_hoan_xu_hoac_hat_4e6810" formatted="false">Đã dọn cây · Ô trồng đã trống; không hoàn xu hoặc hạt</string>
     <string name="copy_0_xu_7c2391" formatted="false">+{0} xu</string>
-    <string name="copy_0_1_xu_8c9c4c" formatted="false">{0}/{1} xu</string>
-    <string name="copy_0_xu_251e68" formatted="false">{0} xu</string>
+    <string name="copy_0_1_xu_8c9c4c">%1$d/%2$d xu</string>
+    <string name="copy_0_xu_251e68">%1$d xu</string>
     <string name="copy_0_xu_9c90c1" formatted="false"> · +{0} xu</string>
     <string name="copy_8_xu_3a7892" formatted="false">+8 xu</string>
     <string name="copy_mua_250_xu_aa5fe3" formatted="false">Mua · 250 xu</string>
