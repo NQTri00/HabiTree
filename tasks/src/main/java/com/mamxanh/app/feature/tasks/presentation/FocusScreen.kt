@@ -30,7 +30,12 @@ private object FocusLayout {
 }
 
 @Composable
-fun ColumnScope.FocusScreen(state: FocusDisplay, onTask: (String) -> Unit, onMinutes: (String) -> Unit) {
+fun ColumnScope.FocusScreen(
+    state: FocusDisplay,
+    onTask: (String) -> Unit,
+    onMinutes: (String) -> Unit,
+    actions: (@Composable () -> Unit)? = null,
+) {
     val present = state.present
     val minutes = state.minutes
     val configuration = LocalConfiguration.current
@@ -88,6 +93,7 @@ fun ColumnScope.FocusScreen(state: FocusDisplay, onTask: (String) -> Unit, onMin
         FocusTimer(state, remaining, ringSize, landscape, Modifier.align(Alignment.CenterHorizontally))
         if (!present) FocusSetupFields(state, onTask, onMinutes)
     }
+    actions?.invoke()
     if (present) {
         BioDetails(stringResource(R.string.copy_phien_dang_luu_d6c8c9)) {
             Bt(

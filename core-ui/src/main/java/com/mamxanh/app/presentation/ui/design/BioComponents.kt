@@ -46,10 +46,23 @@ fun color(hex:String)=Color(android.graphics.Color.parseColor(hex))
     val resource=remember(name){context.resources.getIdentifier("bio_icon_$name","drawable",context.packageName)}
     if(resource!=0)Icon(painterResource(resource),null,modifier.size(size.dp),tint=tint)
 }
-@Composable fun BioPlant(species:String,modifier:Modifier=Modifier,dead:Boolean=false) {
+@Composable fun BioPlant(species:String,modifier:Modifier=Modifier,dead:Boolean=false,tint:Color?=null) {
     val context=LocalContext.current
     val resource=remember(species){context.resources.getIdentifier("bio_plant_$species","drawable",context.packageName)}
-    if(resource!=0)Image(painterResource(resource),null,modifier.alpha(if(dead)AppOpacity.Value_55 else AppOpacity.Value1),contentScale=ContentScale.Fit,colorFilter=if(dead)ColorFilter.colorMatrix(ColorMatrix().apply{setToSaturation(0f)})else null)
+    if (resource != 0) {
+        val filter = when {
+            tint != null -> ColorFilter.tint(tint)
+            dead -> ColorFilter.colorMatrix(ColorMatrix().apply { setToSaturation(0f) })
+            else -> null
+        }
+        Image(
+            painterResource(resource),
+            contentDescription = null,
+            modifier = modifier.alpha(if (dead) AppOpacity.Value_55 else AppOpacity.Value1),
+            contentScale = ContentScale.Fit,
+            colorFilter = filter,
+        )
+    }
 }
 fun bioShape(radius:Int=AppRadii.Value22)=RoundedCornerShape(topStart=radius.dp,topEnd=(radius/2).dp,bottomEnd=radius.dp,bottomStart=radius.dp)
 fun bioHeroBrush(p:BioPalette)=object:ShaderBrush(){

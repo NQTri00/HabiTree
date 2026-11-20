@@ -17,7 +17,11 @@ import com.mamxanh.shared.localization.AppText
 import com.mamxanh.shared.localization.TextKey
 
 @Composable
-fun TaskFormScreen(state: TaskFormDisplay, onFieldChanged: (TaskFormField, String) -> Unit) {
+fun TaskFormScreen(
+    state: TaskFormDisplay,
+    actions: (@Composable () -> Unit)? = null,
+    onFieldChanged: (TaskFormField, String) -> Unit,
+) {
     fun value(field: TaskFormField) = state.values[field].orEmpty()
     fun change(field: TaskFormField, value: String) = onFieldChanged(field, value)
     val error = state.error
@@ -40,6 +44,7 @@ fun TaskFormScreen(state: TaskFormDisplay, onFieldChanged: (TaskFormField, Strin
         Bt(stringResource(R.string.copy_lich_moi_ap_dung_tu_ngay_mai_hom_nay_la_tuy_chon_khu_15d639),size=AppTypography.Size12,tint=bp.muted)
     }
     BioCard(Modifier.fillMaxWidth(),bp.soft){Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.SpaceBetween){Bt(stringResource(R.string.copy_thuong_moi_lan_6c1a24),size=AppTypography.Size12);Bt(stringResource(R.string.copy_0_xu_251e68, state.reward),semi=true)};Bt(stringResource(R.string.copy_toi_da_50_xu_ngay_4c710c),size=AppTypography.Size12,tint=bp.muted)}
+    actions?.invoke()
     }
 }
 

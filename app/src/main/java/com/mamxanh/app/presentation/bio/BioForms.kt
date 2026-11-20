@@ -97,7 +97,12 @@ internal fun taskDetailRouteContent(world: BioWorld, ui: BioController, argument
     )
 }
 
-internal fun taskFormRouteContent(world: BioWorld, ui: BioController, argument: String): TaskFormRouteContent {
+internal fun taskFormRouteContent(
+    world: BioWorld,
+    ui: BioController,
+    argument: String,
+    actions: (@Composable () -> Unit)?,
+): TaskFormRouteContent {
     val initial = taskFormInitial(world, argument)
     val values = TaskFormField.entries.associateWith { field ->
         val key = field.savedKey
@@ -110,10 +115,16 @@ internal fun taskFormRouteContent(world: BioWorld, ui: BioController, argument: 
     return TaskFormRouteContent(
         state = TaskFormDisplay(values, ui.taskDraft.error, ui.taskDraft.errorAttempt, reward),
         onFieldChanged = ui.taskDraft::update,
+        actions = actions,
     )
 }
 
-internal fun focusRouteContent(world: BioWorld, ui: BioController, argument: String): FocusRouteContent {
+internal fun focusRouteContent(
+    world: BioWorld,
+    ui: BioController,
+    argument: String,
+    actions: (@Composable () -> Unit)?,
+): FocusRouteContent {
     val focus = world.state.o("focus")
     return FocusRouteContent(
         state = FocusDisplay(
@@ -133,6 +144,7 @@ internal fun focusRouteContent(world: BioWorld, ui: BioController, argument: Str
         ),
         onTask = { ui.taskSelection.focusTask = it },
         onMinutes = { ui.taskSelection.focusMinutes = it },
+        actions = actions,
     )
 }
 
@@ -152,12 +164,17 @@ internal fun BioTemplateRow(template: JSONObject, selected: Boolean, onboarding:
     TemplateRow(template.toTemplateDisplay(), selected, onboarding, onChange)
 }
 
-internal fun templatesRouteContent(world: BioWorld, ui: BioController): TemplatesRouteContent {
+internal fun templatesRouteContent(
+    world: BioWorld,
+    ui: BioController,
+    actions: (@Composable () -> Unit)?,
+): TemplatesRouteContent {
     val chosen = selectedBioTemplates(ui).toSet()
     return TemplatesRouteContent(
         templates = world.catalog.a("templates").objects().map { it.toTemplateDisplay() },
         chosen = chosen,
         onToggle = ui.taskSelection::toggleTemplate,
+        actions = actions,
     )
 }
 

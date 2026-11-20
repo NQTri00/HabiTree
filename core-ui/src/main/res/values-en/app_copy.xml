@@ -1159,4 +1159,11 @@
     <string name="shop_purchase_quantity" formatted="false">Purchase quantity</string>
     <string name="shop_decrease_quantity" formatted="false">Decrease quantity</string>
     <string name="shop_increase_quantity" formatted="false">Increase quantity</string>
+    <string name="tasks_calendar_legend" formatted="false">✓ Complete · R Rest · ◇ Protected · Missed · Blank: unrecorded</string>
+    <string name="tasks_calendar_completed" formatted="false">Complete</string>
+    <string name="tasks_calendar_rest" formatted="false">Rest day</string>
+    <string name="tasks_calendar_protected" formatted="false">Protected</string>
+    <string name="tasks_calendar_missed" formatted="false">Missed</string>
+    <string name="tasks_calendar_unrecorded" formatted="false">Unrecorded</string>
+    <string name="tasks_calendar_day_status">%1$s, %2$s</string>
 </resources>

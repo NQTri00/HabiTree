@@ -66,6 +66,8 @@ import androidx.compose.ui.unit.*
             val compactScreen=maxHeight<AppDimensions.Dp600
             val shortScreen=maxHeight<AppDimensions.Dp700
             val topInset=if(maxHeight<AppDimensions.Dp600)14 else if(maxWidth<AppDimensions.Dp359)16 else 20
+            val actionDockVisible = compactScreen && ui.route in listOf("task-new", "templates", "focus")
+            val navigationVisible = ui.route !in listOf("onboard", "data") && !actionDockVisible
         CompositionLocalProvider(
             LocalBioExpanded provides (ui.tabs["expanded"] == "true"),
             LocalStatisticsRouteContent provides { statisticsRouteContent(world, ui) },
@@ -79,11 +81,17 @@ import androidx.compose.ui.unit.*
             LocalBackupRouteContent provides { backupRouteContent(world, ui) },
             LocalRestRouteContent provides { restRouteContent(world, ui) },
             LocalInsightsRouteContent provides { argument -> insightsRouteContent(world, ui, argument) },
-            LocalTemplatesRouteContent provides { templatesRouteContent(world, ui) },
+            LocalTemplatesRouteContent provides {
+                templatesRouteContent(world, ui, if (compactScreen) null else { { BioTemplateActions(ui) } })
+            },
             LocalTaskListRouteContent provides { taskListRouteContent(world, ui) },
             LocalTaskDetailRouteContent provides { argument -> taskDetailRouteContent(world, ui, argument) },
-            LocalTaskFormRouteContent provides { argument -> taskFormRouteContent(world, ui, argument) },
-            LocalFocusRouteContent provides { argument -> focusRouteContent(world, ui, argument) },
+            LocalTaskFormRouteContent provides { argument ->
+                taskFormRouteContent(world, ui, argument, if (compactScreen) null else { { BioTaskFormActions(world, ui) } })
+            },
+            LocalFocusRouteContent provides { argument ->
+                focusRouteContent(world, ui, argument, if (compactScreen) null else { { BioFocusActions(world, ui) } })
+            },
             LocalInventoryRouteContent provides { inventoryRouteContent(world, ui) },
             LocalShopRouteContent provides { argument -> shopRouteContent(world, ui, argument) },
             LocalHomeRouteContent provides { homeRouteContent(world, ui, shortScreen) },
@@ -118,15 +126,31 @@ import androidx.compose.ui.unit.*
                         }
                     },
                 )
-                when(ui.route){
-                    "task-new"->BioActionDock{BioTaskFormActions(world,ui)}
-                    "templates"->BioActionDock{BioTemplateActions(ui)}
-                    "focus"->BioActionDock{BioFocusActions(world,ui)}
-                    "onboard","data"->Unit
-                    else->BioNav(ui.route){if(it=="shop"){ui.shopSelection.targetTree="";ui.plantingSelection.clear()};ui.go(it,root=true)}
+                if (actionDockVisible) {
+                    BioActionDock {
+                        when (ui.route) {
+                            "task-new" -> BioTaskFormActions(world, ui)
+                            "templates" -> BioTemplateActions(ui)
+                            "focus" -> BioFocusActions(world, ui)
+                            else -> Unit
+                        }
+                    }
+                }
+                if (navigationVisible) {
+                    BioNav(ui.route) {
+                        if (it == "shop") {
+                            ui.shopSelection.targetTree = ""
+                            ui.plantingSelection.clear()
+                        }
+                        ui.go(it, root = true)
+                    }
                 }
             }
-            if(ui.message.isNotBlank()&&ui.modal.isBlank())BioToast(ui.message,{ui.message=""},Modifier.align(Alignment.BottomCenter).padding(start=AppDimensions.Dp15,end=AppDimensions.Dp15,bottom=if(ui.route in listOf("onboard","data"))AppDimensions.Dp18 else AppDimensions.Dp90))
+            if (ui.message.isNotBlank() && ui.modal.isBlank()) {
+                val bottom = if (actionDockVisible || navigationVisible) AppDimensions.Dp90 else AppDimensions.Dp18
+                BioToast(ui.message, { ui.message = "" }, Modifier.align(Alignment.BottomCenter)
+                    .padding(start = AppDimensions.Dp15, end = AppDimensions.Dp15, bottom = bottom))
+            }
             if(ui.modal.isNotBlank())CompositionLocalProvider(LocalBioButtonSize provides 13){BioModal(world,ui)}
         }
     }

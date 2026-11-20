@@ -1135,5 +1135,12 @@ enum class TextKey {
     DataSafetyNote,
     ShopPurchaseQuantity,
     ShopDecreaseQuantity,
-    ShopIncreaseQuantity
+    ShopIncreaseQuantity,
+    TasksCalendarLegend,
+    TasksCalendarCompleted,
+    TasksCalendarRest,
+    TasksCalendarProtected,
+    TasksCalendarMissed,
+    TasksCalendarUnrecorded,
+    TasksCalendarDayStatus
 }

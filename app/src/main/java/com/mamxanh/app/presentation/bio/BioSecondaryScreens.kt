@@ -18,6 +18,9 @@ import com.mamxanh.app.feature.tasks.presentation.navigation.RestRouteContent
 import com.mamxanh.app.feature.tasks.presentation.RestScreenState
 import com.mamxanh.app.feature.tasks.presentation.InsightTaskLink
 import com.mamxanh.app.feature.tasks.presentation.TaskInsightsDisplay
+import com.mamxanh.app.feature.tasks.presentation.TaskCalendar
+import com.mamxanh.app.feature.tasks.presentation.TaskCalendarDay
+import com.mamxanh.app.feature.tasks.presentation.TaskCalendarStatus
 import com.mamxanh.app.feature.tasks.presentation.navigation.InsightsRouteContent
 
 import com.mamxanh.app.presentation.ui.design.*
@@ -32,28 +35,38 @@ import com.mamxanh.shared.localization.AppText
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.*
 import org.json.JSONArray
 import java.text.SimpleDateFormat
 import java.util.*
 
 internal fun bioDates(date:String,count:Int):List<String>{val format=SimpleDateFormat("yyyy-MM-dd",Locale.US);val c=Calendar.getInstance();try{c.time=format.parse(date)!!}catch(_:Exception){};c.add(Calendar.DATE,1-count);return (0 until count).map{format.format(c.time).also{c.add(Calendar.DATE,1)}}}
-@Composable internal fun BioCalendar(world:BioWorld,count:Int=7,recordOverride:JSONArray?=null){
-    val explicit=recordOverride?:world.data.optJSONArray("days")
-    val dates=bioDates(world.data.s("date"),count)
-    val values=dates.mapIndexed{i,date->val explicitRecord=explicit?.objects()?.firstOrNull{it.s("date")==date};val state=explicitRecord?.s("state")?:if(explicit!=null||world.native)"NONE"else if(i%7==3)"REST"else if(i%9==5)"PROTECTED"else if(i%3!=1)"SUCCESS"else "MISSED";date to state}
-    Column(verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp8)){
-        Bt(bioDisplayDate(dates.first())+" – "+bioDisplayDate(dates.last()),size=AppTypography.Size12,tint=bp.muted)
-        Row(horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp6)){dates.take(7).forEach{date->val calendar=Calendar.getInstance().apply{time=SimpleDateFormat("yyyy-MM-dd",Locale.US).parse(date)!!};val day=calendar.get(Calendar.DAY_OF_WEEK);Bt(bioWeekday(day),Modifier.weight(1f),size=AppTypography.Size11,tint=bp.muted,align=TextAlign.Center)}}
-        values.chunked(7).forEach{row->Row(horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp6)){repeat(7){i->if(i<row.size){val(date,state)=row[i];val fill=when(state){"SUCCESS"->bp.deep;"REST"->AppColors.SwatchFFE7E1F5;"PROTECTED"->AppColors.RewardSurface;else->AppColors.SwatchFFF0F2EB};Column(Modifier.weight(1f).heightIn(min=AppDimensions.Dp44).background(fill,RoundedCornerShape(AppDimensions.Dp10)).padding(vertical=AppDimensions.Dp4),horizontalAlignment=Alignment.CenterHorizontally){Bt(date.takeLast(2),size=AppTypography.Size12,tint=if(state=="SUCCESS")AppColors.White else bp.ink,line=AppTypography.LineHeight16);Bt(when(state){"SUCCESS"->"✓";"REST"->stringResource(R.string.calendar_rest_marker);"PROTECTED"->"◇";"MISSED"->"×";else->"—"},size=AppTypography.Size10,tint=if(state=="SUCCESS")AppColors.White else bp.muted,line=AppTypography.LineHeight14)}}else Spacer(Modifier.weight(1f))}}}
-        Bt(stringResource(R.string.copy_xong_n_nghi_bao_ve_c04e4f),size=AppTypography.Size11,tint=bp.muted)
-        Bt(stringResource(R.string.copy_bo_lo_chua_ghi_nhan_70b04e),size=AppTypography.Size11,tint=bp.muted)
+@Composable
+private fun BioCalendar(world: BioWorld, count: Int = 7, recordOverride: JSONArray? = null) {
+    val records = recordOverride ?: world.data.optJSONArray("days")
+    val byDate = records?.objects()?.associateBy { it.s("date") }.orEmpty()
+    val days = bioDates(world.data.s("date"), count).mapIndexed { index, date ->
+        val record = byDate[date]
+        val status = when {
+            record != null -> when (record.s("state")) {
+                "SUCCESS" -> TaskCalendarStatus.Completed
+                "REST" -> TaskCalendarStatus.Rest
+                "PROTECTED" -> TaskCalendarStatus.Protected
+                "MISSED" -> TaskCalendarStatus.Missed
+                else -> TaskCalendarStatus.Unrecorded
+            }
+            records != null || world.native -> TaskCalendarStatus.Unrecorded
+            index % 7 == 3 -> TaskCalendarStatus.Rest
+            index % 9 == 5 -> TaskCalendarStatus.Protected
+            index % 3 != 1 -> TaskCalendarStatus.Completed
+            else -> TaskCalendarStatus.Missed
+        }
+        TaskCalendarDay(date, status)
     }
+    TaskCalendar(days)
 }
 internal fun weeklyReviewRouteContent(world: BioWorld, ui: BioController): WeeklyReviewRouteContent {
     val review = world.data.o("review")

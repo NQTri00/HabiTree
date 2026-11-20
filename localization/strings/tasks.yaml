@@ -863,3 +863,48 @@ copy_0_1_viec_da_xong_cf7a5d:
   pluralArgument: 1
   canonical: false
   source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TaskListScreen.kt
+tasks_calendar_legend:
+  order: 1134
+  vi: '✓ Hoàn thành · N Nghỉ · ◇ Bảo vệ · Bỏ lỡ · Trống: chưa ghi nhận'
+  en: '✓ Complete · R Rest · ◇ Protected · Missed · Blank: unrecorded'
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TaskCalendar.kt
+tasks_calendar_completed:
+  order: 1135
+  vi: Hoàn thành
+  en: Complete
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TaskCalendar.kt
+tasks_calendar_rest:
+  order: 1136
+  vi: Ngày nghỉ
+  en: Rest day
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TaskCalendar.kt
+tasks_calendar_protected:
+  order: 1137
+  vi: Được bảo vệ
+  en: Protected
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TaskCalendar.kt
+tasks_calendar_missed:
+  order: 1138
+  vi: Bỏ lỡ
+  en: Missed
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TaskCalendar.kt
+tasks_calendar_unrecorded:
+  order: 1139
+  vi: Chưa ghi nhận
+  en: Unrecorded
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TaskCalendar.kt
+tasks_calendar_day_status:
+  order: 1140
+  vi: '{date}, {status}'
+  en: '{date}, {status}'
+  placeholders:
+    date: string
+    status: string
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TaskCalendar.kt

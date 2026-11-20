@@ -48,5 +48,10 @@
     "name": "purchase-quantity",
     "preview": "BioPurchaseQuantityPreview",
     "source": "app/src/main/java/com/mamxanh/app/presentation/bio/BioModal.kt"
+  },
+  {
+    "name": "tasks-calendar",
+    "preview": "TaskCalendarPreview",
+    "source": "tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TaskCalendar.kt"
   }
 ]

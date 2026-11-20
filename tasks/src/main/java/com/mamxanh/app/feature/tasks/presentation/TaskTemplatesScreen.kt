@@ -32,9 +32,11 @@ fun TaskTemplatesScreen(
     templates: List<TaskTemplateDisplay>,
     chosen: Set<String>,
     onToggle: (String) -> Unit,
+    actions: (@Composable () -> Unit)? = null,
 ) {
     Column{Bt(stringResource(R.string.copy_chon_viec_vua_suc_895fff),size=AppTypography.Size27,line=AppTypography.LineHeight35_1,bold=true,spacing=AppTypography.TrackingMinus1);Bt(stringResource(R.string.copy_them_mot_lan_chinh_sua_bat_cu_luc_nao_55b241),size=AppTypography.Size12,tint=bp.muted)}
     Column(verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp12)){templates.forEach { template -> TemplateRow(template, template.id in chosen) { onToggle(template.id) } }}
+    actions?.invoke()
 }
 
 @Preview(showBackground = true, widthDp = 375)

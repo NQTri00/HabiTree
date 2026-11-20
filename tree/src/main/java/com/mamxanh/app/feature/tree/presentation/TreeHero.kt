@@ -1,5 +1,6 @@
 package com.mamxanh.app.feature.tree.presentation
 
+import android.os.Build
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -9,10 +10,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.BlurredEdgeTreatment
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
@@ -21,6 +25,11 @@ import com.mamxanh.app.presentation.ui.design.*
 import com.mamxanh.core.ui.R
 
 private const val GRID_STROKE_PIXELS = 1f
+private const val PLANT_SHADOW_SATURATION = 0.22f
+private const val PLANT_SHADOW_LIGHTNESS = 0.30f
+private const val PLANT_SHADOW_ALPHA = 0.12f
+private val PlantShadowOffset = AppDimensions.Dp9
+private val PlantShadowBlur = AppDimensions.Dp5
 
 @Composable
 fun TreeHero(state: TreeHeroState, onAction: (TreeHeroAction) -> Unit) {
@@ -82,7 +91,15 @@ fun TreeHero(state: TreeHeroState, onAction: (TreeHeroAction) -> Unit) {
         }
         Box(Modifier.fillMaxWidth().height(artHeight).then(if(home)Modifier.clickable{onAction(TreeHeroAction.OpenTree)}else Modifier),contentAlignment=Alignment.Center){
             val plantHeight = if (home) artHeight else artHeight - AppDimensions.Dp12
-            BioPlant(state.species,Modifier.height(plantHeight).fillMaxWidth(),dead)
+            val artwork = Modifier.height(plantHeight).fillMaxWidth()
+            if (!dead && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                BioPlant(
+                    state.species,
+                    artwork.offset(y = PlantShadowOffset).blur(PlantShadowBlur, BlurredEdgeTreatment.Unbounded),
+                    tint = Color.hsl(p.hue, PLANT_SHADOW_SATURATION, PLANT_SHADOW_LIGHTNESS, PLANT_SHADOW_ALPHA),
+                )
+            }
+            BioPlant(state.species, artwork, dead)
             val accessory=state.accessoryIcon
             if(accessory!=null&&!dead)Box(Modifier.align(Alignment.TopEnd).padding(top=AppDimensions.Dp55,end=AppDimensions.Dp14).size(AppDimensions.Dp32).background(AppColors.White.copy(alpha=AppOpacity.Value_6),RoundedCornerShape(50)).border(AppDimensions.Dp1,p.accent,RoundedCornerShape(50)),contentAlignment=Alignment.Center){Bi(accessory,size=AppIcons.Size23)}
             if(!home&&state.canBrowseTrees){BioIconButton("back",{onAction(TreeHeroAction.PreviousTree)},Modifier.align(Alignment.CenterStart).offset(x=AppDimensions.DpMinus6),boxed=true,iconSize=AppIcons.Size18,tint=p.deep,label=stringResource(R.string.copy_cay_truoc_6648b1));BioIconButton("next",{onAction(TreeHeroAction.NextTree)},Modifier.align(Alignment.CenterEnd).offset(x=AppDimensions.Dp6),boxed=true,iconSize=AppIcons.Size18,tint=p.deep,label=stringResource(R.string.copy_cay_tiep_theo_242116))}

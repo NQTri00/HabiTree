@@ -92,6 +92,7 @@ class TemplatesRouteContent(
     val templates: List<TaskTemplateDisplay>,
     val chosen: Set<String>,
     val onToggle: (String) -> Unit,
+    val actions: (@Composable () -> Unit)?,
 )
 
 val LocalTemplatesRouteContent = compositionLocalOf<() -> TemplatesRouteContent> {
@@ -125,6 +126,7 @@ val LocalTaskDetailRouteContent = compositionLocalOf<(String) -> TaskDetailRoute
 class TaskFormRouteContent(
     val state: TaskFormDisplay,
     val onFieldChanged: (TaskFormField, String) -> Unit,
+    val actions: (@Composable () -> Unit)?,
 )
 
 val LocalTaskFormRouteContent = compositionLocalOf<(String) -> TaskFormRouteContent> {
@@ -135,6 +137,7 @@ class FocusRouteContent(
     val state: FocusDisplay,
     val onTask: (String) -> Unit,
     val onMinutes: (String) -> Unit,
+    val actions: (@Composable () -> Unit)?,
 )
 
 val LocalFocusRouteContent = compositionLocalOf<(String) -> FocusRouteContent> {
@@ -166,6 +169,7 @@ val tasksFeatureNavigation = HabiTreeFeatureModule(
         val content = LocalTaskFormRouteContent.current(it.argument)
         TaskFormScreen(
             state = content.state,
+            actions = content.actions,
             onFieldChanged = content.onFieldChanged,
         )
     }) { TaskFormKey(it) },
@@ -175,6 +179,7 @@ val tasksFeatureNavigation = HabiTreeFeatureModule(
             state = content.state,
             onTask = content.onTask,
             onMinutes = content.onMinutes,
+            actions = content.actions,
         )
     }) { FocusKey(it) },
     HabiTreeFeatureDestination("templates", content = {
@@ -183,6 +188,7 @@ val tasksFeatureNavigation = HabiTreeFeatureModule(
             templates = content.templates,
             chosen = content.chosen,
             onToggle = content.onToggle,
+            actions = content.actions,
         )
     }) { TemplatesKey.takeIf { _ -> it.isEmpty() } },
     HabiTreeFeatureDestination("rest", content = {

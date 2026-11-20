@@ -15,6 +15,14 @@ MANIFESTS = (
     "docs/bio-parity/component-preview-jobs.json",
 )
 
+def read_render_report(report: Path) -> dict:
+    text = report.read_text(encoding="utf-8")
+    payload = re.search(r'(?m)^\{\s*"success"\s*:', text)
+    if not payload:
+        raise ValueError(f"Android CLI did not emit a preview result in {report}")
+    data, _ = json.JSONDecoder().raw_decode(text, payload.start())
+    return data
+
 
 def preview_methods(root: Path) -> dict[str, int]:
     methods = {}
@@ -58,7 +66,7 @@ def main() -> None:
     ]
     with (output / "render.json").open("w", encoding="utf-8") as report:
         subprocess.run(command, cwd=root, stdout=report, check=True)
-    data = json.loads((output / "render.json").read_text(encoding="utf-8"))
+    data = read_render_report(output / "render.json")
     present = Counter()
     seen_images = set()
     for result in data["results"]:
