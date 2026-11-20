@@ -11,6 +11,10 @@ on:
         description: Render all tracked Compose screenshots on the runner
         type: boolean
         default: false
+      verify_standalone:
+        description: Publish Android libraries to temporary Maven storage and build isolated consumers
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -23,7 +27,7 @@ jobs:
   build:
     name: Build Android and shared metadata
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: ${{ (inputs.render_previews || inputs.verify_standalone) && 60 || 30 }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -109,5 +113,22 @@ jobs:
         with:
           name: habitree-compose-previews
           path: ${{ runner.temp }}/habitree-compose/
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Verify independently exported Android projects
+        if: inputs.verify_standalone
+        run: bash tools/android/verify_standalone.sh "$RUNNER_TEMP/habitree-standalone"
+
+      - name: Upload standalone Android Maven artifacts
+        if: inputs.verify_standalone
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: habitree-standalone-android-maven
+          path: |
+            ${{ runner.temp }}/habitree-standalone/maven/
+            ${{ runner.temp }}/habitree-standalone/source-revision.txt
+            ${{ runner.temp }}/habitree-standalone/MAVEN-SHA256SUMS.txt
+            ${{ runner.temp }}/habitree-standalone/app/app/build/test-results/
           if-no-files-found: error
           retention-days: 7
