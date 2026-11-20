@@ -1,3 +1,27 @@
+app_language_title:
+  order: 1099
+  vi: Ngôn ngữ
+  en: Language
+  canonical: false
+  source: settings/src/main/java/com/mamxanh/app/feature/settings/presentation/SettingsScreen.kt
+app_language_description:
+  order: 1100
+  vi: Đổi ngôn ngữ ứng dụng. Tên và ghi chú bạn nhập được giữ nguyên.
+  en: Change the app language. Names and notes you entered stay unchanged.
+  canonical: false
+  source: settings/src/main/java/com/mamxanh/app/feature/settings/presentation/SettingsScreen.kt
+app_language_vi:
+  order: 1101
+  vi: Tiếng Việt
+  en: Tiếng Việt
+  canonical: false
+  source: settings/src/main/java/com/mamxanh/app/feature/settings/presentation/SettingsScreen.kt
+app_language_en:
+  order: 1102
+  vi: English
+  en: English
+  canonical: false
+  source: settings/src/main/java/com/mamxanh/app/feature/settings/presentation/SettingsScreen.kt
 copy_luu_tuy_chon_3847ca:
   order: 119
   vi: Lưu tùy chọn
@@ -72,3 +96,184 @@ copy_xuat_chan_doan_9d86ed:
   en: Export diagnostics
   canonical: false
   source: settings/src/main/java/com/mamxanh/app/feature/settings/presentation/BackupScreen.kt
+data_title:
+  order: 1103
+  vi: Dữ liệu & ứng dụng
+  en: Data & app
+  canonical: false
+  source: app/src/debug/java/com/mamxanh/app/presentation/ui/DataSettingsScreen.kt
+data_back:
+  order: 1104
+  vi: Quay lại tùy chọn
+  en: Back to settings
+  canonical: false
+  source: app/src/debug/java/com/mamxanh/app/presentation/ui/DataSettingsScreen.kt
+data_backup:
+  order: 1105
+  vi: Sao lưu
+  en: Backup
+  canonical: false
+  source: app/src/debug/java/com/mamxanh/app/presentation/ui/DataSettingsScreen.kt
+data_export:
+  order: 1106
+  vi: Xuất tệp
+  en: Export file
+  canonical: false
+  source: app/src/debug/java/com/mamxanh/app/presentation/ui/DataSettingsScreen.kt
+data_import:
+  order: 1107
+  vi: Khôi phục
+  en: Restore
+  canonical: false
+  source: app/src/debug/java/com/mamxanh/app/presentation/ui/DataSettingsScreen.kt
+data_recover:
+  order: 1108
+  vi: Bản an toàn gần nhất
+  en: Latest safety copy
+  canonical: false
+  source: app/src/debug/java/com/mamxanh/app/presentation/ui/DataSettingsScreen.kt
+data_warning:
+  order: 1109
+  vi: Bản sao không mã hóa, có thể chứa lịch sử và ghi chú riêng tư. Chỉ chia sẻ với người bạn tin cậy.
+  en: Backups are unencrypted and may contain private history and notes. Share only with people you trust.
+  canonical: false
+  source: app/src/debug/java/com/mamxanh/app/presentation/ui/DataSettingsScreen.kt
+data_replace:
+  order: 1110
+  vi: Thay toàn bộ dữ liệu
+  en: Replace all data
+  canonical: false
+  source: app/src/debug/java/com/mamxanh/app/presentation/ui/DataSettingsScreen.kt
+data_replace_warning:
+  order: 1111
+  vi: Dữ liệu hiện tại sẽ được thay thế, không gộp hai khu vườn. Một bản an toàn được lưu trên thiết bị trước khi thay. Cây đã chết có thể trở lại trạng thái cũ nếu bản sao có trước thời điểm đó.
+  en: Current data will be replaced, without merging gardens. A local safety copy is saved first. A dead tree may return to an earlier state if the backup predates its death.
+  canonical: false
+  source: app/src/debug/java/com/mamxanh/app/presentation/ui/DataSettingsScreen.kt
+data_confirm:
+  order: 1112
+  vi: Xác nhận thay thế
+  en: Confirm replacement
+  canonical: false
+  source: app/src/debug/java/com/mamxanh/app/presentation/ui/DataSettingsScreen.kt
+data_cancel:
+  order: 1113
+  vi: Hủy
+  en: Cancel
+  canonical: false
+  source: app/src/debug/java/com/mamxanh/app/presentation/ui/DataSettingsScreen.kt
+data_success:
+  order: 1114
+  vi: Đã hoàn tất
+  en: Completed
+  canonical: false
+  source: app/src/debug/java/com/mamxanh/app/presentation/ui/DataSettingsScreen.kt
+data_error:
+  order: 1115
+  vi: Không thể xử lý tệp. Dữ liệu hiện tại được giữ nguyên; hãy kiểm tra tệp, dung lượng và quyền truy cập.
+  en: Unable to process file. Existing data is preserved; check the file, free space and access permission.
+  canonical: false
+  source: app/src/debug/java/com/mamxanh/app/presentation/ui/DataSettingsScreen.kt
+data_counts:
+  order: 1116
+  vi: '{tasks} việc · {trees} cây · {completions} lượt hoàn thành'
+  en: '{tasks} tasks · {trees} trees · {completions} completions'
+  canonical: false
+  source: app/src/debug/java/com/mamxanh/app/presentation/ui/DataSettingsScreen.kt
+  placeholders:
+    tasks: integer
+    trees: integer
+    completions: integer
+data_created:
+  order: 1117
+  vi: 'Bản sao: {created_at} · ứng dụng {app_version}'
+  en: 'Backup: {created_at} · app {app_version}'
+  canonical: false
+  source: app/src/debug/java/com/mamxanh/app/presentation/ui/DataSettingsScreen.kt
+  placeholders:
+    created_at: string
+    app_version: string
+data_size:
+  order: 1118
+  vi: 'Dữ liệu cục bộ: {size_kib} KB'
+  en: 'Local data: {size_kib} KB'
+  canonical: false
+  source: app/src/debug/java/com/mamxanh/app/presentation/ui/DataSettingsScreen.kt
+  placeholders:
+    size_kib: string
+data_clear:
+  order: 1119
+  vi: Xóa dữ liệu
+  en: Clear data
+  canonical: false
+  source: app/src/debug/java/com/mamxanh/app/presentation/ui/DataSettingsScreen.kt
+data_clear_warning:
+  order: 1120
+  vi: Xóa toàn bộ khu vườn và bắt đầu lại? Bạn có thể xuất bản sao trước.
+  en: Clear this garden and start again? You can export a backup first.
+  canonical: false
+  source: app/src/debug/java/com/mamxanh/app/presentation/ui/DataSettingsScreen.kt
+data_clear_again:
+  order: 1121
+  vi: Xác nhận xóa lần cuối
+  en: Confirm final deletion
+  canonical: false
+  source: app/src/debug/java/com/mamxanh/app/presentation/ui/DataSettingsScreen.kt
+data_about:
+  order: 1122
+  vi: Ứng dụng & riêng tư
+  en: App & privacy
+  canonical: false
+  source: app/src/debug/java/com/mamxanh/app/presentation/ui/DataSettingsScreen.kt
+data_privacy:
+  order: 1123
+  vi: Không cần tài khoản. Dữ liệu chơi chính lưu trên thiết bị; tệp sao lưu do bạn chọn nơi lưu. Thông báo là tùy chọn. Bản an toàn cục bộ có thể chứa lịch sử; gỡ ứng dụng sẽ xóa bản này.
+  en: No account required. Primary gameplay data stays on this device; you choose where backup files are saved. Notifications are optional. The local safety copy may contain history and is removed on uninstall.
+  canonical: false
+  source: app/src/debug/java/com/mamxanh/app/presentation/ui/DataSettingsScreen.kt
+data_policy:
+  order: 1124
+  vi: Ngày mới tính theo giờ địa phương; cây giữ múi giờ lúc gieo. Tiến độ cây hiển thị phần trăm. Không có âm thanh đang phát; giảm chuyển động trong Tùy chọn.
+  en: Days reset in local time; trees retain their planting timezone. Tree progress uses percentages. No sound is currently played; reduced motion is available in Settings.
+  canonical: false
+  source: app/src/debug/java/com/mamxanh/app/presentation/ui/DataSettingsScreen.kt
+data_accessibility:
+  order: 1125
+  vi: Cỡ chữ dùng thiết lập hệ thống. Nút có vùng chạm tối thiểu 48 dp; trạng thái có chữ và biểu tượng.
+  en: Text size follows system settings. Controls retain at least 48 dp touch targets; states include text and icons.
+  canonical: false
+  source: app/src/debug/java/com/mamxanh/app/presentation/ui/DataSettingsScreen.kt
+data_version:
+  order: 1126
+  vi: Phiên bản {version} · mã {build} · lược đồ {schema}
+  en: Version {version} · build {build} · schema {schema}
+  canonical: false
+  source: app/src/debug/java/com/mamxanh/app/presentation/ui/DataSettingsScreen.kt
+  placeholders:
+    version: string
+    build: integer
+    schema: integer
+data_licenses:
+  order: 1127
+  vi: Mã nguồn mở & giấy phép
+  en: Open source & licenses
+  canonical: false
+  source: app/src/debug/java/com/mamxanh/app/presentation/ui/DataSettingsScreen.kt
+data_diagnostics:
+  order: 1128
+  vi: Xuất chẩn đoán
+  en: Export diagnostics
+  canonical: false
+  source: app/src/debug/java/com/mamxanh/app/presentation/ui/DataSettingsScreen.kt
+data_diagnostics_note:
+  order: 1129
+  vi: Chỉ xuất phiên bản, API Android, dung lượng và số dòng; không gồm tên việc, ghi chú, số dư hay trạng thái cây riêng tư.
+  en: Exports version, Android API, size and row counts only; excludes task names, notes, balance and private tree state.
+  canonical: false
+  source: app/src/debug/java/com/mamxanh/app/presentation/ui/DataSettingsScreen.kt
+data_safety_note:
+  order: 1130
+  vi: Khôi phục bản an toàn sẽ thay dữ liệu hiện tại. Hãy xuất bản sao hiện tại trước nếu muốn giữ cả hai.
+  en: Recovering the safety copy replaces current data. Export current data first to keep both.
+  canonical: false
+  source: app/src/debug/java/com/mamxanh/app/presentation/ui/DataSettingsScreen.kt

@@ -1123,4 +1123,37 @@
     <string name="route_more" formatted="false">More</string>
     <string name="tab_paused" formatted="false">Paused</string>
     <string name="choose_weekdays" formatted="false">Choose days</string>
+    <string name="app_name" formatted="false">HabiTree</string>
+    <string name="app_language_title" formatted="false">Language</string>
+    <string name="app_language_description" formatted="false">Change the app language. Names and notes you entered stay unchanged.</string>
+    <string name="app_language_vi" formatted="false">Tiếng Việt</string>
+    <string name="app_language_en" formatted="false">English</string>
+    <string name="data_title" formatted="false">Data &amp; app</string>
+    <string name="data_back" formatted="false">Back to settings</string>
+    <string name="data_backup" formatted="false">Backup</string>
+    <string name="data_export" formatted="false">Export file</string>
+    <string name="data_import" formatted="false">Restore</string>
+    <string name="data_recover" formatted="false">Latest safety copy</string>
+    <string name="data_warning" formatted="false">Backups are unencrypted and may contain private history and notes. Share only with people you trust.</string>
+    <string name="data_replace" formatted="false">Replace all data</string>
+    <string name="data_replace_warning" formatted="false">Current data will be replaced, without merging gardens. A local safety copy is saved first. A dead tree may return to an earlier state if the backup predates its death.</string>
+    <string name="data_confirm" formatted="false">Confirm replacement</string>
+    <string name="data_cancel" formatted="false">Cancel</string>
+    <string name="data_success" formatted="false">Completed</string>
+    <string name="data_error" formatted="false">Unable to process file. Existing data is preserved; check the file, free space and access permission.</string>
+    <string name="data_counts">%1$d tasks · %2$d trees · %3$d completions</string>
+    <string name="data_created">Backup: %1$s · app %2$s</string>
+    <string name="data_size">Local data: %1$s KB</string>
+    <string name="data_clear" formatted="false">Clear data</string>
+    <string name="data_clear_warning" formatted="false">Clear this garden and start again? You can export a backup first.</string>
+    <string name="data_clear_again" formatted="false">Confirm final deletion</string>
+    <string name="data_about" formatted="false">App &amp; privacy</string>
+    <string name="data_privacy" formatted="false">No account required. Primary gameplay data stays on this device; you choose where backup files are saved. Notifications are optional. The local safety copy may contain history and is removed on uninstall.</string>
+    <string name="data_policy" formatted="false">Days reset in local time; trees retain their planting timezone. Tree progress uses percentages. No sound is currently played; reduced motion is available in Settings.</string>
+    <string name="data_accessibility" formatted="false">Text size follows system settings. Controls retain at least 48 dp touch targets; states include text and icons.</string>
+    <string name="data_version">Version %1$s · build %2$d · schema %3$d</string>
+    <string name="data_licenses" formatted="false">Open source &amp; licenses</string>
+    <string name="data_diagnostics" formatted="false">Export diagnostics</string>
+    <string name="data_diagnostics_note" formatted="false">Exports version, Android API, size and row counts only; excludes task names, notes, balance and private tree state.</string>
+    <string name="data_safety_note" formatted="false">Recovering the safety copy replaces current data. Export current data first to keep both.</string>
 </resources>

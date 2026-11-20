@@ -1,3 +1,9 @@
+app_name:
+  order: 1098
+  vi: HabiTree
+  en: HabiTree
+  canonical: false
+  source: app/src/main/AndroidManifest.xml
 copy_hoc_tap_a51516:
   order: 0
   vi: Học tập
