@@ -1,6 +1,6 @@
 package com.mamxanh.app.feature.tasks.presentation.dialog
 
-import com.mamxanh.app.presentation.ui.design.AppDimensions
+import com.mamxanh.app.core.components.design.AppDimensions
 
 import com.mamxanh.shared.localization.TextKey
 
@@ -16,11 +16,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.mamxanh.app.presentation.ui.components.*
+import com.mamxanh.app.core.components.components.*
 import com.mamxanh.shared.model.Balance
 import com.mamxanh.shared.model.clockLabel
 import com.mamxanh.app.feature.tasks.domain.model.TaskConfig
-import com.mamxanh.app.feature.tasks.presentation.message
+import com.mamxanh.app.feature.tasks.presentation.ui.form.message
 
 @Composable
 fun AddTaskDialog(onDismiss: ()->Unit,onSave: (TaskConfig)->Unit,
@@ -48,7 +48,7 @@ fun AddTaskDialog(onDismiss: ()->Unit,onSave: (TaskConfig)->Unit,
                         if(error.isEmpty())onSave(c)
 
     },cancelLabel=AppText.text(TextKey.CopyHuy74fcd3)) {
-                    Text(AppText.text(TextKey.CopyViecMoiLaTuyChonHomNayLichMoiTuNgayMai984ba2),color=com.mamxanh.app.presentation.ui.Muted)
+                    Text(AppText.text(TextKey.CopyViecMoiLaTuyChonHomNayLichMoiTuNgayMai984ba2),color=com.mamxanh.app.core.components.Muted)
                     TaskInput(values[0],{update(0,it.take(100))},AppText.text(TextKey.CopyTenViec1100312f5b),Modifier.fillMaxWidth())
                     TaskChoices(AppText.text(TextKey.CopyLoai3bfbf9),listOf("HABIT" to AppText.text(TextKey.CopyThoiQuenE6e6e8),"DAILY" to AppText.text(TextKey.CopyHangNgay545b54),"TODO" to AppText.text(TextKey.CopyMotLanCa8e62)),values[1]){update(1,it)}
                     TaskChoices(AppText.text(TextKey.CopyNhomCd7a71),listOf(AppText.canonical(TextKey.CopyHocTapA51516),AppText.canonical(TextKey.CopySucKhoe071df7),AppText.canonical(TextKey.CopyNepSong8d1a98),AppText.canonical(TextKey.CopyViecNha126ef3),AppText.canonical(TextKey.CopyCaNhan983dcc)).map{it to AppText.category(it)},values[2]){update(2,it)}
@@ -86,7 +86,7 @@ fun AddTaskDialog(onDismiss: ()->Unit,onSave: (TaskConfig)->Unit,
 @Composable
 private fun TaskInput(value:String,onValueChange:(String)->Unit,label:String,modifier:Modifier) {
     Column {
-        Text(label,color=com.mamxanh.app.presentation.ui.Deep)
+        Text(label,color=com.mamxanh.app.core.components.Deep)
         GardenTextField(value,onValueChange,label,modifier)
     }
 }
@@ -106,4 +106,4 @@ private fun TaskChoices(title: String,options: List<Pair<String,String>>,value: 
     }
 }
 @androidx.compose.ui.tooling.preview.Preview(widthDp=414,heightDp=1100,device="spec:width=414dp,height=1100dp,dpi=160")
-@Composable fun TaskFormWebDesignPreview(){com.mamxanh.app.presentation.ui.MamXanhPreviewTheme{AddTaskDialog({},{})}}
+@Composable fun TaskFormWebDesignPreview(){com.mamxanh.app.core.components.MamXanhPreviewTheme{AddTaskDialog({},{})}}

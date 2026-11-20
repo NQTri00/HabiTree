@@ -8,7 +8,7 @@ for file in (ROOT/'app/src/main/java/com/mamxanh/app/presentation/bio').glob('*.
         if any(value in line for value in ['Locale(', 'DateTimeFormatter', 'SimpleDateFormat', '"CN"', '"N"', '"T$']):
             print(f'{file.name}:{index}: {line[:1300]}')
 
-tokens=(ROOT/'core-ui/src/main/java/com/mamxanh/app/presentation/ui/design/AppColors.kt').read_text(encoding='utf-8')
+tokens=(ROOT/'core-ui/src/main/java/com/mamxanh/app/core/components/design/AppColors.kt').read_text(encoding='utf-8')
 colors=dict(re.findall(r'val (\w+) = Color\(0x([A-Fa-f0-9]+)\)',tokens))
 issues=[]
 for file in ROOT.glob('*/src/main/**/*.kt'):

@@ -1,4 +1,6 @@
 package com.mamxanh.app.presentation.ui
+import com.mamxanh.app.core.components.MamXanhPreviewTheme
+import com.mamxanh.app.feature.shop.presentation.ui.shop.ShopSeedDetailDialogPreview
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
@@ -6,20 +8,20 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import com.mamxanh.app.feature.home.domain.model.HomeDashboard
 import com.mamxanh.app.feature.home.domain.model.HomeTree
-import com.mamxanh.app.feature.home.presentation.HomeUiState
+import com.mamxanh.app.feature.home.presentation.ui.home.HomeUiState
 import com.mamxanh.app.feature.garden.domain.model.Garden
 import com.mamxanh.app.feature.garden.domain.model.Tree
-import com.mamxanh.app.feature.garden.presentation.GardenUiState
+import com.mamxanh.app.feature.garden.presentation.ui.garden.GardenUiState
 import com.mamxanh.app.feature.tasks.domain.model.Task
 import com.mamxanh.shared.localization.AppText
 import com.mamxanh.shared.localization.TextKey
 import com.mamxanh.shared.feature.tasks.domain.model.today
-import com.mamxanh.app.feature.tasks.presentation.TasksUiState
+import com.mamxanh.app.feature.tasks.presentation.ui.list.TasksUiState
 import com.mamxanh.app.feature.shop.domain.model.ShopWallet
-import com.mamxanh.app.feature.shop.presentation.ShopUiState
+import com.mamxanh.app.feature.shop.presentation.ui.shop.ShopUiState
 import com.mamxanh.app.feature.stats.domain.model.StatisticsSummary
-import com.mamxanh.app.feature.stats.presentation.StatsUiState
-import com.mamxanh.app.feature.tree.presentation.TreeUiState
+import com.mamxanh.app.feature.stats.presentation.ui.stats.StatsUiState
+import com.mamxanh.app.feature.tree.presentation.ui.detail.TreeUiState
 
 /** Same phone, state and shell across all six visual comparisons. */
 class ReferenceRoutes : PreviewParameterProvider<AppUiState> {
@@ -90,7 +92,7 @@ fun ReferenceAddTaskCompositionPreview() {
     device = "spec:width=360dp,height=800dp,dpi=160")
 @Composable
 fun ReferenceSeedCompositionPreview() {
-    com.mamxanh.app.feature.shop.presentation.ShopSeedDetailDialogPreview(background = {
+    ShopSeedDetailDialogPreview(background = {
         ReferenceWorld(AppUiState(destination = AppDestination.SHOP))
     })
 }
@@ -99,7 +101,7 @@ fun ReferenceSeedCompositionPreview() {
     device = "spec:width=360dp,height=800dp,dpi=160")
 @Composable
 fun ReferencePlantingCompositionPreview() {
-    com.mamxanh.app.feature.garden.presentation.PlantingDialogPreview(background = {
+    com.mamxanh.app.feature.garden.presentation.ui.garden.PlantingDialogPreview(background = {
         ReferenceWorld(AppUiState(destination = AppDestination.GARDEN))
     })
 }

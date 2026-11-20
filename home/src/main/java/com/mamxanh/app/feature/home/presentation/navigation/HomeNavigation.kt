@@ -5,12 +5,12 @@ import androidx.compose.runtime.compositionLocalOf
 import com.mamxanh.app.core.presentation.navigation.HabiTreeFeatureDestination
 import com.mamxanh.app.core.presentation.navigation.HabiTreeFeatureModule
 import com.mamxanh.app.core.presentation.navigation.HabiTreeNavKey
-import com.mamxanh.app.feature.home.presentation.BioHomeScreen
-import com.mamxanh.app.feature.home.presentation.HomeScreenAction
-import com.mamxanh.app.feature.home.presentation.HomeScreenState
-import com.mamxanh.app.feature.home.presentation.OnboardingAction
-import com.mamxanh.app.feature.home.presentation.OnboardingDisplay
-import com.mamxanh.app.feature.home.presentation.OnboardingScreen
+import com.mamxanh.app.feature.home.presentation.ui.home.BioHomeScreen
+import com.mamxanh.app.feature.home.presentation.ui.home.HomeScreenAction
+import com.mamxanh.app.feature.home.presentation.ui.home.HomeScreenState
+import com.mamxanh.app.feature.home.presentation.ui.onboarding.OnboardingAction
+import com.mamxanh.app.feature.home.presentation.ui.onboarding.OnboardingDisplay
+import com.mamxanh.app.feature.home.presentation.ui.onboarding.OnboardingScreen
 import kotlinx.serialization.Serializable
 
 @Serializable

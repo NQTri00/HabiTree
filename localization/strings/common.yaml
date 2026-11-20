@@ -3132,43 +3132,43 @@ copy_mam_xanh_moi_ngay_775c85:
   vi: Mầm xanh mỗi ngày
   en: A little growth every day
   canonical: false
-  source: core-ui/src/main/java/com/mamxanh/app/presentation/ui/MamXanhPreviewTheme.kt
+  source: core-ui/src/main/java/com/mamxanh/app/core/components/MamXanhPreviewTheme.kt
 copy_bom_cfb1a6:
   order: 518
   vi: Bơm
   en: Pump
   canonical: false
-  source: core-ui/src/main/java/com/mamxanh/app/presentation/ui/components/GardenArtwork.kt
+  source: core-ui/src/main/java/com/mamxanh/app/core/components/components/GardenArtwork.kt
 copy_nhat_ky_khu_vuon_fe206c:
   order: 519
   vi: Nhật ký khu vườn
   en: Garden journal
   canonical: false
-  source: core-ui/src/main/java/com/mamxanh/app/presentation/ui/components/GardenBotanicalFrame.kt
+  source: core-ui/src/main/java/com/mamxanh/app/core/components/components/GardenBotanicalFrame.kt
 copy_khu_vuon_cua_ban_c08654:
   order: 520
   vi: Khu vườn của bạn
   en: Your garden
   canonical: false
-  source: core-ui/src/main/java/com/mamxanh/app/presentation/ui/components/GardenPageHeader.kt
+  source: core-ui/src/main/java/com/mamxanh/app/core/components/components/GardenPageHeader.kt
 copy_mam_xanh_dang_lon_len_tung_ngay_6feecd:
   order: 521
   vi: Mầm xanh đang lớn lên từng ngày.
   en: Your little sprouts grow each day.
   canonical: false
-  source: core-ui/src/main/java/com/mamxanh/app/presentation/ui/components/GardenPageHeader.kt
+  source: core-ui/src/main/java/com/mamxanh/app/core/components/components/GardenPageHeader.kt
 copy_vuon_uom_cd0b43:
   order: 522
   vi: Vườn ươm
   en: Nursery
   canonical: false
-  source: core-ui/src/main/java/com/mamxanh/app/presentation/ui/components/GardenPaintedControls.kt
+  source: core-ui/src/main/java/com/mamxanh/app/core/components/components/GardenPaintedControls.kt
 copy_gieo_mot_viec_nho_227fcc:
   order: 523
   vi: Gieo một việc nhỏ
   en: Plant a little task
   canonical: false
-  source: core-ui/src/main/java/com/mamxanh/app/presentation/ui/components/GardenPaintedControls.kt
+  source: core-ui/src/main/java/com/mamxanh/app/core/components/components/GardenPaintedControls.kt
 copy_chon_0_85cbcf:
   order: 524
   vi: Chọn {name}
@@ -3176,13 +3176,13 @@ copy_chon_0_85cbcf:
   placeholders:
     name: string
   canonical: false
-  source: core-ui/src/main/java/com/mamxanh/app/presentation/ui/components/MintDetailComponents.kt
+  source: core-ui/src/main/java/com/mamxanh/app/core/components/components/MintDetailComponents.kt
 copy_da_64a504:
   order: 525
   vi: Đã
   en: Done
   canonical: false
-  source: core-ui/src/main/java/com/mamxanh/app/presentation/ui/components/MintFeedback.kt
+  source: core-ui/src/main/java/com/mamxanh/app/core/components/components/MintFeedback.kt
 copy_nhac_nhe_651eaf:
   order: 820
   vi: Nhắc nhẹ
@@ -4715,7 +4715,7 @@ copy_500_ml_120_xu_cf988e:
   vi: 💧 500 ml  ·  🪙 120 xu
   en: 💧 500 ml  ·  🪙 120 coins
   canonical: false
-  source: core-ui/src/main/java/com/mamxanh/app/presentation/ui/components/GardenRichText.kt
+  source: core-ui/src/main/java/com/mamxanh/app/core/components/components/GardenRichText.kt
 copy_0_xu_279a5c:
   order: 1062
   vi: 🪙 {coins} xu
@@ -4723,7 +4723,7 @@ copy_0_xu_279a5c:
   placeholders:
     coins: integer
   canonical: false
-  source: core-ui/src/main/java/com/mamxanh/app/presentation/ui/components/MintComponents.kt
+  source: core-ui/src/main/java/com/mamxanh/app/core/components/components/MintComponents.kt
 copy_0_xu_1_xu_3d5c4b:
   order: 1069
   vi: +{earned} xu / {limit} xu

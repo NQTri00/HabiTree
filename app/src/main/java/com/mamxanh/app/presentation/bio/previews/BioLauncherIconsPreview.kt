@@ -1,6 +1,6 @@
 package com.mamxanh.app.presentation.bio
 
-import com.mamxanh.app.presentation.ui.design.*
+import com.mamxanh.app.core.components.design.*
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -15,8 +15,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.mamxanh.app.presentation.ui.design.AppDimensions
-import com.mamxanh.app.presentation.ui.design.AppTypography
+import com.mamxanh.app.core.components.design.AppDimensions
+import com.mamxanh.app.core.components.design.AppTypography
 import com.mamxanh.shared.localization.AppLanguage
 import com.mamxanh.shared.localization.AppText
 

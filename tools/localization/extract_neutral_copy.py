@@ -7,7 +7,7 @@ from generate import generate
 catalog=load_catalog()
 targets={
     'app/src/main/java/com/mamxanh/app/presentation/ui/DataSettingsScreen.kt':('legal_technology_credits',lambda value:value.startswith('Kotlin · AndroidX')),
-    'tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt':('date_iso_placeholder',lambda value:value=='YYYY-MM-DD'),
+    'tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/ui/engagement/EngagementScreens.kt':('date_iso_placeholder',lambda value:value=='YYYY-MM-DD'),
 }
 for relative,(key,predicate) in targets.items():
     file=ROOT/relative;text=file.read_text(encoding='utf-8-sig');edits=[]

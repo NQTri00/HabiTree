@@ -2,19 +2,19 @@ package com.mamxanh.app.feature.stats.presentation.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.compositionLocalOf
-import com.mamxanh.app.feature.stats.presentation.StatisticsLink
-import com.mamxanh.app.feature.stats.presentation.StatisticsScreen
-import com.mamxanh.app.feature.stats.presentation.StatisticsScreenState
+import com.mamxanh.app.feature.stats.presentation.ui.stats.StatisticsLink
+import com.mamxanh.app.feature.stats.presentation.ui.stats.StatisticsScreen
+import com.mamxanh.app.feature.stats.presentation.ui.stats.StatisticsScreenState
 import com.mamxanh.app.core.presentation.navigation.HabiTreeFeatureDestination
 import com.mamxanh.app.core.presentation.navigation.HabiTreeFeatureModule
 import com.mamxanh.app.core.presentation.navigation.HabiTreeNavKey
-import com.mamxanh.app.feature.stats.presentation.AchievementDisplay
-import com.mamxanh.app.feature.stats.presentation.AchievementsScreen
-import com.mamxanh.app.feature.stats.presentation.TimelineMemory
-import com.mamxanh.app.feature.stats.domain.TimelineRelated
-import com.mamxanh.app.feature.stats.presentation.TimelineScreen
-import com.mamxanh.app.feature.stats.presentation.WeeklyReviewDisplay
-import com.mamxanh.app.feature.stats.presentation.WeeklyReviewScreen
+import com.mamxanh.app.feature.stats.presentation.ui.achievements.AchievementDisplay
+import com.mamxanh.app.feature.stats.presentation.ui.achievements.AchievementsScreen
+import com.mamxanh.app.feature.stats.presentation.ui.timeline.TimelineMemory
+import com.mamxanh.app.feature.stats.domain.model.TimelineRelated
+import com.mamxanh.app.feature.stats.presentation.ui.timeline.TimelineScreen
+import com.mamxanh.app.feature.stats.presentation.ui.review.WeeklyReviewDisplay
+import com.mamxanh.app.feature.stats.presentation.ui.review.WeeklyReviewScreen
 import kotlinx.serialization.Serializable
 
 @Serializable

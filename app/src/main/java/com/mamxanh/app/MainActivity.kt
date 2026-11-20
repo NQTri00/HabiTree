@@ -6,7 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.SystemBarStyle
-import com.mamxanh.app.feature.tasks.presentation.TasksViewModel
+import com.mamxanh.app.feature.tasks.presentation.ui.list.TasksViewModel
 import com.mamxanh.app.presentation.ui.MamXanhApp
 import org.koin.androidx.compose.koinViewModel
 
@@ -17,7 +17,7 @@ class MainActivity : ComponentActivity() {
     }
 
     override fun attachBaseContext(newBase:android.content.Context){
-        super.attachBaseContext(com.mamxanh.app.presentation.ui.localization.AppLanguageController.wrap(newBase))
+        super.attachBaseContext(com.mamxanh.app.core.components.localization.AppLanguageController.wrap(newBase))
     }
     private var incomingEntity by mutableStateOf<Long?>(null)
     override fun onNewIntent(intent:android.content.Intent) {
@@ -40,7 +40,7 @@ class MainActivity : ComponentActivity() {
         if (android.os.Build.VERSION.SDK_INT >= 29) window.isNavigationBarContrastEnforced = false
         setContent {
             val tasksVm: TasksViewModel = koinViewModel()
-            val engagementVm: com.mamxanh.app.feature.tasks.presentation.EngagementViewModel = koinViewModel()
+            val engagementVm: com.mamxanh.app.feature.tasks.presentation.ui.engagement.EngagementViewModel = koinViewModel()
             MamXanhApp(tasksVm,engagementVm,
                 incomingEntity=incomingEntity,onIncomingHandled={incomingEntity=null})
         }

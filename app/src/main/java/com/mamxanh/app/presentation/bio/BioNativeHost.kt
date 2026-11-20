@@ -1,6 +1,6 @@
 package com.mamxanh.app.presentation.bio
 
-import com.mamxanh.app.presentation.ui.design.bioLocale
+import com.mamxanh.app.core.components.design.bioLocale
 import com.mamxanh.app.core.presentation.navigation.HabiTreeRouteRegistry
 import org.koin.compose.koinInject
 
@@ -24,22 +24,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import com.mamxanh.app.BuildConfig
 import com.mamxanh.app.data.BackupService
-import com.mamxanh.app.feature.catalog.domain.GardenCollectionRepository
-import com.mamxanh.app.feature.garden.domain.GardenRepository
-import com.mamxanh.app.feature.garden.domain.availablePlantingPlots
-import com.mamxanh.app.feature.inventory.domain.InventoryRepository
-import com.mamxanh.app.feature.home.domain.HomeTreeSelection
-import com.mamxanh.app.feature.home.domain.OnboardingRepository
-import com.mamxanh.app.feature.tree.domain.TreeRepository
-import com.mamxanh.app.feature.settings.domain.SaveReminderSettingsUseCase
+import com.mamxanh.app.feature.catalog.domain.repository.GardenCollectionRepository
+import com.mamxanh.app.feature.garden.domain.usecase.GardenRepository
+import com.mamxanh.app.feature.garden.domain.usecase.availablePlantingPlots
+import com.mamxanh.app.feature.inventory.domain.repository.InventoryRepository
+import com.mamxanh.app.feature.home.domain.usecase.HomeTreeSelection
+import com.mamxanh.app.feature.home.domain.repository.OnboardingRepository
+import com.mamxanh.app.feature.tree.domain.repository.TreeRepository
+import com.mamxanh.app.feature.settings.domain.usecase.SaveReminderSettingsUseCase
 import com.mamxanh.app.feature.settings.presentation.BackupImportSummary
 import com.mamxanh.app.feature.settings.presentation.NotificationPermissionResult
-import com.mamxanh.app.feature.shop.domain.ShopRepository
-import com.mamxanh.app.feature.stats.domain.LoadGardenStatistics
-import com.mamxanh.app.feature.stats.domain.SaveJournalNoteUseCase
-import com.mamxanh.app.feature.tasks.domain.FocusSessionCommands
-import com.mamxanh.app.feature.tasks.domain.TaskRepository
-import com.mamxanh.app.feature.tasks.presentation.focusSessionTitle
+import com.mamxanh.app.feature.shop.domain.repository.ShopRepository
+import com.mamxanh.app.feature.stats.domain.usecase.LoadGardenStatistics
+import com.mamxanh.app.feature.stats.domain.usecase.SaveJournalNoteUseCase
+import com.mamxanh.app.feature.tasks.domain.repository.FocusSessionCommands
+import com.mamxanh.app.feature.tasks.domain.repository.TaskRepository
+import com.mamxanh.app.feature.tasks.presentation.ui.focus.focusSessionTitle
 import com.mamxanh.shared.data.GameStorage
 import com.mamxanh.shared.data.sql.*
 import com.mamxanh.shared.model.*
@@ -182,7 +182,7 @@ private fun nativeWorld(
     }
     ui.execute={command->
         when(command.action){
-            "language"->com.mamxanh.app.presentation.ui.localization.AppLanguageController.select(context,command.values["tag"].orEmpty())
+            "language"->com.mamxanh.app.core.components.localization.AppLanguageController.select(context,command.values["tag"].orEmpty())
             "pin" -> homeSelection.save(command.values["id"].orEmpty())
             "export"->export.launch("MamXanh-${System.currentTimeMillis()}.mamxanh")
             "diagnostics"->diagnostics.launch("MamXanh-diagnostics.txt")

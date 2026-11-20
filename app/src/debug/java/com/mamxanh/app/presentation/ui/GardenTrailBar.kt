@@ -1,8 +1,12 @@
 package com.mamxanh.app.presentation.ui
+import com.mamxanh.app.core.components.Cream
+import com.mamxanh.app.core.components.Green
+import com.mamxanh.app.core.components.MamXanhPreviewTheme
+import com.mamxanh.app.core.components.Muted
 
-import com.mamxanh.app.presentation.ui.design.AppColors
-import com.mamxanh.app.presentation.ui.design.AppDimensions
-import com.mamxanh.app.presentation.ui.design.AppTypography
+import com.mamxanh.app.core.components.design.AppColors
+import com.mamxanh.app.core.components.design.AppDimensions
+import com.mamxanh.app.core.components.design.AppTypography
 
 import com.mamxanh.shared.localization.TextKey
 
@@ -37,8 +41,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.mamxanh.app.presentation.ui.components.MintDepth
-import com.mamxanh.app.presentation.ui.components.mintDepth
+import com.mamxanh.app.core.components.components.MintDepth
+import com.mamxanh.app.core.components.components.mintDepth
 
 @Composable
 fun GardenTrailBar(selected: AppDestination, onNavigate: (AppDestination) -> Unit, modifier: Modifier = Modifier) {

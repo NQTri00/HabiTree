@@ -2,13 +2,13 @@ package com.mamxanh.app.presentation.bio
 
 import androidx.compose.ui.res.stringResource
 import com.mamxanh.core.ui.R
-import com.mamxanh.app.presentation.ui.design.*
+import com.mamxanh.app.core.components.design.*
 
-import com.mamxanh.app.presentation.ui.design.AppDimensions
-import com.mamxanh.app.feature.tasks.presentation.FocusDock
-import com.mamxanh.app.feature.tasks.presentation.FocusDockAction
-import com.mamxanh.app.feature.tasks.presentation.FocusDockState
-import com.mamxanh.app.feature.tasks.presentation.TaskFormField
+import com.mamxanh.app.core.components.design.AppDimensions
+import com.mamxanh.app.feature.tasks.presentation.ui.focus.FocusDock
+import com.mamxanh.app.feature.tasks.presentation.ui.focus.FocusDockAction
+import com.mamxanh.app.feature.tasks.presentation.ui.focus.FocusDockState
+import com.mamxanh.app.feature.tasks.presentation.ui.form.TaskFormField
 
 import com.mamxanh.shared.localization.TextKey
 

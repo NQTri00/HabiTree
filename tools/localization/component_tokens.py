@@ -2,8 +2,8 @@
 import re
 from catalog import ROOT
 
-package='com.mamxanh.app.presentation.ui.design'
-directory=ROOT/'core-ui/src/main/java/com/mamxanh/app/presentation/ui/design'
+package='com.mamxanh.app.core.components.design'
+directory=ROOT/'core-ui/src/main/java/com/mamxanh/app/core/components/design'
 radius_file=directory/'AppRadii.kt'
 radius=radius_file.read_text(encoding='utf-8');additions={}
 for file in ROOT.glob('*/src/main/**/*.kt'):

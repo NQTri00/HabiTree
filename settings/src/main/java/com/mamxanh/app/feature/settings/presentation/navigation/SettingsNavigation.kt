@@ -4,12 +4,12 @@ import androidx.compose.runtime.compositionLocalOf
 import com.mamxanh.app.core.presentation.navigation.HabiTreeFeatureDestination
 import com.mamxanh.app.core.presentation.navigation.HabiTreeFeatureModule
 import com.mamxanh.app.core.presentation.navigation.HabiTreeNavKey
-import com.mamxanh.app.feature.settings.presentation.BackupDisplay
-import com.mamxanh.app.feature.settings.presentation.BackupScreen
-import com.mamxanh.app.feature.settings.presentation.BackupScreenAction
-import com.mamxanh.app.feature.settings.presentation.SettingsDisplay
-import com.mamxanh.app.feature.settings.presentation.SettingsLink
-import com.mamxanh.app.feature.settings.presentation.SettingsScreen
+import com.mamxanh.app.feature.settings.presentation.ui.backup.BackupDisplay
+import com.mamxanh.app.feature.settings.presentation.ui.backup.BackupScreen
+import com.mamxanh.app.feature.settings.presentation.ui.backup.BackupScreenAction
+import com.mamxanh.app.feature.settings.presentation.ui.settings.SettingsDisplay
+import com.mamxanh.app.feature.settings.presentation.ui.settings.SettingsLink
+import com.mamxanh.app.feature.settings.presentation.ui.settings.SettingsScreen
 import kotlinx.serialization.Serializable
 
 @Serializable

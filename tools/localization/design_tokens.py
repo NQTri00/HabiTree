@@ -4,8 +4,8 @@ import re,json
 from catalog import ROOT
 from kotlin_literals import literals,_comment_end,_char_end
 
-PACKAGE='com.mamxanh.app.presentation.ui.design'
-TARGET=ROOT/'core-ui/src/main/java/com/mamxanh/app/presentation/ui/design'
+PACKAGE='com.mamxanh.app.core.components.design'
+TARGET=ROOT/'core-ui/src/main/java/com/mamxanh/app/core/components/design'
 
 def mask(source):
     chars=list(source);i=0

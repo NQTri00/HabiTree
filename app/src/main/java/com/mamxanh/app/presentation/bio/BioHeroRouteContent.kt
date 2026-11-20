@@ -1,9 +1,9 @@
 package com.mamxanh.app.presentation.bio
 
 import androidx.compose.runtime.Composable
-import com.mamxanh.app.feature.tree.presentation.TreeHero
-import com.mamxanh.app.feature.tree.presentation.TreeHeroAction
-import com.mamxanh.app.feature.tree.presentation.TreeHeroState
+import com.mamxanh.app.feature.tree.presentation.ui.detail.component.TreeHero
+import com.mamxanh.app.feature.tree.presentation.ui.detail.component.TreeHeroAction
+import com.mamxanh.app.feature.tree.presentation.ui.detail.component.TreeHeroState
 import org.json.JSONObject
 
 @Composable

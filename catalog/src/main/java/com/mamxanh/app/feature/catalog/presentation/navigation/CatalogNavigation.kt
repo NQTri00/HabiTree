@@ -6,10 +6,10 @@ import androidx.compose.ui.Modifier
 import com.mamxanh.app.core.presentation.navigation.HabiTreeFeatureDestination
 import com.mamxanh.app.core.presentation.navigation.HabiTreeFeatureModule
 import com.mamxanh.app.core.presentation.navigation.HabiTreeNavKey
-import com.mamxanh.app.feature.catalog.presentation.CollectionGoalDisplay
-import com.mamxanh.app.feature.catalog.presentation.EncyclopediaScreen
-import com.mamxanh.app.feature.catalog.presentation.SpeciesDisplay
-import com.mamxanh.app.feature.catalog.presentation.SpeciesScreen
+import com.mamxanh.app.feature.catalog.presentation.ui.encyclopedia.CollectionGoalDisplay
+import com.mamxanh.app.feature.catalog.presentation.ui.encyclopedia.EncyclopediaScreen
+import com.mamxanh.app.feature.catalog.presentation.model.SpeciesDisplay
+import com.mamxanh.app.feature.catalog.presentation.ui.species.SpeciesScreen
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

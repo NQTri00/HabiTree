@@ -2,7 +2,7 @@ package com.mamxanh.app
 
 import android.content.Context
 import androidx.test.platform.app.InstrumentationRegistry
-import com.mamxanh.app.feature.home.domain.HomeTreeSelection
+import com.mamxanh.app.feature.home.domain.usecase.HomeTreeSelection
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test

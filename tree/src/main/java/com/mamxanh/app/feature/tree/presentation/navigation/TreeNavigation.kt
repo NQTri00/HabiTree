@@ -5,9 +5,9 @@ import androidx.compose.runtime.compositionLocalOf
 import com.mamxanh.app.core.presentation.navigation.HabiTreeFeatureDestination
 import com.mamxanh.app.core.presentation.navigation.HabiTreeFeatureModule
 import com.mamxanh.app.core.presentation.navigation.HabiTreeNavKey
-import com.mamxanh.app.feature.tree.presentation.BioTreeScreen
-import com.mamxanh.app.feature.tree.presentation.TreeScreenAction
-import com.mamxanh.app.feature.tree.presentation.TreeScreenState
+import com.mamxanh.app.feature.tree.presentation.ui.detail.BioTreeScreen
+import com.mamxanh.app.feature.tree.presentation.ui.detail.TreeScreenAction
+import com.mamxanh.app.feature.tree.presentation.ui.detail.TreeScreenState
 import kotlinx.serialization.Serializable
 
 @Serializable

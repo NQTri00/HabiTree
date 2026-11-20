@@ -1,7 +1,7 @@
 package com.mamxanh.app.presentation.bio
 
 import com.mamxanh.app.core.presentation.navigation.HabiTreeNavKey
-import com.mamxanh.app.feature.stats.domain.TimelineRelated
+import com.mamxanh.app.feature.stats.domain.model.TimelineRelated
 import kotlinx.serialization.Serializable
 
 @Serializable

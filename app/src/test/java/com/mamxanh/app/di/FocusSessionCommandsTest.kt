@@ -1,12 +1,12 @@
 package com.mamxanh.app.di
 
 import com.mamxanh.app.core.domain.RepositoryResult
-import com.mamxanh.app.feature.tasks.domain.ActiveFocusSession
-import com.mamxanh.app.feature.tasks.domain.ActiveFocusState
-import com.mamxanh.app.feature.tasks.domain.FocusCommandResult
-import com.mamxanh.app.feature.tasks.domain.FocusControl
-import com.mamxanh.app.feature.tasks.domain.FocusSessionCommands
-import com.mamxanh.app.feature.tasks.domain.FocusSessionRepository
+import com.mamxanh.app.feature.tasks.domain.repository.ActiveFocusSession
+import com.mamxanh.app.feature.tasks.domain.repository.ActiveFocusState
+import com.mamxanh.app.feature.tasks.domain.repository.FocusCommandResult
+import com.mamxanh.app.feature.tasks.domain.repository.FocusControl
+import com.mamxanh.app.feature.tasks.domain.repository.FocusSessionCommands
+import com.mamxanh.app.feature.tasks.domain.repository.FocusSessionRepository
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test

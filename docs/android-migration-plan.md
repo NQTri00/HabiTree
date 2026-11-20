@@ -6,11 +6,15 @@
 - [x] **G02 · Establish the baseline.** Verified the clean checkout at `4cfc772` on `y-tuong/quangtri`. [Prior verification and implementation evidence](android-architecture-migration.md)
 - [x] **G03 · Audit the requirements.** The guide-to-check mapping identifies the source owners, acceptance checks, and evidence for each applicable guide. The interrupted local emulator attempt remains in the history. The hosted device results verify the navigation checks at `50b7398`.
 
-## Implementation and verification schedule
+## Job order and completion gates
 
-- Complete all available migration edits first. Group related moves, package declarations, imports, resources, and Gradle wiring. Use source inspection and Git diffs while editing.
-- Defer builds, automated tests, emulator runs, and Compose preview renders until implementation is integrated. Keep new Gradle jobs, suites, emulators, and preview renders queued until the remaining migration edits are integrated. Finish source review and record the revision before running the verification sequence.
-- After implementation, run the architecture gate, tests, APK build, and screen-by-screen comparisons sequentially. Reuse results from the same revision and rerun affected checks after fixes. Publish the matching verified source and APK.
+Only one job runs at a time. A job starts after every completion criterion in the previous job has evidence. Checkmarks record finished jobs and the revision or artifact that proves completion. A turn boundary leaves the active job unchanged.
+
+- [x] **1 · Move all Android files.** The local move inventory records 1,022 Android and shared source paths across 19 modules, including 221 relocations. All original paths resolve to one destination. Source review covered 281 changed Kotlin files and found that their bodies match the baseline after accounting for moved name references. The reviewed feature and Core Components imports resolve to current source packages. Android test callers and component preview manifest paths follow their owners. The move batch is still local.
+- [ ] **2 · Build the complete Android migration.** Use one revision containing all completed moves. Run the project-wide architecture gate and build the complete Android app and library targets, including the debug and verification APKs and Android test assemblies, in one scheduled build batch. Resolve build errors before starting the test job. Record the exact revision, successful target results and artifact checksums. Keep resource-heavy work on the hosted runner or on the permitted drives.
+- [ ] **3 · Run the complete Android verification suite.** Run the host suites and Android device scenarios against the built revision. Cover navigation and draft recovery, English and Vietnamese, prior saves and backup, notifications, onboarding, game flows, and installation and cold launch of the exact APK. Verify the standalone Gradle exports and pinned dependency resolution. Finish with the results and artifacts required by the applicable checklist items below.
+- [ ] **4 · Verify all screens and popups visually.** Render the complete preview inventory, including both languages and adaptive states, after the build and test jobs are finished. Compare the images to the approved web reference and inspect overlays on the phone surface. Record every discrepancy and its resolution. If a fix changes the tested revision, return to the relevant earlier job and complete it before resuming this job.
+- [ ] **5 · Deliver and close.** Generate the complete tracked-file hierarchy and prove its path coverage against Git. Publish the verified source and matching APK, checksums and visual evidence. Check the complete plan against the final revision and close the goal only after every applicable item is verified.
 
 ## Navigation and feature state
 

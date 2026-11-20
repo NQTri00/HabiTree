@@ -5,7 +5,7 @@ import com.mamxanh.shared.localization.TextKey
 import com.mamxanh.shared.localization.AppText
 
 import android.content.Context
-import com.mamxanh.app.feature.catalog.domain.GardenCollection
+import com.mamxanh.app.feature.catalog.domain.repository.GardenCollection
 import org.json.JSONArray
 import org.json.JSONObject
 

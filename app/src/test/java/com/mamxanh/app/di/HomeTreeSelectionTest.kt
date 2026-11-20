@@ -1,7 +1,7 @@
 package com.mamxanh.app.di
 
-import com.mamxanh.app.feature.home.domain.HomeTreeSelection
-import com.mamxanh.app.feature.home.domain.HomeTreeSelectionRepository
+import com.mamxanh.app.feature.home.domain.usecase.HomeTreeSelection
+import com.mamxanh.app.feature.home.domain.usecase.HomeTreeSelectionRepository
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

@@ -3,7 +3,7 @@ package com.mamxanh.app.di
 import com.mamxanh.app.core.presentation.navigation.HabiTreeFeatureDestination
 import com.mamxanh.app.core.presentation.navigation.HabiTreeNavigator
 import com.mamxanh.app.core.presentation.navigation.HabiTreeRouteRegistry
-import com.mamxanh.app.feature.stats.domain.TimelineRelated
+import com.mamxanh.app.feature.stats.domain.model.TimelineRelated
 import com.mamxanh.app.presentation.bio.BioDestination
 import com.mamxanh.app.presentation.bio.BioRoute
 import com.mamxanh.app.presentation.bio.toBioDestination

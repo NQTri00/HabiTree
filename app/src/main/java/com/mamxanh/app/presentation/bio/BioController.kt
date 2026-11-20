@@ -3,15 +3,15 @@ package com.mamxanh.app.presentation.bio
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.Saver
 import com.mamxanh.app.core.presentation.navigation.HabiTreeNavigator
-import com.mamxanh.app.feature.garden.presentation.GardenBrowseState
-import com.mamxanh.app.feature.garden.presentation.PlantingSelectionState
-import com.mamxanh.app.feature.home.presentation.HomeTreeState
-import com.mamxanh.app.feature.home.presentation.OnboardingSelectionState
-import com.mamxanh.app.feature.shop.presentation.ShopSelectionState
+import com.mamxanh.app.feature.garden.presentation.ui.garden.GardenBrowseState
+import com.mamxanh.app.feature.garden.presentation.ui.garden.PlantingSelectionState
+import com.mamxanh.app.feature.home.presentation.ui.home.HomeTreeState
+import com.mamxanh.app.feature.home.presentation.ui.onboarding.OnboardingSelectionState
+import com.mamxanh.app.feature.shop.presentation.ui.shop.ShopSelectionState
 import com.mamxanh.app.feature.settings.presentation.SettingsRequestState
-import com.mamxanh.app.feature.tasks.presentation.TaskDraftState
-import com.mamxanh.app.feature.tasks.presentation.TaskScreenSelection
-import com.mamxanh.app.feature.tree.presentation.TreeDetailSelection
+import com.mamxanh.app.feature.tasks.presentation.ui.form.TaskDraftState
+import com.mamxanh.app.feature.tasks.presentation.ui.list.TaskScreenSelection
+import com.mamxanh.app.feature.tree.presentation.ui.detail.TreeDetailSelection
 import org.json.JSONObject
 
 @Stable internal class BioController(initialRoute:String="home",initialParam:String="",initialModal:String="",var execute:(BioCommand)->Unit={}) {

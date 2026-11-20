@@ -1,8 +1,8 @@
 package com.mamxanh.app.di
 
-import com.mamxanh.app.feature.garden.domain.availablePlantingPlots
-import com.mamxanh.app.feature.garden.domain.eligiblePlantingPlot
-import com.mamxanh.app.feature.garden.domain.plantedTreeId
+import com.mamxanh.app.feature.garden.domain.usecase.availablePlantingPlots
+import com.mamxanh.app.feature.garden.domain.usecase.eligiblePlantingPlot
+import com.mamxanh.app.feature.garden.domain.usecase.plantedTreeId
 import com.mamxanh.app.feature.garden.domain.model.Garden
 import com.mamxanh.app.feature.garden.domain.model.GardenPlot
 import com.mamxanh.app.feature.garden.domain.model.Tree

@@ -9,12 +9,12 @@ import android.os.SystemClock
 import android.view.KeyEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import androidx.compose.runtime.saveable.SaverScope
-import com.mamxanh.app.feature.tasks.presentation.TaskFormField
+import com.mamxanh.app.feature.tasks.presentation.ui.form.TaskFormField
 import androidx.test.core.app.ActivityScenario
 import androidx.test.platform.app.InstrumentationRegistry
 import com.mamxanh.app.data.local.GardenDatabase
 import com.mamxanh.app.presentation.bio.BioController
-import com.mamxanh.app.presentation.ui.localization.AppLanguageController
+import com.mamxanh.app.core.components.localization.AppLanguageController
 import com.mamxanh.core.ui.R as CopyR
 import com.mamxanh.shared.data.GameStorage
 import com.mamxanh.shared.localization.AppLanguage

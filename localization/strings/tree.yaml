@@ -3,67 +3,67 @@ copy_chon_mot_loai_phan_trong_tui_8bb0e2:
   vi: Chọn một loại phân trong túi.
   en: Choose fertilizer from your inventory.
   canonical: false
-  source: tree/src/main/java/com/mamxanh/app/feature/tree/presentation/TreeDetailSections.kt
+  source: tree/src/main/java/com/mamxanh/app/feature/tree/presentation/ui/detail/component/TreeDetailSections.kt
 copy_cho_8de7e9:
   order: 780
   vi: Chờ
   en: Wait
   canonical: false
-  source: tree/src/main/java/com/mamxanh/app/feature/tree/presentation/TreeDetailSections.kt
+  source: tree/src/main/java/com/mamxanh/app/feature/tree/presentation/ui/detail/component/TreeDetailSections.kt
 copy_bo_sung_vat_pham_0a35b0:
   order: 781
   vi: Bổ sung vật phẩm  ›
   en: Get more supplies  ›
   canonical: false
-  source: tree/src/main/java/com/mamxanh/app/feature/tree/presentation/TreeDetailSections.kt
+  source: tree/src/main/java/com/mamxanh/app/feature/tree/presentation/ui/detail/component/TreeDetailSections.kt
 copy_cay_da_truong_thanh_tiep_tuc_tuoi_de_giu_cay_khoe_ma_06b5ad:
   order: 782
   vi: Cây đã trưởng thành. Tiếp tục tưới để giữ cây khỏe mạnh.
   en: This tree is fully grown. Keep watering it to keep it healthy.
   canonical: false
-  source: tree/src/main/java/com/mamxanh/app/feature/tree/presentation/TreeDetailSections.kt
+  source: tree/src/main/java/com/mamxanh/app/feature/tree/presentation/ui/detail/component/TreeDetailSections.kt
 copy_cay_da_kho_heo_va_khong_the_hoi_phuc_f189fa:
   order: 783
   vi: Cây đã khô héo và không thể hồi phục.
   en: This tree has withered and cannot recover.
   canonical: false
-  source: tree/src/main/java/com/mamxanh/app/feature/tree/presentation/TreeDetailSections.kt
+  source: tree/src/main/java/com/mamxanh/app/feature/tree/presentation/ui/detail/component/TreeDetailSections.kt
 copy_xem_cac_phu_kien_trong_tui_do_6602d1:
   order: 784
   vi: Xem các phụ kiện trong túi đồ.
   en: View accessories in your inventory.
   canonical: false
-  source: tree/src/main/java/com/mamxanh/app/feature/tree/presentation/TreeDetailSections.kt
+  source: tree/src/main/java/com/mamxanh/app/feature/tree/presentation/ui/detail/component/TreeDetailSections.kt
 copy_khong_the_trang_tri_cay_da_kho_heo_8dfe04:
   order: 785
   vi: Không thể trang trí cây đã khô héo.
   en: Withered trees cannot be decorated.
   canonical: false
-  source: tree/src/main/java/com/mamxanh/app/feature/tree/presentation/TreeDetailSections.kt
+  source: tree/src/main/java/com/mamxanh/app/feature/tree/presentation/ui/detail/component/TreeDetailSections.kt
 copy_ho_so_cay_3c00b9:
   order: 786
   vi: Hồ sơ cây
   en: Tree profile
   canonical: false
-  source: tree/src/main/java/com/mamxanh/app/feature/tree/presentation/TreeDetailSections.kt
+  source: tree/src/main/java/com/mamxanh/app/feature/tree/presentation/ui/detail/component/TreeDetailSections.kt
 copy_tien_do_e59478:
   order: 787
   vi: Tiến độ
   en: Progress
   canonical: false
-  source: tree/src/main/java/com/mamxanh/app/feature/tree/presentation/TreeInteractionScreen.kt
+  source: tree/src/main/java/com/mamxanh/app/feature/tree/presentation/ui/detail/TreeInteractionScreen.kt
 copy_giu_lai_3c3ba2:
   order: 788
   vi: Giữ lại
   en: Keep
   canonical: false
-  source: tree/src/main/java/com/mamxanh/app/feature/tree/presentation/TreeInteractionScreen.kt
+  source: tree/src/main/java/com/mamxanh/app/feature/tree/presentation/ui/detail/TreeInteractionScreen.kt
 copy_cay_se_roi_o_trong_vinh_vien_khong_hoan_lai_hat_hoac_9f6b91:
   order: 789
   vi: Cây sẽ rời ô trồng vĩnh viễn. Không hoàn lại hạt hoặc tiến trình.
   en: This tree will leave its plot permanently. Its seed and progress are not refunded.
   canonical: false
-  source: tree/src/main/java/com/mamxanh/app/feature/tree/presentation/TreeInteractionScreen.kt
+  source: tree/src/main/java/com/mamxanh/app/feature/tree/presentation/ui/detail/TreeInteractionScreen.kt
 copy_phan_vuot_gioi_han_0_xu_ngay_se_mat_khong_de_danh_cdcca8:
   order: 790
   vi: Phần vượt giới hạn {daily_limit} xu/ngày sẽ mất, không để dành.
@@ -71,61 +71,61 @@ copy_phan_vuot_gioi_han_0_xu_ngay_se_mat_khong_de_danh_cdcca8:
   placeholders:
     daily_limit: integer
   canonical: false
-  source: tree/src/main/java/com/mamxanh/app/feature/tree/presentation/TreeInteractionScreen.kt
+  source: tree/src/main/java/com/mamxanh/app/feature/tree/presentation/ui/detail/TreeInteractionScreen.kt
 copy_don_cay_khong_hoan_xu_hoac_hat_cdff29:
   order: 791
   vi: Dọn cây không hoàn xu hoặc hạt
   en: Clearing a tree returns no coins or seeds
   canonical: false
-  source: tree/src/main/java/com/mamxanh/app/feature/tree/presentation/TreeViewModel.kt
+  source: tree/src/main/java/com/mamxanh/app/feature/tree/presentation/ui/detail/TreeViewModel.kt
 copy_da_tuoi_cay_cua_so_tang_truong_da_bat_dau_1da977:
   order: 792
   vi: Đã tưới cây · Cửa sổ tăng trưởng đã bắt đầu
   en: Tree watered · Growth window started
   canonical: false
-  source: tree/src/main/java/com/mamxanh/app/feature/tree/presentation/TreeViewModel.kt
+  source: tree/src/main/java/com/mamxanh/app/feature/tree/presentation/ui/detail/TreeViewModel.kt
 copy_cay_dang_duoc_tuoi_thoi_gian_khong_cong_don_a33cd0:
   order: 793
   vi: Cây đang được tưới; thời gian không cộng dồn
   en: The tree is already watered; watering time does not stack
   canonical: false
-  source: tree/src/main/java/com/mamxanh/app/feature/tree/presentation/TreeViewModel.kt
+  source: tree/src/main/java/com/mamxanh/app/feature/tree/presentation/ui/detail/TreeViewModel.kt
 copy_cay_da_kho_heo_vinh_vien_chi_co_the_don_cay_6ddff8:
   order: 794
   vi: Cây đã khô héo vĩnh viễn; chỉ có thể dọn cây
   en: The tree has withered permanently and can only be cleared
   canonical: false
-  source: tree/src/main/java/com/mamxanh/app/feature/tree/presentation/TreeViewModel.kt
+  source: tree/src/main/java/com/mamxanh/app/feature/tree/presentation/ui/detail/TreeViewModel.kt
 copy_dong_ho_da_lui_hay_cho_gio_thuc_bat_kip_822584:
   order: 795
   vi: Đồng hồ đã lùi; hãy chờ giờ thực bắt kịp
   en: The clock moved backward; wait for real time to catch up
   canonical: false
-  source: tree/src/main/java/com/mamxanh/app/feature/tree/presentation/TreeViewModel.kt
+  source: tree/src/main/java/com/mamxanh/app/feature/tree/presentation/ui/detail/TreeViewModel.kt
 copy_cay_khong_con_trong_vuon_40c7ae:
   order: 796
   vi: Cây không còn trong vườn
   en: This tree is no longer in the garden
   canonical: false
-  source: tree/src/main/java/com/mamxanh/app/feature/tree/presentation/TreeViewModel.kt
+  source: tree/src/main/java/com/mamxanh/app/feature/tree/presentation/ui/detail/TreeViewModel.kt
 copy_da_cap_nhat_trang_tri_472665:
   order: 797
   vi: Đã cập nhật trang trí
   en: Decoration updated
   canonical: false
-  source: tree/src/main/java/com/mamxanh/app/feature/tree/presentation/TreeViewModel.kt
+  source: tree/src/main/java/com/mamxanh/app/feature/tree/presentation/ui/detail/TreeViewModel.kt
 copy_chon_cay_truoc_84691e:
   order: 798
   vi: Chọn cây trước
   en: Choose a tree first
   canonical: false
-  source: tree/src/main/java/com/mamxanh/app/feature/tree/presentation/TreeViewModel.kt
+  source: tree/src/main/java/com/mamxanh/app/feature/tree/presentation/ui/detail/TreeViewModel.kt
 copy_khong_co_thao_tac_432536:
   order: 799
   vi: Không có thao tác
   en: No action
   canonical: false
-  source: tree/src/main/java/com/mamxanh/app/feature/tree/presentation/TreeViewModel.kt
+  source: tree/src/main/java/com/mamxanh/app/feature/tree/presentation/ui/detail/TreeViewModel.kt
 copy_bon_1_tui_b30d99:
   order: 800
   vi: 'Bón

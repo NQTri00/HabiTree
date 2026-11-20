@@ -1,7 +1,7 @@
 package com.mamxanh.app.feature.tree.presentation.components
 
-import com.mamxanh.app.presentation.ui.design.AppColors
-import com.mamxanh.app.presentation.ui.design.AppOpacity
+import com.mamxanh.app.core.components.design.AppColors
+import com.mamxanh.app.core.components.design.AppOpacity
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas

@@ -1,16 +1,16 @@
 package com.mamxanh.app.presentation.bio
 
-import com.mamxanh.app.presentation.ui.design.*
+import com.mamxanh.app.core.components.design.*
 import com.mamxanh.app.feature.tree.presentation.navigation.TreeRouteContent
-import com.mamxanh.app.feature.tree.presentation.TreeScreenAction
-import com.mamxanh.app.feature.tree.presentation.TreeScreenFertilizer
-import com.mamxanh.app.feature.tree.presentation.TreeScreenState
+import com.mamxanh.app.feature.tree.presentation.ui.detail.TreeScreenAction
+import com.mamxanh.app.feature.tree.presentation.ui.detail.TreeScreenFertilizer
+import com.mamxanh.app.feature.tree.presentation.ui.detail.TreeScreenState
 import com.mamxanh.app.feature.garden.presentation.navigation.GardenRouteContent
-import com.mamxanh.app.feature.garden.presentation.GardenAction
-import com.mamxanh.app.feature.garden.presentation.GardenBrowseState
-import com.mamxanh.app.feature.garden.presentation.GardenDisplayPlot
-import com.mamxanh.app.feature.garden.presentation.GardenDisplayState
-import com.mamxanh.app.feature.garden.presentation.GardenDisplayTree
+import com.mamxanh.app.feature.garden.presentation.ui.garden.GardenAction
+import com.mamxanh.app.feature.garden.presentation.ui.garden.GardenBrowseState
+import com.mamxanh.app.feature.garden.presentation.ui.garden.GardenDisplayPlot
+import com.mamxanh.app.feature.garden.presentation.ui.garden.GardenDisplayState
+import com.mamxanh.app.feature.garden.presentation.ui.garden.GardenDisplayTree
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*

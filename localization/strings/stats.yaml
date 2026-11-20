@@ -3,37 +3,37 @@ copy_nhip_xanh_7_ngay_03a7ab:
   vi: Nhịp xanh 7 ngày
   en: Your 7-day rhythm
   canonical: false
-  source: stats/src/main/java/com/mamxanh/app/feature/stats/presentation/StatsScreen.kt
+  source: stats/src/main/java/com/mamxanh/app/feature/stats/presentation/ui/stats/StatsScreen.kt
 copy_dang_lam_moi_thong_ke_00896d:
   order: 806
   vi: Đang làm mới thống kê
   en: Refreshing statistics
   canonical: false
-  source: stats/src/main/java/com/mamxanh/app/feature/stats/presentation/StatsScreen.kt
+  source: stats/src/main/java/com/mamxanh/app/feature/stats/presentation/ui/stats/StatsScreen.kt
 copy_san_sang_lam_moi_8bb7f8:
   order: 807
   vi: Sẵn sàng làm mới
   en: Ready to refresh
   canonical: false
-  source: stats/src/main/java/com/mamxanh/app/feature/stats/presentation/StatsScreen.kt
+  source: stats/src/main/java/com/mamxanh/app/feature/stats/presentation/ui/stats/StatsScreen.kt
 copy_lam_moi_thong_ke_f1683d:
   order: 808
   vi: Làm mới thống kê
   en: Refresh statistics
   canonical: false
-  source: stats/src/main/java/com/mamxanh/app/feature/stats/presentation/StatsScreen.kt
+  source: stats/src/main/java/com/mamxanh/app/feature/stats/presentation/ui/stats/StatsScreen.kt
 copy_hay_bat_dau_cham_cay_de_ghi_lai_hanh_trinh_cua_ban_n_e6b786:
   order: 809
   vi: 🌱 Hãy bắt đầu chăm cây để ghi lại hành trình của bạn nhé!
   en: 🌱 Start caring for a tree to record your journey!
   canonical: false
-  source: stats/src/main/java/com/mamxanh/app/feature/stats/presentation/StatsScreen.kt
+  source: stats/src/main/java/com/mamxanh/app/feature/stats/presentation/ui/stats/StatsScreen.kt
 copy_so_lieu_duoc_luu_tren_thiet_bi_f6ac69:
   order: 810
   vi: Số liệu được lưu trên thiết bị
   en: Data is stored on this device
   canonical: false
-  source: stats/src/main/java/com/mamxanh/app/feature/stats/presentation/StatsScreen.kt
+  source: stats/src/main/java/com/mamxanh/app/feature/stats/presentation/ui/stats/StatsScreen.kt
 copy_0_1_viec_ec6e1e:
   order: 811
   vi: '{label}: {tasks} việc'
@@ -42,6 +42,6 @@ copy_0_1_viec_ec6e1e:
     label: string
     tasks: integer
   canonical: false
-  source: stats/src/main/java/com/mamxanh/app/feature/stats/presentation/WeekSproutChart.kt
+  source: stats/src/main/java/com/mamxanh/app/feature/stats/presentation/ui/stats/WeekSproutChart.kt
   pluralArgument: 1
   en_one: '{label}: {tasks} task'

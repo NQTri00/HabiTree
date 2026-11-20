@@ -1,35 +1,35 @@
 package com.mamxanh.app.presentation.bio
 
-import com.mamxanh.app.feature.settings.presentation.BackupDisplay
-import com.mamxanh.app.feature.settings.presentation.BackupScreenAction
-import com.mamxanh.app.feature.settings.presentation.SettingsDisplay
-import com.mamxanh.app.feature.settings.presentation.SettingsLink
+import com.mamxanh.app.feature.settings.presentation.ui.backup.BackupDisplay
+import com.mamxanh.app.feature.settings.presentation.ui.backup.BackupScreenAction
+import com.mamxanh.app.feature.settings.presentation.ui.settings.SettingsDisplay
+import com.mamxanh.app.feature.settings.presentation.ui.settings.SettingsLink
 import com.mamxanh.app.feature.settings.presentation.navigation.BackupRouteContent
 import com.mamxanh.app.feature.settings.presentation.navigation.SettingsRouteContent
 
-import com.mamxanh.app.feature.tasks.presentation.TaskCompletionDisplay
-import com.mamxanh.app.feature.tasks.presentation.TaskDetailDisplay
+import com.mamxanh.app.feature.tasks.presentation.ui.detail.TaskCompletionDisplay
+import com.mamxanh.app.feature.tasks.presentation.ui.detail.TaskDetailDisplay
 import com.mamxanh.app.feature.tasks.presentation.navigation.TaskDetailRouteContent
-import com.mamxanh.app.feature.tasks.presentation.TaskFormDisplay
-import com.mamxanh.app.feature.tasks.presentation.TaskFormField
-import com.mamxanh.app.feature.tasks.presentation.taskFormReward
+import com.mamxanh.app.feature.tasks.presentation.ui.form.TaskFormDisplay
+import com.mamxanh.app.feature.tasks.presentation.ui.form.TaskFormField
+import com.mamxanh.app.feature.tasks.presentation.ui.form.taskFormReward
 import com.mamxanh.app.feature.tasks.presentation.navigation.TaskFormRouteContent
-import com.mamxanh.app.feature.tasks.presentation.TaskTemplateDisplay
+import com.mamxanh.app.feature.tasks.presentation.ui.templates.TaskTemplateDisplay
 import com.mamxanh.app.feature.tasks.presentation.navigation.TemplatesRouteContent
-import com.mamxanh.app.feature.tasks.presentation.TemplateRow
-import com.mamxanh.app.feature.tasks.presentation.FocusDisplay
+import com.mamxanh.app.feature.tasks.presentation.ui.templates.TemplateRow
+import com.mamxanh.app.feature.tasks.presentation.ui.focus.FocusDisplay
 import com.mamxanh.app.feature.tasks.presentation.navigation.FocusRouteContent
-import com.mamxanh.app.feature.tasks.presentation.FocusTaskChoice
+import com.mamxanh.app.feature.tasks.presentation.ui.focus.FocusTaskChoice
 
-import com.mamxanh.app.presentation.ui.design.*
+import com.mamxanh.app.core.components.design.*
 
-import com.mamxanh.app.presentation.ui.design.AppColors
-import com.mamxanh.app.presentation.ui.design.AppDimensions
-import com.mamxanh.app.presentation.ui.design.AppIcons
-import com.mamxanh.app.presentation.ui.design.AppOpacity
-import com.mamxanh.app.presentation.ui.design.AppRadii
-import com.mamxanh.app.presentation.ui.design.AppSpacing
-import com.mamxanh.app.presentation.ui.design.AppTypography
+import com.mamxanh.app.core.components.design.AppColors
+import com.mamxanh.app.core.components.design.AppDimensions
+import com.mamxanh.app.core.components.design.AppIcons
+import com.mamxanh.app.core.components.design.AppOpacity
+import com.mamxanh.app.core.components.design.AppRadii
+import com.mamxanh.app.core.components.design.AppSpacing
+import com.mamxanh.app.core.components.design.AppTypography
 
 import com.mamxanh.shared.localization.TextKey
 
@@ -57,7 +57,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.*
-import com.mamxanh.app.presentation.ui.GardenFontFamily
+import com.mamxanh.app.core.components.GardenFontFamily
 import org.json.JSONObject
 
 internal fun taskDetailRouteContent(world: BioWorld, ui: BioController, argument: String): TaskDetailRouteContent {

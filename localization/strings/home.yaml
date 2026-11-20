@@ -3,37 +3,37 @@ copy_moi_viec_nho_mot_buoc_lon_len_80104a:
   vi: Mỗi việc nhỏ, một bước lớn lên
   en: Every small task helps you grow
   canonical: false
-  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/HomeScreen.kt
+  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/ui/home/HomeScreen.kt
 copy_mot_ngay_moi_cc8267:
   order: 527
   vi: MỘT NGÀY MỚI
   en: A NEW DAY
   canonical: false
-  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/HomeScreen.kt
+  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/ui/home/HomeScreen.kt
 copy_chao_ngay_xanh_71726f:
   order: 528
   vi: Chào ngày xanh.
   en: Hello, green day.
   canonical: false
-  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/HomeScreen.kt
+  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/ui/home/HomeScreen.kt
 copy_moi_viec_nho_mot_mam_lon_f6a672:
   order: 529
   vi: Mỗi việc nhỏ, một mầm lớn.
   en: One small task. One growing sprout.
   canonical: false
-  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/HomeScreen.kt
+  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/ui/home/HomeScreen.kt
 copy_cham_soc_5b1872:
   order: 530
   vi: 'Chăm sóc '
   en: 'Care for '
   canonical: false
-  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/HomeScreen.kt
+  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/ui/home/HomeScreen.kt
 copy_tien_do_giai_doan_c1f3ab:
   order: 531
   vi: Tiến độ giai đoạn
   en: Stage progress
   canonical: false
-  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/HomeScreen.kt
+  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/ui/home/HomeScreen.kt
 copy_bon_phan_0_95a3dd:
   order: 532
   vi: Bón phân · {quantity}
@@ -41,73 +41,73 @@ copy_bon_phan_0_95a3dd:
   placeholders:
     quantity: integer
   canonical: false
-  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/HomeScreen.kt
+  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/ui/home/HomeScreen.kt
 copy_gieo_mot_khoi_dau_82f23a:
   order: 533
   vi: Gieo một khởi đầu
   en: Plant a beginning
   canonical: false
-  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/HomeScreen.kt
+  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/ui/home/HomeScreen.kt
 copy_chon_hat_3d6476:
   order: 534
   vi: Chọn hạt
   en: Choose seed
   canonical: false
-  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/HomeScreen.kt
+  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/ui/home/HomeScreen.kt
 copy_viec_da_xong_4cbf90:
   order: 535
   vi: Việc đã xong
   en: Completed tasks
   canonical: false
-  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/HomeScreen.kt
+  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/ui/home/HomeScreen.kt
 copy_tat_ca_2553fa:
   order: 536
   vi: Tất cả ›
   en: View all ›
   canonical: false
-  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/HomeScreen.kt
+  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/ui/home/HomeScreen.kt
 copy_them_thoi_quen_4d2eb4:
   order: 537
   vi: Thêm thói quen
   en: Add habit
   canonical: false
-  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/HomeScreen.kt
+  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/ui/home/HomeScreen.kt
 copy_mot_viec_vua_suc_2272cf:
   order: 538
   vi: Một việc vừa sức
   en: One manageable task
   canonical: false
-  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/HomeScreen.kt
+  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/ui/home/HomeScreen.kt
 copy_danh_cho_ban_785034:
   order: 539
   vi: Dành cho bạn
   en: For you
   canonical: false
-  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/HomeScreen.kt
+  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/ui/home/HomeScreen.kt
 copy_muc_tieu_tiep_theo_9dbfa7:
   order: 540
   vi: Mục tiêu tiếp theo
   en: Next goal
   canonical: false
-  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/HomeScreen.kt
+  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/ui/home/HomeScreen.kt
 copy_mot_tuan_nhieu_dieu_nho_4ca68f:
   order: 541
   vi: Một tuần, nhiều điều nhỏ
   en: One week, many little things
   canonical: false
-  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/HomeScreen.kt
+  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/ui/home/HomeScreen.kt
 copy_chon_hat_giong_eebad6:
   order: 542
   vi: Chọn hạt giống
   en: Choose seeds
   canonical: false
-  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/HomeScreen.kt
+  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/ui/home/HomeScreen.kt
 copy_ghe_tiem_nho_8395ee:
   order: 543
   vi: Ghé tiệm nhỏ
   en: Visit the little shop
   canonical: false
-  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/HomeScreen.kt
+  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/ui/home/HomeScreen.kt
 copy_da_nhan_0_xu_9e4321:
   order: 544
   vi: Đã nhận +{coins} xu
@@ -115,76 +115,76 @@ copy_da_nhan_0_xu_9e4321:
   placeholders:
     coins: integer
   canonical: false
-  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/HomeScreen.kt
+  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/ui/home/HomeScreen.kt
 copy_bat_dau_tap_trung_d198d9:
   order: 545
   vi: Bắt đầu tập trung
   en: Start focusing
   canonical: false
-  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/HomeScreen.kt
+  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/ui/home/HomeScreen.kt
 copy_hoan_thanh_viec_a2a386:
   order: 546
   vi: Hoàn thành việc
   en: Complete task
   canonical: false
-  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/HomeScreen.kt
+  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/ui/home/HomeScreen.kt
 copy_chon_hat_cho_goc_vuon_3c30f3:
   order: 547
   vi: Chọn hạt cho góc vườn
   en: Choose a seed for your garden
   canonical: false
-  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/HomeScreen.kt
+  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/ui/home/HomeScreen.kt
 copy_bon_2_tui_23af29:
   order: 548
   vi: Bón · 2 túi
   en: Fertilize · 2 bags
   canonical: false
-  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/HomeScreen.kt
+  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/ui/home/HomeScreen.kt
 copy_ke_hoach_4caeaa:
   order: 549
   vi: Kế hoạch
   en: Plan
   canonical: false
-  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/HomeScreen.kt
+  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/ui/home/HomeScreen.kt
 copy_mot_khoang_de_dieu_chinh_nhe_nhang_52ad01:
   order: 550
   vi: Một khoảng để điều chỉnh nhẹ nhàng
   en: A little room to adjust
   canonical: false
-  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/HomeScreen.kt
+  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/ui/home/HomeScreen.kt
 copy_chon_viec_nho_cho_ngay_moi_2e19a4:
   order: 551
   vi: Chọn việc nhỏ cho ngày mới
   en: Choose a small task for a new day
   canonical: false
-  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/HomeScreen.kt
+  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/ui/home/HomeScreen.kt
 copy_ghe_tiem_hat_b6db1f:
   order: 552
   vi: Ghé Tiệm hạt
   en: Visit seed shop
   canonical: false
-  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/HomeScreen.kt
+  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/ui/home/HomeScreen.kt
 copy_nhan_thuong_hom_nay_7b23cc:
   order: 553
   vi: Nhận thưởng hôm nay
   en: Claim today's reward
   canonical: false
-  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/HomeScreen.kt
+  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/ui/home/HomeScreen.kt
 copy_mua_hat_giong_moi_35919a:
   order: 554
   vi: Mua hạt giống mới
   en: Buy new seeds
   canonical: false
-  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/HomeScreen.kt
+  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/ui/home/HomeScreen.kt
 copy_gieo_mam_dau_tien_85032c:
   order: 555
   vi: Gieo mầm đầu tiên
   en: Plant your first sprout
   canonical: false
-  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/HomeScreen.kt
+  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/ui/home/HomeScreen.kt
 copy_10_xu_8c4bbf:
   order: 1063
   vi: +10 xu
   en: +10 coins
   canonical: false
-  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/HomeScreen.kt
+  source: home/src/main/java/com/mamxanh/app/feature/home/presentation/ui/home/HomeScreen.kt

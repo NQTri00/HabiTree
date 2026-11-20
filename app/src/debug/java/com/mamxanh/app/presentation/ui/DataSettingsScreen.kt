@@ -1,7 +1,11 @@
 package com.mamxanh.app.presentation.ui
+import com.mamxanh.app.core.components.Deep
+import com.mamxanh.app.core.components.Green
+import com.mamxanh.app.core.components.MamXanhPreviewTheme
+import com.mamxanh.app.core.components.Muted
 
-import com.mamxanh.app.presentation.ui.design.AppDimensions
-import com.mamxanh.app.presentation.ui.design.AppTypography
+import com.mamxanh.app.core.components.design.AppDimensions
+import com.mamxanh.app.core.components.design.AppTypography
 
 import com.mamxanh.shared.localization.TextKey
 
@@ -28,7 +32,7 @@ import com.mamxanh.app.BuildConfig
 import com.mamxanh.app.R
 import com.mamxanh.core.ui.R as CopyR
 import com.mamxanh.app.data.BackupService
-import com.mamxanh.app.presentation.ui.components.*
+import com.mamxanh.app.core.components.components.*
 import com.mamxanh.shared.data.GameStorage
 import com.mamxanh.shared.data.sql.*
 import kotlinx.coroutines.Dispatchers

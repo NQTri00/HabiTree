@@ -4,9 +4,9 @@ import androidx.compose.runtime.compositionLocalOf
 import com.mamxanh.app.core.presentation.navigation.HabiTreeFeatureDestination
 import com.mamxanh.app.core.presentation.navigation.HabiTreeFeatureModule
 import com.mamxanh.app.core.presentation.navigation.HabiTreeNavKey
-import com.mamxanh.app.feature.garden.presentation.BioGardenScreen
-import com.mamxanh.app.feature.garden.presentation.GardenAction
-import com.mamxanh.app.feature.garden.presentation.GardenDisplayState
+import com.mamxanh.app.feature.garden.presentation.ui.garden.BioGardenScreen
+import com.mamxanh.app.feature.garden.presentation.ui.garden.GardenAction
+import com.mamxanh.app.feature.garden.presentation.ui.garden.GardenDisplayState
 import kotlinx.serialization.Serializable
 
 @Serializable

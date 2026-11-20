@@ -6,7 +6,7 @@ import androidx.compose.ui.Modifier
 import com.mamxanh.app.core.presentation.navigation.HabiTreeFeatureDestination
 import com.mamxanh.app.core.presentation.navigation.HabiTreeFeatureModule
 import com.mamxanh.app.core.presentation.navigation.HabiTreeNavKey
-import com.mamxanh.app.feature.inventory.presentation.BioInventoryScreen
+import com.mamxanh.app.feature.inventory.presentation.ui.inventory.BioInventoryScreen
 import kotlinx.serialization.Serializable
 
 @Serializable

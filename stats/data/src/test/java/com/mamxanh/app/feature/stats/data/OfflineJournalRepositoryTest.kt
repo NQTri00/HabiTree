@@ -1,7 +1,9 @@
 package com.mamxanh.app.feature.stats.data
 
+import com.mamxanh.app.feature.stats.data.repository.OfflineJournalRepositoryImpl
+
 import com.mamxanh.app.core.domain.RepositoryResult
-import com.mamxanh.app.feature.stats.domain.JournalNote
+import com.mamxanh.app.feature.stats.domain.usecase.JournalNote
 import com.mamxanh.shared.data.GameDatabase
 import com.mamxanh.shared.data.GameStorage
 import com.mamxanh.shared.model.ActionResult

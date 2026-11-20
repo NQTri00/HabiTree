@@ -5,13 +5,13 @@ changes={
         ('if(lifecycle=="PAUSED")AppText.text(TextKey.CopyTamDung676358)','if(lifecycle=="PAUSED")AppText.text(TextKey.TabPaused)'),
         ('if(lifecycle=="ARCHIVED")AppText.text(TextKey.ActionArchive)','if(lifecycle=="ARCHIVED")AppText.text(TextKey.CopyLuuTru7e7c5f)'),
     ],
-    'tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TasksScreen.kt':[
+    'tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/ui/list/TasksScreen.kt':[
         ('"PAUSED" to AppText.text(TextKey.CopyTamDung676358)','"PAUSED" to AppText.text(TextKey.TabPaused)'),
     ],
-    'tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TaskDetails.kt':[
+    'tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/ui/detail/TaskDetails.kt':[
         ('GardenPaintedButton(AppText.text(TextKey.CopyLuuTru7e7c5f)','GardenPaintedButton(AppText.text(TextKey.ActionArchive)'),
     ],
-    'tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/EngagementScreens.kt':[
+    'tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/ui/engagement/EngagementScreens.kt':[
         ('else->AppText.text(TextKey.CopyTamDung676358)','else->AppText.text(TextKey.TabPaused)'),
     ],
 }

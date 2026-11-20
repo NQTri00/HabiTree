@@ -1,7 +1,7 @@
 package com.mamxanh.app.presentation.bio
 
-import com.mamxanh.app.feature.home.presentation.OnboardingAction
-import com.mamxanh.app.feature.home.presentation.OnboardingDisplay
+import com.mamxanh.app.feature.home.presentation.ui.onboarding.OnboardingAction
+import com.mamxanh.app.feature.home.presentation.ui.onboarding.OnboardingDisplay
 import com.mamxanh.app.feature.home.presentation.navigation.OnboardingRouteContent
 import com.mamxanh.shared.localization.AppText
 import com.mamxanh.shared.localization.TextKey

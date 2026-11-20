@@ -1,11 +1,11 @@
 package com.mamxanh.app.presentation.bio
 
-import com.mamxanh.app.presentation.ui.design.*
+import com.mamxanh.app.core.components.design.*
 
-import com.mamxanh.app.presentation.ui.design.AppDimensions
-import com.mamxanh.app.presentation.ui.design.AppRadii
-import com.mamxanh.app.presentation.ui.design.AppSpacing
-import com.mamxanh.app.presentation.ui.design.AppTypography
+import com.mamxanh.app.core.components.design.AppDimensions
+import com.mamxanh.app.core.components.design.AppRadii
+import com.mamxanh.app.core.components.design.AppSpacing
+import com.mamxanh.app.core.components.design.AppTypography
 
 import com.mamxanh.shared.localization.TextKey
 
@@ -14,7 +14,7 @@ import com.mamxanh.shared.localization.AppText
 import androidx.activity.compose.BackHandler
 import com.mamxanh.app.core.presentation.navigation.HabiTreeRouteRegistry
 import com.mamxanh.app.di.previewRouteRegistry
-import com.mamxanh.app.feature.stats.presentation.StatisticsLink
+import com.mamxanh.app.feature.stats.presentation.ui.stats.StatisticsLink
 import com.mamxanh.app.feature.stats.presentation.navigation.LocalWeeklyReviewRouteContent
 import com.mamxanh.app.feature.catalog.presentation.navigation.LocalEncyclopediaRouteContent
 import com.mamxanh.app.feature.garden.presentation.navigation.LocalGardenRouteContent
@@ -37,7 +37,7 @@ import com.mamxanh.app.feature.stats.presentation.navigation.LocalAchievementsRo
 import com.mamxanh.app.feature.stats.presentation.navigation.LocalTimelineRouteContent
 import com.mamxanh.app.feature.stats.presentation.navigation.LocalStatisticsRouteContent
 import com.mamxanh.app.feature.stats.presentation.navigation.StatisticsRouteContent
-import com.mamxanh.app.feature.stats.presentation.StatisticsScreenState
+import com.mamxanh.app.feature.stats.presentation.ui.stats.StatisticsScreenState
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.togetherWith

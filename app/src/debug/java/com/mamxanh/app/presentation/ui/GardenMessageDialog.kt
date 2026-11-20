@@ -1,6 +1,7 @@
 package com.mamxanh.app.presentation.ui
+import com.mamxanh.app.core.components.MamXanhPreviewTheme
 
-import com.mamxanh.app.presentation.ui.design.AppDimensions
+import com.mamxanh.app.core.components.design.AppDimensions
 
 import com.mamxanh.shared.localization.TextKey
 
@@ -11,7 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.mamxanh.app.presentation.ui.components.MintFeedback
+import com.mamxanh.app.core.components.components.MintFeedback
 
 @Composable
 fun GardenMessageDialog(message: String, onDismiss: () -> Unit) {

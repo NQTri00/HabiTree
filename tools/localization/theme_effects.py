@@ -1,7 +1,7 @@
 from catalog import ROOT
 file=ROOT/'app/src/main/java/com/mamxanh/app/presentation/bio/BioDesign.kt'
 text=file.read_text(encoding='utf-8')
-text=text.replace('import com.mamxanh.app.presentation.ui.design.AppColors','import com.mamxanh.app.presentation.ui.design.AppThemeEffects\nimport com.mamxanh.app.presentation.ui.design.AppColors',1)
+text=text.replace('import com.mamxanh.app.core.components.design.AppColors','import com.mamxanh.app.core.components.design.AppThemeEffects\nimport com.mamxanh.app.core.components.design.AppColors',1)
 for old,new in {
     'val hue:Float=339f':'val hue:Float=AppThemeEffects.DefaultHue',
     'floatArrayOf(hue,.09f,.52f)':'floatArrayOf(hue,AppThemeEffects.ControlSaturation,AppThemeEffects.ControlLightness)',

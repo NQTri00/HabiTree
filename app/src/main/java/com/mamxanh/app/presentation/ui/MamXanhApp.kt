@@ -5,9 +5,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.mamxanh.app.feature.tasks.presentation.EngagementViewModel
-import com.mamxanh.app.feature.tasks.presentation.TasksIntent
-import com.mamxanh.app.feature.tasks.presentation.TasksViewModel
+import com.mamxanh.app.feature.tasks.presentation.ui.engagement.EngagementViewModel
+import com.mamxanh.app.feature.tasks.presentation.ui.list.TasksIntent
+import com.mamxanh.app.feature.tasks.presentation.ui.list.TasksViewModel
 import com.mamxanh.app.presentation.bio.BioNativeHost
 import com.mamxanh.shared.data.GameStorage
 

@@ -1,6 +1,6 @@
 package com.mamxanh.app
 
-import com.mamxanh.app.feature.tasks.presentation.focusSessionTitle
+import com.mamxanh.app.feature.tasks.presentation.ui.focus.focusSessionTitle
 import com.mamxanh.shared.localization.AppLanguage
 import com.mamxanh.shared.localization.AppText
 import com.mamxanh.shared.localization.TextKey

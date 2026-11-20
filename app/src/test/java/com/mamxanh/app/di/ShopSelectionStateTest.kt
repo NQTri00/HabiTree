@@ -1,6 +1,6 @@
 package com.mamxanh.app.di
 
-import com.mamxanh.app.feature.shop.presentation.ShopSelectionState
+import com.mamxanh.app.feature.shop.presentation.ui.shop.ShopSelectionState
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue

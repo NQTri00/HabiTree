@@ -2,42 +2,42 @@
   {
     "name": "home-header",
     "preview": "BioHeaderPreview",
-    "source": "core-ui/src/main/java/com/mamxanh/app/presentation/ui/design/BioComponents.kt"
+    "source": "core-ui/src/main/java/com/mamxanh/app/core/components/design/BioComponents.kt"
   },
   {
     "name": "home-greeting",
     "preview": "HomeGreetingPreview",
-    "source": "home/src/main/java/com/mamxanh/app/feature/home/presentation/BioHomeScreen.kt"
+    "source": "home/src/main/java/com/mamxanh/app/feature/home/presentation/ui/home/BioHomeScreen.kt"
   },
   {
     "name": "home-tree-hero",
     "preview": "TreeHeroPreview",
-    "source": "tree/src/main/java/com/mamxanh/app/feature/tree/presentation/TreeHero.kt"
+    "source": "tree/src/main/java/com/mamxanh/app/feature/tree/presentation/ui/detail/component/TreeHero.kt"
   },
   {
     "name": "home-next-task",
     "preview": "TaskListRowPreview",
-    "source": "tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TaskListScreen.kt"
+    "source": "tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/ui/list/TaskListScreen.kt"
   },
   {
     "name": "home-metrics",
     "preview": "BioMetricsPreview",
-    "source": "core-ui/src/main/java/com/mamxanh/app/presentation/ui/design/BioComponents.kt"
+    "source": "core-ui/src/main/java/com/mamxanh/app/core/components/design/BioComponents.kt"
   },
   {
     "name": "home-reward",
     "preview": "HomeRewardPreview",
-    "source": "home/src/main/java/com/mamxanh/app/feature/home/presentation/BioHomeScreen.kt"
+    "source": "home/src/main/java/com/mamxanh/app/feature/home/presentation/ui/home/BioHomeScreen.kt"
   },
   {
     "name": "home-quick-actions",
     "preview": "HomeQuickActionsPreview",
-    "source": "home/src/main/java/com/mamxanh/app/feature/home/presentation/BioHomeScreen.kt"
+    "source": "home/src/main/java/com/mamxanh/app/feature/home/presentation/ui/home/BioHomeScreen.kt"
   },
   {
     "name": "home-review-link",
     "preview": "HomeReviewLinkPreview",
-    "source": "home/src/main/java/com/mamxanh/app/feature/home/presentation/BioHomeScreen.kt"
+    "source": "home/src/main/java/com/mamxanh/app/feature/home/presentation/ui/home/BioHomeScreen.kt"
   },
   {
     "name": "home-bottom-navigation",
@@ -52,6 +52,6 @@
   {
     "name": "tasks-calendar",
     "preview": "TaskCalendarPreview",
-    "source": "tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/TaskCalendar.kt"
+    "source": "tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/component/TaskCalendar.kt"
   }
 ]

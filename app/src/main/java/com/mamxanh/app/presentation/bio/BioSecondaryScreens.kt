@@ -2,32 +2,32 @@ package com.mamxanh.app.presentation.bio
 
 import androidx.compose.ui.res.stringResource
 import com.mamxanh.core.ui.R
-import com.mamxanh.app.feature.catalog.presentation.CollectionGoalDisplay
-import com.mamxanh.app.feature.catalog.presentation.speciesDisplay
-import com.mamxanh.app.feature.catalog.presentation.toEncyclopediaGoals
-import com.mamxanh.app.feature.catalog.presentation.SpeciesTreeDisplay
+import com.mamxanh.app.feature.catalog.presentation.ui.encyclopedia.CollectionGoalDisplay
+import com.mamxanh.app.feature.catalog.presentation.model.speciesDisplay
+import com.mamxanh.app.feature.catalog.presentation.ui.encyclopedia.toEncyclopediaGoals
+import com.mamxanh.app.feature.catalog.presentation.model.SpeciesTreeDisplay
 import com.mamxanh.app.feature.catalog.presentation.navigation.EncyclopediaRouteContent
 import com.mamxanh.app.feature.catalog.presentation.navigation.SpeciesRouteContent
-import com.mamxanh.app.feature.stats.presentation.AchievementDisplay
-import com.mamxanh.app.feature.stats.presentation.TimelineMemory
-import com.mamxanh.app.feature.stats.domain.TimelineRelated
+import com.mamxanh.app.feature.stats.presentation.ui.achievements.AchievementDisplay
+import com.mamxanh.app.feature.stats.presentation.ui.timeline.TimelineMemory
+import com.mamxanh.app.feature.stats.domain.model.TimelineRelated
 import com.mamxanh.app.feature.stats.presentation.navigation.TimelineRouteContent
-import com.mamxanh.app.feature.stats.presentation.WeeklyReviewDisplay
+import com.mamxanh.app.feature.stats.presentation.ui.review.WeeklyReviewDisplay
 import com.mamxanh.app.feature.stats.presentation.navigation.WeeklyReviewRouteContent
 import com.mamxanh.app.feature.tasks.presentation.navigation.RestRouteContent
-import com.mamxanh.app.feature.tasks.presentation.RestScreenState
-import com.mamxanh.app.feature.tasks.presentation.InsightTaskLink
-import com.mamxanh.app.feature.tasks.presentation.TaskInsightsDisplay
-import com.mamxanh.app.feature.tasks.presentation.TaskCalendar
-import com.mamxanh.app.feature.tasks.presentation.TaskCalendarDay
-import com.mamxanh.app.feature.tasks.presentation.TaskCalendarStatus
+import com.mamxanh.app.feature.tasks.presentation.ui.rest.RestScreenState
+import com.mamxanh.app.feature.tasks.presentation.ui.insights.InsightTaskLink
+import com.mamxanh.app.feature.tasks.presentation.ui.insights.TaskInsightsDisplay
+import com.mamxanh.app.feature.tasks.presentation.component.TaskCalendar
+import com.mamxanh.app.feature.tasks.presentation.component.TaskCalendarDay
+import com.mamxanh.app.feature.tasks.presentation.component.TaskCalendarStatus
 import com.mamxanh.app.feature.tasks.presentation.navigation.InsightsRouteContent
 
-import com.mamxanh.app.presentation.ui.design.*
+import com.mamxanh.app.core.components.design.*
 
-import com.mamxanh.app.presentation.ui.design.AppColors
-import com.mamxanh.app.presentation.ui.design.AppDimensions
-import com.mamxanh.app.presentation.ui.design.AppTypography
+import com.mamxanh.app.core.components.design.AppColors
+import com.mamxanh.app.core.components.design.AppDimensions
+import com.mamxanh.app.core.components.design.AppTypography
 
 import com.mamxanh.shared.localization.TextKey
 

@@ -1,9 +1,9 @@
 package com.mamxanh.app.feature.tree.presentation.components
 
-import com.mamxanh.app.presentation.ui.design.AppColors
-import com.mamxanh.app.presentation.ui.design.AppDimensions
-import com.mamxanh.app.presentation.ui.design.AppOpacity
-import com.mamxanh.app.presentation.ui.design.AppTypography
+import com.mamxanh.app.core.components.design.AppColors
+import com.mamxanh.app.core.components.design.AppDimensions
+import com.mamxanh.app.core.components.design.AppOpacity
+import com.mamxanh.app.core.components.design.AppTypography
 
 import com.mamxanh.shared.localization.TextKey
 
@@ -26,8 +26,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mamxanh.shared.model.Tree
-import com.mamxanh.app.presentation.ui.*
-import com.mamxanh.app.presentation.ui.components.*
+import com.mamxanh.app.core.components.*
+import com.mamxanh.app.core.components.components.*
 
 @Composable
 fun TreePortrait(tree: Tree, modifier: Modifier = Modifier, sharedTreeModifier: Modifier = Modifier) {

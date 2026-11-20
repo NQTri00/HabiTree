@@ -1,8 +1,8 @@
 package com.mamxanh.app.feature.tasks.presentation.di
 
-import com.mamxanh.app.feature.tasks.domain.FocusSessionCommands
-import com.mamxanh.app.feature.tasks.presentation.TasksViewModel
-import com.mamxanh.app.feature.tasks.presentation.EngagementViewModel
+import com.mamxanh.app.feature.tasks.domain.repository.FocusSessionCommands
+import com.mamxanh.app.feature.tasks.presentation.ui.list.TasksViewModel
+import com.mamxanh.app.feature.tasks.presentation.ui.engagement.EngagementViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 

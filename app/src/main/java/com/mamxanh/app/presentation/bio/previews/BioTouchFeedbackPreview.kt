@@ -1,6 +1,6 @@
 package com.mamxanh.app.presentation.bio
 
-import com.mamxanh.app.presentation.ui.design.*
+import com.mamxanh.app.core.components.design.*
 
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
-import com.mamxanh.app.presentation.ui.design.AppDimensions
+import com.mamxanh.app.core.components.design.AppDimensions
 import com.mamxanh.shared.localization.AppText
 import com.mamxanh.shared.localization.AppLanguage
 import com.mamxanh.shared.localization.TextKey

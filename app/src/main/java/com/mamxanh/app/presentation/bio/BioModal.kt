@@ -2,15 +2,15 @@ package com.mamxanh.app.presentation.bio
 
 import androidx.compose.ui.res.stringResource
 import com.mamxanh.core.ui.R
-import com.mamxanh.app.presentation.ui.design.*
+import com.mamxanh.app.core.components.design.*
 
-import com.mamxanh.app.presentation.ui.design.AppColors
-import com.mamxanh.app.presentation.ui.design.AppDimensions
-import com.mamxanh.app.presentation.ui.design.AppIcons
-import com.mamxanh.app.presentation.ui.design.AppOpacity
-import com.mamxanh.app.presentation.ui.design.AppRadii
-import com.mamxanh.app.presentation.ui.design.AppSpacing
-import com.mamxanh.app.presentation.ui.design.AppTypography
+import com.mamxanh.app.core.components.design.AppColors
+import com.mamxanh.app.core.components.design.AppDimensions
+import com.mamxanh.app.core.components.design.AppIcons
+import com.mamxanh.app.core.components.design.AppOpacity
+import com.mamxanh.app.core.components.design.AppRadii
+import com.mamxanh.app.core.components.design.AppSpacing
+import com.mamxanh.app.core.components.design.AppTypography
 
 
 

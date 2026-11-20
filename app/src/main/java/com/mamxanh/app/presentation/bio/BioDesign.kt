@@ -5,12 +5,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.mamxanh.app.R as AppR
 import com.mamxanh.core.ui.R
-import com.mamxanh.app.presentation.ui.design.AppThemeEffects
-import com.mamxanh.app.presentation.ui.design.AppColors
-import com.mamxanh.app.presentation.ui.design.AppDimensions
-import com.mamxanh.app.presentation.ui.design.AppOpacity
-import com.mamxanh.app.presentation.ui.design.AppRadii
-import com.mamxanh.app.presentation.ui.design.AppTypography
+import com.mamxanh.app.core.components.design.AppThemeEffects
+import com.mamxanh.app.core.components.design.AppColors
+import com.mamxanh.app.core.components.design.AppDimensions
+import com.mamxanh.app.core.components.design.AppOpacity
+import com.mamxanh.app.core.components.design.AppRadii
+import com.mamxanh.app.core.components.design.AppTypography
 
 
 
@@ -28,9 +28,9 @@ import androidx.compose.ui.semantics.*
 import androidx.compose.ui.text.font.*
 import androidx.compose.ui.text.style.*
 import androidx.compose.ui.unit.*
-import com.mamxanh.app.presentation.ui.GardenTypography
+import com.mamxanh.app.core.components.GardenTypography
 
-import com.mamxanh.app.presentation.ui.design.*
+import com.mamxanh.app.core.components.design.*
 
 @Composable internal fun BioTheme(world:BioWorld,treeId:String,content:@Composable () -> Unit) {
     val species=world.tree(treeId)?.s("species")?:"succulent"
