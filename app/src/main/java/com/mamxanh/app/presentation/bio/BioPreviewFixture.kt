@@ -33,7 +33,7 @@ import android.content.res.Configuration
   override fun requestInputMode(inputMode:InputMode)=inputMode==InputMode.Touch
  }}
  val world=remember(context){BioWorld.reference(context).also{if(modal=="focus-end")it.state.put("focus",json("id" to "reference","title" to AppText.forLanguage(TextKey.CopyMotKhoangChoRiengMinhCcf66e, language),"state" to "RUNNING","remaining" to 1500))}}
- val ui=remember{BioController(route,param,modal).apply{modalId=id;homeTree=home;onboardingStep=step;this.busy=requestedBusy;fields.putAll(referenceFields);if(expanded)tabs["expanded"]="true";if(bottom)tabs["scrollBottom"]="true";if(sheetBottom)tabs["sheetBottom"]="true";if(tab.isNotBlank()){val parts=tab.split(':');tabs[parts[0]]=parts[1]}}}
+ val ui=remember{BioController(route,param,modal).apply{modalId=id;homeTreeState.selectedId=home;onboarding.step=step;this.busy=requestedBusy;restoreFields(referenceFields);if(expanded)tabs["expanded"]="true";if(bottom)tabs["scrollBottom"]="true";if(sheetBottom)tabs["sheetBottom"]="true";if(tab.isNotBlank()){val parts=tab.split(':');setTab(parts[0],parts[1])}}}
  CompositionLocalProvider(LocalInputModeManager provides touch,LocalContext provides context){
   Box(Modifier.fillMaxSize().focusRequester(initialFocus).focusable()){BioApplication(world,ui)}
  }

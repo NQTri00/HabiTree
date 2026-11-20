@@ -5,6 +5,7 @@ import com.mamxanh.shared.localization.TextKey
 import com.mamxanh.shared.localization.AppText
 
 import android.content.Context
+import com.mamxanh.app.feature.garden.domain.GardenCollection
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -24,6 +25,8 @@ internal data class BioWorld(
     val loading: Boolean = false,
     val native: Boolean = false,
     val inventoryQuantities: Map<String, Int>? = null,
+    val gardenCollection: GardenCollection? = null,
+    val plantingPlots: List<Int>? = null,
 ) {
     val state get()=data.o("state")
     val catalog get()=data.o("catalog")
@@ -44,6 +47,7 @@ internal data class BioWorld(
     fun inventoryCount(id: String, accessory: Boolean): Int =
         if (accessory) owned(id) else inventoryQuantities?.getOrDefault(id, 0) ?: count(id)
     fun emptyPlots():List<Int> {
+        plantingPlots?.let { return it }
         val all=state.optJSONArray("openPlots")?.let{a->(0 until a.length()).map{a.optInt(it)}}?:(1..state.i("unlocked",5)).toList()
         return all.filter{p->trees.none{it.i("plot")==p}}
     }

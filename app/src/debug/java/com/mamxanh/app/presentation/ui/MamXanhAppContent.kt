@@ -74,7 +74,7 @@ fun MamXanhAppContent(
             else if (app.inventoryOpen) {
                 InventoryScreen(
                     state = InventoryUiState(
-                        seeds = com.mamxanh.app.feature.garden.domain.model.seedCatalog.map {
+                        seeds = com.mamxanh.shared.model.catalog.map {
                             InventorySeed(it.id, it.name, wallet.inventory[it.id] ?: 0)
                         },
                         items = com.mamxanh.shared.model.careProducts.map {
@@ -120,7 +120,15 @@ fun MamXanhAppContent(
                     val treeSharedModifier = Modifier
                     when {
                         routeTree != null -> TreeInteractionScreen(
-                            tree = routeTree,
+                            tree = com.mamxanh.shared.model.Tree(
+                                id = routeTree.id,
+                                speciesId = routeTree.speciesId,
+                                name = routeTree.name,
+                                growth = routeTree.growth,
+                                planted = routeTree.planted,
+                                decoration = routeTree.decoration,
+                                wateredToday = routeTree.wateredToday,
+                            ),
                             state = treeState,
                             fertilizerCount = com.mamxanh.shared.model.FertilizerTier.entries.sumOf { wallet.inventory[it.itemId] ?: 0 },
                             inventory = wallet.inventory,

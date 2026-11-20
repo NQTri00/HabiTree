@@ -12,6 +12,7 @@ import com.mamxanh.app.feature.tasks.presentation.TaskDetailDisplay
 import com.mamxanh.app.feature.tasks.presentation.navigation.TaskDetailRouteContent
 import com.mamxanh.app.feature.tasks.presentation.TaskFormDisplay
 import com.mamxanh.app.feature.tasks.presentation.TaskFormField
+import com.mamxanh.app.feature.tasks.presentation.taskFormReward
 import com.mamxanh.app.feature.tasks.presentation.navigation.TaskFormRouteContent
 import com.mamxanh.app.feature.tasks.presentation.TaskTemplateDisplay
 import com.mamxanh.app.feature.tasks.presentation.navigation.TemplatesRouteContent
@@ -99,24 +100,16 @@ internal fun taskDetailRouteContent(world: BioWorld, ui: BioController, argument
 internal fun taskFormRouteContent(world: BioWorld, ui: BioController, argument: String): TaskFormRouteContent {
     val initial = taskFormInitial(world, argument)
     val values = TaskFormField.entries.associateWith { field ->
-        val key = field.name.lowercase()
-        ui.fields[key] ?: initial.s(key, if (field == TaskFormField.Minutes) "5" else "")
+        val key = field.savedKey
+        ui.taskDraft[field] ?: initial.s(key, if (field == TaskFormField.Minutes) "5" else "")
     }
-    val timer = values[TaskFormField.Verification] == "TIMER"
-    val minutes = values[TaskFormField.Minutes].orEmpty().toIntOrNull() ?: 5
-    val reward = if (timer) when {
-        minutes >= 45 -> 20
-        minutes >= 20 -> 15
-        else -> 10
-    } else 8
+    val reward = taskFormReward(
+        values[TaskFormField.Verification].orEmpty(),
+        values[TaskFormField.Minutes].orEmpty(),
+    )
     return TaskFormRouteContent(
-        state = TaskFormDisplay(values, ui.fields["task-error"].orEmpty(), ui.fields["task-error-attempt"], reward),
-        onFieldChanged = { field, value ->
-            val key = field.name.lowercase()
-            ui.fields[key] = value
-            ui.dirty = true
-            if (ui.fields["task-error"] == key) ui.fields["task-error"] = ""
-        },
+        state = TaskFormDisplay(values, ui.taskDraft.error, ui.taskDraft.errorAttempt, reward),
+        onFieldChanged = ui.taskDraft::update,
     )
 }
 
@@ -138,8 +131,8 @@ internal fun focusRouteContent(world: BioWorld, ui: BioController, argument: Str
             }.map { FocusTaskChoice(it.s("id"), it.s("title"), it.i("minutes")) },
             history = world.state.a("focusHistory").objects().map { it.s("title") },
         ),
-        onTask = { ui.fields["focus:task"] = it },
-        onMinutes = { ui.fields["focus:minutes"] = it },
+        onTask = { ui.taskSelection.focusTask = it },
+        onMinutes = { ui.taskSelection.focusMinutes = it },
     )
 }
 
@@ -164,19 +157,17 @@ internal fun templatesRouteContent(world: BioWorld, ui: BioController): Template
     return TemplatesRouteContent(
         templates = world.catalog.a("templates").objects().map { it.toTemplateDisplay() },
         chosen = chosen,
-        onToggle = { id -> ui.fields["template:$id"] = (id !in chosen).toString() },
+        onToggle = ui.taskSelection::toggleTemplate,
     )
 }
 
 internal fun settingsRouteContent(world: BioWorld, ui: BioController): SettingsRouteContent {
     val settings = world.settings
-    val options = listOf("paused", "treeReminders", "breakPrompts", "reducedMotion").associateWith { key ->
-        ui.fields["settings:$key"]?.toBoolean() ?: settings.b(key)
-    }
+    val options = ui.settingsRequests.reminderOptions { settings.b(it) }
     return SettingsRouteContent(
         state = SettingsDisplay(options, settings.s("quietStart", "22:00"), settings.s("quietEnd", "07:00")),
         onLanguage = { ui.send("language", mapOf("tag" to it)) },
-        onToggle = { key, value -> ui.fields["settings:$key"] = value.toString() },
+        onToggle = ui.settingsRequests::setReminder,
         onSave = { start, end ->
             ui.send("settings", options.mapValues { it.value.toString() } + mapOf("quietStart" to start, "quietEnd" to end))
         },

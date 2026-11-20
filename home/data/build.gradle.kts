@@ -19,5 +19,6 @@ kotlin {
 
 dependencies {
     implementation(project(":home:domain"))
+    implementation(project(":shared"))
     implementation(libs.koin.core)
 }

@@ -3,10 +3,10 @@ package com.mamxanh.app.feature.inventory.presentation
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.mamxanh.app.presentation.ui.design.*
-import com.mamxanh.shared.localization.AppText
-import com.mamxanh.shared.localization.TextKey
+import com.mamxanh.core.ui.R
 
 @Composable
 fun BioInventoryScreen(
@@ -19,9 +19,9 @@ fun BioInventoryScreen(
 ) {
     BioTabs(
         listOf(
-            "seeds" to AppText.text(TextKey.CopyHatGiongF02257),
-            "care" to AppText.text(TextKey.CopyDungCu913b1a),
-            "accessories" to AppText.text(TextKey.CopyPhuKien0852d7),
+            "seeds" to stringResource(R.string.copy_hat_giong_f02257),
+            "care" to stringResource(R.string.copy_dung_cu_913b1a),
+            "accessories" to stringResource(R.string.copy_phu_kien_0852d7),
         ),
         tab,
         onTab,
@@ -29,14 +29,14 @@ fun BioInventoryScreen(
     if (itemCount > 0) {
         BioGrid(itemCount, content = item)
         BioButton(
-            if (tab == "accessories") AppText.text(TextKey.CopyMuaPhuKien7055c4) else AppText.text(TextKey.CopyGheTiemCb74e9),
+            if (tab == "accessories") stringResource(R.string.copy_mua_phu_kien_7055c4) else stringResource(R.string.copy_ghe_tiem_cb74e9),
             onBuy,
             Modifier.fillMaxWidth(),
             "shop",
             true,
         )
     } else {
-        BioEmpty(AppText.text(TextKey.CopyTuiDangTrong37bf7b),AppText.text(TextKey.CopyBanCoTheMuaVaDungNgayTrongTiem784a6a),"bag",AppText.text(TextKey.CopyGheTiemCb74e9),onShop)
+        BioEmpty(stringResource(R.string.copy_tui_dang_trong_37bf7b),stringResource(R.string.copy_ban_co_the_mua_va_dung_ngay_trong_tiem_784a6a),"bag",stringResource(R.string.copy_ghe_tiem_cb74e9),onShop)
     }
 }
 

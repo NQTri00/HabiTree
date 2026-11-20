@@ -14,17 +14,6 @@ import com.mamxanh.app.presentation.ui.design.*
 import com.mamxanh.shared.localization.AppText
 import com.mamxanh.shared.localization.TextKey
 
-enum class TaskFormField {
-    Title, Kind, Category, Due, Frequency, Days, Verification, Minutes, Description, Start, End, Reminder,
-}
-
-data class TaskFormDisplay(
-    val values: Map<TaskFormField, String>,
-    val error: String,
-    val errorAttempt: String?,
-    val reward: Int,
-)
-
 @Composable
 fun TaskFormScreen(state: TaskFormDisplay, onFieldChanged: (TaskFormField, String) -> Unit) {
     fun value(field: TaskFormField) = state.values[field].orEmpty()

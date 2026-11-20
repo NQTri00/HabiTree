@@ -26,10 +26,14 @@ import com.mamxanh.app.BuildConfig
 import com.mamxanh.app.data.BackupService
 import com.mamxanh.app.feature.garden.domain.GardenCollectionRepository
 import com.mamxanh.app.feature.garden.domain.GardenRepository
+import com.mamxanh.app.feature.garden.domain.availablePlantingPlots
 import com.mamxanh.app.feature.inventory.domain.InventoryRepository
 import com.mamxanh.app.feature.home.domain.HomeTreeSelection
+import com.mamxanh.app.feature.home.domain.OnboardingRepository
 import com.mamxanh.app.feature.tree.domain.TreeRepository
 import com.mamxanh.app.feature.settings.domain.SaveReminderSettingsUseCase
+import com.mamxanh.app.feature.settings.presentation.BackupImportSummary
+import com.mamxanh.app.feature.settings.presentation.NotificationPermissionResult
 import com.mamxanh.app.feature.shop.domain.ShopRepository
 import com.mamxanh.app.feature.stats.domain.LoadGardenStatistics
 import com.mamxanh.app.feature.stats.domain.SaveJournalNoteUseCase
@@ -84,7 +88,13 @@ private fun nativeWorld(
     data.put("days",array(e.days.map{json("date" to it.date,"state" to it.state)}))
     data.put("insights",array(e.insights.map{i->json("taskId" to i.taskId,"longest" to i.longest,"rate" to i.rate,"focusMinutes" to i.focusMinutes,"commonHour" to i.commonHour,"suggestion" to i.suggestion,"days" to array(i.days.map{json("date" to it.date,"state" to it.state)}))}))
     data.put("review",e.review?.let{r->json("start" to r.start,"scheduled" to r.scheduled,"completed" to r.completed,"previousRate" to r.previousRate,"focusMinutes" to r.focusMinutes,"earned" to r.earned,"spent" to r.spent,"careDays" to r.careDays,"milestones" to r.milestones,"consistent" to r.consistent,"improve" to r.improve,"reflection" to r.reflection)}?:JSONObject())
-    return BioWorld(data,native=true,inventoryQuantities=inventory.quantities())
+    return BioWorld(
+        data,
+        native = true,
+        inventoryQuantities = inventory.quantities(),
+        gardenCollection = collection,
+        plantingPlots = g.availablePlantingPlots(),
+    )
 }
 
 /** Native database/OS adapter. The presentation used here is also the preview target. */
@@ -93,6 +103,7 @@ private fun nativeWorld(
     val garden = koinInject<GardenRepository>()
     val collectionRepository = koinInject<GardenCollectionRepository>()
     val homeSelection = koinInject<HomeTreeSelection>()
+    val onboarding = koinInject<OnboardingRepository>()
     val treeRepository = koinInject<TreeRepository>()
     val shop = koinInject<ShopRepository>()
     val taskRepository = koinInject<TaskRepository>()
@@ -104,11 +115,11 @@ private fun nativeWorld(
     val permissionPrefs=remember{context.getSharedPreferences("engagement_permissions",Context.MODE_PRIVATE)}
     val service=remember{BackupService(context.applicationContext,storage,BuildConfig.VERSION_NAME)}
     val ui = rememberSaveable(saver = BioController.Saver) {
-        BioController().apply { homeTree = homeSelection.savedId() }
+        BioController().apply { homeTreeState.selectedId = homeSelection.savedId() }
     }
     var world by remember{mutableStateOf(BioWorld(JSONObject(reference.data.toString()).apply{put("state",json("coins" to 0,"trees" to JSONArray(),"tasks" to JSONArray(),"inventory" to JSONObject(),"owned" to JSONObject(),"settings" to JSONObject()))},loading=true,native=true))}
     var pending by remember{mutableStateOf<GameBackup?>(null)}
-    val homeSpecies=world.tree(ui.homeTree)?.s("species").orEmpty()
+    val homeSpecies=world.tree(ui.homeTreeState.selectedId)?.s("species").orEmpty()
     LaunchedEffect(homeSpecies,world.loading){
         if(!world.loading)withContext(Dispatchers.IO){HabiTreeLauncherIcon.update(context.applicationContext,homeSpecies)}
     }
@@ -116,7 +127,7 @@ private fun nativeWorld(
         world = withContext(Dispatchers.IO) {
             nativeWorld(storage, reference, service, inventory, garden, collectionRepository, taskRepository, loadStatistics)
         }
-        ui.homeTree = homeSelection.resolve(ui.homeTree, world.trees.map { it.s("id") })
+        ui.homeTreeState.reconcile(homeSelection, world.trees.map { it.s("id") })
     }
     val lifecycleOwner=LocalLifecycleOwner.current
     LaunchedEffect(storage,lifecycleOwner){
@@ -135,8 +146,40 @@ private fun nativeWorld(
     fun fileOperation(action:()->Unit){if(ui.busy)return;ui.busy=true;scope.launch{try{withContext(Dispatchers.IO){action()};refresh();ui.result(BioResult(true,AppText.text(TextKey.CopyDaLuuDuLieuD8a848)))}catch(_:Exception){ui.result(BioResult(false,AppText.text(TextKey.CopyKhongTheXuLyTepDuLieuHienTaiGiuNguyenAa333d)))}}}
     val export=rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("application/octet-stream")){uri->if(uri!=null)fileOperation{service.export(uri)}}
     val diagnostics=rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("text/plain")){uri->if(uri!=null)fileOperation{service.diagnostics(uri)}}
-    val import=rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()){uri->if(uri!=null&&!ui.busy){ui.busy=true;scope.launch{try{val backup=withContext(Dispatchers.IO){service.inspect(uri)};pending=backup;ui.fields["backupTasks"]=backup.count("tasks").toString();ui.fields["backupTrees"]=backup.count("trees").toString();ui.fields["backupOccurrences"]=backup.count("occurrences").toString();ui.fields["backupCreated"]=if(backup.createdAt>0)java.text.DateFormat.getDateTimeInstance(java.text.DateFormat.SHORT,java.text.DateFormat.SHORT,bioLocale()).format(Date(backup.createdAt))else AppText.text(TextKey.CopyKhongRo8af7da);ui.show("confirm-import");ui.busy=false}catch(_:Exception){ui.result(BioResult(false,AppText.text(TextKey.CopyKhongTheXuLyTepDuLieuHienTaiGiuNguyenAa333d)))}}}}
-    val permission=rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()){allowed->ui.message=if(allowed)AppText.text(TextKey.CopyDaBatThongBao5f71c6)else AppText.text(TextKey.CopyThongBaoTatViecVaBoDemVanDungDuoc70a974)}
+    val import = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        if (uri != null && !ui.busy) {
+            ui.busy = true
+            scope.launch {
+                try {
+                    val backup = withContext(Dispatchers.IO) { service.inspect(uri) }
+                    pending = backup
+                    val created = if (backup.createdAt > 0) {
+                        java.text.DateFormat.getDateTimeInstance(
+                            java.text.DateFormat.SHORT,
+                            java.text.DateFormat.SHORT,
+                            bioLocale(),
+                        ).format(Date(backup.createdAt))
+                    } else {
+                        AppText.text(TextKey.CopyKhongRo8af7da)
+                    }
+                    ui.settingsRequests.backupImport = BackupImportSummary(
+                        tasks = backup.count("tasks").toString(),
+                        trees = backup.count("trees").toString(),
+                        occurrences = backup.count("occurrences").toString(),
+                        created = created,
+                    )
+                    ui.show("confirm-import")
+                    ui.busy = false
+                } catch (_: Exception) {
+                    ui.result(BioResult(false, AppText.text(TextKey.CopyKhongTheXuLyTepDuLieuHienTaiGiuNguyenAa333d)))
+                }
+            }
+        }
+    }
+    val permission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { allowed ->
+        val result = if (allowed) NotificationPermissionResult.Granted else NotificationPermissionResult.Denied
+        ui.message = result.message()
+    }
     ui.execute={command->
         when(command.action){
             "language"->com.mamxanh.app.presentation.ui.localization.AppLanguageController.select(context,command.values["tag"].orEmpty())
@@ -160,7 +203,7 @@ private fun nativeWorld(
                         val result = withContext(Dispatchers.IO) {
                             executeNative(
                                 storage, inventory, garden, treeRepository, shop, taskRepository, focusCommands,
-                                saveJournalNote, saveReminderSettings, service, pending, command,
+                                saveJournalNote, saveReminderSettings, onboarding, service, pending, command,
                             )
                         }
                         refresh()

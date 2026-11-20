@@ -655,8 +655,10 @@ copy_chua_co_phien_hoan_thanh_fd9386:
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioForms.kt
 copy_bo_dem_0_phut_a99be5:
   order: 108
-  vi: Bộ đếm · {0} phút
-  en: Timer · {0} min
+  vi: Bộ đếm · {minutes} phút
+  en: Timer · {minutes} min
+  placeholders:
+    minutes: integer
   canonical: false
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioForms.kt
 copy_cham_f4623f:

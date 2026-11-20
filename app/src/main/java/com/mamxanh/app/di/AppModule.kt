@@ -15,9 +15,12 @@ import com.mamxanh.app.feature.shop.data.di.shopDataModule
 import com.mamxanh.app.feature.shop.presentation.di.shopPresentationModule
 import com.mamxanh.app.feature.garden.presentation.di.gardenPresentationModule
 import com.mamxanh.app.feature.garden.data.gardenCollectionDataModule
+import com.mamxanh.app.feature.garden.data.gardenDataModule
 import com.mamxanh.app.feature.tasks.data.focusSessionDataModule
+import com.mamxanh.app.feature.tasks.data.taskDataModule
 import com.mamxanh.app.feature.tasks.presentation.di.tasksPresentationModule
 import com.mamxanh.app.feature.home.presentation.di.homePresentationModule
+import com.mamxanh.app.feature.home.data.homeDashboardDataModule
 import com.mamxanh.app.feature.home.data.homeTreeSelectionDataModule
 import com.mamxanh.shared.data.GameDatabase
 import com.mamxanh.shared.di.sharedModule
@@ -31,12 +34,15 @@ fun appModule(configProvider: HabiTreeConfigProvider = HabiTreeConfigProvider())
     single { configProvider }
     includes(*featureNavigation.map { it.navigationModule }.toTypedArray())
     includes(
+        homeDashboardDataModule,
         homeTreeSelectionDataModule,
         focusSessionDataModule,
+        taskDataModule,
         inventoryDataModule,
         shopDataModule,
         treeDataModule,
         gardenCollectionDataModule,
+        gardenDataModule,
         statsDataModule,
         settingsDataModule,
     )

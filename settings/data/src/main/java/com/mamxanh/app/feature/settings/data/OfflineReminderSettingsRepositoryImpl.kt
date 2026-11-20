@@ -3,7 +3,9 @@ package com.mamxanh.app.feature.settings.data
 import com.mamxanh.app.core.domain.RepositoryResult
 import com.mamxanh.app.feature.settings.domain.ReminderSettings
 import com.mamxanh.app.feature.settings.domain.ReminderSettingsRepository
+import com.mamxanh.app.feature.settings.domain.TaskReminderSettings
 import com.mamxanh.shared.data.GameStorage
+import com.mamxanh.shared.model.ReminderPreference
 import com.mamxanh.shared.model.EngagementAction
 import com.mamxanh.shared.model.EngagementSettings
 
@@ -19,7 +21,14 @@ internal class OfflineReminderSettingsRepositoryImpl(
             reducedMotion = settings.reducedMotion,
             breakPrompts = settings.breakPrompts,
         )
-        val result = storage.engage(EngagementAction.Settings(stored))
+        return save(EngagementAction.Settings(stored))
+    }
+
+    override fun save(settings: TaskReminderSettings): RepositoryResult<String> =
+        save(EngagementAction.Reminder(ReminderPreference(settings.taskId, settings.mode, settings.minute, settings.followUp)))
+
+    private fun save(action: EngagementAction): RepositoryResult<String> {
+        val result = storage.engage(action)
         return if (result.success) RepositoryResult.Success(result.message) else RepositoryResult.Error(result.message)
     }
 }

@@ -12,11 +12,16 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import com.mamxanh.app.feature.garden.domain.CollectionMilestone
 import com.mamxanh.app.presentation.ui.design.*
 import com.mamxanh.shared.localization.AppText
 import com.mamxanh.shared.localization.TextKey
 
 data class CollectionGoalDisplay(val title: String, val progress: Int, val target: Int, val reward: String)
+
+fun List<CollectionMilestone>.toEncyclopediaGoals(): List<CollectionGoalDisplay> =
+    filter { it.id != "expansion" && it.id != "section" }
+        .map { CollectionGoalDisplay(it.title, it.progress, it.target, it.reward) }
 
 @Composable
 fun EncyclopediaScreen(
@@ -45,26 +50,6 @@ fun EncyclopediaScreen(
         }
     }
 }
-
-data class SpeciesTreeDisplay(val id: String, val name: String)
-
-data class SpeciesDisplay(
-    val id: String,
-    val name: String,
-    val description: String,
-    val tier: String,
-    val status: String,
-    val discovered: Boolean,
-    val highest: Int,
-    val stages: Int,
-    val planted: Int,
-    val owned: Int,
-    val living: Int,
-    val firstPlanted: String,
-    val firstMatured: String,
-    val highestTree: Int?,
-    val trees: List<SpeciesTreeDisplay>,
-)
 
 @Composable
 fun SpeciesScreen(state: SpeciesDisplay, onTree: (String) -> Unit, onShop: () -> Unit) {

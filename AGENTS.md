@@ -23,6 +23,19 @@ concrete blocker that prevents all remaining authorized work after available
 recovery paths have been tried. In the latter case, report the blocker, what
 was tried, and what remains, and keep the migration marked unfinished.
 
+# Schedule migration verification after implementation
+
+Group related file moves, package and import updates, resource references, and
+Gradle wiring so the full migration can be reviewed coherently. During
+implementation, use lightweight source inspection and Git checks. Defer
+Gradle builds, test suites, emulator runs, and Compose preview batches until
+all available migration implementation is integrated. Earlier checks are
+reserved for a concrete blocker that requires execution to make further edits.
+
+After implementation, run required verification sequentially and reuse verified
+outputs where they cover the same source revision. Rerun affected checks after
+fixes, and publish the exact verified source and APK.
+
 # UI design verification
 
 For UI changes, compare fresh Android Studio Compose previews directly with the approved web design in `E:/Workspace/mamxanh-redesign` before declaring the work complete. If the layouts are visibly different, continue refining and rendering until they are similar. A successful build alone does not satisfy this requirement.

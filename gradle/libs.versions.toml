@@ -9,9 +9,11 @@ lifecycle = "2.9.4"
 composeBom = "2025.10.00"
 material3 = "1.4.0"
 koin = "4.1.1"
+coroutines = "1.9.0"
 navigation3 = "1.0.1"
 
 [libraries]
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 androidx-navigation3-runtime = { module = "androidx.navigation3:navigation3-runtime", version.ref = "navigation3" }
 androidx-navigation3-ui = { module = "androidx.navigation3:navigation3-ui", version.ref = "navigation3" }
 sqldelight-native = { module = "app.cash.sqldelight:native-driver", version.ref = "sqldelight" }

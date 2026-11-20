@@ -1,16 +1,11 @@
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
+    `java-library`
+    alias(libs.plugins.kotlin.jvm)
 }
 
-android {
-    namespace = "com.mamxanh.feature.tasks.domain"
-    compileSdk = 36
-    defaultConfig { minSdk = 24 }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 kotlin {
@@ -18,6 +13,6 @@ kotlin {
 }
 
 dependencies {
+    api(libs.kotlinx.coroutines.core)
     api(project(":core-domain"))
-    api(project(":shared"))
 }

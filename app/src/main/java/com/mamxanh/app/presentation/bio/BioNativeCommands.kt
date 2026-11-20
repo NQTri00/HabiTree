@@ -2,6 +2,8 @@ package com.mamxanh.app.presentation.bio
 
 import com.mamxanh.app.core.domain.RepositoryResult
 import com.mamxanh.app.data.BackupService
+import com.mamxanh.app.feature.home.domain.OnboardingRepository
+import com.mamxanh.app.feature.home.domain.OnboardingRequest
 import com.mamxanh.app.feature.garden.domain.GardenRepository
 import com.mamxanh.app.feature.garden.domain.eligiblePlantingPlot
 import com.mamxanh.app.feature.garden.domain.plantedTreeId
@@ -13,6 +15,7 @@ import com.mamxanh.app.feature.stats.domain.JournalNote
 import com.mamxanh.app.feature.stats.domain.SaveJournalNoteUseCase
 import com.mamxanh.app.feature.tasks.domain.FocusCommandResult
 import com.mamxanh.app.feature.tasks.domain.FocusSessionCommands
+import com.mamxanh.app.feature.tasks.domain.TaskOperationResult
 import com.mamxanh.app.feature.tasks.domain.TaskRepository
 import com.mamxanh.app.feature.tree.domain.TreeCareReceipt
 import com.mamxanh.app.feature.tree.domain.TreeRepository
@@ -23,8 +26,8 @@ import com.mamxanh.shared.localization.AppText
 import com.mamxanh.shared.localization.TextKey
 import com.mamxanh.shared.model.ActionResult
 import com.mamxanh.shared.model.EngagementAction
-import com.mamxanh.shared.model.ReminderPreference
-import com.mamxanh.shared.model.TaskConfig
+import com.mamxanh.app.feature.settings.domain.TaskReminderSettings
+import com.mamxanh.app.feature.tasks.domain.taskConfigFromDraft
 import java.util.UUID
 
 private fun clock(value:String):Int{if(value.isBlank())return -1;val m=Regex("^(\\d{1,2}):(\\d{2})$").matchEntire(value)?:return -2;val h=m.groupValues[1].toInt();val n=m.groupValues[2].toInt();return if(h in 0..23&&n in 0..59)h*60+n else -2}
@@ -39,12 +42,16 @@ internal fun executeNative(
     focusCommands: FocusSessionCommands,
     saveJournalNote: SaveJournalNoteUseCase,
     saveReminderSettings: SaveReminderSettingsUseCase,
+    onboarding: OnboardingRepository,
     backup: BackupService,
     pending: GameBackup?,
     command: BioCommand,
 ): BioResult {
     val parts=command.action.split(':');val action=parts[0];val id=parts.getOrElse(1){command.values["id"].orEmpty()};val v=command.values;val key=UUID.randomUUID().toString()
     fun result(r:ActionResult,route:String="",param:String="")=BioResult(r.success,r.message,if(r.success)route else "",param)
+    fun result(result: TaskOperationResult, route: String = "") =
+        BioResult(result.success, result.message, if (result.success) route else "")
+
     fun engage(a:EngagementAction,route:String="")=result(storage.engage(a),route)
     fun result(saved: RepositoryResult<String>, route: String = ""): BioResult = when (saved) {
         is RepositoryResult.Success -> BioResult(true, saved.value, route)
@@ -102,41 +109,38 @@ internal fun executeNative(
             val message = if (planted) TextKey.CopyMotMamXanhMoi63e3dc else TextKey.CopyKiemTraLaiHatVaOTrong36d949
             return BioResult(planted, AppText.text(message), if (planted) "tree" else "", treeId?.toString().orEmpty())
         }
-        "confirm-water-all" -> return result(garden.waterAll(key))
+        "confirm-water-all" -> return garden.waterAll(key).let { BioResult(it.success, it.message) }
         "confirm-unlock" -> return BioResult(garden.unlockPlot(id.toInt()), AppText.text(TextKey.CopyDaMoOTrong37fc9b))
         "confirm-remove", "confirm-sell" ->
             return treeResult(treeRepository.dispose(id.toLong(), action == "confirm-sell", key), "garden")
         "confirm-archive" -> return result(taskRepository.lifecycle(id.toLong(), "ARCHIVED"), "tasks")
         "lifecycle" -> return result(taskRepository.lifecycle(id.toLong(), parts.getOrElse(2) { "ACTIVE" }))
-        "save-task" -> {
-            val kind = v["kind"].orEmpty()
-            val config = TaskConfig(
-                title = v["title"].orEmpty(),
-                kind = kind,
-                category = v["category"].orEmpty(),
-                description = v["description"].orEmpty(),
-                frequency = if (kind == "TODO") "ONCE" else v["frequency"].orEmpty(),
-                days = v["days"].orEmpty(),
-                due = v["due"].orEmpty(),
-                verification = v["verification"].orEmpty(),
-                minutes = v["minutes"]?.toIntOrNull() ?: 5,
-                startMinute = clock(v["start"].orEmpty()),
-                endMinute = clock(v["end"].orEmpty()),
-                reminderMinute = clock(v["reminder"].orEmpty()),
-            )
-            return result(taskRepository.save(v["id"]?.toLongOrNull(), config), "tasks")
-        }
+        "save-task" -> return result(
+            taskRepository.save(v["id"]?.toLongOrNull(), taskConfigFromDraft(v, ::clock)),
+            "tasks",
+        )
         "start-focus" -> return result(focusCommands.start(v["task"]?.toLongOrNull() ?: 0, v["minutes"]?.toIntOrNull() ?: 25, key), "focus")
         "focus-pause" -> return result(focusCommands.pauseIfRunning())
         "focus-toggle" -> return focusResult(focusCommands.toggle())
         "confirm-focus-end" -> return focusResult(focusCommands.end())
-        "templates"->return engage(EngagementAction.Templates(v["ids"].orEmpty().split(',').filter{it.isNotBlank()},key))
+        "templates" -> return result(
+            taskRepository.addTemplates(v["ids"].orEmpty().split(',').filter { it.isNotBlank() }, key),
+        )
         "reflection" -> return result(saveJournalNote(JournalNote.WeeklyReflection(v["week"].orEmpty(), v["note"].orEmpty())))
         "rest"->return engage(EngagementAction.Rest(v["date"].orEmpty()))
         "protect"->return engage(EngagementAction.Protect(v["date"].orEmpty(),key))
         "confirm-ticket"->return engage(EngagementAction.BuyProtection(key))
         "memory-note" -> return result(saveJournalNote(JournalNote.TimelineMemory(v["id"].orEmpty(), v["note"].orEmpty())))
-        "reminder"->return engage(EngagementAction.Reminder(ReminderPreference(v["id"]?.toLongOrNull()?:0,v["mode"]?:"OFF",clock(v["minute"].orEmpty()),v["followUp"]=="true")))
+        "reminder" -> return result(
+            saveReminderSettings(
+                TaskReminderSettings(
+                    taskId = v["id"]?.toLongOrNull() ?: 0,
+                    mode = v["mode"] ?: "OFF",
+                    minute = clock(v["minute"].orEmpty()),
+                    followUp = v["followUp"] == "true",
+                ),
+            ),
+        )
         "settings" -> return result(
             saveReminderSettings(
                 ReminderSettings(
@@ -154,7 +158,19 @@ internal fun executeNative(
                 ?: return BioResult(false, AppText.text(TextKey.CopyKhongTimThayViec07c69c))
             return result(taskRepository.save(task.id, task.config.copy(frequency = "WEEKDAYS", days = "")))
         }
-        "onboard"->return engage(EngagementAction.Onboard(v["seed"]?:"succulent",v["category"]?:AppText.canonical(TextKey.CopyHocTapA51516),v["ids"].orEmpty().split(',').filter{it.isNotBlank()},key,v["skip"]=="true",v["remind"]=="true"),"home")
+        "onboard" -> return result(
+            onboarding.finish(
+                OnboardingRequest(
+                    seed = v["seed"] ?: "succulent",
+                    category = v["category"] ?: AppText.canonical(TextKey.CopyHocTapA51516),
+                    templateIds = v["ids"].orEmpty().split(',').filter { it.isNotBlank() },
+                    operationKey = key,
+                    skip = v["skip"] == "true",
+                    reminders = v["remind"] == "true",
+                ),
+            ),
+            "home",
+        )
         "accessory-buy" -> return result(treeRepository.buyAccessory(v["id"] ?: id, key))
         "accessory-use" -> return result(treeRepository.equipAccessory(v["id"] ?: id, v["tree"]?.toLongOrNull(), key))
         "unequip" -> return result(treeRepository.unequipAccessory(id.toLong()))

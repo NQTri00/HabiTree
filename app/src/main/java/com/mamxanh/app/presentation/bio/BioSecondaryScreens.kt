@@ -1,7 +1,8 @@
 package com.mamxanh.app.presentation.bio
 
 import com.mamxanh.app.feature.garden.presentation.CollectionGoalDisplay
-import com.mamxanh.app.feature.garden.presentation.SpeciesDisplay
+import com.mamxanh.app.feature.garden.presentation.speciesDisplay
+import com.mamxanh.app.feature.garden.presentation.toEncyclopediaGoals
 import com.mamxanh.app.feature.garden.presentation.SpeciesTreeDisplay
 import com.mamxanh.app.feature.garden.presentation.navigation.EncyclopediaRouteContent
 import com.mamxanh.app.feature.garden.presentation.navigation.SpeciesRouteContent
@@ -181,12 +182,15 @@ internal fun timelineRouteContent(world: BioWorld, ui: BioController): TimelineR
 
 internal fun encyclopediaRouteContent(world: BioWorld, ui: BioController): EncyclopediaRouteContent {
     val species = world.species
+    val collection = world.gardenCollection
     return EncyclopediaRouteContent(
-        discovered = world.records.count { it.b("discovered") },
+        discovered = collection?.species?.count { it.discovered }
+            ?: world.records.count { it.b("discovered") },
         speciesCount = species.size,
-        goals = world.data.a("goals").objects().filter { it.s("id") !in listOf("expansion", "section") }.map {
-            CollectionGoalDisplay(it.s("title"), it.i("n"), it.i("target", 1), it.s("reward"))
-        },
+        goals = collection?.milestones?.toEncyclopediaGoals()
+            ?: world.data.a("goals").objects().filter { it.s("id") !in listOf("expansion", "section") }.map {
+                CollectionGoalDisplay(it.s("title"), it.i("n"), it.i("target", 1), it.s("reward"))
+            },
         item = { index, modifier -> BioProduct(world, ui, species[index], modifier, encyclopedia = true) },
     )
 }
@@ -195,10 +199,11 @@ internal fun speciesRouteContent(world: BioWorld, ui: BioController, argument: S
     val species = world.species(argument)
     val id = species.s("id")
     val record = world.record(id)
+    val collected = world.gardenCollection?.species?.firstOrNull { it.id == id }
     val trees = world.trees.filter { it.s("species") == id }
     val noRecord = AppText.text(TextKey.CopyChuaGhiNhanF7654d)
     return SpeciesRouteContent(
-        state = SpeciesDisplay(
+        state = speciesDisplay(
             id = id,
             name = species.s("name"),
             description = species.s("description"),
@@ -209,15 +214,16 @@ internal fun speciesRouteContent(world: BioWorld, ui: BioController, argument: S
             stages = species.i("stages"),
             planted = record.i("planted"),
             owned = world.count(id),
-            living = trees.count { it.s("state") != "dead" },
             firstPlanted = record.s("firstPlanted", noRecord),
             firstMatured = record.s("firstMatured", noRecord),
-            highestTree = trees.maxOfOrNull { it.i("stage") },
-            trees = trees.map { SpeciesTreeDisplay(it.s("id"), it.s("name")) },
+            trees = trees.map {
+                SpeciesTreeDisplay(it.s("id"), it.s("name"), living = it.s("state") != "dead", stage = it.i("stage"))
+            },
+            collection = collected,
         ),
         onTree = { ui.go("tree", it) },
         onShop = {
-            ui.tabs["shop"] = "seeds"
+            ui.shopSelection.shopTab = "seeds"
             ui.go("shop")
         },
     )

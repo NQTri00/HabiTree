@@ -11,7 +11,9 @@ import com.mamxanh.app.feature.garden.domain.model.Garden
 import com.mamxanh.app.feature.garden.domain.model.Tree
 import com.mamxanh.app.feature.garden.presentation.GardenUiState
 import com.mamxanh.app.feature.tasks.domain.model.Task
-import com.mamxanh.app.feature.tasks.domain.model.today
+import com.mamxanh.shared.localization.AppText
+import com.mamxanh.shared.localization.TextKey
+import com.mamxanh.shared.feature.tasks.domain.model.today
 import com.mamxanh.app.feature.tasks.presentation.TasksUiState
 import com.mamxanh.app.feature.shop.domain.model.ShopWallet
 import com.mamxanh.app.feature.shop.presentation.ShopUiState
@@ -80,7 +82,7 @@ fun ReferenceTaskDialogPreview() {
 fun ReferenceAddTaskCompositionPreview() {
     MamXanhPreviewTheme {
         com.mamxanh.app.feature.tasks.presentation.dialog.AddTaskDialog(
-            onDismiss = {}, onSave = {}, initial = com.mamxanh.shared.model.TaskConfig(title = "Đọc 10 trang sách"))
+            onDismiss = {}, onSave = {}, initial = com.mamxanh.app.feature.tasks.domain.model.TaskConfig(title = "Đọc 10 trang sách", category = AppText.canonical(TextKey.CopyHocTapA51516)))
     }
 }
 
@@ -121,7 +123,7 @@ private fun ReferenceWorld(route: AppUiState, empty: Boolean = false, careUnavai
             ), false),
             tasks = TasksUiState(tasks = if (empty) emptyList() else listOf(
                 Task(1, "Đọc 10 trang sách", "HABIT", "Học tập", 10, "EVERY_DAY", "", "", 4, ""),
-                Task(2, "Uống đủ nước", "DAILY", "Sức khỏe", 10, "EVERY_DAY", "", today(), 2, today()),
+                Task(2, "Uống đủ nước", "DAILY", "Sức khỏe", 10, "EVERY_DAY", "", today(), 2, today(), doneToday = true),
                 Task(3, "Đi bộ 20 phút", "TODO", "Sức khỏe", 10, "ONCE", "", "", 0, "")
             ), isLoading = false, isAddingTask = addingTask),
             garden = GardenUiState(Garden(trees, inventory), false),

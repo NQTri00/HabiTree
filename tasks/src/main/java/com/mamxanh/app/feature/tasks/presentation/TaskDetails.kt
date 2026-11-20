@@ -19,7 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import com.mamxanh.app.presentation.ui.*
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.mamxanh.shared.model.Task
+import com.mamxanh.app.feature.tasks.domain.model.Task
 import com.mamxanh.app.presentation.ui.components.*
 @Composable
 fun TaskDetails(task: Task,state: TasksUiState,onIntent:(TasksIntent)->Unit) {

@@ -1,59 +1,34 @@
 package com.mamxanh.app.feature.garden.presentation
 
+import com.mamxanh.app.presentation.ui.components.GardenRichText as Text
 import com.mamxanh.app.presentation.ui.design.AppColors
 import com.mamxanh.app.presentation.ui.design.AppDimensions
-import com.mamxanh.app.presentation.ui.design.AppOpacity
 import com.mamxanh.app.presentation.ui.design.AppTypography
-
 import com.mamxanh.shared.localization.TextKey
-
 import com.mamxanh.shared.localization.AppText
-
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.lazy.grid.*
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.relocation.BringIntoViewRequester
-import androidx.compose.foundation.relocation.bringIntoViewRequester
-import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
 import androidx.compose.material.icons.rounded.Inventory2
 import androidx.compose.foundation.horizontalScroll
-import com.mamxanh.app.presentation.ui.components.GardenRichText as Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import com.mamxanh.app.feature.garden.domain.model.*
+import com.mamxanh.shared.model.catalog
 import com.mamxanh.app.presentation.ui.*
 import com.mamxanh.app.presentation.ui.components.*
-import com.mamxanh.core.ui.R
 
 @Composable
 fun GardenScreen(state: GardenUiState, onIntent: (GardenIntent) -> Unit, modifier: Modifier = Modifier,
@@ -65,11 +40,11 @@ fun GardenScreen(state: GardenUiState, onIntent: (GardenIntent) -> Unit, modifie
     val listState = rememberLazyGridState()
     var selectedPlotId by rememberSaveable(plantingSeedId, plantingPlotId) { mutableStateOf(plantingPlotId) }
     var unlockingPlotId by rememberSaveable { mutableStateOf<Int?>(null) }
-    val selectedSeed = seedCatalog.firstOrNull { it.id == plantingSeedId }
+    val selectedSeed = catalog.firstOrNull { it.id == plantingSeedId }
     val plots = garden.plots.ifEmpty {
         // Preview/legacy callers still get explicit empty slots without fake saved trees.
         val count = maxOf(5, garden.trees.size)
-        (1..count).map { com.mamxanh.shared.model.GardenPlot(it, true, garden.trees.getOrNull(it - 1)?.id) }
+        (1..count).map { GardenPlot(it, true, garden.trees.getOrNull(it - 1)?.id) }
     }
     var filter by rememberSaveable { mutableIntStateOf(0) }
     var waterAllKey by rememberSaveable { mutableStateOf<String?>(null) }
@@ -77,8 +52,8 @@ fun GardenScreen(state: GardenUiState, onIntent: (GardenIntent) -> Unit, modifie
         val status = garden.trees.firstOrNull { it.id == plot.treeId }?.status
         when(filter) {
             1 -> status?.canWater == true
-            2 -> status?.state == com.mamxanh.shared.model.TreeGrowthState.GROWING
-            3 -> status?.state == com.mamxanh.shared.model.TreeGrowthState.MATURE
+            2 -> status?.state == GardenTreeGrowth.Growing
+            3 -> status?.state == GardenTreeGrowth.Mature
             4 -> status?.alive == false
             else -> true
         }
@@ -123,8 +98,8 @@ fun GardenScreen(state: GardenUiState, onIntent: (GardenIntent) -> Unit, modifie
                             Text(tree?.name?:if(plot.isUnlocked)AppText.text(TextKey.CopyGieoCay31adde) else AppText.text(TextKey.CopyChuaMoB744b3),color=Deep,fontSize=AppTypography.Sp13,lineHeight=AppTypography.Sp18,fontWeight=FontWeight.SemiBold)
                             if(tree!=null){
                                 MintProgress(tree.status.stageProgress,Modifier.fillMaxWidth())
-                                Text("${tree.status.percentage}% · ${tree.status.stateLabel}",color=Muted,fontSize=AppTypography.Sp10,lineHeight=AppTypography.Sp14)
-                                Text(tree.status.waterLabel,color=Muted,fontSize=AppTypography.Sp11)
+                                Text("${tree.status.percentage}% · ${tree.status.stateLabel.ifBlank { AppText.text(TextKey.CopyDangLon40daab) }}",color=Muted,fontSize=AppTypography.Sp10,lineHeight=AppTypography.Sp14)
+                                Text(tree.status.waterLabel.ifBlank { AppText.text(TextKey.CopyCanTuoiA0957f) },color=Muted,fontSize=AppTypography.Sp11)
                                 if(tree.status.fertilizerLabel.isNotBlank())Text(tree.status.fertilizerLabel,color=Green,fontSize=AppTypography.Sp10)
                             }else Text(if(plot.isUnlocked)AppText.text(TextKey.CopyMotKhoiDauMoi280995) else AppText.text(TextKey.Copy0Xu251e68,com.mamxanh.shared.model.Balance.plot(plots.count{it.isUnlocked})),color=Muted,fontSize=AppTypography.Sp11,lineHeight=AppTypography.Sp16)
                         }
@@ -221,46 +196,6 @@ private fun GardenTreeIsland(tree: Tree, onClick: () -> Unit, modifier: Modifier
     }
 }
 
-private val PlantingDialogBounds = Modifier.widthIn(max = AppDimensions.Dp440).fillMaxWidth(.92f).heightIn(max = AppDimensions.Dp700)
-
-@Composable
-private fun PlantingDialog(seed: Species,count: Int,targetPlotId: Int?,availablePlotIds: List<Int>,
-    onSelectPlot:(Int)->Unit,onDismiss:()->Unit,onPlant:(String)->Unit) {
-    var name by rememberSaveable(seed.id){mutableStateOf("")}
-    var plotMenu by remember { mutableStateOf(false) }
-    val requester=remember{BringIntoViewRequester()}
-    val density=androidx.compose.ui.platform.LocalDensity.current
-    var focused by remember{mutableStateOf(false)}
-    val ime=WindowInsets.ime.getBottom(density)
-    LaunchedEffect(focused,ime){if(focused && ime>0){withFrameNanos{};requester.bringIntoView()}}
-    MintDialog(AppText.text(TextKey.CopyGieoCay31adde),onDismiss,AppText.text(TextKey.CopyGieoHat6d82a9),{onPlant(name)},confirmEnabled=count>0) {
-        Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp12)) {
-            PaintedGardenPlant(seed.id,Modifier.size(AppDimensions.Dp64))
-            Column(verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp4)) {
-                Text(seed.name,color=Deep,fontSize=AppTypography.Sp16,fontWeight=FontWeight.Bold)
-                MintStatusPill(AppText.text(TextKey.CopyTrongTui0HatD56e0e,count))
-            }
-        }
-        GardenTextField(name,{name=it},AppText.text(TextKey.CopyTenCayTuyChon3f3d38),Modifier.fillMaxWidth()
-            .bringIntoViewRequester(requester).onFocusChanged{focused=it.hasFocus},placeholder=AppText.text(TextKey.CopyMamBinhYenDf7062))
-        Text(AppText.text(TextKey.CopyBoTrongDeDungTenLoaiCayA7e5fc),color=Muted,fontSize=AppTypography.Sp11)
-        Box(Modifier.fillMaxWidth()) {
-            GardenFieldButton(AppText.text(TextKey.CopyOTrong0174f9e,targetPlotId?.toString()?.padStart(2,'0') ?: "—"),{plotMenu=true},Modifier.fillMaxWidth())
-            DropdownMenu(expanded=plotMenu,onDismissRequest={plotMenu=false}) {
-                availablePlotIds.forEach{id->DropdownMenuItem(text={Text(AppText.text(TextKey.CopyO03d2411,id.toString().padStart(2,'0')))},
-                    onClick={onSelectPlot(id);plotMenu=false})}
-            }
-        }
-        Text(AppText.text(TextKey.CopyDung1HatTrongTuiDeBatDauTrongBde1a7),color=Muted,fontSize=AppTypography.Sp12)
-    }
-}
-
-// Compatibility for isolated reference previews; runtime and previews use the same dialog.
-@Composable
-private fun PlantingParchment(seed: Species,count:Int,onDismiss:()->Unit,onPlant:(String)->Unit,
-    targetPlotId:Int?=4,availablePlotIds:List<Int> = listOf(4),onSelectPlot:(Int)->Unit={}) {
-    PlantingDialog(seed,count,targetPlotId,availablePlotIds,onSelectPlot,onDismiss,onPlant)
-}
 
 private fun sampleGarden() = Garden(
     trees = listOf(Tree(1,"cherry",AppText.text(TextKey.CopyDaoHong76f74f),68,"2026-01-01"), Tree(2,"pine",AppText.text(TextKey.CopyThongNho84a4db),24,"2026-01-02", wateredToday=true), Tree(3,"succulent",AppText.text(TextKey.CopySenDaB2d005),12,"2026-01-03")),
@@ -277,12 +212,12 @@ fun GardenScreenPopulatedPreview() { MamXanhPreviewTheme { GardenScreen(GardenUi
 @Composable
 fun GardenExtendedPlotsPreview() {
     val fixture = sampleGarden().copy(plots = listOf(
-        com.mamxanh.shared.model.GardenPlot(1, true, 1L),
-        com.mamxanh.shared.model.GardenPlot(2, true, 2L),
-        com.mamxanh.shared.model.GardenPlot(3, true),
-        com.mamxanh.shared.model.GardenPlot(4, true, 3L),
-        com.mamxanh.shared.model.GardenPlot(5, true),
-        com.mamxanh.shared.model.GardenPlot(6, false)
+        GardenPlot(1, true, 1L),
+        GardenPlot(2, true, 2L),
+        GardenPlot(3, true),
+        GardenPlot(4, true, 3L),
+        GardenPlot(5, true),
+        GardenPlot(6, false)
     ), coins = 120)
     MamXanhPreviewTheme { GardenScreen(GardenUiState(fixture, false), {}) }
 }
@@ -290,42 +225,6 @@ fun GardenExtendedPlotsPreview() {
 @Preview(name = "Nursery · empty", widthDp = 360, heightDp = 800)
 @Composable
 fun GardenScreenEmptyPreview() { MamXanhPreviewTheme { GardenScreen(GardenUiState(Garden(), false), {}) } }
-
-@Preview(name = "Planting parchment", widthDp = 360, heightDp = 800,
-    device = "spec:width=360dp,height=800dp,dpi=160")
-@Composable
-fun PlantingDialogPreview(background: (@Composable () -> Unit)? = null) {
-    MamXanhPreviewTheme {
-        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            if (background == null) MintBackdrop(Modifier.fillMaxSize()) {}
-            else {
-                background()
-                Box(Modifier.matchParentSize().background(AppColors.Black.copy(alpha = AppOpacity.Value_32)))
-            }
-            Box(PlantingDialogBounds) { PlantingParchment(seedCatalog.first { it.id == "cherry" }, 1, {}, {}) }
-        }
-    }
-}
-
-@Preview(name = "Planting · large text, no stock", widthDp = 360, heightDp = 800, fontScale = 1.3f,
-    device = "spec:width=360dp,height=800dp,dpi=160")
-@Composable
-fun PlantingDialogLargeTextPreview() { MamXanhPreviewTheme { Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { MintBackdrop(Modifier.fillMaxSize()) {}; Box(PlantingDialogBounds) { PlantingParchment(seedCatalog.first { it.id == "cherry" }, 0, {}, {}) } } } }
-
-@Preview(name = "Planting · short window, large text", widthDp = 640, heightDp = 180,
-    fontScale = 1.3f, device = "spec:width=640dp,height=180dp,dpi=160")
-@Preview(name = "Planting · landscape IME height", widthDp = 640, heightDp = 97,
-    device = "spec:width=640dp,height=97dp,dpi=160")
-@Composable
-fun PlantingShortWindowPreview() {
-    MamXanhPreviewTheme {
-        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Box(Modifier.widthIn(max = AppDimensions.Dp440).fillMaxWidth(.92f)) {
-                PlantingParchment(seedCatalog.first { it.id == "cherry" }, 1, {}, {})
-            }
-        }
-    }
-}
 
 @Preview(name = "Nursery overview", widthDp = 360)
 @Composable

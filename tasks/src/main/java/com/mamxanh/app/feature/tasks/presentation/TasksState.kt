@@ -1,11 +1,12 @@
 package com.mamxanh.app.feature.tasks.presentation
 
 import com.mamxanh.app.core.presentation.UiState
+import com.mamxanh.app.feature.tasks.domain.TaskProgress
 import com.mamxanh.app.feature.tasks.domain.model.Task
 
 data class TasksUiState(
     val tasks: List<Task> = emptyList(),
-    val phase: com.mamxanh.shared.model.PhaseSnapshot = com.mamxanh.shared.model.PhaseSnapshot(),
+    val phase: TaskProgress = TaskProgress(),
     val editingId: Long? = null,
     val detailId: Long? = null,
     val busy: Boolean = false,

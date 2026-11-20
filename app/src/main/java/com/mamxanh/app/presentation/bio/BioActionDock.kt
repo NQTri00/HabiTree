@@ -3,6 +3,7 @@ package com.mamxanh.app.presentation.bio
 import com.mamxanh.app.presentation.ui.design.*
 
 import com.mamxanh.app.presentation.ui.design.AppDimensions
+import com.mamxanh.app.feature.tasks.presentation.TaskFormField
 
 import com.mamxanh.shared.localization.TextKey
 
@@ -23,34 +24,33 @@ import androidx.compose.ui.unit.dp
 }
 
 internal fun taskFormInitial(world:BioWorld,argument:String)=world.task(argument)?:json("title" to "","kind" to "DAILY","category" to AppText.canonical(TextKey.CopyHocTapA51516),"frequency" to "EVERY_DAY","verification" to "CLICK","minutes" to 5)
-internal fun taskFormValue(world:BioWorld,ui:BioController,key:String,default:String="")=ui.fields[key]?:taskFormInitial(world,ui.param).s(key,default)
+private fun taskFormValue(world: BioWorld, ui: BioController, field: TaskFormField, default: String = "") =
+    ui.taskDraft[field] ?: taskFormInitial(world, ui.param).s(field.savedKey, default)
 
 @Composable internal fun BioTaskFormActions(world:BioWorld,ui:BioController){
-    fun value(key:String,default:String="")=taskFormValue(world,ui,key,default)
+    fun value(field: TaskFormField) =
+        taskFormValue(world, ui, field, if (field == TaskFormField.Minutes) "5" else "")
     Row(horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp12)){
         BioButton(AppText.text(TextKey.CopyHuy74fcd3),{ui.back()},Modifier.weight(1f),secondary=true,enabled=!ui.busy)
         BioButton(AppText.text(TextKey.CopyLuuViec522a3d),{
-            val error=when{
-                value("title").isBlank()->"title"
-                value("verification")=="TIMER"&&(value("minutes","5").toIntOrNull()?:0) !in 5..240->"minutes"
-                value("kind")!="TODO"&&value("frequency")=="CUSTOM"&&value("days").isBlank()->"days"
-                else->""
+            if (ui.taskDraft.validate(::value)) {
+                val values = TaskFormField.entries.associate { field ->
+                    field.savedKey to taskFormValue(world, ui, field)
+                }
+                ui.send("save-task", values + ("id" to ui.param))
             }
-            ui.fields["task-error"]=error
-            ui.fields["task-error-attempt"]=((ui.fields["task-error-attempt"]?.toIntOrNull()?:0)+1).toString()
-            if(error.isBlank())ui.send("save-task",listOf("title","kind","category","frequency","verification","minutes","description","days","due","start","end","reminder").associateWith{value(it)}+mapOf("id" to ui.param))
         },Modifier.weight(1f),enabled=!ui.busy)
     }
 }
 
-internal fun selectedBioTemplates(ui:BioController)=ui.fields.filter{it.key.startsWith("template:")&&it.value=="true"}.keys.map{it.removePrefix("template:")}
+internal fun selectedBioTemplates(ui:BioController)=ui.taskSelection.selectedTemplates()
 @Composable internal fun BioTemplateActions(ui:BioController){
     val chosen=selectedBioTemplates(ui)
     BioButton(if(chosen.isEmpty())AppText.text(TextKey.CopyChonViecDeThemA9f4fc)else AppText.text(TextKey.CopyThem0ViecD0390c,chosen.size),{ui.send("templates",mapOf("ids" to chosen.joinToString(",")))},Modifier.fillMaxWidth(),enabled=chosen.isNotEmpty()&&!ui.busy)
 }
 
-internal fun focusTask(ui:BioController,argument:String=ui.param)=ui.fields["focus:task"]?:argument.ifBlank{"0"}
-internal fun focusMinutes(world:BioWorld,ui:BioController,argument:String=ui.param)=world.task(focusTask(ui,argument))?.i("minutes")?.toString()?:ui.fields["focus:minutes"]?:"25"
+internal fun focusTask(ui:BioController,argument:String=ui.param)=ui.taskSelection.focusTask?:argument.ifBlank{"0"}
+internal fun focusMinutes(world:BioWorld,ui:BioController,argument:String=ui.param)=world.task(focusTask(ui,argument))?.i("minutes")?.toString()?:ui.taskSelection.focusMinutes?:"25"
 @Composable internal fun BioFocusActions(world:BioWorld,ui:BioController){
     val focus=world.state.o("focus")
     if(focus.s("id").isNotBlank()){

@@ -8,8 +8,8 @@ import com.mamxanh.shared.localization.TextKey
 
 internal fun onboardingRouteContent(world: BioWorld, ui: BioController, gutter: Int): OnboardingRouteContent {
     val templates = world.catalog.a("templates").objects()
-    val category = ui.selectedCategory
-    val chosen = ui.selectedTemplates.toSet()
+    val category = ui.onboarding.category
+    val chosen = ui.onboarding.selectedTemplates.toSet()
     val byCategory = templates.sortedBy { it.s("category") != category }
 
     fun finish(skip: Boolean) {
@@ -21,9 +21,9 @@ internal fun onboardingRouteContent(world: BioWorld, ui: BioController, gutter: 
             ui.send(
                 "onboard",
                 mapOf(
-                    "seed" to ui.selectedSeed,
-                    "category" to ui.selectedCategory,
-                    "ids" to ui.selectedTemplates.joinToString(","),
+                    "seed" to ui.onboarding.seed,
+                    "category" to ui.onboarding.category,
+                    "ids" to ui.onboarding.selectedTemplates.joinToString(","),
                     "remind" to (ui.fields["onboard-remind"] ?: "false"),
                 ),
             )
@@ -32,22 +32,22 @@ internal fun onboardingRouteContent(world: BioWorld, ui: BioController, gutter: 
 
     return OnboardingRouteContent(
         state = OnboardingDisplay(
-            step = ui.onboardingStep,
-            seed = ui.selectedSeed,
+            step = ui.onboarding.step,
+            seed = ui.onboarding.seed,
             category = category,
             selectedCount = chosen.size,
             selectedTitles = templates.filter { it.s("id") in chosen }.map { it.s("title") },
-            seedNames = (listOf("succulent", "monstera", "snake") + ui.selectedSeed).associateWith { world.species(it).s("name") },
+            seedNames = (listOf("succulent", "monstera", "snake") + ui.onboarding.seed).associateWith { world.species(it).s("name") },
             templateCount = byCategory.size,
             remind = ui.fields["onboard-remind"] == "true",
         ),
         gutter = gutter,
         onAction = { action ->
             when (action) {
-                OnboardingAction.Back -> ui.onboardingStep = (ui.onboardingStep - 1).coerceAtLeast(0)
-                OnboardingAction.Next -> if (ui.onboardingStep < 4) ui.onboardingStep++ else finish(skip = false)
+                OnboardingAction.Back -> ui.onboarding.previousStep()
+                OnboardingAction.Next -> if (!ui.onboarding.advance()) finish(skip = false)
                 OnboardingAction.Skip -> finish(skip = true)
-                is OnboardingAction.Choose -> if (action.step == 1) ui.selectedSeed = action.id else ui.selectedCategory = action.id
+                is OnboardingAction.Choose -> if (action.step == 1) ui.onboarding.seed = action.id else ui.onboarding.category = action.id
                 is OnboardingAction.Remind -> ui.fields["onboard-remind"] = action.enabled.toString()
             }
         },
@@ -55,9 +55,8 @@ internal fun onboardingRouteContent(world: BioWorld, ui: BioController, gutter: 
             val template = byCategory[index]
             val id = template.s("id")
             BioTemplateRow(template, id in chosen, onboarding = true) {
-                if (!ui.selectedTemplates.remove(id)) {
-                    if (ui.selectedTemplates.size < 5) ui.selectedTemplates.add(id)
-                    else ui.message = AppText.text(TextKey.CopyBanDaChon5ViecBoChonMotViecDeDoi95f1ae)
+                if (!ui.onboarding.toggleTemplate(id)) {
+                    ui.message = AppText.text(TextKey.CopyBanDaChon5ViecBoChonMotViecDeDoi95f1ae)
                 }
             }
         },

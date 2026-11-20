@@ -1,3 +1,6 @@
+import com.android.build.api.dsl.LibraryExtension
+import org.gradle.api.publish.PublishingExtension
+import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.artifacts.ExternalModuleDependency
 import org.gradle.api.artifacts.ProjectDependency
 
@@ -9,6 +12,73 @@ plugins {
     alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.kotlin.jvm) apply false
     alias(libs.plugins.kotlin.compose) apply false
+}
+
+// Each feature ships three artifacts at one version. Core libraries version independently.
+val androidArtifactVersions = mapOf(
+    ":core-config" to "0.1.0",
+    ":core-domain" to "0.1.0",
+    ":core-utils" to "0.1.0",
+    ":core-data" to "0.1.0",
+    ":core-ui" to "0.1.0",
+    ":core-presentation" to "0.1.0",
+    ":core-storage" to "0.1.0",
+    ":core-network" to "0.1.0",
+    ":shared" to "0.1.0",
+    ":home" to "0.1.0",
+    ":garden" to "0.1.0",
+    ":tasks" to "0.1.0",
+    ":shop" to "0.1.0",
+    ":tree" to "0.1.0",
+    ":stats" to "0.1.0",
+    ":inventory" to "0.1.0",
+    ":settings" to "0.1.0",
+)
+val localPublicationRepository = providers.gradleProperty("habitreePublicationRepository")
+    .map { layout.projectDirectory.dir(it) }
+    .orElse(layout.buildDirectory.dir("habitree-maven"))
+
+subprojects {
+    val projectPath = path
+    val segments = projectPath.removePrefix(":").split(':')
+    val owner = segments.first()
+    val artifactVersion = androidArtifactVersions[":$owner"]
+    if (artifactVersion != null) {
+        val publicationGroup = "com.mamxanh.habitree.android"
+        // Local Gradle identities for sibling projects named "domain" or "data" must be distinct.
+        group = if (segments.size == 1) publicationGroup else "$publicationGroup.$owner"
+        version = artifactVersion
+        pluginManager.apply("maven-publish")
+        val publishing = extensions.getByType<PublishingExtension>()
+        publishing.repositories.maven {
+            name = "HabiTreeLocal"
+            url = localPublicationRepository.get().asFile.toURI()
+        }
+        val artifact = if (segments.size == 1 && findProject("$projectPath:domain") != null) {
+            "$owner-presentation"
+        } else {
+            segments.joinToString("-")
+        }
+
+        pluginManager.withPlugin("org.jetbrains.kotlin.jvm") {
+            publishing.publications.create<MavenPublication>("habitree") {
+                groupId = publicationGroup
+                artifactId = artifact
+                from(components.getByName("java"))
+            }
+        }
+        pluginManager.withPlugin("com.android.library") {
+            extensions.getByType<LibraryExtension>().publishing.singleVariant("release")
+            components.matching { it.name == "release" }.all {
+                val releaseComponent = this
+                publishing.publications.create<MavenPublication>("habitree") {
+                    groupId = publicationGroup
+                    artifactId = artifact
+                    from(releaseComponent)
+                }
+            }
+        }
+    }
 }
 
 /** Enforce dependency direction for the Android feature layers and shared source. */
@@ -24,9 +94,16 @@ tasks.register("verifyArchitecture") {
             .distinct()
         val featureImport = Regex("""(?m)^\s*import\s+com\.mamxanh\.app\.feature\.([a-z]+)\.""")
         val platformOrOuterImport = Regex(
-            """(?m)^\s*import\s+(android\.|androidx\.|io\.ktor\.|com\.mamxanh\.app\.feature\.[a-z]+\.(data|presentation)\.)""",
+            """(?m)^\s*import\s+(android\.|androidx\.|io\.ktor\.|com\.mamxanh\.shared\.|com\.mamxanh\.app\.feature\.[a-z]+\.(data|presentation)\.)""",
         )
-        features.forEach { owner->
+        features.forEach { owner ->
+            val domainPlugins = project(":$owner:domain").pluginManager
+            if (!domainPlugins.hasPlugin("org.jetbrains.kotlin.jvm") ||
+                domainPlugins.hasPlugin("com.android.library") ||
+                domainPlugins.hasPlugin("com.android.kotlin.multiplatform.library")
+            ) {
+                violations.add("Feature domain must use Kotlin/JVM: :$owner:domain")
+            }
             listOf("src", "domain/src", "data/src").forEach { sourceRoot ->
                 fileTree("$owner/$sourceRoot").matching { include("**/*.kt") }.forEach { source ->
                     featureImport.findAll(source.readText()).forEach { match ->
@@ -39,12 +116,11 @@ tasks.register("verifyArchitecture") {
             val allowed = mapOf(
                 ":$owner" to setOf(":core-ui", ":core-presentation", ":$owner:domain"),
                 ":$owner:domain" to when (owner) {
-                    "shop", "tree", "stats", "settings" -> setOf(":core-domain")
-                    "tasks" -> setOf(":core-domain", ":shared")
-                    else -> setOf(":shared")
+                    "shop", "tree", "stats", "settings", "tasks", "home" -> setOf(":core-domain")
+                    else -> emptySet()
                 },
                 ":$owner:data" to (setOf(":$owner:domain") + when (owner) {
-                    "inventory", "shop", "tree", "settings" -> setOf(":shared")
+                    "inventory", "shop", "tree", "settings", "home", "garden", "tasks" -> setOf(":shared")
                     "stats" -> setOf(":core-data", ":shared")
                     else -> emptySet()
                 }),
@@ -67,7 +143,7 @@ tasks.register("verifyArchitecture") {
             }
             fileTree("$owner/domain/src").matching { include("**/*.kt") }.forEach { source ->
                 if (platformOrOuterImport.containsMatchIn(source.readText())) {
-                    violations.add("Platform or outer-layer import in ${source.relativeTo(rootDir)}")
+                    violations.add("Platform, shared storage, or outer-layer import in ${source.relativeTo(rootDir)}")
                 }
             }
         }

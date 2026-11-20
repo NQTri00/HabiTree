@@ -19,14 +19,14 @@ class InventoryRouteContentTest {
         for (tab in listOf("seeds", "care", "accessories")) {
             for (useBrowseShortcut in listOf(true, false)) {
                 val controller = BioController("inventory")
-                controller.tabs["inventory"] = tab
-                controller.tabs["shop"] = if (tab == "seeds") "accessories" else "seeds"
+                controller.shopSelection.inventoryTab = tab
+                controller.shopSelection.shopTab = if (tab == "seeds") "accessories" else "seeds"
 
                 val content = inventoryRouteContent(world, controller)
                 if (useBrowseShortcut) content.onShop() else content.onBuy()
 
                 assertEquals("shop", controller.route)
-                assertEquals(tab, controller.tabs["shop"])
+                assertEquals(tab, controller.shopSelection.shopTab)
             }
         }
     }
@@ -39,7 +39,7 @@ class InventoryRouteContentTest {
         world.state.put("owned", JSONObject())
 
         for (tab in listOf("seeds", "care", "accessories")) {
-            controller.tabs["inventory"] = tab
+            controller.shopSelection.inventoryTab = tab
             assertEquals(tab, 0, inventoryRouteContent(world, controller).itemCount)
         }
 

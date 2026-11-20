@@ -60,7 +60,7 @@ import androidx.compose.ui.unit.*
     val primary=ui.route in listOf("home","tasks","garden","shop","stats")
     val inspection=LocalInspectionMode.current
     LaunchedEffect(ui.message){if(ui.message.isNotBlank()){kotlinx.coroutines.delay(4000);ui.message=""}}
-    BioTheme(world,ui.homeTree){
+    BioTheme(world,ui.homeTreeState.selectedId){
         BoxWithConstraints(modifier.fillMaxSize().background(bp.bg)){
             val gutter=if(maxWidth<AppDimensions.Dp359)16 else if(maxWidth>=AppDimensions.Dp400)22 else 20
             val compactScreen=maxHeight<AppDimensions.Dp600
@@ -123,7 +123,7 @@ import androidx.compose.ui.unit.*
                     "templates"->BioActionDock{BioTemplateActions(ui)}
                     "focus"->BioActionDock{BioFocusActions(world,ui)}
                     "onboard","data"->Unit
-                    else->BioNav(ui.route){if(it=="shop"){ui.targetTree="";ui.plot=""};ui.go(it,root=true)}
+                    else->BioNav(ui.route){if(it=="shop"){ui.shopSelection.targetTree="";ui.plantingSelection.clear()};ui.go(it,root=true)}
                 }
             }
             if(ui.message.isNotBlank()&&ui.modal.isBlank())BioToast(ui.message,{ui.message=""},Modifier.align(Alignment.BottomCenter).padding(start=AppDimensions.Dp15,end=AppDimensions.Dp15,bottom=if(ui.route in listOf("onboard","data"))AppDimensions.Dp18 else AppDimensions.Dp90))

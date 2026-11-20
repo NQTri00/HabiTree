@@ -6,7 +6,7 @@ sealed interface TasksIntent : UiAction {
     data object Refresh : TasksIntent
     data class Edit(val id: Long) : TasksIntent
     data class Detail(val id: Long?) : TasksIntent
-    data class Save(val config: com.mamxanh.shared.model.TaskConfig) : TasksIntent
+    data class Save(val config: com.mamxanh.app.feature.tasks.domain.model.TaskConfig) : TasksIntent
     data class Lifecycle(val id: Long,val state: String) : TasksIntent
     data class Timer(val id: Long,val action: String) : TasksIntent
     data class Foreground(val active: Boolean) : TasksIntent

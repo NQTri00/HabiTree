@@ -1,10 +1,11 @@
 package com.mamxanh.app.di
 
+import com.mamxanh.app.feature.garden.domain.availablePlantingPlots
 import com.mamxanh.app.feature.garden.domain.eligiblePlantingPlot
 import com.mamxanh.app.feature.garden.domain.plantedTreeId
-import com.mamxanh.shared.model.Garden
-import com.mamxanh.shared.model.GardenPlot
-import com.mamxanh.shared.model.Tree
+import com.mamxanh.app.feature.garden.domain.model.Garden
+import com.mamxanh.app.feature.garden.domain.model.GardenPlot
+import com.mamxanh.app.feature.garden.domain.model.Tree
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Test
@@ -21,6 +22,7 @@ class GardenPlantingPlotsTest {
             ),
         )
 
+        assertEquals(listOf(3, 4), garden.availablePlantingPlots())
         assertEquals(4, garden.eligiblePlantingPlot(4))
         for (preference in listOf(null, 1, 2, 99)) {
             assertEquals(3, garden.eligiblePlantingPlot(preference))

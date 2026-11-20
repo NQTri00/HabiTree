@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.mamxanh.app.core.presentation.BaseViewModel
 import com.mamxanh.app.feature.tasks.domain.*
+import com.mamxanh.app.feature.tasks.domain.model.TaskConfig
 import com.mamxanh.shared.localization.AppText
 import com.mamxanh.shared.localization.TextKey
 import com.mamxanh.shared.model.*
@@ -55,7 +56,7 @@ class TasksViewModel(private val repository: TaskRepository,private val savedSta
         savedState["isAddingTask"]=false; savedState["editingId"]=null; savedState["draft"]=arrayListOf<String>()
         mutableState.value=mutableState.value.copy(isAddingTask=false,editingId=null,draft=emptyList())
     }
-    private fun mutate(showSuccess: Boolean = true,block: ()->ActionResult) {
+    private fun mutate(showSuccess: Boolean = true,block: ()->TaskOperationResult) {
         if(mutableState.value.busy)return
         mutableState.value=mutableState.value.copy(busy=true)
         viewModelScope.launch {
@@ -93,7 +94,7 @@ class TasksViewModel(private val repository: TaskRepository,private val savedSta
             }
             is TasksIntent.Save -> {
                 val id=mutableState.value.editingId
-                if(intent.config.error()!=null)return
+                if(intent.config.validationError()!=null)return
                 mutate { repository.save(id,intent.config) };close()
             }
             is TasksIntent.Lifecycle -> mutate{repository.lifecycle(intent.id,intent.state)}
@@ -106,7 +107,7 @@ class TasksViewModel(private val repository: TaskRepository,private val savedSta
                 val before=repository.snapshot().earnedToday
                 val success=repository.claimDailyBonus()
                 val after=repository.snapshot().earnedToday
-                ActionResult(success,if(success)AppText.text(TextKey.CopyDailyClear0XuGioiHan1XuNgay6fe04e,after-before,Balance.DAILY_CAP) else AppText.text(TextKey.CopyHoanThanhKeHoachBatBuoc5342d8))
+                TaskOperationResult(success,if(success)AppText.text(TextKey.CopyDailyClear0XuGioiHan1XuNgay6fe04e,after-before,Balance.DAILY_CAP) else AppText.text(TextKey.CopyHoanThanhKeHoachBatBuoc5342d8))
             }
         }
     }

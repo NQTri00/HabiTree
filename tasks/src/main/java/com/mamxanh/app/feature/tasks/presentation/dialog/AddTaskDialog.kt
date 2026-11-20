@@ -17,11 +17,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.mamxanh.app.presentation.ui.components.*
-import com.mamxanh.shared.model.*
+import com.mamxanh.shared.model.Balance
+import com.mamxanh.shared.model.clockLabel
+import com.mamxanh.app.feature.tasks.domain.model.TaskConfig
+import com.mamxanh.app.feature.tasks.presentation.message
 
 @Composable
 fun AddTaskDialog(onDismiss: ()->Unit,onSave: (TaskConfig)->Unit,
-    initial: TaskConfig = TaskConfig(),draft: List<String> = emptyList(),onDraftChange: (List<String>)->Unit = {}) {
+    initial: TaskConfig = TaskConfig(category = AppText.canonical(TextKey.CopyHocTapA51516)),draft: List<String> = emptyList(),onDraftChange: (List<String>)->Unit = {}) {
     val defaults=listOf(initial.title,initial.kind,initial.category,initial.description,initial.frequency,initial.days,
         initial.due,initial.verification,initial.minutes.toString(),clockLabel(initial.startMinute),
         clockLabel(initial.endMinute),clockLabel(initial.reminderMinute))
@@ -41,7 +44,7 @@ fun AddTaskDialog(onDismiss: ()->Unit,onSave: (TaskConfig)->Unit,
                         val c=TaskConfig(values[0],values[1],values[2],values[3],
                             if(values[1]=="TODO")"ONCE" else values[4],values[5],values[6],values[7],
                             values[8].toIntOrNull() ?: 0,minute(values[9]),minute(values[10]),minute(values[11]))
-                        error=c.error().orEmpty()
+                        error=c.validationError()?.message().orEmpty()
                         if(error.isEmpty())onSave(c)
 
     },cancelLabel=AppText.text(TextKey.CopyHuy74fcd3)) {
