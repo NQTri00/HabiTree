@@ -144,10 +144,13 @@ def record_kotlin(file, source):
     declarations = []
     for kind, pattern in (("type", TYPE), ("function", FUNCTION), ("property", PROPERTY)):
         for match in pattern.finditer(code):
+            line_start = code.rfind("\n", 0, match.start()) + 1
+            line = code[line_start:match.start()]
             declarations.append({
                 "kind": kind if kind == "function" else match.group(1),
                 "name": match.group(1 if kind == "function" else 2),
-                "line": code.count("\n", 0, match.start()) + 1,
+                "line": code.count("\n", 0, line_start) + 1,
+                "top_level": not line.startswith((" ", "\t")) and "{" not in line,
             })
     file.declarations = sorted(declarations, key=lambda item: item["line"])
     return code
@@ -209,7 +212,7 @@ def index(project, revision):
             for declaration in file.declarations:
                 if file.kotlin_package:
                     symbols[f"{file.kotlin_package}.{declaration['name']}"].add(file.path)
-                    if declaration["kind"] in {"enum class", "class", "interface", "typealias", "object"}:
+                    if declaration["top_level"]:
                         package_symbols[file.kotlin_package][declaration["name"]].add(file.path)
         elif file.path.endswith(".xml"):
             record_xml(file, source)
@@ -269,6 +272,14 @@ def index(project, revision):
                 dependencies.update(declarations)
                 identify(name, declarations)
         for imported, alias in kotlin_imports.get(file.path, ()):
+            if imported.endswith(".*"):
+                available = package_symbols.get(imported[:-2], {})
+                for name in (identifiers.keys() & available.keys()) - own_types:
+                    declarations = available[name]
+                    if len(declarations) == 1:
+                        dependencies.update(declarations)
+                        identify(name, declarations)
+                continue
             candidate = imported
             while candidate:
                 if candidate in symbols:

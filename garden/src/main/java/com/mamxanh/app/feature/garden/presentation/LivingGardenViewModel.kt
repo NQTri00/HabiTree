@@ -3,9 +3,7 @@ package com.mamxanh.app.feature.garden.presentation
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.mamxanh.app.core.presentation.BaseViewModel
-import com.mamxanh.app.core.presentation.UiAction
 import com.mamxanh.app.core.presentation.UiEvent
-import com.mamxanh.app.core.presentation.UiState
 import com.mamxanh.shared.data.GameStorage
 import com.mamxanh.shared.localization.AppText
 import com.mamxanh.shared.localization.TextKey
@@ -14,11 +12,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-
-data class LivingGardenUiState(val snapshot:LivingGardenSnapshot=LivingGardenSnapshot(),val garden:Garden=Garden(),
-    val route:String="",val selected:String="",val draft:List<GardenPlacement>?=null,val draftVersion:Long=0,
-    val busy:Boolean=false,val message:String="",val loading:Boolean=true,val undoAvailable:Boolean=false) : UiState
-data class LivingGardenUiAction(val mutation: LivingGardenAction) : UiAction
 
 class LivingGardenViewModel(private val storage:GameStorage,private val saved:SavedStateHandle) : BaseViewModel<LivingGardenUiState, UiEvent, LivingGardenUiAction>(
     initialState = LivingGardenUiState(route=(saved.get<String>("living_route") ?: "").let{if(it=="ARRANGE")"STUDIO" else it},

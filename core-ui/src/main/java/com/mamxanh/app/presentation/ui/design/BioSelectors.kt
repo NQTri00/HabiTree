@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.semantics.*
+import androidx.compose.ui.tooling.preview.Preview
 
 @Composable fun BioSelect(label:String,options:List<Pair<String,String>>,value:String,modifier:Modifier=Modifier,onSelect:(String)->Unit){
     var open by remember{mutableStateOf(false)}
@@ -29,5 +30,20 @@ import androidx.compose.ui.semantics.*
     Row(Modifier.fillMaxWidth().heightIn(min=AppDimensions.Dp55).padding(end=AppDimensions.Dp3).toggleable(value=value,role=Role.Switch,onValueChange=onChange),verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp12)){
         Bt(label,Modifier.weight(1f),size=AppTypography.Size13)
         Box(Modifier.size(AppDimensions.Dp42,AppDimensions.Dp25).background(if(value)bp.deep else AppColors.SwatchFFCFD6C8,RoundedCornerShape(AppDimensions.Dp20)).padding(AppDimensions.Dp3)){Box(Modifier.align(if(value)Alignment.CenterEnd else Alignment.CenterStart).size(AppDimensions.Dp19).background(AppColors.White,RoundedCornerShape(50)))}
+    }
+}
+
+@Preview(name = "Language selector", widthDp = 335, showBackground = true)
+@Composable
+private fun BioSelectPreview() {
+    BioSelect("Language", listOf("vi" to "Tiếng Việt", "en" to "English"), "en", onSelect = {})
+}
+
+@Preview(name = "Reminder toggle states", widthDp = 280, fontScale = 1.5f, showBackground = true)
+@Composable
+private fun BioTogglePreview() {
+    Column {
+        BioToggle("Watering reminders", true) {}
+        BioToggle("Reduce motion", false) {}
     }
 }

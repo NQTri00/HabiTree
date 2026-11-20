@@ -23,6 +23,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.semantics.*
+import androidx.compose.ui.tooling.preview.Preview
 import java.util.Calendar
 import java.util.Locale
 
@@ -62,4 +63,19 @@ import java.util.Locale
     BioPickerField(label,shown,stringResource(R.string.copy_chon_gio_b73bd9),"clock",modifier){
         if(!inspection){val picker=TimePickerDialog(context,{_,h,m->onChange(String.format(Locale.US,"%02d:%02d",h,m))},hour,minute,true);picker.setButton(android.content.DialogInterface.BUTTON_NEUTRAL,clearLabel){_,_->onChange("")};picker.show()}
     }
+}
+
+@Preview(name = "Date field", widthDp = 335, showBackground = true)
+@Composable
+private fun BioDateFieldPreview() {
+    Column {
+        BioDateField(label = "Start date", value = "2026-11-20", onChange = {})
+        BioDateField(label = "End date", value = "", onChange = {})
+    }
+}
+
+@Preview(name = "Time field", widthDp = 280, fontScale = 1.5f, showBackground = true)
+@Composable
+private fun BioTimeFieldPreview() {
+    BioTimeField(label = "Quiet hours begin", value = "22:00", onChange = {})
 }

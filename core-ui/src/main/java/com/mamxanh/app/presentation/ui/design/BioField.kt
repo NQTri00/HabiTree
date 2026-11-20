@@ -13,6 +13,7 @@ import androidx.compose.ui.semantics.*
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import com.mamxanh.app.presentation.ui.GardenFontFamily
 
 @Composable fun BioField(label:String,value:String,onChange:(String)->Unit,modifier:Modifier=Modifier,multiline:Boolean=false,placeholder:String="",icon:String="",number:Boolean=false,centered:Boolean=false,error:String=""){
@@ -24,3 +25,15 @@ import com.mamxanh.app.presentation.ui.GardenFontFamily
     }
 }
 @Composable fun BioError(text:String){if(text.isNotBlank())Bt(text,Modifier.semantics{liveRegion=LiveRegionMode.Polite},size=AppTypography.Size12,tint=AppColors.Danger)}
+
+@Preview(name = "Empty field", widthDp = 335, showBackground = true)
+@Composable
+private fun BioFieldPreview() {
+    BioField(label = "Plant name", value = "", onChange = {}, placeholder = "Give your plant a name")
+}
+
+@Preview(name = "Numeric field error", widthDp = 280, fontScale = 1.5f, showBackground = true)
+@Composable
+private fun BioErrorPreview() {
+    BioField(label = "Duration", value = "121", onChange = {}, number = true, error = "Enter 5–120 minutes")
+}

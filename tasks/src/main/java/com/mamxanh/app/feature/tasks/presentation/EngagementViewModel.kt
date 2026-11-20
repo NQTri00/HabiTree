@@ -3,18 +3,12 @@ package com.mamxanh.app.feature.tasks.presentation
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.mamxanh.app.core.presentation.BaseViewModel
-import com.mamxanh.app.core.presentation.UiAction
 import com.mamxanh.app.core.presentation.UiEvent
-import com.mamxanh.app.core.presentation.UiState
 import com.mamxanh.app.feature.tasks.domain.FocusSessionCommands
 import com.mamxanh.shared.data.GameStorage
 import com.mamxanh.shared.model.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-
-data class EngagementUiState(val snapshot:EngagementSnapshot=EngagementSnapshot(),val tasks:List<Task> = emptyList(),
-    val route:String="",val selectedTask:Long=0,val busy:Boolean=false,val loading:Boolean=true,val message:String="") : UiState
-data class EngagementUiAction(val mutation: EngagementAction) : UiAction
 
 class EngagementViewModel(
     private val storage: GameStorage,

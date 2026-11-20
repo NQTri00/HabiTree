@@ -14,6 +14,21 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import com.mamxanh.app.presentation.ui.design.*
 
+private object FocusLayout {
+    val CompactTimerDiameter = AppDimensions.Dp140
+    val NarrowTimerDiameter = AppDimensions.Dp200
+    val TimerDiameter = AppDimensions.Dp240
+    val SideBySideMinimumWidth = AppDimensions.Dp600
+    val TimerToSetupGap = AppDimensions.Dp20
+    val SetupFieldGap = AppDimensions.Dp10
+    val PresetToDurationGap = AppDimensions.Dp12
+    val RingStroke = AppDimensions.Dp8
+    const val TIMER_WEIGHT = 1f
+    const val SETUP_WEIGHT = 2f
+    const val PRESETS_WEIGHT = 1.6f
+    const val CUSTOM_DURATION_WEIGHT = 1f
+}
+
 @Composable
 fun ColumnScope.FocusScreen(state: FocusDisplay, onTask: (String) -> Unit, onMinutes: (String) -> Unit) {
     val present = state.present
@@ -21,24 +36,50 @@ fun ColumnScope.FocusScreen(state: FocusDisplay, onTask: (String) -> Unit, onMin
     val configuration = LocalConfiguration.current
     val landscape = configuration.screenHeightDp < AppThemeEffects.CompactHeight
     val ringSize = when {
-        landscape -> AppDimensions.Dp140
-        configuration.screenWidthDp < AppThemeEffects.CompactWidth -> AppDimensions.Dp200
-        else -> AppDimensions.Dp240
+        landscape -> FocusLayout.CompactTimerDiameter
+        configuration.screenWidthDp < AppThemeEffects.CompactWidth -> FocusLayout.NarrowTimerDiameter
+        else -> FocusLayout.TimerDiameter
     }
-    if(present){if(!landscape)Bt(stringResource(R.string.copy_khoang_thoi_gian_cua_ban_a0e014),size=AppTypography.Size10,mono=true,tint=bp.muted,spacing=AppTypography.Tracking1_8);Bt(state.title,Modifier.fillMaxWidth(),size=if(landscape)AppTypography.Size22 else AppTypography.Size27,bold=true,align=TextAlign.Center)}else if(landscape)Bt(stringResource(R.string.copy_tap_trung_964002),size=AppTypography.Size22,bold=true)else BioIntro(stringResource(R.string.copy_tap_trung_964002),stringResource(R.string.copy_chi_mot_viec_thoi_83ccd7),stringResource(R.string.copy_danh_mot_khoang_cho_dieu_quan_trong_dfd9b6),{Bi("sun")})
-    val remaining=if(present)state.remaining else (minutes.toIntOrNull()?:0).coerceIn(0,240)*60
-    if (!present && landscape && configuration.screenWidthDp >= AppDimensions.Dp600.value) {
+    if (present) {
+        if (!landscape) {
+            Bt(
+                stringResource(R.string.copy_khoang_thoi_gian_cua_ban_a0e014),
+                size = AppTypography.Size10,
+                mono = true,
+                tint = bp.muted,
+                spacing = AppTypography.Tracking1_8,
+            )
+        }
+        Bt(
+            state.title,
+            Modifier.fillMaxWidth(),
+            size = if (landscape) AppTypography.Size22 else AppTypography.Size27,
+            bold = true,
+            align = TextAlign.Center,
+        )
+    } else if (landscape) {
+        Bt(stringResource(R.string.copy_tap_trung_964002), size = AppTypography.Size22, bold = true)
+    } else {
+        BioIntro(
+            stringResource(R.string.copy_tap_trung_964002),
+            stringResource(R.string.copy_chi_mot_viec_thoi_83ccd7),
+            stringResource(R.string.copy_danh_mot_khoang_cho_dieu_quan_trong_dfd9b6),
+            { Bi("sun") },
+        )
+    }
+    val remaining = if (present) state.remaining else (minutes.toIntOrNull() ?: 0).coerceIn(0, 240) * 60
+    if (!present && landscape && configuration.screenWidthDp >= FocusLayout.SideBySideMinimumWidth.value) {
         Row(
             Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(AppDimensions.Dp20),
+            horizontalArrangement = Arrangement.spacedBy(FocusLayout.TimerToSetupGap),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Box(Modifier.weight(1f), contentAlignment = Alignment.Center) {
+            Box(Modifier.weight(FocusLayout.TIMER_WEIGHT), contentAlignment = Alignment.Center) {
                 FocusTimer(state, remaining, ringSize, landscape)
             }
             Column(
-                Modifier.weight(2f),
-                verticalArrangement = Arrangement.spacedBy(AppDimensions.Dp10),
+                Modifier.weight(FocusLayout.SETUP_WEIGHT),
+                verticalArrangement = Arrangement.spacedBy(FocusLayout.SetupFieldGap),
             ) {
                 FocusSetupFields(state, onTask, onMinutes, wide = true)
             }
@@ -56,7 +97,12 @@ fun ColumnScope.FocusScreen(state: FocusDisplay, onTask: (String) -> Unit, onMin
             )
         }
     }
-    BioDetails(stringResource(R.string.copy_cac_phien_da_luu_0_hoan_thanh_bb1ef4, state.history.size)){if(state.history.size==0)Bt(stringResource(R.string.copy_chua_co_phien_hoan_thanh_fd9386),size=AppTypography.Size12,tint=bp.muted);state.history.forEach { Bt(it, size = AppTypography.Size13) }}
+    BioDetails(stringResource(R.string.copy_cac_phien_da_luu_0_hoan_thanh_bb1ef4, state.history.size)) {
+        if (state.history.isEmpty()) {
+            Bt(stringResource(R.string.copy_chua_co_phien_hoan_thanh_fd9386), size = AppTypography.Size12, tint = bp.muted)
+        }
+        state.history.forEach { Bt(it, size = AppTypography.Size13) }
+    }
 }
 
 
@@ -73,8 +119,8 @@ private fun FocusTimer(
         modifier.size(diameter).drawBehind {
             drawCircle(
                 ringTint,
-                radius = size.minDimension / 2 - AppDimensions.Dp4.toPx(),
-                style = Stroke(AppDimensions.Dp8.toPx()),
+                radius = size.minDimension / 2 - FocusLayout.RingStroke.toPx() / 2,
+                style = Stroke(FocusLayout.RingStroke.toPx()),
             )
         },
         contentAlignment = Alignment.Center,
@@ -115,11 +161,11 @@ private fun FocusSetupFields(
         }
         if (wide) {
             Row(
-                horizontalArrangement = Arrangement.spacedBy(AppDimensions.Dp12),
+                horizontalArrangement = Arrangement.spacedBy(FocusLayout.PresetToDurationGap),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Box(Modifier.weight(1.6f)) { BioChips(presets, minutes, onMinutes) }
-                FocusDurationField(minutes, onMinutes, Modifier.weight(1f))
+                Box(Modifier.weight(FocusLayout.PRESETS_WEIGHT)) { BioChips(presets, minutes, onMinutes) }
+                FocusDurationField(minutes, onMinutes, Modifier.weight(FocusLayout.CUSTOM_DURATION_WEIGHT))
             }
         } else {
             BioChips(presets, minutes, onMinutes)
@@ -158,10 +204,17 @@ private fun FocusDurationField(minutes: String, onMinutes: (String) -> Unit, mod
     )
 }
 
-@Preview(showBackground = true, widthDp = 375)
+@Preview(name = "Focus setup", showBackground = true, widthDp = 375)
+@Preview(name = "Focus setup in landscape", showBackground = true, widthDp = 844, heightDp = 390)
 @Composable
 private fun FocusScreenPreview() {
     Column(verticalArrangement = Arrangement.spacedBy(AppDimensions.Dp18)) {
         FocusScreen(FocusDisplay("", false, false, false, 1500, "", "25", "0", emptyList(), emptyList()), {}, {})
     }
+}
+
+@Preview(name = "Invalid duration", showBackground = true, widthDp = 375)
+@Composable
+private fun FocusDurationFieldPreview() {
+    FocusDurationField(minutes = "121", onMinutes = {})
 }

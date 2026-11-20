@@ -97,7 +97,8 @@ def export(source: Path, ref: str, output: Path, repository: Path, module: str =
     if owner in feature_names:
         project_name = f"habitree.android.feature.{module}"
     elif module.startswith("core-"):
-        project_name = f"habitree.android.core.{module.removeprefix('core-')}"
+        library_name = "components" if module == "core-ui" else module.removeprefix("core-")
+        project_name = f"habitree.android.core.{library_name}"
     elif module == "shared":
         project_name = "habitree.android.shared"
     else:

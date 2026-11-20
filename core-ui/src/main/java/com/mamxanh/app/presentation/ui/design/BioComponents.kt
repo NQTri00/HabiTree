@@ -139,11 +139,6 @@ fun Modifier.bioLift(shape:Shape,tint:Color)=drawBehind{
         options.forEach{(id,label)->Box(Modifier.weight(1f).heightIn(min=AppDimensions.Dp48).background(if(id==selected)bp.surface else AppColors.Transparent,RoundedCornerShape(AppDimensions.Dp11)).semantics{this.selected=id==selected}.clickable(role=Role.Tab){onSelect(id)}.padding(horizontal=AppDimensions.Dp6,vertical=AppDimensions.Dp9),contentAlignment=Alignment.Center){Bt(label,size=AppTypography.Size12,tint=if(id==selected)bp.deep else bp.muted,align=TextAlign.Center,maxLines=1)}}
     }
 }
-@Composable fun BioChips(options:List<Pair<String,String>>,selected:String,onSelect:(String)->Unit) {
-    Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(top=AppDimensions.Dp2,bottom=AppDimensions.Dp4),horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp8)){
-        options.forEach{(id,label)->Box(Modifier.heightIn(min=AppDimensions.Dp48).background(if(id==selected)bp.accent else AppColors.White.copy(alpha=AppOpacity.Value_55),bioShape(AppRadii.Value13)).border(AppDimensions.Dp1,if(id==selected)bp.control else bp.line,bioShape(AppRadii.Value13)).semantics{this.selected=id==selected}.clickable(role=Role.RadioButton){onSelect(id)}.padding(horizontal=AppDimensions.Dp12,vertical=AppDimensions.Dp9),contentAlignment=Alignment.Center){Bt(label,size=AppTypography.Size11,maxLines=1)}}
-    }
-}
 @Composable fun BioMetrics(metrics:List<Pair<String,String>>,soft:Boolean=false) {
     Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min),horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp8)){
         metrics.forEach{(label,value)->BioCard(Modifier.weight(1f).fillMaxHeight(),tint=if(soft)bp.soft else bp.surface,padding=AppSpacing.Value7,radius=AppRadii.Value18){Column(Modifier.fillMaxWidth().padding(vertical=AppDimensions.Dp5),horizontalAlignment=Alignment.CenterHorizontally,verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp5)){Bt(value,size=AppTypography.Size19,line=AppTypography.LineHeight29_45,mono=true);Bt(label,size=AppTypography.Size12,tint=bp.muted,align=TextAlign.Center)}}}
