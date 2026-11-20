@@ -258,3 +258,5 @@ The final answer shows the top-level module tree, representative Kotlin and XML 
 - V01 and V02 hosted rendering. Android CI has a manual Compose evidence option. It sends all 442 tracked methods to one Android CLI invocation on the GitHub runner and expects 443 distinct PNGs across the screen, popup and standalone component manifests. The renderer saves its report with the PNGs for visual comparison. Branch pushes keep their regular Android checks without starting this render batch.
 
 - M05 hosted standalone verification. A separate manual option publishes the Android and common metadata artifacts to a temporary Maven directory. The exported app and Catalog builds resolve that directory from pinned artifacts while using only their own source folders. The runner uploads the Maven directory, producer source revision, artifact checksums and app test results.
+
+- M06 deployment inputs. GitHub returned no deployments, environments or Actions repository variables for HabiTree. The source uses an optional HTTPS property and documents offline operation. Production authentication and pin rotation still require the actual API contract and certificate pins.
