@@ -260,3 +260,5 @@ The final answer shows the top-level module tree, representative Kotlin and XML 
 - M05 hosted standalone verification. A separate manual option publishes the Android and common metadata artifacts to a temporary Maven directory. The exported app and Catalog builds resolve that directory from pinned artifacts while using only their own source folders. The runner uploads the Maven directory, producer source revision, artifact checksums and app test results.
 
 - M06 deployment inputs. GitHub returned no deployments, environments or Actions repository variables for HabiTree. The source uses an optional HTTPS property and documents offline operation. Production authentication and pin rotation still require the actual API contract and certificate pins.
+
+- Hosted verification on the migration branch. The repository's default branch has no Android CI workflow. An `android-evidence-*` tag can select the exact migration revision for both hosted evidence batches. The tagged run skips the regular APK and device steps, which the normal branch run covers.
