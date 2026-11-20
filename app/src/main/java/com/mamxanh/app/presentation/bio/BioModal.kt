@@ -55,7 +55,12 @@ import androidx.compose.ui.unit.*
                     "purchase"->{
                         Row(verticalAlignment=Alignment.CenterVertically,horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp16)){
                             if(seed)BioPlant(id,Modifier.size(AppDimensions.Dp90))else Box(Modifier.size(AppDimensions.Dp48),contentAlignment=Alignment.Center){Bi(if(permanent)"water"else "fertilizer",size=AppIcons.Size32)}
-                            Column(Modifier.weight(1f)){Bt(item.s("name"),size=AppTypography.Size17,bold=true);Bt(AppText.text(TextKey.Copy0XuMon3dd1cb,item.i("price")),size=AppTypography.Size12,tint=bp.muted);Bt(AppText.text(TextKey.CopyTrongTui079a061,world.count(id)),size=AppTypography.Size12,tint=bp.muted)}
+                            Column(Modifier.weight(1f)) {
+                                Bt(item.s("name"), size = AppTypography.Size17, bold = true)
+                                val price = AppText.text(TextKey.Copy0XuMon3dd1cb, item.i("price"))
+                                val inInventory = AppText.text(TextKey.CopyTrongTui079a061, world.count(id))
+                                Bt("$price · $inInventory", size = AppTypography.Size12, tint = bp.muted)
+                            }
                         }
                         Bt(item.s("description").ifBlank{if(permanent)AppText.text(TextKey.CopyTuoiTrong0GioDungLauDai7c36d5,item.i("hours"))else AppText.text(TextKey.Copy0Trong1GioDungKhiCayDaTuoiMotLanMoi24GiAcf259,item.s("rate"),item.i("hours"))},size=AppTypography.Size12,tint=bp.muted)
                         if(seed)BioTag(bioTier(item.s("tier"))+AppText.text(TextKey.Copy0GiaiDoan26f2b4,item.i("stages")),modifier=Modifier.fillMaxWidth())

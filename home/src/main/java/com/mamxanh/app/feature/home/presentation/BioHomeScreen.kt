@@ -37,10 +37,13 @@ fun BioHomeScreen(
         Column(Modifier.weight(1f)){if(!landscape){Bt(AppText.text(TextKey.CopyMotNhipXanh4e8208),size=AppTypography.Size10,tint=bp.muted,mono=true,spacing=AppTypography.Tracking1_8);Spacer(Modifier.height(AppDimensions.Dp7))};Bt(AppText.text(TextKey.CopyNgayMoiMamMoi236a07),size=if(narrow||landscape)22 else 25,line=if(narrow||landscape)28.6f else 32.5f,bold=true,spacing=AppTypography.TrackingMinus1)}
         Box(Modifier.padding(top=if(landscape)AppDimensions.Dp0 else AppDimensions.Dp19).background(AppColors.White.copy(alpha=AppOpacity.Value_25),RoundedCornerShape(AppDimensions.Dp8)).border(AppDimensions.Dp1,bp.line,RoundedCornerShape(AppDimensions.Dp8)).padding(horizontal=AppDimensions.Dp10,vertical=AppDimensions.Dp9)){Bt(state.date,size=AppTypography.Size11,tint=bp.muted,mono=true,line=AppTypography.LineHeight14_3)}
     }
-    if (tree != null) tree() else BioEmpty(AppText.text(TextKey.CopyBatDauBangMotMamXanhCd3b5c),AppText.text(TextKey.CopyMotHatNhoMotChutMoiNgayBcf756),action=AppText.text(TextKey.CopyGieoCayDauTienAfd3c1),onClick={onAction(HomeScreenAction.PickSeed)})
-    BioSection(AppText.text(TextKey.CopyViecTiepTheoEa34c3),AppText.text(TextKey.CopyXemTatCa44aeb8)){onAction(HomeScreenAction.ViewTasks)}
-    if (nextTask != null) nextTask() else
-        BioLink(AppText.text(TextKey.CopyMotViecNhoHomNay3c953f), "plus", { onAction(HomeScreenAction.AddTask) })
+    val sectionSpacing = if (tree != null && !narrow && !landscape) AppDimensions.Dp10 else AppDimensions.Dp18
+    Column(verticalArrangement = Arrangement.spacedBy(sectionSpacing)) {
+        if (tree != null) tree() else BioEmpty(AppText.text(TextKey.CopyBatDauBangMotMamXanhCd3b5c),AppText.text(TextKey.CopyMotHatNhoMotChutMoiNgayBcf756),action=AppText.text(TextKey.CopyGieoCayDauTienAfd3c1),onClick={onAction(HomeScreenAction.PickSeed)})
+        BioSection(AppText.text(TextKey.CopyViecTiepTheoEa34c3),AppText.text(TextKey.CopyXemTatCa44aeb8)){onAction(HomeScreenAction.ViewTasks)}
+        if (nextTask != null) nextTask() else
+            BioLink(AppText.text(TextKey.CopyMotViecNhoHomNay3c953f), "plus", { onAction(HomeScreenAction.AddTask) })
+    }
     BioMetrics(listOf(
         AppText.text(TextKey.CopyViecHomNay22a0a4) to "${state.completed}/${state.required}",
         AppText.text(TextKey.CopyXuHomNay0c44ed) to "${state.earned}/50",

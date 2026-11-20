@@ -54,9 +54,17 @@ internal fun accessoryIcon(id:String)=when(id){"tree_ribbon"->"gift";"tree_lante
         }
         Spacer(Modifier.height(AppDimensions.Dp2))
         val landscape=LocalConfiguration.current.screenHeightDp<500
-        val artHeight=if(landscape)100 else if(home){if(short)130 else 150}else if(short)160 else if(narrow)190 else 220
-        Box(Modifier.fillMaxWidth().height(artHeight.dp).then(if(home)Modifier.clickable{ui.go("tree",t.s("id"))}else Modifier),contentAlignment=Alignment.Center){
-            BioPlant(t.s("species"),Modifier.height((artHeight-if(home)0 else 12).dp).fillMaxWidth(),dead)
+        val artHeight = when {
+            landscape -> 100.dp
+            home && short -> 130.dp
+            home -> AppDimensions.HomeHeroArtworkHeight
+            short -> 160.dp
+            narrow -> 190.dp
+            else -> 220.dp
+        }
+        Box(Modifier.fillMaxWidth().height(artHeight).then(if(home)Modifier.clickable{ui.go("tree",t.s("id"))}else Modifier),contentAlignment=Alignment.Center){
+            val plantHeight = if (home) artHeight else artHeight - AppDimensions.Dp12
+            BioPlant(t.s("species"),Modifier.height(plantHeight).fillMaxWidth(),dead)
             val accessory=t.s("decor").takeIf{it.isNotBlank()&&world.owned(it)>0}
             if(accessory!=null&&!dead)Box(Modifier.align(Alignment.TopEnd).padding(top=AppDimensions.Dp55,end=AppDimensions.Dp14).size(AppDimensions.Dp32).background(AppColors.White.copy(alpha=AppOpacity.Value_6),RoundedCornerShape(50)).border(AppDimensions.Dp1,p.accent,RoundedCornerShape(50)),contentAlignment=Alignment.Center){Bi(accessoryIcon(accessory),size=AppIcons.Size23)}
             if(!home&&world.trees.size>1){BioIconButton("back",{ui.act("tree-prev")},Modifier.align(Alignment.CenterStart).offset(x=AppDimensions.DpMinus6),boxed=true,iconSize=AppIcons.Size18,tint=p.deep,label=AppText.text(TextKey.CopyCayTruoc6648b1));BioIconButton("next",{ui.act("tree-next")},Modifier.align(Alignment.CenterEnd).offset(x=AppDimensions.Dp6),boxed=true,iconSize=AppIcons.Size18,tint=p.deep,label=AppText.text(TextKey.CopyCayTiepTheo242116))}

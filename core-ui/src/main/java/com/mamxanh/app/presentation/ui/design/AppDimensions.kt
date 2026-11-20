@@ -23,6 +23,7 @@ object AppDimensions {
     val Dp140 = 140.dp
     val Dp15 = 15.dp
     val Dp150 = 150.dp
+    val HomeHeroArtworkHeight = 170.dp
     val Dp16 = 16.dp
     val Dp17 = 17.dp
     val Dp18 = 18.dp
