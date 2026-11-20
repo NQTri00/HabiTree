@@ -254,3 +254,5 @@ The final answer shows the top-level module tree, representative Kotlin and XML 
 - V06 purchase accessibility. The purchase sheet's decrement button, editable quantity and increment button now have distinct Vietnamese and English accessible names. Their labels come from the Shop catalog. The controls keep their existing artwork, position, quantity limits and busy behavior.
 
 - S06 APK checkpoint. GitHub Actions installed, byte-compared and cold-launched the debug APK at `eb4bf04`. All 19 app and 128 SQLite cases passed. GitHub confirmed the published APK's digest matches the installed APK. [APK and verification bundle](https://github.com/NQTri00/HabiTree/releases/tag/android-settings-verification-eb4bf047)
+
+- V01 and V02 hosted rendering. Android CI has a manual Compose evidence option. It sends all 442 tracked methods to one Android CLI invocation on the GitHub runner and expects 443 distinct PNGs across the screen, popup and standalone component manifests. The renderer saves its report with the PNGs for visual comparison. Branch pushes keep their regular Android checks without starting this render batch.

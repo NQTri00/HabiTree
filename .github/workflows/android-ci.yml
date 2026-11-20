@@ -6,6 +6,11 @@ on:
       - "**"
   pull_request:
   workflow_dispatch:
+    inputs:
+      render_previews:
+        description: Render all tracked Compose screenshots on the runner
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -84,5 +89,25 @@ jobs:
           path: |
             app/build/outputs/apk/debug/app-debug.apk
             app/build/outputs/apk/verification/app-verification.apk
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Render Compose preview evidence
+        if: inputs.render_previews
+        run: |
+          cli="$RUNNER_TEMP/android-preview"
+          curl --fail --silent --show-error --location --retry 3 \
+            --output "$cli" https://dl.google.com/android/cli/latest/linux_x86_64/android
+          chmod +x "$cli"
+          "$cli" --version
+          python3 -B tools/android/render_previews.py --cli "$cli" --sdk "$ANDROID_HOME" \
+            --output "$RUNNER_TEMP/habitree-compose"
+
+      - name: Upload Compose preview evidence
+        if: always() && inputs.render_previews
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: habitree-compose-previews
+          path: ${{ runner.temp }}/habitree-compose/
           if-no-files-found: error
           retention-days: 7
