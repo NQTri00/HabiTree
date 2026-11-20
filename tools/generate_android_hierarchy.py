@@ -201,6 +201,15 @@ def index(project, revision):
         ":" + file.owner: file.path for file in files
         if file.path.endswith("/build.gradle.kts")
     }
+    for file in files:
+        parts = PurePosixPath(file.path).parts
+        if "res" in parts[:-2] and not file.path.endswith(".xml"):
+            resource_folder = parts[parts.index("res") + 1]
+            kind, _, file.resource_qualifier = resource_folder.partition("-")
+            if kind != "values":
+                name = parts[-1].split(".", 1)[0]
+                file.resources.append(f"{kind}/{name}")
+                resources[f"{kind}/{name}"].add(file.path)
     for file, source in source_blobs(project, inputs):
         if file.path.endswith(".kt"):
             code = record_kotlin(file, source)
@@ -359,6 +368,8 @@ def write_reports(output, revision, files):
                 lines.append(f"Kotlin package `{file.kotlin_package}`.")
             if file.xml_root:
                 lines.append(f"XML root `{file.xml_root}`, qualifier `{file.resource_qualifier or 'default'}`.")
+            elif file.resource_qualifier:
+                lines.append(f"Android resource qualifier `{file.resource_qualifier}`.")
             for name, values in (
                 ("Resources", file.resources),
                 ("Resource references", file.resource_references),
