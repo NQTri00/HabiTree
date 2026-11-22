@@ -36,7 +36,7 @@ fun TaskCalendar(days: List<TaskCalendarDay>) {
                 }
             }
         }
-        Bt(stringResource(R.string.tasks_calendar_legend), size = AppTypography.Size10, tint = bp.muted)
+        Bt(stringResource(R.string.tasks_calendar_legend), size = AppTypography.Size9, tint = bp.muted)
     }
 }
 

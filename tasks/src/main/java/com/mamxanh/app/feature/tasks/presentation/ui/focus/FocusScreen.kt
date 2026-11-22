@@ -21,6 +21,7 @@ private object FocusLayout {
     val SideBySideMinimumWidth = AppDimensions.Dp600
     val TimerToSetupGap = AppDimensions.Dp20
     val SetupFieldGap = AppDimensions.Dp10
+    val PortraitSetupGap = AppDimensions.Dp15
     val PresetToDurationGap = AppDimensions.Dp12
     val RingStroke = AppDimensions.Dp8
     const val TIMER_WEIGHT = 1f
@@ -40,6 +41,7 @@ fun ColumnScope.FocusScreen(
     val minutes = state.minutes
     val configuration = LocalConfiguration.current
     val landscape = configuration.screenHeightDp < AppThemeEffects.CompactHeight
+    val portraitSetup = !present && !landscape
     val ringSize = when {
         landscape -> FocusLayout.CompactTimerDiameter
         configuration.screenWidthDp < AppThemeEffects.CompactWidth -> FocusLayout.NarrowTimerDiameter
@@ -91,9 +93,19 @@ fun ColumnScope.FocusScreen(
         }
     } else {
         FocusTimer(state, remaining, ringSize, landscape, Modifier.align(Alignment.CenterHorizontally))
-        if (!present) FocusSetupFields(state, onTask, onMinutes)
+        if (portraitSetup) {
+            Column(
+                Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(FocusLayout.PortraitSetupGap),
+            ) {
+                FocusSetupFields(state, onTask, onMinutes)
+                actions?.invoke()
+            }
+        } else if (!present) {
+            FocusSetupFields(state, onTask, onMinutes)
+        }
     }
-    actions?.invoke()
+    if (!portraitSetup) actions?.invoke()
     if (present) {
         BioDetails(stringResource(R.string.copy_phien_dang_luu_d6c8c9)) {
             Bt(
