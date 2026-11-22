@@ -1,5 +1,7 @@
 package com.mamxanh.app.core.components.components
 
+import androidx.compose.foundation.layout.size
+import androidx.compose.ui.tooling.preview.Preview
 import com.mamxanh.app.core.components.design.AppColors
 import com.mamxanh.app.core.components.design.AppDimensions
 import com.mamxanh.app.core.components.design.AppOpacity
@@ -80,4 +82,22 @@ fun GardenBookHandles(modifier: Modifier = Modifier) {
             drawPath(handle, AppColors.SwatchFFF0C685, style = Stroke(AppDimensions.Dp6.toPx(), cap = StrokeCap.Round))
         }
     }
+}
+
+@Preview(name = "Garden cottage", showBackground = true)
+@Composable
+private fun GardenCottagePreview() {
+    GardenCottage(Modifier.size(AppDimensions.Dp120))
+}
+
+@Preview(name = "Garden lantern", showBackground = true)
+@Composable
+private fun GardenHangingLanternPreview() {
+    GardenHangingLantern(Modifier.size(AppDimensions.Dp80, AppDimensions.Dp120))
+}
+
+@Preview(name = "Garden book handles", showBackground = true)
+@Composable
+private fun GardenBookHandlesPreview() {
+    GardenBookHandles(Modifier.size(AppDimensions.Dp200, AppDimensions.Dp120))
 }

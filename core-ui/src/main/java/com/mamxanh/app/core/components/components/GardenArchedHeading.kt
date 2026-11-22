@@ -1,5 +1,8 @@
 package com.mamxanh.app.core.components.components
 
+import com.mamxanh.core.ui.R
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import com.mamxanh.app.core.components.design.AppColors
 import com.mamxanh.app.core.components.design.AppDimensions
 import com.mamxanh.app.core.components.design.AppOpacity
@@ -77,4 +80,11 @@ fun GardenArchedHeading(label: String, modifier: Modifier = Modifier, fontSize: 
             }
         }
     }
+}
+
+@Preview(name = "Garden heading", widthDp = 320, showBackground = true)
+@Preview(name = "Garden heading at large text", widthDp = 280, fontScale = 1.5f, showBackground = true)
+@Composable
+private fun GardenArchedHeadingPreview() {
+    GardenArchedHeading(stringResource(R.string.copy_vuon_cua_ban_ad1c1b))
 }

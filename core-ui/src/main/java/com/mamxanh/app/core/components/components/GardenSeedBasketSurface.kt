@@ -1,5 +1,6 @@
 package com.mamxanh.app.core.components.components
 
+import androidx.compose.ui.tooling.preview.Preview
 import com.mamxanh.app.core.components.design.AppColors
 import com.mamxanh.app.core.components.design.AppDimensions
 import com.mamxanh.app.core.components.design.AppOpacity
@@ -44,4 +45,10 @@ fun GardenSeedBasketSurface(modifier: Modifier = Modifier) {
         drawOval(AppColors.SwatchFFBF8445,Offset(w*.015f,h*.09f),Size(w*.97f,h*.67f),style=Stroke(AppDimensions.Dp11.toPx()))
         drawOval(AppColors.SwatchFFF0C78C,Offset(w*.015f,h*.07f),Size(w*.97f,h*.67f),style=Stroke(AppDimensions.Dp5.toPx()))
     }
+}
+
+@Preview(name = "Seed basket", showBackground = true)
+@Composable
+private fun GardenSeedBasketSurfacePreview() {
+    GardenSeedBasketSurface(Modifier.size(AppDimensions.Dp200, AppDimensions.Dp120))
 }

@@ -1,5 +1,8 @@
 package com.mamxanh.app.core.components.components
 
+import com.mamxanh.app.core.components.design.AppDimensions
+import androidx.compose.foundation.layout.size
+import androidx.compose.ui.tooling.preview.Preview
 import com.mamxanh.app.core.components.design.AppColors
 
 import androidx.compose.foundation.Canvas
@@ -120,4 +123,16 @@ fun SimpleSpeciesPlant(species: String, modifier: Modifier = Modifier, potted: B
             }
         }
     }
+}
+
+@Preview(name = "Potted lavender", showBackground = true)
+@Composable
+private fun SimpleSpeciesPlantPreview() {
+    SimpleSpeciesPlant("lavender", Modifier.size(AppDimensions.Dp120), potted = true)
+}
+
+@Preview(name = "Succulent artwork", showBackground = true)
+@Composable
+private fun SimpleSpeciesPlantSucculentPreview() {
+    SimpleSpeciesPlant("succulent", Modifier.size(AppDimensions.Dp120))
 }

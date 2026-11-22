@@ -1,5 +1,6 @@
 package com.mamxanh.app.core.components.components
 
+import androidx.compose.ui.tooling.preview.Preview
 import com.mamxanh.app.core.components.design.AppDimensions
 import com.mamxanh.app.core.components.design.AppTypography
 
@@ -47,4 +48,11 @@ fun MintCatalogTabs(selectedIndex: Int, onSelect: (Int) -> Unit, modifier: Modif
                 }
             }
     }
+}
+
+@Preview(name = "Catalog tabs", widthDp = 335, showBackground = true)
+@Preview(name = "Catalog tabs at large text", widthDp = 280, fontScale = 1.5f, showBackground = true)
+@Composable
+private fun MintCatalogTabsPreview() {
+    MintCatalogTabs(selectedIndex = 1, onSelect = {})
 }

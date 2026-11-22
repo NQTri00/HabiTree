@@ -1,5 +1,8 @@
 package com.mamxanh.app.core.components.components
 
+import com.mamxanh.core.ui.R
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import com.mamxanh.app.core.components.design.AppColors
 import com.mamxanh.app.core.components.design.AppDimensions
 import com.mamxanh.app.core.components.design.AppTypography
@@ -78,4 +81,20 @@ fun MintDialog(title:String,onDismiss:()->Unit,confirmLabel:String,onConfirm:()-
     // Render the exact same dialog surface in the preview's window.
     if(androidx.compose.ui.platform.LocalInspectionMode.current) body()
     else Dialog(onDismissRequest={if(dismissEnabled)onDismiss()},properties=DialogProperties(usePlatformDefaultWidth=false,decorFitsSystemWindows=false)) { body() }
+}
+
+@Preview(name = "Confirmation dialog", widthDp = 375, heightDp = 420, showBackground = true)
+@Preview(name = "Confirmation dialog at large text", widthDp = 280, heightDp = 420, fontScale = 1.5f, showBackground = true)
+@Composable
+private fun MintDialogPreview() {
+    MintDialog(
+        title = stringResource(R.string.copy_tuoi_cay_0990f6),
+        onDismiss = {},
+        confirmLabel = stringResource(R.string.copy_xac_nhan_1503b0),
+        onConfirm = {},
+        cancelLabel = stringResource(R.string.copy_huy_74fcd3),
+        confirmEnabled = false,
+    ) {
+        Text(stringResource(R.string.copy_da_tuoi_de2042))
+    }
 }

@@ -1,5 +1,8 @@
 package com.mamxanh.app.core.components.components
 
+import com.mamxanh.core.ui.R
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import com.mamxanh.app.core.components.design.AppColors
 import com.mamxanh.app.core.components.design.AppDimensions
 import com.mamxanh.app.core.components.design.AppTypography
@@ -61,5 +64,21 @@ fun GardenExpandableSection(title:String,modifier:Modifier=Modifier,content:@Com
             Text(if(expanded)"−" else "+",color=Green,fontSize=AppTypography.Sp22)
         }
         if(expanded)Column(Modifier.fillMaxWidth(),verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp12),content=content)
+    }
+}
+
+@Preview(name = "Garden web design components", widthDp = 335, showBackground = true)
+@Preview(name = "Garden web design at large text", widthDp = 280, fontScale = 1.5f, showBackground = true)
+@Composable
+private fun GardenNavigationCardPreview() {
+    val garden = stringResource(R.string.copy_vuon_9e4c10)
+    val seeds = stringResource(R.string.copy_hat_giong_f02257)
+    val accessories = stringResource(R.string.copy_phu_kien_0852d7)
+    Column {
+        GardenScreenIntro(garden)
+        GardenNavigationCard(seeds, onClick = {})
+        GardenExpandableSection(accessories) {
+            Text(seeds)
+        }
     }
 }

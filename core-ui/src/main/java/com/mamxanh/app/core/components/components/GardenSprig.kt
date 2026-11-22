@@ -1,5 +1,8 @@
 package com.mamxanh.app.core.components.components
 
+import com.mamxanh.app.core.components.design.AppDimensions
+import androidx.compose.foundation.layout.size
+import androidx.compose.ui.tooling.preview.Preview
 import com.mamxanh.app.core.components.design.AppColors
 
 import androidx.compose.foundation.Canvas
@@ -37,4 +40,16 @@ fun GardenSprig(modifier: Modifier = Modifier, mirrored: Boolean = false) {
             }
         }
     }
+}
+
+@Preview(name = "Garden sprig", showBackground = true)
+@Composable
+private fun GardenSprigPreview() {
+    GardenSprig(Modifier.size(AppDimensions.Dp80, AppDimensions.Dp120))
+}
+
+@Preview(name = "Mirrored sprig", showBackground = true)
+@Composable
+private fun GardenSprigMirroredPreview() {
+    GardenSprig(Modifier.size(AppDimensions.Dp80, AppDimensions.Dp120), mirrored = true)
 }

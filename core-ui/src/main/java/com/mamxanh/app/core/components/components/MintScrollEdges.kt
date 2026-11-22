@@ -1,5 +1,12 @@
 package com.mamxanh.app.core.components.components
 
+import com.mamxanh.core.ui.R
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.Alignment
+import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.Box
+import androidx.compose.ui.tooling.preview.Preview
 import com.mamxanh.app.core.components.design.AppColors
 import com.mamxanh.app.core.components.design.AppDimensions
 import com.mamxanh.app.core.components.design.AppOpacity
@@ -102,4 +109,16 @@ private fun DrawScope.drawSoftEdge(
         }
     }
     drawRect(fade, topLeft = Offset(0f, edgeY), size = Size(size.width, edgeHeight))
+}
+
+@Preview(name = "Scroll edges", showBackground = true)
+@Composable
+private fun MintScrollEdgesPreview() {
+    Box(
+        Modifier.size(AppDimensions.Dp200, AppDimensions.Dp100)
+            .mintScrollEdges(canScrollBackward = true, canScrollForward = true),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(stringResource(R.string.copy_hat_giong_f02257))
+    }
 }

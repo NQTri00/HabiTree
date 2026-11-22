@@ -1,5 +1,8 @@
 package com.mamxanh.app.core.components.components
 
+import com.mamxanh.core.ui.R
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import com.mamxanh.app.core.components.design.AppDimensions
 import com.mamxanh.app.core.components.design.AppOpacity
 import com.mamxanh.app.core.components.design.AppTypography
@@ -92,3 +95,16 @@ fun MintCareIcon(
     }
 }
 
+@Preview(name = "Tree controls", widthDp = 335, showBackground = true)
+@Preview(name = "Tree controls at large text", widthDp = 280, fontScale = 1.5f, showBackground = true)
+@Composable
+private fun MintTreeControlsPreview() {
+    val watering = stringResource(R.string.copy_tuoi_cay_0990f6)
+    Column {
+        MintCompactHeader(coins = 620)
+        Row {
+            MintCareIcon(GardenArt.DROP, watering, enabled = true, onClick = {})
+            MintCareIcon(GardenArt.DROP, watering, enabled = false, onClick = {}, checked = true)
+        }
+    }
+}

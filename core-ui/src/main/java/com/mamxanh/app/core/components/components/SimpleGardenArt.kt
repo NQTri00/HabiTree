@@ -1,5 +1,8 @@
 package com.mamxanh.app.core.components.components
 
+import com.mamxanh.app.core.components.design.AppDimensions
+import androidx.compose.foundation.layout.size
+import androidx.compose.ui.tooling.preview.Preview
 import com.mamxanh.app.core.components.design.AppColors
 import com.mamxanh.app.core.components.design.AppOpacity
 
@@ -220,4 +223,16 @@ fun SimpleGardenArt(art: GardenArt, modifier: Modifier = Modifier) {
             }
         }
     }
+}
+
+@Preview(name = "Task illustration", showBackground = true)
+@Composable
+private fun SimpleGardenArtPreview() {
+    SimpleGardenArt(GardenArt.CHECKED_TASK, Modifier.size(AppDimensions.Dp80))
+}
+
+@Preview(name = "Watering illustration", showBackground = true)
+@Composable
+private fun SimpleGardenArtWateringPreview() {
+    SimpleGardenArt(GardenArt.DROP, Modifier.size(AppDimensions.Dp80))
 }

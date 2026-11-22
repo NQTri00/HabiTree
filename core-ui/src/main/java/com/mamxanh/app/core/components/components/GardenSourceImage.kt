@@ -1,5 +1,9 @@
 package com.mamxanh.app.core.components.components
 
+import com.mamxanh.app.core.components.design.AppDimensions
+import com.mamxanh.core.ui.R
+import androidx.compose.foundation.layout.size
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.foundation.Canvas
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.produceState
@@ -76,4 +80,10 @@ fun GardenSourceImage(resource: Int, modifier: Modifier = Modifier) {
             dstOffset = IntOffset(((size.width - target.width) / 2).roundToInt(), ((size.height - target.height) / 2).roundToInt()),
             dstSize = target)
     }
+}
+
+@Preview(name = "Mandarin source artwork", showBackground = true)
+@Composable
+private fun GardenSourceImagePreview() {
+    GardenSourceImage(R.drawable.simple_mandarin, Modifier.size(AppDimensions.Dp120))
 }

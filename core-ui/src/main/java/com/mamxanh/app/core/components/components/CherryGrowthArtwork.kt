@@ -1,5 +1,8 @@
 package com.mamxanh.app.core.components.components
 
+import com.mamxanh.app.core.components.design.AppDimensions
+import androidx.compose.foundation.layout.size
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.foundation.Canvas
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.produceState
@@ -60,4 +63,16 @@ internal fun CherryGrowthArtwork(growth: Int, modifier: Modifier = Modifier, fit
                 (size.height - target.height).roundToInt()),
             dstSize = target)
     }
+}
+
+@Preview(name = "Cherry at planting", showBackground = true)
+@Composable
+private fun CherryGrowthArtworkPreview() {
+    CherryGrowthArtwork(growth = 0, modifier = Modifier.size(AppDimensions.Dp120))
+}
+
+@Preview(name = "Mature cherry artwork", showBackground = true)
+@Composable
+private fun CherryGrowthArtworkMaturePreview() {
+    CherryGrowthArtwork(growth = 120, modifier = Modifier.size(AppDimensions.Dp120), fitVisibleArtwork = true)
 }

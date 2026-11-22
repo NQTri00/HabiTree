@@ -1,5 +1,8 @@
 package com.mamxanh.app.core.components.components
 
+import com.mamxanh.core.ui.R
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import com.mamxanh.app.core.components.design.AppColors
 import com.mamxanh.app.core.components.design.AppDimensions
 import com.mamxanh.app.core.components.design.AppTypography
@@ -46,4 +49,11 @@ fun MintFeedback(message: String, onDismiss: () -> Unit, modifier: Modifier = Mo
             }
         }
     }
+}
+
+@Preview(name = "Watering feedback", widthDp = 335, showBackground = true)
+@Preview(name = "Feedback at large text", widthDp = 280, fontScale = 1.5f, showBackground = true)
+@Composable
+private fun MintFeedbackPreview() {
+    MintFeedback(stringResource(R.string.copy_da_tuoi_de2042), onDismiss = {})
 }

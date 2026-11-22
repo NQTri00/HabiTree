@@ -1,5 +1,8 @@
 package com.mamxanh.app.core.components.components
 
+import com.mamxanh.app.core.components.design.AppDimensions
+import androidx.compose.foundation.layout.size
+import androidx.compose.ui.tooling.preview.Preview
 import com.mamxanh.app.core.components.design.AppColors
 import com.mamxanh.app.core.components.design.AppOpacity
 
@@ -187,4 +190,16 @@ fun TreeIllustration(
             }
         }
     }
+}
+
+@Preview(name = "Tree at planting", showBackground = true)
+@Composable
+private fun TreeIllustrationPreview() {
+    TreeIllustration(growth = 0, speciesId = "cherry", modifier = Modifier.size(AppDimensions.Dp120))
+}
+
+@Preview(name = "Mature orange tree", showBackground = true)
+@Composable
+private fun TreeIllustrationMaturePreview() {
+    TreeIllustration(growth = 120, speciesId = "orange", modifier = Modifier.size(AppDimensions.Dp120))
 }

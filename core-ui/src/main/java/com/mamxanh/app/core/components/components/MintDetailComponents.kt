@@ -1,5 +1,8 @@
 package com.mamxanh.app.core.components.components
 
+import com.mamxanh.core.ui.R
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import com.mamxanh.app.core.components.design.AppColors
 import com.mamxanh.app.core.components.design.AppDimensions
 import com.mamxanh.app.core.components.design.AppTypography
@@ -70,6 +73,22 @@ fun MintCatalogCard(name: String,value: String,onClick: (() -> Unit)?=null,detai
             Text(value,Modifier.fillMaxWidth(),color=Green,fontSize=AppTypography.Sp12,lineHeight=AppTypography.Sp15,fontWeight=FontWeight.Bold,maxLines=1,
                 overflow=TextOverflow.Ellipsis,textAlign=TextAlign.Start)
             if(detail.isNotBlank())Text(detail,Modifier.fillMaxWidth(),color=Muted,fontSize=AppTypography.Sp12,lineHeight=AppTypography.Sp18)
+        }
+    }
+}
+
+@Preview(name = "Tree status and catalog card", widthDp = 335, showBackground = true)
+@Preview(name = "Tree status at large text", widthDp = 280, fontScale = 1.5f, showBackground = true)
+@Composable
+private fun MintDetailComponentsPreview() {
+    val stage = stringResource(R.string.copy_dang_lon_40daab)
+    val water = stringResource(R.string.copy_da_tuoi_de2042)
+    val seeds = stringResource(R.string.copy_hat_giong_f02257)
+    Column {
+        MintTreeStatus(stage, stage, water)
+        MintMetricStrip(listOf(seeds to "3", water to "2"))
+        MintCatalogCard(name = seeds, value = "3", detail = stage) { artwork ->
+            GardenArtwork(GardenArt.SEED, artwork)
         }
     }
 }

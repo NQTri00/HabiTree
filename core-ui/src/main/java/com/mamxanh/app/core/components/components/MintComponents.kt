@@ -1,5 +1,8 @@
 package com.mamxanh.app.core.components.components
 
+import com.mamxanh.core.ui.R
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import com.mamxanh.app.core.components.design.AppColors
 import com.mamxanh.app.core.components.design.AppDimensions
 import com.mamxanh.app.core.components.design.AppTypography
@@ -58,6 +61,26 @@ fun MintSegments(labels: List<String>, selected: Int, onSelect: (Int) -> Unit, m
     Row(modifier.fillMaxWidth().height(IntrinsicSize.Min).mintDepth(RoundedCornerShape(50), MintDepth.secondary, AppDimensions.Dp3)) {
         labels.forEachIndexed { index, label ->
             GardenChoiceChip(label, selected == index, { onSelect(index) }, Modifier.weight(1f).fillMaxHeight())
+        }
+    }
+}
+
+@Preview(name = "Header, progress and segments", widthDp = 335, showBackground = true)
+@Preview(name = "Header, progress and segments at large text", widthDp = 280, fontScale = 1.5f, showBackground = true)
+@Composable
+private fun MintComponentsPreview() {
+    MintBackdrop {
+        Column {
+            MintHeader(stringResource(R.string.copy_vuon_9e4c10), coins = 620)
+            MintProgress(value = .6f)
+            MintSegments(
+                labels = listOf(
+                    stringResource(R.string.copy_hat_giong_f02257),
+                    stringResource(R.string.copy_phu_kien_0852d7),
+                ),
+                selected = 0,
+                onSelect = {},
+            )
         }
     }
 }
