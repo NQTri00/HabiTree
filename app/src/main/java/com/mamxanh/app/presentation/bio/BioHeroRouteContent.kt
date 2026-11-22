@@ -1,5 +1,8 @@
 package com.mamxanh.app.presentation.bio
 
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.runtime.Composable
 import com.mamxanh.app.feature.tree.presentation.ui.detail.component.TreeHero
 import com.mamxanh.app.feature.tree.presentation.ui.detail.component.TreeHeroAction
@@ -38,5 +41,16 @@ internal fun BioHero(world: BioWorld, ui: BioController, tree: JSONObject, home:
             TreeHeroAction.Water -> ui.send("water:$treeId")
             TreeHeroAction.Decorate -> ui.act("bio-tree-decor:$treeId")
         }
+    }
+}
+
+@Preview(name = "Selected home tree", widthDp = 335, showBackground = true)
+@Composable
+private fun BioHeroPreview() {
+    val context = LocalContext.current
+    val world = remember(context) { BioWorld.reference(context) }
+    val tree = world.trees.first()
+    BioTheme(world, tree.s("id")) {
+        BioHero(world, remember { BioController() }, tree, home = true)
     }
 }

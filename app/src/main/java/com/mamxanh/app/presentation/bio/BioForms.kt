@@ -1,5 +1,7 @@
 package com.mamxanh.app.presentation.bio
 
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import com.mamxanh.app.feature.settings.presentation.ui.backup.BackupDisplay
 import com.mamxanh.app.feature.settings.presentation.ui.backup.BackupScreenAction
 import com.mamxanh.app.feature.settings.presentation.ui.settings.SettingsDisplay
@@ -209,5 +211,16 @@ internal fun backupRouteContent(world: BioWorld, ui: BioController): BackupRoute
             BackupScreenAction.License -> ui.show("license")
             BackupScreenAction.Diagnostics -> ui.send("diagnostics")
         }
+    }
+}
+
+@Preview(name = "Selected template", widthDp = 335, showBackground = true)
+@Preview(name = "Selected template at large text", widthDp = 280, fontScale = 1.5f, showBackground = true)
+@Composable
+private fun BioTemplateRowPreview() {
+    val context = LocalContext.current
+    val world = remember(context) { BioWorld.reference(context) }
+    BioTheme(world, "1") {
+        BioTemplateRow(world.catalog.a("templates").objects().first(), selected = true, onChange = {})
     }
 }

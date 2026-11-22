@@ -1,5 +1,8 @@
 package com.mamxanh.app.feature.garden.presentation.ui.livinggarden
 
+import com.mamxanh.core.ui.R
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import com.mamxanh.app.core.components.design.AppColors
 import com.mamxanh.app.core.components.design.AppDimensions
 import com.mamxanh.app.core.components.design.AppOpacity
@@ -62,5 +65,20 @@ import com.mamxanh.app.core.components.components.*
     Column(modifier,verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp2)) {
         GardenCaption(label)
         Text(value,color=Deep,fontSize=AppTypography.Sp11,lineHeight=AppTypography.Sp15,fontWeight=FontWeight.SemiBold)
+    }
+}
+
+@Preview(name = "Garden controls", widthDp = 335, showBackground = true)
+@Preview(name = "Garden controls at large text", widthDp = 280, fontScale = 1.5f, showBackground = true)
+@Composable
+private fun LivingGardenControlsPreview() {
+    val garden = stringResource(R.string.copy_vuon_9e4c10)
+    val seeds = stringResource(R.string.copy_hat_giong_f02257)
+    GardenPanel {
+        GardenCaption(garden)
+        GardenHeading(garden)
+        GardenFact(seeds, "3")
+        GardenPill(seeds, selected = true, onClick = {})
+        GardenCompactAction(seeds, onClick = {}, primary = true, enabled = false)
     }
 }

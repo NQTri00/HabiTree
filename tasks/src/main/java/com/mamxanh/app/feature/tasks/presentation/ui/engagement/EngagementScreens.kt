@@ -1,4 +1,5 @@
 package com.mamxanh.app.feature.tasks.presentation.ui.engagement
+import androidx.compose.ui.tooling.preview.Preview
 import com.mamxanh.app.feature.tasks.presentation.ui.form.message
 
 import com.mamxanh.app.core.components.design.AppColors
@@ -197,5 +198,22 @@ internal fun FocusContent(state:EngagementUiState,onAct:(EngagementAction)->Unit
         Text(AppText.text(TextKey.Copy012Phut31cab4a,s.date,s.activeSeconds/60,s.targetSeconds/60,when(s.state){"COMPLETE"->AppText.text(TextKey.CopyTronVen2a4501);"ENDED"->AppText.text(TextKey.CopyDaLuuPhanDaLam0f9d18);"RUNNING"->AppText.text(TextKey.CopyDangChayCd07e6);else->AppText.text(TextKey.TabPaused)}),
             color=Muted,fontSize=AppTypography.Sp13,lineHeight=AppTypography.Sp19)
     }
+    }
+}
+
+@Preview(name = "Focus engagement", widthDp = 375, heightDp = 812)
+@Preview(name = "Focus engagement at large text", widthDp = 320, heightDp = 812, fontScale = 1.5f)
+@Composable
+private fun EngagementScreenPreview() {
+    MamXanhPreviewTheme {
+        EngagementScreen(
+            state = EngagementUiState(route = "FOCUS", loading = false),
+            onOpen = { _, _ -> },
+            onAct = {},
+            onAdjust = {},
+            onPermission = {},
+            onEntity = {},
+            onDismissMessage = {},
+        )
     }
 }

@@ -1,5 +1,7 @@
 package com.mamxanh.app.core.components.components
 
+import androidx.compose.ui.platform.LocalDensity
+import com.mamxanh.app.core.components.design.AppThemeEffects
 import com.mamxanh.core.ui.R
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -54,6 +56,8 @@ fun MintDialog(title:String,onDismiss:()->Unit,confirmLabel:String,onConfirm:()-
     val body: @Composable () -> Unit = {
         BoxWithConstraints(Modifier.fillMaxSize().safeDrawingPadding().imePadding().padding(AppDimensions.Dp12),contentAlignment=Alignment.Center) {
             val short=maxHeight<AppDimensions.Dp180
+            val stackActions = !short && maxWidth < AppDimensions.Dp320 &&
+                LocalDensity.current.fontScale > AppThemeEffects.LargeFontScale
             Surface(Modifier.widthIn(max=AppDimensions.Dp440).fillMaxWidth().heightIn(max=AppDimensions.Dp620),
                 shape=RoundedCornerShape(AppDimensions.Dp28),color=Cream,shadowElevation=AppDimensions.Dp12) {
                 Column(Modifier.padding(if(short)AppDimensions.Dp8 else AppDimensions.Dp20),verticalArrangement=Arrangement.spacedBy(if(short)AppDimensions.Dp8 else AppDimensions.Dp20)) {
@@ -69,9 +73,16 @@ fun MintDialog(title:String,onDismiss:()->Unit,confirmLabel:String,onConfirm:()-
                         if(short)Text(title,color=Deep,fontSize=AppTypography.Sp15,fontWeight=FontWeight.Bold)
                         ProvideTextStyle(MaterialTheme.typography.bodySmall.copy(fontSize=AppTypography.Sp12,lineHeight=AppTypography.Sp17)) { content() }
                     }
-                    Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min),horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp8)) {
-                        MintDialogAction(cancelLabel,onDismiss,Modifier.weight(1f).fillMaxHeight(),primary=false,enabled=dismissEnabled)
-                        MintDialogAction(confirmLabel,onConfirm,Modifier.weight(1f).fillMaxHeight(),enabled=confirmEnabled,destructive=destructive)
+                    if (stackActions) {
+                        Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(AppDimensions.Dp8)) {
+                            MintDialogAction(cancelLabel,onDismiss,Modifier.fillMaxWidth(),primary=false,enabled=dismissEnabled)
+                            MintDialogAction(confirmLabel,onConfirm,Modifier.fillMaxWidth(),enabled=confirmEnabled,destructive=destructive)
+                        }
+                    } else {
+                        Row(Modifier.fillMaxWidth().height(IntrinsicSize.Min),horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp8)) {
+                            MintDialogAction(cancelLabel,onDismiss,Modifier.weight(1f).fillMaxHeight(),primary=false,enabled=dismissEnabled)
+                            MintDialogAction(confirmLabel,onConfirm,Modifier.weight(1f).fillMaxHeight(),enabled=confirmEnabled,destructive=destructive)
+                        }
                     }
                 }
             }

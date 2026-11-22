@@ -1,5 +1,7 @@
 package com.mamxanh.app.presentation.bio
 
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.res.stringResource
 import com.mamxanh.core.ui.R
 import com.mamxanh.app.feature.catalog.presentation.ui.encyclopedia.CollectionGoalDisplay
@@ -233,3 +235,11 @@ internal fun speciesRouteContent(world: BioWorld, ui: BioController, argument: S
     )
 }
 
+@Preview(name = "Calendar with varied statuses", widthDp = 335, showBackground = true)
+@Preview(name = "Calendar at large text", widthDp = 280, fontScale = 1.5f, showBackground = true)
+@Composable
+private fun BioCalendarPreview() {
+    val context = LocalContext.current
+    val world = remember(context) { BioWorld.reference(context) }
+    BioTheme(world, "1") { BioCalendar(world, count = 14) }
+}

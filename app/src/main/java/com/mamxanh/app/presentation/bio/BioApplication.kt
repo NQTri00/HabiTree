@@ -1,5 +1,9 @@
 package com.mamxanh.app.presentation.bio
 
+import com.mamxanh.core.ui.R
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import com.mamxanh.app.core.components.design.*
 
 import com.mamxanh.app.core.components.design.AppDimensions
@@ -198,4 +202,21 @@ internal fun BioWorld.statisticsDayLabels(): List<String> = bioDates(data.s("dat
 internal fun BioWorld.statisticsDailyCompletions(): List<Int> {
     val daily = data.o("statistics").a("recentDailyCompletions")
     return List(7) { daily.optInt(it).coerceAtLeast(0) }
+}
+
+@Preview(name = "Application shell", widthDp = 375, heightDp = 812)
+@Preview(name = "Application shell landscape", widthDp = 844, heightDp = 390)
+@Composable
+private fun BioApplicationShellPreview() {
+    BioReferenceSurface("home")
+}
+
+@Preview(name = "Toast", widthDp = 335, showBackground = true)
+@Composable
+private fun BioToastPreview() {
+    val context = LocalContext.current
+    val world = remember(context) { BioWorld.reference(context) }
+    BioTheme(world, "1") {
+        BioToast(stringResource(R.string.copy_da_tuoi_de2042), onDismiss = {})
+    }
 }

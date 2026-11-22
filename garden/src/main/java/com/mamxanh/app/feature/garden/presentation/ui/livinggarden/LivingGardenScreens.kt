@@ -1,5 +1,6 @@
 package com.mamxanh.app.feature.garden.presentation.ui.livinggarden
 
+import androidx.compose.ui.tooling.preview.Preview
 import com.mamxanh.app.core.components.design.AppColors
 import com.mamxanh.app.core.components.design.AppDimensions
 import com.mamxanh.app.core.components.design.AppOpacity
@@ -201,4 +202,28 @@ private fun ColumnScope.GardenStudio(state:LivingGardenUiState,onOpen:(String,St
         GardenCaption(AppText.text(TextKey.CopyUocTinh0Ngay1B69012,days,if(state.snapshot.estimatedRate)AppText.text(TextKey.CopyThamKhao40XuNgayC8596f) else AppText.text(TextKey.CopyTheoThuNhap7NgayF72e2b)))
     }
     if(owned>0&&item.slot=="THEME")GardenPaintedButton(AppText.text(TextKey.CopyChonChuDeC1f89a),{onOpen("APPEARANCE",item.id)},Modifier.fillMaxWidth(),primary=false)
+}
+
+@Preview(name = "Garden appearance", widthDp = 375, heightDp = 812)
+@Composable
+private fun LivingGardenScreenPreview() {
+    MamXanhPreviewTheme {
+        LivingGardenScreen(
+            state = LivingGardenUiState(route = "APPEARANCE", loading = false),
+            onOpen = { _, _ -> },
+            onAct = {},
+            onSelect = {},
+            onPlace = { _, _ -> },
+            onRemove = {},
+            onUndo = {},
+            onSave = {},
+            onCancel = {},
+            onTree = {},
+            onSeedShop = {},
+            onMemories = {},
+            reducedMotion = true,
+            onReducedMotion = {},
+            active = true,
+        )
+    }
 }

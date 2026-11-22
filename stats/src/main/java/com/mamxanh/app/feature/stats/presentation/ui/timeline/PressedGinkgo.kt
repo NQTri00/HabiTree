@@ -1,5 +1,8 @@
 package com.mamxanh.app.feature.stats.presentation.ui.timeline
 
+import com.mamxanh.app.core.components.design.AppDimensions
+import androidx.compose.foundation.layout.size
+import androidx.compose.ui.tooling.preview.Preview
 import com.mamxanh.app.core.components.design.AppColors
 
 import androidx.compose.foundation.Canvas
@@ -29,4 +32,10 @@ internal fun PressedGinkgo(modifier: Modifier = Modifier) {
             }
         }
     }
+}
+
+@Preview(name = "Journal leaf", showBackground = true)
+@Composable
+private fun PressedGinkgoPreview() {
+    PressedGinkgo(Modifier.size(AppDimensions.Dp80))
 }

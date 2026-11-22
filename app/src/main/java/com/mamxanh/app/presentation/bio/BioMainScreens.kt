@@ -1,5 +1,8 @@
 package com.mamxanh.app.presentation.bio
 
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.res.stringResource
 import com.mamxanh.core.ui.R
 import com.mamxanh.app.core.components.design.*
@@ -192,4 +195,25 @@ internal fun taskListRouteContent(world: BioWorld, ui: BioController): TaskListR
         },
         reward = { BioReward(world, ui) },
     )
+}
+
+@Preview(name = "Shop products", widthDp = 335, showBackground = true)
+@Composable
+private fun BioProductPreview() {
+    val context = LocalContext.current
+    val world = remember(context) { BioWorld.reference(context) }
+    val ui = remember { BioController() }
+    BioTheme(world, "1") {
+        Column {
+            BioReward(world, ui)
+            BioProduct(world, ui, world.products.first())
+            BioTaskRow(world.tasks.first(), ui)
+        }
+    }
+}
+
+@Preview(name = "More actions", widthDp = 335, heightDp = 720)
+@Composable
+private fun BioMoreComponentPreview() {
+    BioReferenceSurface("more")
 }

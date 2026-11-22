@@ -1,5 +1,8 @@
 package com.mamxanh.app.core.components.components
 
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
+import com.mamxanh.app.core.components.design.AppThemeEffects
 import com.mamxanh.core.ui.R
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,10 +41,12 @@ fun MintBackdrop(modifier: Modifier = Modifier, content: @Composable BoxScope.()
 
 @Composable
 fun MintHeader(title: String, coins: Int, modifier: Modifier = Modifier) {
+    val showArtwork = LocalDensity.current.fontScale <= AppThemeEffects.LargeFontScale ||
+        LocalConfiguration.current.screenWidthDp >= AppThemeEffects.CompactWidth
     Row(modifier.fillMaxWidth().mintDepth(RoundedCornerShape(bottomStart = AppDimensions.Dp20, bottomEnd = AppDimensions.Dp20), MintDepth.bar, AppDimensions.Dp3)
         .heightIn(min = AppDimensions.Dp56).padding(horizontal = AppDimensions.Dp16, vertical = AppDimensions.Dp8),
         verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(AppDimensions.Dp10)) {
-        GardenArtwork(GardenArt.SPROUT, Modifier.size(AppDimensions.Dp28))
+        if (showArtwork) GardenArtwork(GardenArt.SPROUT, Modifier.size(AppDimensions.Dp28))
         Text(title, Modifier.weight(1f), fontSize = AppTypography.Sp23, lineHeight = AppTypography.Sp27, fontWeight = FontWeight.Bold, color = Deep)
         GardenBotanicalFrame(contentPadding = PaddingValues(horizontal = AppDimensions.Dp10, vertical = AppDimensions.Dp5), cornerSize = AppDimensions.Dp50) {
             GardenRichText(AppText.text(TextKey.Copy0Xu279a5c,coins), color = Deep, fontSize = AppTypography.Sp14, fontWeight = FontWeight.Bold)

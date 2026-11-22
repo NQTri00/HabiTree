@@ -1,5 +1,6 @@
 package com.mamxanh.app.feature.shop.presentation.ui.shop
 
+import androidx.compose.ui.tooling.preview.Preview
 import com.mamxanh.app.core.components.design.AppColors
 import com.mamxanh.app.core.components.design.AppDimensions
 import com.mamxanh.app.core.components.design.AppOpacity
@@ -106,5 +107,19 @@ private fun QuantityButton(increase: Boolean, enabled: Boolean, onClick: () -> U
                 if(increase)AppText.text(TextKey.CopyTangSoLuongF05853) else AppText.text(TextKey.CopyGiamSoLuong9abe78),
                 tint=if(increase)AppColors.White else Green,modifier=Modifier.size(AppDimensions.Dp16))
         }
+    }
+}
+
+@Preview(name = "Seed purchase", widthDp = 375, heightDp = 812)
+@Preview(name = "Seed purchase at large text", widthDp = 320, heightDp = 812, fontScale = 1.5f)
+@Composable
+private fun PurchaseConfirmationPreview() {
+    MamXanhPreviewTheme {
+        PurchaseConfirmation(
+            id = shopCatalog.first().id,
+            state = ShopUiState(isLoading = false),
+            onDismiss = {},
+            onBuy = { _, _ -> },
+        )
     }
 }
