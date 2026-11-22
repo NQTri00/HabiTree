@@ -14,10 +14,12 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
+import com.mamxanh.core.ui.R
 
 private object ChipTokens {
     val TopInset = AppDimensions.Dp2
@@ -61,7 +63,12 @@ fun BioChips(options: List<Pair<String, String>>, selected: String, onSelect: (S
 @Composable
 private fun BioChipsPreview() {
     BioChips(
-        options = listOf("all" to "Tất cả", "water" to "Cần tưới", "growing" to "Đang lớn", "mature" to "Trưởng thành"),
+        options = listOf(
+            "all" to stringResource(R.string.copy_tat_ca_49c73a),
+            "water" to stringResource(R.string.copy_can_tuoi_a0957f),
+            "growing" to stringResource(R.string.copy_dang_lon_40daab),
+            "mature" to stringResource(R.string.copy_truong_thanh_8c14d7),
+        ),
         selected = "all",
         onSelect = {},
     )

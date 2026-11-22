@@ -36,14 +36,22 @@ import androidx.compose.ui.tooling.preview.Preview
 @Preview(name = "Language selector", widthDp = 335, showBackground = true)
 @Composable
 private fun BioSelectPreview() {
-    BioSelect("Language", listOf("vi" to "Tiếng Việt", "en" to "English"), "en", onSelect = {})
+    BioSelect(
+        stringResource(R.string.app_language_title),
+        listOf(
+            "vi" to stringResource(R.string.app_language_vi),
+            "en" to stringResource(R.string.app_language_en),
+        ),
+        "en",
+        onSelect = {},
+    )
 }
 
 @Preview(name = "Reminder toggle states", widthDp = 280, fontScale = 1.5f, showBackground = true)
 @Composable
 private fun BioTogglePreview() {
     Column {
-        BioToggle("Watering reminders", true) {}
-        BioToggle("Reduce motion", false) {}
+        BioToggle(stringResource(R.string.copy_nhac_khi_cay_can_tuoi_246e3f), true) {}
+        BioToggle(stringResource(R.string.copy_giam_chuyen_dong_ff3295), false) {}
     }
 }

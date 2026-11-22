@@ -73,6 +73,22 @@ jobs:
             bash tools/android/verify-installed-debug.sh app/build/outputs/apk/debug/app-debug.apk app/build/reports/installed-debug.txt
             && bash ./gradlew --no-daemon :core-storage:connectedDebugAndroidTest :app:connectedVerificationAndroidTest
 
+      - name: Verify the test emulator disconnected
+        if: github.ref_type != 'tag'
+        run: |
+          serial=$(sed -n 's/^Serial: //p' app/build/reports/installed-debug.txt)
+          test -n "$serial"
+          for attempt in {1..15}; do
+            devices=$(adb devices)
+            if ! awk -v serial="$serial" '$1 == serial { found = 1 } END { exit !found }' <<< "$devices"; then
+              printf 'Disconnected emulator: %s\n' "$serial" | tee app/build/reports/emulator-disconnected.txt
+              exit 0
+            fi
+            sleep 1
+          done
+          printf 'Test emulator is still registered: %s\n' "$serial" >&2
+          exit 1
+
       - name: Upload verification reports
         if: always() && github.ref_type != 'tag'
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
@@ -81,6 +97,7 @@ jobs:
           path: |
             app/build/reports/tests/
             app/build/reports/installed-debug.txt
+            app/build/reports/emulator-disconnected.txt
             app/build/test-results/
             app/build/reports/androidTests/
             app/build/outputs/androidTest-results/
