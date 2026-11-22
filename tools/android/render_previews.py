@@ -13,6 +13,7 @@ MANIFESTS = (
     "docs/localization/preview-jobs-en.json",
     "docs/localization/preview-jobs-vi.json",
     "docs/bio-parity/component-preview-jobs.json",
+    "docs/bio-parity/same-file-preview-jobs.json",
 )
 
 def read_render_report(report: Path) -> dict:
