@@ -39,7 +39,13 @@ import androidx.compose.ui.tooling.preview.Preview
     val footer:@Composable ()->Unit={
         if(step==3)Bt(stringResource(R.string.copy_da_chon_0_5_chon_it_nhat_2_viec_e813b8, state.selectedCount),Modifier.fillMaxWidth().padding(bottom=AppDimensions.Dp8),size=AppTypography.Size12,tint=bp.muted)
         Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp10)){
-            if(step>0)BioButton(stringResource(R.string.copy_quay_lai_6d7935),{ onAction(OnboardingAction.Back) },Modifier.weight(1f),secondary=true)
+            BioButton(
+                stringResource(R.string.copy_quay_lai_6d7935),
+                { onAction(OnboardingAction.Back) },
+                Modifier.weight(1f),
+                secondary = true,
+                enabled = step > 0,
+            )
             BioButton(if(step==4)stringResource(R.string.copy_vao_vuon_b6df0e)else stringResource(R.string.copy_tiep_tuc_87a7ae),{ onAction(OnboardingAction.Next) },Modifier.weight(1f),enabled=step!=3||state.selectedCount in 2..5)
         }
     }
