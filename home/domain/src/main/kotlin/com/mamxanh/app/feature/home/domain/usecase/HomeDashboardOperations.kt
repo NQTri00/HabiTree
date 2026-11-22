@@ -6,6 +6,8 @@ fun interface HomeDashboardRepository {
     fun load(): HomeDashboard
 }
 
-class LoadHomeDashboard(private val repository: HomeDashboardRepository) {
+class LoadHomeDashboard(
+    private val repository: HomeDashboardRepository,
+) {
     operator fun invoke(): HomeDashboard = repository.load()
 }

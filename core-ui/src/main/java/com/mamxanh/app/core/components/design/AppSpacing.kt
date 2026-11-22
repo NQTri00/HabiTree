@@ -2,8 +2,8 @@
 package com.mamxanh.app.core.components.design
 
 object AppSpacing {
-    const val Value12 = 12
-    const val Value14 = 14
-    const val Value18 = 18
-    const val Value7 = 7
+    const val VALUE_12 = 12
+    const val VALUE_14 = 14
+    const val VALUE_18 = 18
+    const val VALUE_7 = 7
 }

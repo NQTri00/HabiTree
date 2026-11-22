@@ -36,7 +36,7 @@ def preview_methods(root: Path) -> dict[str, int]:
             jvm_name = re.search(r'(?m)^\s*@file:JvmName\("([^"]+)"\)', code)
             function = job["preview"]
             declaration = re.search(
-                rf"((?:@Preview\([^\n]*\)\s*)+)@Composable\s+(?:private\s+)?fun\s+{re.escape(function)}\s*\(",
+                rf"((?:@Preview\([^)]*\)\s*)+)@Composable\s+(?:private\s+)?fun\s+{re.escape(function)}\s*\(",
                 code,
             )
             if not package or not declaration:

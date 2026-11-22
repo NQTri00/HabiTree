@@ -8,13 +8,13 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 /** Presentation locale only; persisted dates and identifiers retain their machine format. */
-fun bioLocale(): Locale = when (AppText.language) {
-    AppLanguage.English -> Locale.ENGLISH
-    AppLanguage.Vietnamese -> Locale.forLanguageTag("vi-VN")
-}
+fun bioLocale(): Locale =
+    when (AppText.language) {
+        AppLanguage.English -> Locale.ENGLISH
+        AppLanguage.Vietnamese -> Locale.forLanguageTag("vi-VN")
+    }
 
-fun bioWeekday(calendarDay: Int): String =
-    DisplayDates.weekday(calendarDay, bioLocale())
+fun bioWeekday(calendarDay: Int): String = DisplayDates.weekday(calendarDay, bioLocale())
 
 /** Display and picker fields share one date order; storage keeps ISO keys. */
 fun bioDateFormat(): DateFormat = DisplayDates.shortFormat(bioLocale())

@@ -1,16 +1,22 @@
 package com.mamxanh.app.presentation.bio
 
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.runtime.Composable
 import com.mamxanh.app.feature.tree.presentation.ui.detail.component.TreeHero
 import com.mamxanh.app.feature.tree.presentation.ui.detail.component.TreeHeroAction
 import com.mamxanh.app.feature.tree.presentation.ui.detail.component.TreeHeroState
 import org.json.JSONObject
 
 @Composable
-internal fun BioHero(world: BioWorld, ui: BioController, tree: JSONObject, home: Boolean = false, short: Boolean = false) {
+internal fun BioHero(
+    world: BioWorld,
+    ui: BioController,
+    tree: JSONObject,
+    home: Boolean = false,
+    short: Boolean = false,
+) {
     val treeId = tree.s("id")
     val species = tree.s("species")
     TreeHero(

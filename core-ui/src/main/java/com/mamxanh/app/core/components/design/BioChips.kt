@@ -28,28 +28,37 @@ private object ChipTokens {
     val HorizontalPadding = AppDimensions.Dp12
     val VerticalPadding = AppDimensions.Dp9
     val BorderWidth = AppDimensions.Dp1
-    val Shape = bioShape(AppRadii.Value13)
-    val LabelSize = AppTypography.Size11
+    val Shape = bioShape(AppRadii.VALUE_13)
+    val LabelSize = AppTypography.SIZE_11
 }
 
 @Composable
-fun BioChips(options: List<Pair<String, String>>, selected: String, onSelect: (String) -> Unit) {
+fun BioChips(
+    options: List<Pair<String, String>>,
+    selected: String,
+    onSelect: (String) -> Unit,
+) {
     Row(
-        modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState())
-            .padding(top = ChipTokens.TopInset),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .horizontalScroll(rememberScrollState())
+                .padding(top = ChipTokens.TopInset),
         horizontalArrangement = Arrangement.spacedBy(ChipTokens.Gap),
     ) {
         options.forEach { (id, label) ->
             val isSelected = id == selected
-            val fill = if (isSelected) bp.accent else AppColors.White.copy(alpha = AppOpacity.Value_55)
+            val fill = if (isSelected) bp.accent else AppColors.White.copy(alpha = AppOpacity.VALUE_55)
             val border = if (isSelected) bp.control else bp.line
             Box(
-                modifier = Modifier.heightIn(min = ChipTokens.MinimumHeight)
-                    .background(fill, ChipTokens.Shape)
-                    .border(ChipTokens.BorderWidth, border, ChipTokens.Shape)
-                    .semantics { this.selected = isSelected }
-                    .clickable(role = Role.RadioButton) { onSelect(id) }
-                    .padding(horizontal = ChipTokens.HorizontalPadding, vertical = ChipTokens.VerticalPadding),
+                modifier =
+                    Modifier
+                        .heightIn(min = ChipTokens.MinimumHeight)
+                        .background(fill, ChipTokens.Shape)
+                        .border(ChipTokens.BorderWidth, border, ChipTokens.Shape)
+                        .semantics { this.selected = isSelected }
+                        .clickable(role = Role.RadioButton) { onSelect(id) }
+                        .padding(horizontal = ChipTokens.HorizontalPadding, vertical = ChipTokens.VerticalPadding),
                 contentAlignment = Alignment.Center,
             ) {
                 Bt(label, size = ChipTokens.LabelSize, maxLines = 1)
@@ -63,12 +72,13 @@ fun BioChips(options: List<Pair<String, String>>, selected: String, onSelect: (S
 @Composable
 private fun BioChipsPreview() {
     BioChips(
-        options = listOf(
-            "all" to stringResource(R.string.copy_tat_ca_49c73a),
-            "water" to stringResource(R.string.copy_can_tuoi_a0957f),
-            "growing" to stringResource(R.string.copy_dang_lon_40daab),
-            "mature" to stringResource(R.string.copy_truong_thanh_8c14d7),
-        ),
+        options =
+            listOf(
+                "all" to stringResource(R.string.copy_tat_ca_49c73a),
+                "water" to stringResource(R.string.copy_can_tuoi_a0957f),
+                "growing" to stringResource(R.string.copy_dang_lon_40daab),
+                "mature" to stringResource(R.string.copy_truong_thanh_8c14d7),
+            ),
         selected = "all",
         onSelect = {},
     )

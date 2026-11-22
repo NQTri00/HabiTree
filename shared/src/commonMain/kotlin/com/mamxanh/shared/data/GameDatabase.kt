@@ -4,42 +4,120 @@ import com.mamxanh.shared.model.*
 
 /** Blocking platform persistence. Call from a worker dispatcher, never from composition. */
 interface GameDatabase {
-    fun backup(appVersion:String,createdAt:Long): com.mamxanh.shared.data.sql.GameBackup
-    fun restore(backup:com.mamxanh.shared.data.sql.GameBackup)
+    fun backup(
+        appVersion: String,
+        createdAt: Long,
+    ): com.mamxanh.shared.data.sql.GameBackup
+
+    fun restore(backup: com.mamxanh.shared.data.sql.GameBackup)
+
     fun livingGarden(): LivingGardenSnapshot
+
     fun designGarden(action: LivingGardenAction): ActionResult
+
     fun engagementSnapshot(): EngagementSnapshot
+
     fun engage(action: EngagementAction): ActionResult
+
     fun reminderCandidates(): List<ReminderDelivery>
-    fun claimReminder(id: Long,date: String,kind: String): Boolean
+
+    fun claimReminder(
+        id: Long,
+        date: String,
+        kind: String,
+    ): Boolean
+
     fun waterAllQuote(): WaterAllSummary
+
     fun waterAll(key: String): ActionResult
-    fun applyFertilizer(treeId: Long,tierId: String): ActionResult
+
+    fun applyFertilizer(
+        treeId: Long,
+        tierId: String,
+    ): ActionResult
+
     fun equipCan(id: String): ActionResult
+
     fun treeSaleQuote(id: Long): ActionResult
-    fun disposeTree(id: Long,sell: Boolean,key: String): ActionResult
+
+    fun disposeTree(
+        id: Long,
+        sell: Boolean,
+        key: String,
+    ): ActionResult
+
     fun treeDispositions(): List<TreeDispositionEvent>
+
     fun phaseSnapshot(): PhaseSnapshot
-    fun saveTask(id: Long?, config: TaskConfig): ActionResult
-    fun taskLifecycle(id: Long, state: String): ActionResult
-    fun taskTimer(id: Long, action: String): ActionResult
+
+    fun saveTask(
+        id: Long?,
+        config: TaskConfig,
+    ): ActionResult
+
+    fun taskLifecycle(
+        id: Long,
+        state: String,
+    ): ActionResult
+
+    fun taskTimer(
+        id: Long,
+        action: String,
+    ): ActionResult
+
     fun completeTask(id: Long): ActionResult
-    fun purchase(id: String, quantity: Int, key: String): ActionResult
+
+    fun purchase(
+        id: String,
+        quantity: Int,
+        key: String,
+    ): ActionResult
+
     fun tasks(): List<Task>
+
     fun inventoryQuantities(): Map<String, Int>
+
     fun garden(): Garden
+
     fun statistics(): Statistics
-    fun addTask(title: String, kind: String, category: String, reward: Int, frequency: String, due: String)
+
+    fun addTask(
+        title: String,
+        kind: String,
+        category: String,
+        reward: Int,
+        frequency: String,
+        due: String,
+    )
+
     fun deleteTask(id: Long)
+
     fun complete(id: Long): Boolean
+
     fun dailyBonus(): Boolean
+
     fun isDailyBonusClaimed(): Boolean
+
     fun canClaimDailyBonus(): Boolean
+
     fun buySeed(id: String): Boolean
-    fun plant(id: String, name: String, plotId: Int? = null): Boolean
+
+    fun plant(
+        id: String,
+        name: String,
+        plotId: Int? = null,
+    ): Boolean
+
     fun unlockPlot(plotId: Int): Boolean
+
     fun buyFertilizer(): Boolean
+
     fun fertilize(treeId: Long): Boolean
+
     fun water(treeId: Long): TreeWateringResult
-    fun decorate(treeId: Long, decoration: String)
+
+    fun decorate(
+        treeId: Long,
+        decoration: String,
+    )
 }

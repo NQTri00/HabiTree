@@ -3,9 +3,7 @@ package com.mamxanh.app.core.components
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
@@ -15,7 +13,7 @@ fun MamXanhPreviewTheme(content: @Composable () -> Unit) {
         colorScheme = GardenColorScheme,
         typography = GardenTypography,
         shapes = GardenShapes,
-        content = content
+        content = content,
     )
 }
 
@@ -27,7 +25,9 @@ fun MamXanhPreviewThemePreview() {
             androidx.compose.material3.Text(
                 "Mầm xanh mỗi ngày",
                 color = Green,
-                modifier = androidx.compose.ui.Modifier.padding(24.dp)
+                modifier =
+                    androidx.compose.ui.Modifier
+                        .padding(24.dp),
             )
         }
     }

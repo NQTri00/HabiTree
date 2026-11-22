@@ -1,63 +1,112 @@
 package com.mamxanh.shared.data.sql
 
-import com.mamxanh.shared.localization.TextKey
-
 import com.mamxanh.shared.localization.AppText
+import com.mamxanh.shared.localization.TextKey
 
 /** Shared schema; migrations preserve existing tree identities and player balances. */
 object GameSchema {
     const val VERSION = 7
 
     fun create(connection: GameSqlConnection) {
-        connection.execute("CREATE TABLE tasks(id INTEGER PRIMARY KEY AUTOINCREMENT,title TEXT NOT NULL,kind TEXT NOT NULL,category TEXT NOT NULL,reward INTEGER NOT NULL,frequency TEXT NOT NULL,due TEXT NOT NULL DEFAULT '',completed TEXT NOT NULL DEFAULT '',streak INTEGER NOT NULL DEFAULT 0,last_done TEXT NOT NULL DEFAULT '')")
-        connection.execute("CREATE TABLE trees(id INTEGER PRIMARY KEY AUTOINCREMENT,species_id TEXT NOT NULL,name TEXT NOT NULL,growth INTEGER NOT NULL DEFAULT 0,planted TEXT NOT NULL)")
+        connection.execute(
+            "CREATE TABLE tasks(id INTEGER PRIMARY KEY AUTOINCREMENT,title TEXT NOT NULL,kind TEXT NOT NULL,category TEXT NOT NULL,reward INTEGER NOT NULL,frequency TEXT NOT NULL,due TEXT NOT NULL DEFAULT '',completed TEXT NOT NULL DEFAULT '',streak INTEGER NOT NULL DEFAULT 0,last_done TEXT NOT NULL DEFAULT '')",
+        )
+        connection.execute(
+            "CREATE TABLE trees(id INTEGER PRIMARY KEY AUTOINCREMENT,species_id TEXT NOT NULL,name TEXT NOT NULL,growth INTEGER NOT NULL DEFAULT 0,planted TEXT NOT NULL)",
+        )
         connection.execute("CREATE TABLE inventory(item TEXT PRIMARY KEY,quantity INTEGER NOT NULL)")
         connection.execute("CREATE TABLE meta(k TEXT PRIMARY KEY,v TEXT NOT NULL)")
-        connection.execute("CREATE TABLE logs(id INTEGER PRIMARY KEY AUTOINCREMENT,date TEXT NOT NULL,task_id INTEGER NOT NULL,title TEXT NOT NULL,coins INTEGER NOT NULL)")
+        connection.execute(
+            "CREATE TABLE logs(id INTEGER PRIMARY KEY AUTOINCREMENT,date TEXT NOT NULL,task_id INTEGER NOT NULL,title TEXT NOT NULL,coins INTEGER NOT NULL)",
+        )
         listOf("coins" to "0", "daily_bonus" to "", "water_ml" to "542").forEach { (key, value) ->
             connection.execute("INSERT INTO meta(k,v) VALUES(?,?)", listOf(key, value))
         }
         listOf("succulent").forEach {
             connection.execute("INSERT INTO inventory(item,quantity) VALUES(?,1)", listOf(it))
         }
-        fun task(title: String, kind: String, category: String, reward: Int, frequency: String) {
-            connection.execute("INSERT INTO tasks(title,kind,category,reward,frequency,due) VALUES(?,?,?,?,?,'')",
-                listOf(title, kind, category, reward, frequency))
+
+        fun task(
+            title: String,
+            kind: String,
+            category: String,
+            reward: Int,
+            frequency: String,
+        ) {
+            connection.execute(
+                "INSERT INTO tasks(title,kind,category,reward,frequency,due) VALUES(?,?,?,?,?,'')",
+                listOf(title, kind, category, reward, frequency),
+            )
         }
-        task(AppText.text(TextKey.CopyDocHoacHocTapTrung25Phut17d4f4), "DAILY", AppText.canonical(TextKey.CopyHocTapA51516), 10, "EVERY_DAY")
+        task(
+            AppText.text(TextKey.CopyDocHoacHocTapTrung25Phut17d4f4),
+            "DAILY",
+            AppText.canonical(TextKey.CopyHocTapA51516),
+            10,
+            "EVERY_DAY",
+        )
         task(AppText.text(TextKey.CopyDiBoHoacVanDong20PhutAf92a4), "DAILY", AppText.canonical(TextKey.CopySucKhoe071df7), 10, "EVERY_DAY")
         task(AppText.text(TextKey.CopyUongDuNuoc081b30), "HABIT", AppText.canonical(TextKey.CopySucKhoe071df7), 5, "EVERY_DAY")
         task(AppText.text(TextKey.CopyDonGocHocTapE45d91), "DAILY", AppText.canonical(TextKey.CopyNepSong8d1a98), 5, "WEEKDAYS")
-        task(AppText.text(TextKey.CopyVietNhatKy5Phut8db8cf), "HABIT", AppText.canonical(TextKey.CopyPhatTrienBanThanFb249c), 5, "EVERY_DAY")
+        task(
+            AppText.text(TextKey.CopyVietNhatKy5Phut8db8cf),
+            "HABIT",
+            AppText.canonical(TextKey.CopyPhatTrienBanThanFb249c),
+            5,
+            "EVERY_DAY",
+        )
         task(AppText.text(TextKey.CopyHoanThanhMotViecQuanTrongE90d48), "TODO", AppText.canonical(TextKey.CopyCongViec91d0a9), 20, "ONCE")
         createPlots(connection)
         phaseOne(connection)
         phaseTwo(connection)
-        EngagementSchema.create(connection,true)
+        EngagementSchema.create(connection, true)
         LivingGardenSchema.create(connection)
     }
 
     private fun phaseOne(c: GameSqlConnection) {
         listOf(
-            "description TEXT NOT NULL DEFAULT ''", "days TEXT NOT NULL DEFAULT ''",
-            "verification TEXT NOT NULL DEFAULT 'CLICK'", "minutes INTEGER NOT NULL DEFAULT 5",
-            "start_minute INTEGER NOT NULL DEFAULT -1", "end_minute INTEGER NOT NULL DEFAULT -1",
-            "reminder INTEGER NOT NULL DEFAULT -1", "lifecycle TEXT NOT NULL DEFAULT 'ACTIVE'",
-            "created INTEGER NOT NULL DEFAULT 0", "updated INTEGER NOT NULL DEFAULT 0",
-            "archived INTEGER NOT NULL DEFAULT 0"
+            "description TEXT NOT NULL DEFAULT ''",
+            "days TEXT NOT NULL DEFAULT ''",
+            "verification TEXT NOT NULL DEFAULT 'CLICK'",
+            "minutes INTEGER NOT NULL DEFAULT 5",
+            "start_minute INTEGER NOT NULL DEFAULT -1",
+            "end_minute INTEGER NOT NULL DEFAULT -1",
+            "reminder INTEGER NOT NULL DEFAULT -1",
+            "lifecycle TEXT NOT NULL DEFAULT 'ACTIVE'",
+            "created INTEGER NOT NULL DEFAULT 0",
+            "updated INTEGER NOT NULL DEFAULT 0",
+            "archived INTEGER NOT NULL DEFAULT 0",
         ).forEach { c.execute("ALTER TABLE tasks ADD COLUMN $it") }
-        c.execute("CREATE TABLE occurrences(task_id INTEGER NOT NULL,date TEXT NOT NULL,title TEXT NOT NULL,category TEXT NOT NULL,kind TEXT NOT NULL,frequency TEXT NOT NULL,days TEXT NOT NULL,start_minute INTEGER NOT NULL,end_minute INTEGER NOT NULL,nominal INTEGER NOT NULL,granted INTEGER NOT NULL,at INTEGER NOT NULL,PRIMARY KEY(task_id,date))")
+        c.execute(
+            "CREATE TABLE occurrences(task_id INTEGER NOT NULL,date TEXT NOT NULL,title TEXT NOT NULL,category TEXT NOT NULL,kind TEXT NOT NULL,frequency TEXT NOT NULL,days TEXT NOT NULL,start_minute INTEGER NOT NULL,end_minute INTEGER NOT NULL,nominal INTEGER NOT NULL,granted INTEGER NOT NULL,at INTEGER NOT NULL,PRIMARY KEY(task_id,date))",
+        )
         c.execute("CREATE UNIQUE INDEX todo_once ON occurrences(task_id) WHERE kind='TODO'")
-        c.execute("CREATE TABLE wallet(id TEXT PRIMARY KEY,date TEXT NOT NULL,type TEXT NOT NULL,entity TEXT NOT NULL,at INTEGER NOT NULL,nominal INTEGER NOT NULL,amount INTEGER NOT NULL,balance INTEGER NOT NULL)")
+        c.execute(
+            "CREATE TABLE wallet(id TEXT PRIMARY KEY,date TEXT NOT NULL,type TEXT NOT NULL,entity TEXT NOT NULL,at INTEGER NOT NULL,nominal INTEGER NOT NULL,amount INTEGER NOT NULL,balance INTEGER NOT NULL)",
+        )
         c.execute("CREATE TABLE plans(date TEXT PRIMARY KEY,cleared INTEGER NOT NULL DEFAULT 0)")
-        c.execute("CREATE TABLE obligations(date TEXT NOT NULL,task_id INTEGER NOT NULL,title TEXT NOT NULL,category TEXT NOT NULL,frequency TEXT NOT NULL,days TEXT NOT NULL,start_minute INTEGER NOT NULL,end_minute INTEGER NOT NULL,waived INTEGER NOT NULL DEFAULT 0,PRIMARY KEY(date,task_id))")
-        c.execute("CREATE TABLE sessions(id TEXT PRIMARY KEY,task_id INTEGER NOT NULL,date TEXT NOT NULL,seconds INTEGER NOT NULL DEFAULT 0,required INTEGER NOT NULL,reward INTEGER NOT NULL,running INTEGER NOT NULL DEFAULT 0,tick INTEGER NOT NULL DEFAULT 0,zone TEXT NOT NULL,start_at INTEGER NOT NULL,end_at INTEGER NOT NULL,UNIQUE(task_id,date))")
-        c.execute("CREATE TABLE timer_intervals(session_id TEXT NOT NULL,started INTEGER NOT NULL,ended INTEGER NOT NULL,seconds INTEGER NOT NULL)")
-        c.execute("CREATE TABLE care_events(id INTEGER PRIMARY KEY AUTOINCREMENT,tree_id INTEGER NOT NULL,type TEXT NOT NULL,at INTEGER NOT NULL,resource INTEGER NOT NULL,growth INTEGER NOT NULL)")
-        c.execute("CREATE TABLE purchase_receipts(id TEXT PRIMARY KEY,item TEXT NOT NULL,quantity INTEGER NOT NULL,total INTEGER NOT NULL,at INTEGER NOT NULL)")
+        c.execute(
+            "CREATE TABLE obligations(date TEXT NOT NULL,task_id INTEGER NOT NULL,title TEXT NOT NULL,category TEXT NOT NULL,frequency TEXT NOT NULL,days TEXT NOT NULL,start_minute INTEGER NOT NULL,end_minute INTEGER NOT NULL,waived INTEGER NOT NULL DEFAULT 0,PRIMARY KEY(date,task_id))",
+        )
+        c.execute(
+            "CREATE TABLE sessions(id TEXT PRIMARY KEY,task_id INTEGER NOT NULL,date TEXT NOT NULL,seconds INTEGER NOT NULL DEFAULT 0,required INTEGER NOT NULL,reward INTEGER NOT NULL,running INTEGER NOT NULL DEFAULT 0,tick INTEGER NOT NULL DEFAULT 0,zone TEXT NOT NULL,start_at INTEGER NOT NULL,end_at INTEGER NOT NULL,UNIQUE(task_id,date))",
+        )
+        c.execute(
+            "CREATE TABLE timer_intervals(session_id TEXT NOT NULL,started INTEGER NOT NULL,ended INTEGER NOT NULL,seconds INTEGER NOT NULL)",
+        )
+        c.execute(
+            "CREATE TABLE care_events(id INTEGER PRIMARY KEY AUTOINCREMENT,tree_id INTEGER NOT NULL,type TEXT NOT NULL,at INTEGER NOT NULL,resource INTEGER NOT NULL,growth INTEGER NOT NULL)",
+        )
+        c.execute(
+            "CREATE TABLE purchase_receipts(id TEXT PRIMARY KEY,item TEXT NOT NULL,quantity INTEGER NOT NULL,total INTEGER NOT NULL,at INTEGER NOT NULL)",
+        )
         // Historical rewards are audited without rebalancing existing wealth or side effects.
-        c.execute("INSERT OR IGNORE INTO occurrences SELECT logs.task_id,logs.date,logs.title,COALESCE(tasks.category,''),COALESCE(tasks.kind,'DAILY'),COALESCE(tasks.frequency,'EVERY_DAY'),'',-1,-1,logs.coins,logs.coins,0 FROM logs LEFT JOIN tasks ON tasks.id=logs.task_id ORDER BY logs.id")
-        c.execute("INSERT OR IGNORE INTO occurrences SELECT id,completed,title,category,kind,frequency,'',-1,-1,reward,reward,0 FROM tasks WHERE completed<>''")
+        c.execute(
+            "INSERT OR IGNORE INTO occurrences SELECT logs.task_id,logs.date,logs.title,COALESCE(tasks.category,''),COALESCE(tasks.kind,'DAILY'),COALESCE(tasks.frequency,'EVERY_DAY'),'',-1,-1,logs.coins,logs.coins,0 FROM logs LEFT JOIN tasks ON tasks.id=logs.task_id ORDER BY logs.id",
+        )
+        c.execute(
+            "INSERT OR IGNORE INTO occurrences SELECT id,completed,title,category,kind,frequency,'',-1,-1,reward,reward,0 FROM tasks WHERE completed<>''",
+        )
         c.execute("INSERT INTO wallet SELECT 'legacy-log-' || id,date,'LEGACY_REWARD',CAST(task_id AS TEXT),0,coins,coins,0 FROM logs")
         c.execute("INSERT OR IGNORE INTO plans(date,cleared) SELECT v,1 FROM meta WHERE k='daily_bonus' AND v<>''")
         c.execute("UPDATE tasks SET reward=8,verification='CLICK'")
@@ -67,43 +116,76 @@ object GameSchema {
 
     private fun phaseTwo(c: GameSqlConnection) {
         listOf(
-            "lifecycle_version INTEGER NOT NULL DEFAULT 0", "birth_at INTEGER NOT NULL DEFAULT 0",
-            "zone TEXT NOT NULL DEFAULT ''", "sim_at INTEGER NOT NULL DEFAULT 0",
-            "growth_units INTEGER NOT NULL DEFAULT 0", "growth_days INTEGER NOT NULL DEFAULT 0",
-            "growth_day TEXT NOT NULL DEFAULT ''", "day_units INTEGER NOT NULL DEFAULT 0",
-            "water_until INTEGER NOT NULL DEFAULT 0", "last_water INTEGER NOT NULL DEFAULT 0",
-            "fertilizer_id TEXT NOT NULL DEFAULT ''", "fertilizer_end INTEGER NOT NULL DEFAULT 0",
-            "last_fertilizer INTEGER NOT NULL DEFAULT 0", "neglect_ms INTEGER NOT NULL DEFAULT 0",
-            "life_state TEXT NOT NULL DEFAULT 'GROWING'", "matured_at INTEGER NOT NULL DEFAULT 0",
-            "death_at INTEGER NOT NULL DEFAULT 0", "disposition TEXT NOT NULL DEFAULT ''",
-            "free_starter INTEGER NOT NULL DEFAULT 0"
+            "lifecycle_version INTEGER NOT NULL DEFAULT 0",
+            "birth_at INTEGER NOT NULL DEFAULT 0",
+            "zone TEXT NOT NULL DEFAULT ''",
+            "sim_at INTEGER NOT NULL DEFAULT 0",
+            "growth_units INTEGER NOT NULL DEFAULT 0",
+            "growth_days INTEGER NOT NULL DEFAULT 0",
+            "growth_day TEXT NOT NULL DEFAULT ''",
+            "day_units INTEGER NOT NULL DEFAULT 0",
+            "water_until INTEGER NOT NULL DEFAULT 0",
+            "last_water INTEGER NOT NULL DEFAULT 0",
+            "fertilizer_id TEXT NOT NULL DEFAULT ''",
+            "fertilizer_end INTEGER NOT NULL DEFAULT 0",
+            "last_fertilizer INTEGER NOT NULL DEFAULT 0",
+            "neglect_ms INTEGER NOT NULL DEFAULT 0",
+            "life_state TEXT NOT NULL DEFAULT 'GROWING'",
+            "matured_at INTEGER NOT NULL DEFAULT 0",
+            "death_at INTEGER NOT NULL DEFAULT 0",
+            "disposition TEXT NOT NULL DEFAULT ''",
+            "free_starter INTEGER NOT NULL DEFAULT 0",
         ).forEach { c.execute("ALTER TABLE trees ADD COLUMN $it") }
-        c.execute("CREATE TABLE tree_growth_days(tree_id INTEGER NOT NULL,date TEXT NOT NULL,units INTEGER NOT NULL,credited INTEGER NOT NULL,PRIMARY KEY(tree_id,date))")
-        c.execute("CREATE TABLE tree_dispositions(tree_id INTEGER PRIMARY KEY,action_id TEXT UNIQUE NOT NULL,kind TEXT NOT NULL,at INTEGER NOT NULL,name TEXT NOT NULL,nominal INTEGER NOT NULL,granted INTEGER NOT NULL)")
+        c.execute(
+            "CREATE TABLE tree_growth_days(tree_id INTEGER NOT NULL,date TEXT NOT NULL,units INTEGER NOT NULL,credited INTEGER NOT NULL,PRIMARY KEY(tree_id,date))",
+        )
+        c.execute(
+            "CREATE TABLE tree_dispositions(tree_id INTEGER PRIMARY KEY,action_id TEXT UNIQUE NOT NULL,kind TEXT NOT NULL,at INTEGER NOT NULL,name TEXT NOT NULL,nominal INTEGER NOT NULL,granted INTEGER NOT NULL)",
+        )
         c.execute("CREATE TABLE tree_actions(id TEXT PRIMARY KEY,kind TEXT NOT NULL,at INTEGER NOT NULL)")
         c.execute("INSERT OR IGNORE INTO inventory(item,quantity) VALUES('can_basic',1)")
         c.execute("INSERT OR IGNORE INTO meta(k,v) VALUES('can_equipped','can_basic')")
-        val first=c.query("SELECT id FROM trees WHERE species_id='succulent' ORDER BY id LIMIT 1",1).firstOrNull()
-        if(first!=null)c.execute("UPDATE trees SET free_starter=1 WHERE id=?",listOf(first.long(0)))
-        c.execute("INSERT OR IGNORE INTO meta(k,v) VALUES('free_seed_available',?)",
-            listOf(if(first==null && (c.query("SELECT quantity FROM inventory WHERE item='succulent'",1).firstOrNull()?.int(0) ?: 0)>0)"1" else "0"))
+        val first = c.query("SELECT id FROM trees WHERE species_id='succulent' ORDER BY id LIMIT 1", 1).firstOrNull()
+        if (first != null)c.execute("UPDATE trees SET free_starter=1 WHERE id=?", listOf(first.long(0)))
+        c.execute(
+            "INSERT OR IGNORE INTO meta(k,v) VALUES('free_seed_available',?)",
+            listOf(
+                if (first == null &&
+                    (c.query("SELECT quantity FROM inventory WHERE item='succulent'", 1).firstOrNull()?.int(0) ?: 0) > 0
+                ) {
+                    "1"
+                } else {
+                    "0"
+                },
+            ),
+        )
         // Obsolete reservoir has no conversion value and cannot grant watering advantages.
         c.execute("DELETE FROM meta WHERE k='water_ml' OR k LIKE 'watered_%'")
     }
 
     private fun createPlots(connection: GameSqlConnection) {
-        connection.execute("CREATE TABLE garden_plots(id INTEGER PRIMARY KEY,unlocked INTEGER NOT NULL CHECK(unlocked IN (0,1)),tree_id INTEGER UNIQUE REFERENCES trees(id))")
+        connection.execute(
+            "CREATE TABLE garden_plots(id INTEGER PRIMARY KEY,unlocked INTEGER NOT NULL CHECK(unlocked IN (0,1)),tree_id INTEGER UNIQUE REFERENCES trees(id))",
+        )
         val trees = connection.query("SELECT id FROM trees ORDER BY id", 1)
         val unlocked = maxOf(com.mamxanh.shared.model.GardenPlotPolicy.INITIAL_PLOTS, trees.size)
         for (index in 0 until unlocked) {
-            connection.execute("INSERT INTO garden_plots(id,unlocked,tree_id) VALUES(?,1,?)",
-                listOf(index + 1, trees.getOrNull(index)?.long(0)))
+            connection.execute(
+                "INSERT INTO garden_plots(id,unlocked,tree_id) VALUES(?,1,?)",
+                listOf(index + 1, trees.getOrNull(index)?.long(0)),
+            )
         }
         connection.execute("INSERT INTO garden_plots(id,unlocked) VALUES(?,0)", listOf(unlocked + 1))
     }
 
-    fun migrate(connection: GameSqlConnection, oldVersion: Int, newVersion: Int) {
-        require(oldVersion in 1..VERSION && newVersion == VERSION && newVersion>=oldVersion) { "Unsupported schema migration: $oldVersion → $newVersion" }
+    fun migrate(
+        connection: GameSqlConnection,
+        oldVersion: Int,
+        newVersion: Int,
+    ) {
+        require(oldVersion in 1..VERSION && newVersion == VERSION && newVersion >= oldVersion) {
+            "Unsupported schema migration: $oldVersion → $newVersion"
+        }
         if (oldVersion < 3) createPlots(connection)
         if (oldVersion < 4) phaseOne(connection)
         if (oldVersion < 2) {
@@ -113,7 +195,7 @@ object GameSchema {
             }
         }
         if (oldVersion < 5) phaseTwo(connection)
-        if (oldVersion < 6) EngagementSchema.create(connection,false)
+        if (oldVersion < 6) EngagementSchema.create(connection, false)
         if (oldVersion < 7) LivingGardenSchema.create(connection)
     }
 }

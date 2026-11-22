@@ -1,10 +1,10 @@
 package com.mamxanh.app.feature.tasks.presentation.ui.list
 
 import com.mamxanh.app.core.presentation.UiState
-import com.mamxanh.app.feature.tasks.domain.model.TaskProgress
 import com.mamxanh.app.feature.tasks.domain.model.Task
+import com.mamxanh.app.feature.tasks.domain.model.TaskProgress
 
-data class TasksUiState(
+data class TasksState(
     val tasks: List<Task> = emptyList(),
     val phase: TaskProgress = TaskProgress(),
     val editingId: Long? = null,
@@ -15,5 +15,5 @@ data class TasksUiState(
     val isAddingTask: Boolean = false,
     val draft: List<String> = emptyList(),
     val isDailyBonusClaimed: Boolean = false,
-    val canClaimDailyBonus: Boolean = false
+    val canClaimDailyBonus: Boolean = false,
 ) : UiState

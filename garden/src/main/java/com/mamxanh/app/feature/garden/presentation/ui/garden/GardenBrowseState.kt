@@ -9,13 +9,20 @@ import androidx.compose.runtime.setValue
 class GardenBrowseState {
     var filter by mutableStateOf("all")
 
-    fun includes(growth: String?, watered: Boolean): Boolean =
-        filter == "all" || growth != null &&
+    fun includes(
+        growth: String?,
+        watered: Boolean,
+    ): Boolean =
+        filter == "all" ||
+            growth != null &&
             (filter == growth || filter == "thirsty" && isThirsty(growth, watered))
 
     companion object {
-        const val SavedFilterKey = "gardenFilter"
+        const val SAVED_FILTER_KEY = "gardenFilter"
 
-        fun isThirsty(growth: String, watered: Boolean): Boolean = !watered && growth != "dead"
+        fun isThirsty(
+            growth: String,
+            watered: Boolean,
+        ): Boolean = !watered && growth != "dead"
     }
 }

@@ -10,7 +10,10 @@ import com.mamxanh.app.feature.home.domain.usecase.HomeTreeSelection
 class HomeTreeState {
     var selectedId by mutableStateOf("1")
 
-    fun reconcile(selection: HomeTreeSelection, availableIds: List<String>) {
+    fun reconcile(
+        selection: HomeTreeSelection,
+        availableIds: List<String>,
+    ) {
         selectedId = selection.resolve(selectedId, availableIds)
     }
 }

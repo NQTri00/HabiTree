@@ -1,18 +1,11 @@
 package com.mamxanh.app.core.components.components
 
-import com.mamxanh.core.ui.R
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.Alignment
-import androidx.compose.material3.Text
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.Box
-import androidx.compose.ui.tooling.preview.Preview
-import com.mamxanh.app.core.components.design.AppColors
-import com.mamxanh.app.core.components.design.AppDimensions
-import com.mamxanh.app.core.components.design.AppOpacity
-
 import android.os.Build
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.Offset
@@ -21,7 +14,6 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.BlurEffect
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.drawscope.DrawScope
@@ -31,8 +23,13 @@ import androidx.compose.ui.graphics.layer.GraphicsLayer
 import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.graphics.rememberGraphicsLayer
 import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
-import androidx.compose.ui.unit.dp
+import com.mamxanh.app.core.components.design.AppColors
+import com.mamxanh.app.core.components.design.AppDimensions
+import com.mamxanh.app.core.components.design.AppOpacity
+import com.mamxanh.core.ui.R
 import kotlin.math.ceil
 import kotlin.math.roundToInt
 
@@ -42,7 +39,10 @@ import kotlin.math.roundToInt
  * Older Android versions and IDE previews use the lightweight fade without RenderEffect.
  */
 @Composable
-fun Modifier.mintScrollEdges(canScrollBackward: Boolean, canScrollForward: Boolean): Modifier {
+fun Modifier.mintScrollEdges(
+    canScrollBackward: Boolean,
+    canScrollForward: Boolean,
+): Modifier {
     if (!canScrollBackward && !canScrollForward) return this
     val blurSupported = Build.VERSION.SDK_INT >= 31 && !LocalInspectionMode.current
     val source = if (blurSupported) rememberGraphicsLayer() else null
@@ -57,22 +57,37 @@ fun Modifier.mintScrollEdges(canScrollBackward: Boolean, canScrollForward: Boole
         val effect = BlurEffect(radius, radius, TileMode.Clamp)
         top?.renderEffect = effect
         bottom?.renderEffect = effect
-        val maskTop = Brush.verticalGradient(listOf(AppColors.White.copy(alpha = AppOpacity.Value_9), AppColors.Transparent),
-            startY = 0f, endY = edge)
-        val maskBottom = Brush.verticalGradient(listOf(AppColors.Transparent, AppColors.White.copy(alpha = AppOpacity.Value_9)),
-            startY = size.height - edge, endY = size.height)
+        val maskTop =
+            Brush.verticalGradient(
+                listOf(AppColors.White.copy(alpha = AppOpacity.VALUE_9), AppColors.Transparent),
+                startY = 0f,
+                endY = edge,
+            )
+        val maskBottom =
+            Brush.verticalGradient(
+                listOf(AppColors.Transparent, AppColors.White.copy(alpha = AppOpacity.VALUE_9)),
+                startY = size.height - edge,
+                endY = size.height,
+            )
         val fog = AppColors.IllustrationFog.copy(alpha = if (blurSupported) .16f else .35f)
         val fadeTop = Brush.verticalGradient(listOf(fog, AppColors.Transparent), startY = 0f, endY = edge)
-        val fadeBottom = Brush.verticalGradient(listOf(AppColors.Transparent, fog),
-            startY = size.height - edge, endY = size.height)
+        val fadeBottom =
+            Brush.verticalGradient(
+                listOf(AppColors.Transparent, fog),
+                startY = size.height - edge,
+                endY = size.height,
+            )
         val edgePaint = Paint()
         onDrawWithContent {
             if (size.width <= 0f || size.height <= 0f) {
                 drawContent()
             } else {
                 if (source != null) {
-                    source.record(this, layoutDirection,
-                        IntSize(size.width.roundToInt(), size.height.roundToInt())) {
+                    source.record(
+                        this,
+                        layoutDirection,
+                        IntSize(size.width.roundToInt(), size.height.roundToInt()),
+                    ) {
                         this@onDrawWithContent.drawContent()
                     }
                     drawLayer(source)
@@ -82,18 +97,34 @@ fun Modifier.mintScrollEdges(canScrollBackward: Boolean, canScrollForward: Boole
                     bottom?.record(this, layoutDirection, bandSize) {
                         clipRect { translate(top = -bottomCaptureY) { drawLayer(source) } }
                     }
-                } else drawContent()
+                } else {
+                    drawContent()
+                }
                 if (canScrollBackward) drawSoftEdge(top, 0f, 0f, edge, maskTop, fadeTop, edgePaint)
-                if (canScrollForward) drawSoftEdge(bottom, size.height - edge,
-                    bottomCaptureY, edge, maskBottom, fadeBottom, edgePaint)
+                if (canScrollForward) {
+                    drawSoftEdge(
+                        bottom,
+                        size.height - edge,
+                        bottomCaptureY,
+                        edge,
+                        maskBottom,
+                        fadeBottom,
+                        edgePaint,
+                    )
+                }
             }
         }
     }
 }
 
 private fun DrawScope.drawSoftEdge(
-    layer: GraphicsLayer?, edgeY: Float, captureY: Float, edgeHeight: Float,
-    mask: Brush, fade: Brush, paint: Paint
+    layer: GraphicsLayer?,
+    edgeY: Float,
+    captureY: Float,
+    edgeHeight: Float,
+    mask: Brush,
+    fade: Brush,
+    paint: Paint,
 ) {
     if (layer != null) {
         val canvas = drawContext.canvas
@@ -101,8 +132,12 @@ private fun DrawScope.drawSoftEdge(
         try {
             clipRect(0f, edgeY, size.width, edgeY + edgeHeight) {
                 translate(top = captureY) { drawLayer(layer) }
-                drawRect(mask, topLeft = Offset(0f, edgeY),
-                    size = Size(size.width, edgeHeight), blendMode = BlendMode.DstIn)
+                drawRect(
+                    mask,
+                    topLeft = Offset(0f, edgeY),
+                    size = Size(size.width, edgeHeight),
+                    blendMode = BlendMode.DstIn,
+                )
             }
         } finally {
             canvas.restore()
@@ -115,7 +150,8 @@ private fun DrawScope.drawSoftEdge(
 @Composable
 private fun MintScrollEdgesPreview() {
     Box(
-        Modifier.size(AppDimensions.Dp200, AppDimensions.Dp100)
+        Modifier
+            .size(AppDimensions.Dp200, AppDimensions.Dp100)
             .mintScrollEdges(canScrollBackward = true, canScrollForward = true),
         contentAlignment = Alignment.Center,
     ) {

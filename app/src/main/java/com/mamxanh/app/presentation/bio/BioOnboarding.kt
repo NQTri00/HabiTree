@@ -1,12 +1,16 @@
 package com.mamxanh.app.presentation.bio
 
+import com.mamxanh.app.feature.home.presentation.navigation.OnboardingRouteContent
 import com.mamxanh.app.feature.home.presentation.ui.onboarding.OnboardingAction
 import com.mamxanh.app.feature.home.presentation.ui.onboarding.OnboardingDisplay
-import com.mamxanh.app.feature.home.presentation.navigation.OnboardingRouteContent
 import com.mamxanh.shared.localization.AppText
 import com.mamxanh.shared.localization.TextKey
 
-internal fun onboardingRouteContent(world: BioWorld, ui: BioController, gutter: Int): OnboardingRouteContent {
+internal fun onboardingRouteContent(
+    world: BioWorld,
+    ui: BioController,
+    gutter: Int,
+): OnboardingRouteContent {
     val templates = world.catalog.a("templates").objects()
     val category = ui.onboarding.category
     val chosen = ui.onboarding.selectedTemplates.toSet()
@@ -31,16 +35,17 @@ internal fun onboardingRouteContent(world: BioWorld, ui: BioController, gutter: 
     }
 
     return OnboardingRouteContent(
-        state = OnboardingDisplay(
-            step = ui.onboarding.step,
-            seed = ui.onboarding.seed,
-            category = category,
-            selectedCount = chosen.size,
-            selectedTitles = templates.filter { it.s("id") in chosen }.map { it.s("title") },
-            seedNames = (listOf("succulent", "monstera", "snake") + ui.onboarding.seed).associateWith { world.species(it).s("name") },
-            templateCount = byCategory.size,
-            remind = ui.fields["onboard-remind"] == "true",
-        ),
+        state =
+            OnboardingDisplay(
+                step = ui.onboarding.step,
+                seed = ui.onboarding.seed,
+                category = category,
+                selectedCount = chosen.size,
+                selectedTitles = templates.filter { it.s("id") in chosen }.map { it.s("title") },
+                seedNames = (listOf("succulent", "monstera", "snake") + ui.onboarding.seed).associateWith { world.species(it).s("name") },
+                templateCount = byCategory.size,
+                remind = ui.fields["onboard-remind"] == "true",
+            ),
         gutter = gutter,
         onAction = { action ->
             when (action) {

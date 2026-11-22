@@ -2,13 +2,26 @@ package com.mamxanh.app.feature.home.presentation.ui.home
 
 import com.mamxanh.app.core.presentation.UiAction
 
-sealed interface HomeIntent : UiAction {
-    data object Refresh : HomeIntent
-    data object DismissDailyClear : HomeIntent
-    data class OpenTree(val id: Long) : HomeIntent
-    data object OpenTasks : HomeIntent
-    data object OpenGarden : HomeIntent
-    data object OpenShop : HomeIntent
-    data class WaterTree(val id: Long) : HomeIntent
-    data class FertilizeTree(val id: Long) : HomeIntent
+sealed interface HomeAction : UiAction {
+    data object Refresh : HomeAction
+
+    data object DismissDailyClear : HomeAction
+
+    data class OpenTree(
+        val id: Long,
+    ) : HomeAction
+
+    data object OpenTasks : HomeAction
+
+    data object OpenGarden : HomeAction
+
+    data object OpenShop : HomeAction
+
+    data class WaterTree(
+        val id: Long,
+    ) : HomeAction
+
+    data class FertilizeTree(
+        val id: Long,
+    ) : HomeAction
 }

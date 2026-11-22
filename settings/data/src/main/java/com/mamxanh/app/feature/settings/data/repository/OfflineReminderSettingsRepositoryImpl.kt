@@ -2,25 +2,26 @@ package com.mamxanh.app.feature.settings.data.repository
 
 import com.mamxanh.app.core.domain.RepositoryResult
 import com.mamxanh.app.feature.settings.domain.model.ReminderSettings
-import com.mamxanh.app.feature.settings.domain.repository.ReminderSettingsRepository
 import com.mamxanh.app.feature.settings.domain.model.TaskReminderSettings
+import com.mamxanh.app.feature.settings.domain.repository.ReminderSettingsRepository
 import com.mamxanh.shared.data.GameStorage
-import com.mamxanh.shared.model.ReminderPreference
 import com.mamxanh.shared.model.EngagementAction
 import com.mamxanh.shared.model.EngagementSettings
+import com.mamxanh.shared.model.ReminderPreference
 
 internal class OfflineReminderSettingsRepositoryImpl(
     private val storage: GameStorage,
 ) : ReminderSettingsRepository {
     override fun save(settings: ReminderSettings): RepositoryResult<String> {
-        val stored = EngagementSettings(
-            paused = settings.paused,
-            quietStart = settings.quietStartMinute,
-            quietEnd = settings.quietEndMinute,
-            treeReminders = settings.treeReminders,
-            reducedMotion = settings.reducedMotion,
-            breakPrompts = settings.breakPrompts,
-        )
+        val stored =
+            EngagementSettings(
+                paused = settings.paused,
+                quietStart = settings.quietStartMinute,
+                quietEnd = settings.quietEndMinute,
+                treeReminders = settings.treeReminders,
+                reducedMotion = settings.reducedMotion,
+                breakPrompts = settings.breakPrompts,
+            )
         return save(EngagementAction.Settings(stored))
     }
 

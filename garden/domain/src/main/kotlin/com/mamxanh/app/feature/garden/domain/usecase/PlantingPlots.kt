@@ -2,8 +2,7 @@ package com.mamxanh.app.feature.garden.domain.usecase
 
 import com.mamxanh.app.feature.garden.domain.model.Garden
 
-fun Garden.availablePlantingPlots(): List<Int> =
-    plots.filter { it.isUnlocked && it.treeId == null }.map { it.id }
+fun Garden.availablePlantingPlots(): List<Int> = plots.filter { it.isUnlocked && it.treeId == null }.map { it.id }
 
 /** Use the requested plot when possible, then fall back to the first open plot. */
 fun Garden.eligiblePlantingPlot(preferredId: Int?): Int? {

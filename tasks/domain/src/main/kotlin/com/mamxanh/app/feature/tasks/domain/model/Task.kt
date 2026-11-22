@@ -22,4 +22,8 @@ data class Task(
     val finished: Boolean get() = kind == "TODO" && completed.isNotBlank()
 }
 
-data class TaskHistoryEntry(val date: String, val nominal: Int, val granted: Int)
+data class TaskHistoryEntry(
+    val date: String,
+    val nominal: Int,
+    val granted: Int,
+)

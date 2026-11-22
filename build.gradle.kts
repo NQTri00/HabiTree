@@ -12,6 +12,7 @@ plugins {
     alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.kotlin.jvm) apply false
     alias(libs.plugins.kotlin.compose) apply false
+    alias(libs.plugins.ktlint) apply false
 }
 
 // Each feature ships three artifacts at one version. Core libraries version independently.
@@ -40,6 +41,17 @@ val localPublicationRepository = providers.gradleProperty("habitreePublicationRe
     .orElse(layout.buildDirectory.dir("habitree-maven"))
 
 subprojects {
+    pluginManager.apply("org.jlleitschuh.gradle.ktlint")
+    val iosSources = listOf(file("src/iosMain").toPath(), file("src/iosTest").toPath())
+    configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
+        filter {
+            exclude { element -> iosSources.any { element.file.toPath().startsWith(it) } }
+            exclude("**/generated/**")
+            exclude("**/presentation/bio/previews/**")
+            exclude("**/localization/GeneratedCopy.kt", "**/localization/TextKey.kt")
+        }
+    }
+
     val projectPath = path
     val segments = projectPath.removePrefix(":").split(':')
     val owner = segments.first()

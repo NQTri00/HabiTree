@@ -11,7 +11,9 @@ import com.mamxanh.app.feature.shop.presentation.ui.shop.ShopTreeContext
 import kotlinx.serialization.Serializable
 
 @Serializable
-internal data class ShopKey(override val argument: String) : HabiTreeNavKey {
+internal data class ShopKey(
+    override val argument: String,
+) : HabiTreeNavKey {
     override val routeId: String get() = "shop"
 }
 
@@ -26,22 +28,24 @@ class ShopRouteContent(
     val item: @Composable (Int, Modifier) -> Unit,
 )
 
-val LocalShopRouteContent = compositionLocalOf<(String) -> ShopRouteContent> {
-    error("Shop route requires its state and actions")
-}
+val LocalShopRouteContent =
+    compositionLocalOf<(String) -> ShopRouteContent> {
+        error("Shop route requires its state and actions")
+    }
 
-val shopFeatureNavigation = HabiTreeFeatureModule(
-    HabiTreeFeatureDestination("shop", content = {
-        val content = LocalShopRouteContent.current(it.argument)
-        BioShopScreen(
-            tab = content.tab,
-            shoppingTree = content.shoppingTree,
-            itemCount = content.itemCount,
-            onTab = content.onTab,
-            onInventory = content.onInventory,
-            onTree = content.onTree,
-            onShop = content.onShop,
-            item = content.item,
-        )
-    }) { ShopKey(it) },
-)
+val shopFeatureNavigation =
+    HabiTreeFeatureModule(
+        HabiTreeFeatureDestination("shop", content = {
+            val content = LocalShopRouteContent.current(it.argument)
+            BioShopScreen(
+                tab = content.tab,
+                shoppingTree = content.shoppingTree,
+                itemCount = content.itemCount,
+                onTab = content.onTab,
+                onInventory = content.onInventory,
+                onTree = content.onTree,
+                onShop = content.onShop,
+                item = content.item,
+            )
+        }) { ShopKey(it) },
+    )

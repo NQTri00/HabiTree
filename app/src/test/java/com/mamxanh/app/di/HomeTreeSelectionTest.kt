@@ -8,13 +8,16 @@ import org.junit.Test
 class HomeTreeSelectionTest {
     @Test
     fun savedSelectionSurvivesRecreationAndMissingTreesUseTheExistingFallback() {
-        val repository = object : HomeTreeSelectionRepository {
-            private var id = 0L
-            override fun read(): Long = id
-            override fun write(treeId: Long) {
-                id = treeId
+        val repository =
+            object : HomeTreeSelectionRepository {
+                private var id = 0L
+
+                override fun read(): Long = id
+
+                override fun write(treeId: Long) {
+                    id = treeId
+                }
             }
-        }
         HomeTreeSelection(repository).save("42")
         val recreated = HomeTreeSelection(repository)
 

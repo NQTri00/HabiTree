@@ -5,7 +5,8 @@ import com.mamxanh.app.feature.home.presentation.ui.home.HomeViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
-val homePresentationModule = module {
-    viewModelOf(::HomeViewModel)
-    factory { HomeTreeSelection(get()) }
-}
+val homePresentationModule =
+    module {
+        viewModelOf(::HomeViewModel)
+        factory { HomeTreeSelection(get()) }
+    }

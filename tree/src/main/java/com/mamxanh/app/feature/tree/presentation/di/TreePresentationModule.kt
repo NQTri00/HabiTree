@@ -4,6 +4,7 @@ import com.mamxanh.app.feature.tree.presentation.ui.detail.TreeViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
-val treePresentationModule = module {
-    viewModelOf(::TreeViewModel)
-}
+val treePresentationModule =
+    module {
+        viewModelOf(::TreeViewModel)
+    }

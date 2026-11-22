@@ -1,7 +1,10 @@
 package com.mamxanh.shared.data.sql
 
 internal object EngagementSchema {
-    fun create(c:GameSqlConnection,fresh:Boolean) {
+    fun create(
+        c: GameSqlConnection,
+        fresh: Boolean,
+    ) {
         listOf(
             "CREATE TABLE IF NOT EXISTS engagement_receipts(id TEXT PRIMARY KEY,kind TEXT NOT NULL,at INTEGER NOT NULL)",
             "CREATE TABLE IF NOT EXISTS template_copies(template_id TEXT PRIMARY KEY,task_id INTEGER NOT NULL,at INTEGER NOT NULL)",
@@ -13,10 +16,10 @@ internal object EngagementSchema {
             "CREATE TABLE IF NOT EXISTS rest_days(date TEXT PRIMARY KEY,planned_at INTEGER NOT NULL)",
             "CREATE TABLE IF NOT EXISTS protection_uses(date TEXT PRIMARY KEY,receipt TEXT UNIQUE NOT NULL,at INTEGER NOT NULL)",
             "CREATE TABLE IF NOT EXISTS memory_events(id TEXT PRIMARY KEY,type TEXT NOT NULL,entity INTEGER NOT NULL,title TEXT NOT NULL,at INTEGER NOT NULL,note TEXT NOT NULL DEFAULT '')",
-            "CREATE TABLE IF NOT EXISTS weekly_reflections(week TEXT PRIMARY KEY,note TEXT NOT NULL,updated INTEGER NOT NULL)"
-        ).forEach{c.execute(it)}
-        c.execute("INSERT OR IGNORE INTO meta(k,v) VALUES('onboarded',?)",listOf(if(fresh)"0" else "1"))
-        if(fresh)c.execute("DELETE FROM tasks")
+            "CREATE TABLE IF NOT EXISTS weekly_reflections(week TEXT PRIMARY KEY,note TEXT NOT NULL,updated INTEGER NOT NULL)",
+        ).forEach { c.execute(it) }
+        c.execute("INSERT OR IGNORE INTO meta(k,v) VALUES('onboarded',?)", listOf(if (fresh)"0" else "1"))
+        if (fresh)c.execute("DELETE FROM tasks")
         c.execute("UPDATE tasks SET verification='CLICK' WHERE verification='HOLD'")
     }
 }

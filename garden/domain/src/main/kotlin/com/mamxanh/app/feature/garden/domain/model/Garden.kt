@@ -9,9 +9,17 @@ data class Garden(
     val waterAll: GardenWatering = GardenWatering(),
 )
 
-data class GardenPlot(val id: Int, val isUnlocked: Boolean, val treeId: Long? = null)
+data class GardenPlot(
+    val id: Int,
+    val isUnlocked: Boolean,
+    val treeId: Long? = null,
+)
 
-data class GardenWatering(val eligible: Int = 0, val active: Int = 0, val dead: Int = 0)
+data class GardenWatering(
+    val eligible: Int = 0,
+    val active: Int = 0,
+    val dead: Int = 0,
+)
 
 data class Tree(
     val id: Long,

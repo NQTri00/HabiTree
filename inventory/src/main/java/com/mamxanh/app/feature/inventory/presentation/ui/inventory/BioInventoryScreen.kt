@@ -36,7 +36,13 @@ fun BioInventoryScreen(
             true,
         )
     } else {
-        BioEmpty(stringResource(R.string.copy_tui_dang_trong_37bf7b),stringResource(R.string.copy_ban_co_the_mua_va_dung_ngay_trong_tiem_784a6a),"bag",stringResource(R.string.copy_ghe_tiem_cb74e9),onShop)
+        BioEmpty(
+            stringResource(R.string.copy_tui_dang_trong_37bf7b),
+            stringResource(R.string.copy_ban_co_the_mua_va_dung_ngay_trong_tiem_784a6a),
+            "bag",
+            stringResource(R.string.copy_ghe_tiem_cb74e9),
+            onShop,
+        )
     }
 }
 

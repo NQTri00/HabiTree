@@ -16,6 +16,5 @@ class PlantingSelectionState {
 
     fun clear() = select("")
 
-    fun initialDialogPlot(openPlots: List<Int>): String =
-        plotKey.ifBlank { openPlots.firstOrNull()?.toString().orEmpty() }
+    fun initialDialogPlot(openPlots: List<Int>): String = plotKey.ifBlank { openPlots.firstOrNull()?.toString().orEmpty() }
 }

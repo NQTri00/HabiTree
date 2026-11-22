@@ -19,17 +19,22 @@ class HabiTreeFeatureDestination(
     fun keyFor(argument: String): HabiTreeNavKey? = createKey(argument)
 }
 
-class HabiTreeFeatureModule(vararg destinations: HabiTreeFeatureDestination) {
+class HabiTreeFeatureModule(
+    vararg destinations: HabiTreeFeatureDestination,
+) {
     val destinations = destinations.toList()
 
-    val navigationModule = module {
-        this@HabiTreeFeatureModule.destinations.forEach { destination ->
-            single<HabiTreeFeatureDestination>(named(destination.routeId)) { destination }
+    val navigationModule =
+        module {
+            this@HabiTreeFeatureModule.destinations.forEach { destination ->
+                single<HabiTreeFeatureDestination>(named(destination.routeId)) { destination }
+            }
         }
-    }
 }
 
-class HabiTreeRouteRegistry(destinations: List<HabiTreeFeatureDestination>) {
+class HabiTreeRouteRegistry(
+    destinations: List<HabiTreeFeatureDestination>,
+) {
     private val byRoute = destinations.associateBy { it.routeId }
 
     init {
@@ -41,6 +46,5 @@ class HabiTreeRouteRegistry(destinations: List<HabiTreeFeatureDestination>) {
         return { destination.content(this, key) }
     }
 
-    fun keyFor(fallback: HabiTreeNavKey): HabiTreeNavKey =
-        byRoute[fallback.routeId]?.keyFor(fallback.argument) ?: fallback
+    fun keyFor(fallback: HabiTreeNavKey): HabiTreeNavKey = byRoute[fallback.routeId]?.keyFor(fallback.argument) ?: fallback
 }

@@ -8,33 +8,45 @@ import com.mamxanh.shared.data.GameStorage
 import com.mamxanh.shared.model.gardenCosmetics
 import org.koin.dsl.module
 
-class GardenCollectionRepositoryImpl(private val storage: GameStorage) : GardenCollectionRepository {
+class GardenCollectionRepositoryImpl(
+    private val storage: GameStorage,
+) : GardenCollectionRepository {
     override fun load(): GardenCollection {
         val snapshot = storage.livingGarden()
         val treeAccessories = gardenCosmetics.filter { it.slot == "TREE" }.map { it.id }.toSet()
-        val decorations = buildMap {
-            for (placement in snapshot.placements) {
-                val treeId = placement.treeId
-                if (placement.sku in treeAccessories && treeId !in this) put(treeId, placement.sku)
+        val decorations =
+            buildMap {
+                for (placement in snapshot.placements) {
+                    val treeId = placement.treeId
+                    if (placement.sku in treeAccessories && treeId !in this) put(treeId, placement.sku)
+                }
             }
-        }
         return GardenCollection(
-            species = snapshot.species.map {
-                CollectedSpecies(
-                    it.id, it.ownedSeeds, it.planted, it.discoveredAt > 0,
-                    (it.highestStage + 1).coerceAtLeast(0), it.firstPlanted, it.firstMatured,
-                    it.flourished, it.status,
-                )
-            },
-            milestones = snapshot.goals.map {
-                CollectionMilestone(it.id, it.title, it.progress, it.target, it.reward, it.unlockedAt > 0)
-            },
+            species =
+                snapshot.species.map {
+                    CollectedSpecies(
+                        it.id,
+                        it.ownedSeeds,
+                        it.planted,
+                        it.discoveredAt > 0,
+                        (it.highestStage + 1).coerceAtLeast(0),
+                        it.firstPlanted,
+                        it.firstMatured,
+                        it.flourished,
+                        it.status,
+                    )
+                },
+            milestones =
+                snapshot.goals.map {
+                    CollectionMilestone(it.id, it.title, it.progress, it.target, it.reward, it.unlockedAt > 0)
+                },
             decorationsByTree = decorations,
             ownedAccessories = snapshot.owned,
         )
     }
 }
 
-val catalogDataModule = module {
-    single<GardenCollectionRepository> { GardenCollectionRepositoryImpl(get()) }
-}
+val catalogDataModule =
+    module {
+        single<GardenCollectionRepository> { GardenCollectionRepositoryImpl(get()) }
+    }

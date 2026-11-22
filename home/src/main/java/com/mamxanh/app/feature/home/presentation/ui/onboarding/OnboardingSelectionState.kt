@@ -12,7 +12,7 @@ import com.mamxanh.shared.localization.TextKey
 @Stable
 class OnboardingSelectionState {
     var step by mutableIntStateOf(0)
-    var seed by mutableStateOf(DefaultSeed)
+    var seed by mutableStateOf(DEFAULT_SEED)
     var category by mutableStateOf(defaultCategory())
     private val templates = mutableStateListOf("study25", "water")
     val selectedTemplates: List<String> get() = templates.toList()
@@ -40,7 +40,8 @@ class OnboardingSelectionState {
     }
 
     companion object {
-        const val DefaultSeed = "succulent"
+        const val DEFAULT_SEED = "succulent"
+
         fun defaultCategory() = AppText.canonical(TextKey.CopyHocTapA51516)
     }
 }

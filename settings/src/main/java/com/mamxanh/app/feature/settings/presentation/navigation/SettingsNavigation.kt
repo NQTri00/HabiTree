@@ -35,21 +35,24 @@ class BackupRouteContent(
     val onAction: (BackupScreenAction) -> Unit,
 )
 
-val LocalSettingsRouteContent = compositionLocalOf<() -> SettingsRouteContent> {
-    error("Settings route requires its state and actions")
-}
+val LocalSettingsRouteContent =
+    compositionLocalOf<() -> SettingsRouteContent> {
+        error("Settings route requires its state and actions")
+    }
 
-val LocalBackupRouteContent = compositionLocalOf<() -> BackupRouteContent> {
-    error("Backup route requires its state and actions")
-}
+val LocalBackupRouteContent =
+    compositionLocalOf<() -> BackupRouteContent> {
+        error("Backup route requires its state and actions")
+    }
 
-val settingsFeatureNavigation = HabiTreeFeatureModule(
-    HabiTreeFeatureDestination("settings", content = {
-        val content = LocalSettingsRouteContent.current()
-        SettingsScreen(content.state, content.onLanguage, content.onToggle, content.onSave, content.onLink)
-    }) { argument -> SettingsKey.takeIf { argument.isEmpty() } },
-    HabiTreeFeatureDestination("data", content = {
-        val content = LocalBackupRouteContent.current()
-        BackupScreen(content.state, content.onAction)
-    }) { argument -> BackupKey.takeIf { argument.isEmpty() } },
-)
+val settingsFeatureNavigation =
+    HabiTreeFeatureModule(
+        HabiTreeFeatureDestination("settings", content = {
+            val content = LocalSettingsRouteContent.current()
+            SettingsScreen(content.state, content.onLanguage, content.onToggle, content.onSave, content.onLink)
+        }) { argument -> SettingsKey.takeIf { argument.isEmpty() } },
+        HabiTreeFeatureDestination("data", content = {
+            val content = LocalBackupRouteContent.current()
+            BackupScreen(content.state, content.onAction)
+        }) { argument -> BackupKey.takeIf { argument.isEmpty() } },
+    )

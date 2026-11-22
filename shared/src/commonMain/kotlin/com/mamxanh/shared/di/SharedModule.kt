@@ -19,15 +19,16 @@ import com.mamxanh.shared.network.createHttpClient
 import org.koin.dsl.module
 import org.koin.dsl.onClose
 
-fun sharedModule(networkConfig: NetworkConfig = NetworkConfig()) = module {
-    single { GameStorage(get()) }
-    single<GardenRepository> { OfflineGardenRepository(get()) }
-    single<HomeDashboardRepository> { OfflineHomeDashboardRepository(get()) }
-    single<ShopRepository> { OfflineShopRepository(get()) }
-    single<StatisticsRepository> { OfflineStatisticsRepository(get()) }
-    single<TaskRepository> { OfflineTaskRepository(get()) }
-    single<TreeRepository> { OfflineTreeRepository(get()) }
-    single { networkConfig }
-    single { createHttpClient() } onClose { it?.close() }
-    single { RemoteService(get(), get()) }
-}
+fun sharedModule(networkConfig: NetworkConfig = NetworkConfig()) =
+    module {
+        single { GameStorage(get()) }
+        single<GardenRepository> { OfflineGardenRepository(get()) }
+        single<HomeDashboardRepository> { OfflineHomeDashboardRepository(get()) }
+        single<ShopRepository> { OfflineShopRepository(get()) }
+        single<StatisticsRepository> { OfflineStatisticsRepository(get()) }
+        single<TaskRepository> { OfflineTaskRepository(get()) }
+        single<TreeRepository> { OfflineTreeRepository(get()) }
+        single { networkConfig }
+        single { createHttpClient() } onClose { it?.close() }
+        single { RemoteService(get(), get()) }
+    }

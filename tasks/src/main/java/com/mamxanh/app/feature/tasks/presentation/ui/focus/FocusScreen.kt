@@ -1,7 +1,5 @@
 package com.mamxanh.app.feature.tasks.presentation.ui.focus
 
-import com.mamxanh.core.ui.R
-import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -9,10 +7,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import com.mamxanh.app.core.components.design.*
+import com.mamxanh.core.ui.R
 
 private object FocusLayout {
     val CompactTimerDiameter = AppDimensions.Dp140
@@ -40,32 +40,33 @@ fun ColumnScope.FocusScreen(
     val present = state.present
     val minutes = state.minutes
     val configuration = LocalConfiguration.current
-    val landscape = configuration.screenHeightDp < AppThemeEffects.CompactHeight
+    val landscape = configuration.screenHeightDp < AppThemeEffects.COMPACT_HEIGHT
     val portraitSetup = !present && !landscape
-    val ringSize = when {
-        landscape -> FocusLayout.CompactTimerDiameter
-        configuration.screenWidthDp < AppThemeEffects.CompactWidth -> FocusLayout.NarrowTimerDiameter
-        else -> FocusLayout.TimerDiameter
-    }
+    val ringSize =
+        when {
+            landscape -> FocusLayout.CompactTimerDiameter
+            configuration.screenWidthDp < AppThemeEffects.COMPACT_WIDTH -> FocusLayout.NarrowTimerDiameter
+            else -> FocusLayout.TimerDiameter
+        }
     if (present) {
         if (!landscape) {
             Bt(
                 stringResource(R.string.copy_khoang_thoi_gian_cua_ban_a0e014),
-                size = AppTypography.Size10,
+                size = AppTypography.SIZE_10,
                 mono = true,
                 tint = bp.muted,
-                spacing = AppTypography.Tracking1_8,
+                spacing = AppTypography.TRACKING_1_8,
             )
         }
         Bt(
             state.title,
             Modifier.fillMaxWidth(),
-            size = if (landscape) AppTypography.Size22 else AppTypography.Size27,
+            size = if (landscape) AppTypography.SIZE_22 else AppTypography.SIZE_27,
             bold = true,
             align = TextAlign.Center,
         )
     } else if (landscape) {
-        Bt(stringResource(R.string.copy_tap_trung_964002), size = AppTypography.Size22, bold = true)
+        Bt(stringResource(R.string.copy_tap_trung_964002), size = AppTypography.SIZE_22, bold = true)
     } else {
         BioIntro(
             stringResource(R.string.copy_tap_trung_964002),
@@ -110,19 +111,18 @@ fun ColumnScope.FocusScreen(
         BioDetails(stringResource(R.string.copy_phien_dang_luu_d6c8c9)) {
             Bt(
                 stringResource(R.string.copy_roi_trang_se_tam_dung_phan_da_lam_luon_duoc_giu_lai_c6be38, state.date),
-                size = AppTypography.Size12,
+                size = AppTypography.SIZE_12,
                 tint = bp.muted,
             )
         }
     }
     BioDetails(stringResource(R.string.copy_cac_phien_da_luu_0_hoan_thanh_bb1ef4, state.history.size)) {
         if (state.history.isEmpty()) {
-            Bt(stringResource(R.string.copy_chua_co_phien_hoan_thanh_fd9386), size = AppTypography.Size12, tint = bp.muted)
+            Bt(stringResource(R.string.copy_chua_co_phien_hoan_thanh_fd9386), size = AppTypography.SIZE_12, tint = bp.muted)
         }
-        state.history.forEach { Bt(it, size = AppTypography.Size13) }
+        state.history.forEach { Bt(it, size = AppTypography.SIZE_13) }
     }
 }
-
 
 @Composable
 private fun FocusTimer(
@@ -146,19 +146,20 @@ private fun FocusTimer(
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Bt(
                 "${remaining / 60}:${(remaining % 60).toString().padStart(2, '0')}",
-                size = if (landscape) AppTypography.FocusTimerCompactSize else AppTypography.FocusTimerSize,
-                line = if (landscape) AppTypography.FocusTimerCompactLineHeight else AppTypography.FocusTimerLineHeight,
+                size = if (landscape) AppTypography.FOCUS_TIMER_COMPACT_SIZE else AppTypography.FOCUS_TIMER_SIZE,
+                line = if (landscape) AppTypography.FOCUS_TIMER_COMPACT_LINE_HEIGHT else AppTypography.FOCUS_TIMER_LINE_HEIGHT,
                 mono = true,
-                spacing = AppTypography.TrackingMinus2,
+                spacing = AppTypography.TRACKING_MINUS_2,
             )
             if (!landscape) {
-                val status = when {
-                    !state.present -> R.string.copy_bat_dau_khi_ban_san_sang_3d0a9a
-                    state.running -> R.string.copy_dang_tap_trung_1c969b
-                    state.onBreak -> R.string.copy_nghi_mot_chut_f912b7
-                    else -> R.string.copy_da_tam_dung_a919ce
-                }
-                Bt(stringResource(status), size = AppTypography.Size12, tint = bp.muted)
+                val status =
+                    when {
+                        !state.present -> R.string.copy_bat_dau_khi_ban_san_sang_3d0a9a
+                        state.running -> R.string.copy_dang_tap_trung_1c969b
+                        state.onBreak -> R.string.copy_nghi_mot_chut_f912b7
+                        else -> R.string.copy_da_tam_dung_a919ce
+                    }
+                Bt(stringResource(status), size = AppTypography.SIZE_12, tint = bp.muted)
             }
         }
     }
@@ -174,9 +175,10 @@ private fun FocusSetupFields(
     val task = state.task
     val minutes = state.minutes
     if (task == "0") {
-        val presets = listOf(15, 25, 45, 60).map {
-            it.toString() to stringResource(R.string.copy_0_phut_2596d2, it)
-        }
+        val presets =
+            listOf(15, 25, 45, 60).map {
+                it.toString() to stringResource(R.string.copy_0_phut_2596d2, it)
+            }
         if (wide) {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(FocusLayout.PresetToDurationGap),
@@ -190,19 +192,20 @@ private fun FocusSetupFields(
             FocusDurationField(minutes, onMinutes)
         }
     }
-    val choices = listOf("0" to stringResource(R.string.copy_tu_do_khong_thuong_xu_113e54)) +
-        state.eligibleTasks.map { it.id to stringResource(R.string.copy_0_1_phut_ce85cf, it.title, it.minutes) }
+    val choices =
+        listOf("0" to stringResource(R.string.copy_tu_do_khong_thuong_xu_113e54)) +
+            state.eligibleTasks.map { it.id to stringResource(R.string.copy_0_1_phut_ce85cf, it.title, it.minutes) }
     BioSelect(stringResource(R.string.copy_danh_cho_ff565f), choices, task, onSelect = onTask)
     if (task != "0") {
-        BioCard(Modifier.fillMaxWidth(), bp.soft, padding = AppSpacing.Value12) {
+        BioCard(Modifier.fillMaxWidth(), bp.soft, padding = AppSpacing.VALUE_12) {
             Bt(
                 stringResource(R.string.copy_0_phut_theo_thoi_gian_cua_viec_e07f34, minutes),
-                size = AppTypography.Size13,
+                size = AppTypography.SIZE_13,
                 semi = true,
             )
             Bt(
                 stringResource(R.string.copy_sua_thoi_gian_trong_chi_tiet_viec_940772),
-                size = AppTypography.Size12,
+                size = AppTypography.SIZE_12,
                 tint = bp.muted,
             )
         }
@@ -210,7 +213,11 @@ private fun FocusSetupFields(
 }
 
 @Composable
-private fun FocusDurationField(minutes: String, onMinutes: (String) -> Unit, modifier: Modifier = Modifier) {
+private fun FocusDurationField(
+    minutes: String,
+    onMinutes: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
     val invalid = (minutes.toIntOrNull() ?: 0) !in 5..120
     BioField(
         stringResource(R.string.copy_phut_tap_trung_5_120_ca7d24),

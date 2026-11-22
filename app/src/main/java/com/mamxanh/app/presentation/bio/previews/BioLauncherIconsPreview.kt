@@ -27,7 +27,7 @@ import com.mamxanh.shared.localization.AppText
     val world=BioWorld.reference(context)
     BioTheme(world,"1") {
         Column(Modifier.fillMaxSize().background(bp.bg).padding(AppDimensions.Dp20),verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp16)) {
-            Bt("HabiTree",size=AppTypography.Size27,bold=true)
+            Bt("HabiTree",size=AppTypography.SIZE_27,bold=true)
             Bt(if(round)"Circular launcher mask"else "Rounded-square launcher mask")
             world.species.chunked(3).forEach { row ->
                 Row(horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp12)) {
@@ -39,7 +39,7 @@ import com.mamxanh.shared.localization.AppText
                             Box(Modifier.size(AppDimensions.Dp88).clip(if(round)CircleShape else RoundedCornerShape(AppDimensions.Dp20)).background(color(palette.s("accent"))),contentAlignment=Alignment.Center) {
                                 Image(painterResource(drawable),null,Modifier.fillMaxSize())
                             }
-                            Bt(species.s("name"),size=AppTypography.Size11)
+                            Bt(species.s("name"),size=AppTypography.SIZE_11)
                         }
                     }
                     repeat(3-row.size){Spacer(Modifier.weight(1f))}

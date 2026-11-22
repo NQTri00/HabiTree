@@ -10,8 +10,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.ContentDrawScope
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.ContentDrawScope
 import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.node.DrawModifierNode
 import com.mamxanh.app.core.components.design.AppDimensions
@@ -34,7 +34,8 @@ private class TouchNode(
     private val focusColor: Color,
     private val initiallyPressed: Boolean,
     private val initiallyFocused: Boolean,
-) : Modifier.Node(), DrawModifierNode {
+) : Modifier.Node(),
+    DrawModifierNode {
     private val presses = mutableSetOf<PressInteraction.Press>()
     private val focuses = mutableSetOf<FocusInteraction.Focus>()
     private var pressed by mutableStateOf(initiallyPressed)
@@ -64,7 +65,7 @@ private class TouchNode(
     }
 
     override fun ContentDrawScope.draw() {
-        val factor = if (pressed) AppInteraction.PressedScale else AppInteraction.RestingScale
+        val factor = if (pressed) AppInteraction.PRESSED_SCALE else AppInteraction.RESTING_SCALE
         scale(factor, factor) { this@draw.drawContent() }
         if (focused) {
             val stroke = AppDimensions.Dp2.toPx()
@@ -72,8 +73,8 @@ private class TouchNode(
             val y = (size.height - AppDimensions.Dp3.toPx()).coerceAtLeast(0f)
             drawLine(
                 color = focusColor,
-                start = Offset(inset,y),
-                end = Offset(size.width-inset,y),
+                start = Offset(inset, y),
+                end = Offset(size.width - inset, y),
                 strokeWidth = stroke,
                 cap = StrokeCap.Round,
             )

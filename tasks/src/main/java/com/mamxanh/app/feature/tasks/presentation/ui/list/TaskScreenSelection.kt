@@ -12,18 +12,24 @@ class TaskScreenSelection {
     private val fields = mutableStateMapOf<String, String>()
 
     var focusTask: String?
-        get() = fields[FocusTaskKey]
-        set(value) { setFocusField(FocusTaskKey, value) }
+        get() = fields[FOCUS_TASK_KEY]
+        set(value) {
+            setFocusField(FOCUS_TASK_KEY, value)
+        }
     var focusMinutes: String?
-        get() = fields[FocusMinutesKey]
-        set(value) { setFocusField(FocusMinutesKey, value) }
+        get() = fields[FOCUS_MINUTES_KEY]
+        set(value) {
+            setFocusField(FOCUS_MINUTES_KEY, value)
+        }
 
     fun selectedTemplates(): List<String> =
-        fields.filter { (key, value) -> key.startsWith(TemplatePrefix) && value == "true" }
-            .keys.map { it.removePrefix(TemplatePrefix) }
+        fields
+            .filter { (key, value) -> key.startsWith(TEMPLATE_PREFIX) && value == "true" }
+            .keys
+            .map { it.removePrefix(TEMPLATE_PREFIX) }
 
     fun toggleTemplate(id: String) {
-        val key = TemplatePrefix + id
+        val key = TEMPLATE_PREFIX + id
         fields[key] = (fields[key] != "true").toString()
     }
 
@@ -39,7 +45,7 @@ class TaskScreenSelection {
     fun restoreFields(saved: Map<String, String>): Map<String, String> {
         val other = saved.toMutableMap()
         saved.forEach { (key, value) ->
-            if (key == FocusTaskKey || key == FocusMinutesKey || key.startsWith(TemplatePrefix)) {
+            if (key == FOCUS_TASK_KEY || key == FOCUS_MINUTES_KEY || key.startsWith(TEMPLATE_PREFIX)) {
                 fields[key] = value
                 other.remove(key)
             }
@@ -47,14 +53,17 @@ class TaskScreenSelection {
         return other
     }
 
-    private fun setFocusField(key: String, value: String?) {
+    private fun setFocusField(
+        key: String,
+        value: String?,
+    ) {
         if (value == null) fields.remove(key) else fields[key] = value
     }
 
     companion object {
-        const val FilterKey = "taskFilter"
-        private const val FocusTaskKey = "focus:task"
-        private const val FocusMinutesKey = "focus:minutes"
-        private const val TemplatePrefix = "template:"
+        const val FILTER_KEY = "taskFilter"
+        private const val FOCUS_TASK_KEY = "focus:task"
+        private const val FOCUS_MINUTES_KEY = "focus:minutes"
+        private const val TEMPLATE_PREFIX = "template:"
     }
 }

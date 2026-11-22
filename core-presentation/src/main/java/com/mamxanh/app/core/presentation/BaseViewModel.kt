@@ -7,7 +7,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 
 interface UiState
+
 interface UiEvent
+
 interface UiAction
 
 abstract class BaseViewModel<State : UiState, Event : UiEvent, Action : UiAction>(

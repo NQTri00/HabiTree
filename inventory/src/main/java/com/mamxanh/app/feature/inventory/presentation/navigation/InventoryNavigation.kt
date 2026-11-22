@@ -10,7 +10,9 @@ import com.mamxanh.app.feature.inventory.presentation.ui.inventory.BioInventoryS
 import kotlinx.serialization.Serializable
 
 @Serializable
-internal data class InventoryKey(override val argument: String) : HabiTreeNavKey {
+internal data class InventoryKey(
+    override val argument: String,
+) : HabiTreeNavKey {
     override val routeId: String get() = "inventory"
 }
 
@@ -23,20 +25,22 @@ class InventoryRouteContent(
     val item: @Composable (Int, Modifier) -> Unit,
 )
 
-val LocalInventoryRouteContent = compositionLocalOf<() -> InventoryRouteContent> {
-    error("Inventory route requires its state and actions")
-}
+val LocalInventoryRouteContent =
+    compositionLocalOf<() -> InventoryRouteContent> {
+        error("Inventory route requires its state and actions")
+    }
 
-val inventoryFeatureNavigation = HabiTreeFeatureModule(
-    HabiTreeFeatureDestination("inventory", content = {
-        val content = LocalInventoryRouteContent.current()
-        BioInventoryScreen(
-            tab = content.tab,
-            itemCount = content.itemCount,
-            onTab = content.onTab,
-            onShop = content.onShop,
-            onBuy = content.onBuy,
-            item = content.item,
-        )
-    }) { InventoryKey(it) },
-)
+val inventoryFeatureNavigation =
+    HabiTreeFeatureModule(
+        HabiTreeFeatureDestination("inventory", content = {
+            val content = LocalInventoryRouteContent.current()
+            BioInventoryScreen(
+                tab = content.tab,
+                itemCount = content.itemCount,
+                onTab = content.onTab,
+                onShop = content.onShop,
+                onBuy = content.onBuy,
+                item = content.item,
+            )
+        }) { InventoryKey(it) },
+    )

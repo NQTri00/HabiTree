@@ -1,8 +1,5 @@
 package com.mamxanh.app.feature.tree.presentation.components
 
-import com.mamxanh.app.core.components.design.AppColors
-import com.mamxanh.app.core.components.design.AppOpacity
-
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.aspectRatio
@@ -11,7 +8,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.Path
@@ -26,6 +22,8 @@ import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
+import com.mamxanh.app.core.components.design.AppColors
+import com.mamxanh.app.core.components.design.AppOpacity
 import com.mamxanh.feature.tree.R
 import kotlin.math.roundToInt
 import kotlin.math.sin
@@ -40,7 +38,7 @@ fun KawaiiPlantIllustration(
     speciesId: String = "sprout",
     decoration: String = "NONE",
     modifier: Modifier = Modifier,
-    growthOverride: Float? = null
+    growthOverride: Float? = null,
 ) {
     val bark = ImageBitmap.imageResource(R.drawable.tree_painted_trunk)
     val soil = ImageBitmap.imageResource(R.drawable.tree_painted_soil)
@@ -56,7 +54,11 @@ fun KawaiiPlantIllustration(
     Canvas(modifier.aspectRatio(.95f)) {
         val w = size.width
         val h = size.height
-        fun ease(start: Float, end: Float): Float {
+
+        fun ease(
+            start: Float,
+            end: Float,
+        ): Float {
             val t = ((progress - start) / (end - start)).coerceIn(0f, 1f)
             return t * t * (3f - 2f * t)
         }
@@ -75,19 +77,33 @@ fun KawaiiPlantIllustration(
         val wood = ease(.19f, .48f)
         val tip = root + Offset(w * .035f * shoot + wind * w * .008f, -h * .29f * shoot)
         if (shoot > 0f && wood < 1f) {
-            val stem = Path().apply {
-                moveTo(root.x, root.y)
-                cubicTo(root.x - w * .045f, root.y - h * .10f * shoot,
-                    tip.x + w * .03f, tip.y + h * .06f * shoot, tip.x, tip.y)
-            }
-            drawPath(stem, AppColors.SwatchFF658B30, alpha = AppOpacity.Value1 - wood, style = Stroke(w * .014f, cap = StrokeCap.Round))
-            for (side in listOf(-1f, 1f)) {
-                val leaf = Path().apply {
-                    moveTo(tip.x, tip.y + h * .025f)
-                    cubicTo(tip.x + side * w * .14f * shoot, tip.y + h * .025f,
-                        tip.x + side * w * .14f * shoot, tip.y - h * .075f * shoot, tip.x, tip.y + h * .025f)
+            val stem =
+                Path().apply {
+                    moveTo(root.x, root.y)
+                    cubicTo(
+                        root.x - w * .045f,
+                        root.y - h * .10f * shoot,
+                        tip.x + w * .03f,
+                        tip.y + h * .06f * shoot,
+                        tip.x,
+                        tip.y,
+                    )
                 }
-                drawPath(leaf, AppColors.SwatchFF91B53B, alpha = AppOpacity.Value1 - wood)
+            drawPath(stem, AppColors.SwatchFF658B30, alpha = AppOpacity.VALUE_1 - wood, style = Stroke(w * .014f, cap = StrokeCap.Round))
+            for (side in listOf(-1f, 1f)) {
+                val leaf =
+                    Path().apply {
+                        moveTo(tip.x, tip.y + h * .025f)
+                        cubicTo(
+                            tip.x + side * w * .14f * shoot,
+                            tip.y + h * .025f,
+                            tip.x + side * w * .14f * shoot,
+                            tip.y - h * .075f * shoot,
+                            tip.x,
+                            tip.y + h * .025f,
+                        )
+                    }
+                drawPath(leaf, AppColors.SwatchFF91B53B, alpha = AppOpacity.VALUE_1 - wood)
             }
         }
 
@@ -97,13 +113,14 @@ fun KawaiiPlantIllustration(
                 scale(treeSize, treeSize, Offset.Zero) {
                     rotate(wind * .65f, Offset.Zero) {
                         sprite(bark, -w * .37f, -h * .65f, w * .74f, h * .66f, wood)
-                        val anchors = listOf(
-                            Offset(-w * .23f, -h * .29f),
-                            Offset(w * .23f, -h * .30f),
-                            Offset(-w * .15f, -h * .41f),
-                            Offset(w * .16f, -h * .40f),
-                            Offset(0f, -h * .46f)
-                        )
+                        val anchors =
+                            listOf(
+                                Offset(-w * .23f, -h * .29f),
+                                Offset(w * .23f, -h * .30f),
+                                Offset(-w * .15f, -h * .41f),
+                                Offset(w * .16f, -h * .40f),
+                                Offset(0f, -h * .46f),
+                            )
                         anchors.forEachIndexed { index, anchor ->
                             val unfold = ease(.24f + index * .025f, .57f + index * .025f)
                             val bloom = if (speciesId == "cherry" || decoration == "FLOWERS") ease(.30f, .58f) else 0f
@@ -124,11 +141,15 @@ fun KawaiiPlantIllustration(
                         }
                         if (decoration == "RIBBON") {
                             val y = -h * .10f
-                            val bow = Path().apply {
-                                moveTo(0f, y)
-                                lineTo(-w * .065f, y - h * .03f); lineTo(-w * .065f, y + h * .03f)
-                                lineTo(w * .065f, y - h * .03f); lineTo(w * .065f, y + h * .03f); close()
-                            }
+                            val bow =
+                                Path().apply {
+                                    moveTo(0f, y)
+                                    lineTo(-w * .065f, y - h * .03f)
+                                    lineTo(-w * .065f, y + h * .03f)
+                                    lineTo(w * .065f, y - h * .03f)
+                                    lineTo(w * .065f, y + h * .03f)
+                                    close()
+                                }
                             drawPath(bow, AppColors.SwatchFFE593A7)
                         }
                     }
@@ -138,29 +159,44 @@ fun KawaiiPlantIllustration(
     }
 }
 
-private fun DrawScope.sprite(image: ImageBitmap, x: Float, y: Float, width: Float, height: Float, opacity: Float = 1f) {
+private fun DrawScope.sprite(
+    image: ImageBitmap,
+    x: Float,
+    y: Float,
+    width: Float,
+    height: Float,
+    opacity: Float = 1f,
+) {
     if (width <= 0f || height <= 0f || opacity <= 0f) return
     drawImage(
         image = image,
         dstOffset = IntOffset(x.roundToInt(), y.roundToInt()),
         dstSize = IntSize(width.roundToInt().coerceAtLeast(1), height.roundToInt().coerceAtLeast(1)),
         alpha = opacity.coerceIn(0f, 1f),
-        filterQuality = FilterQuality.Medium
+        filterQuality = FilterQuality.Medium,
     )
 }
 
 @Preview(name = "Painted layered rig · seed", widthDp = 320, heightDp = 360, showBackground = true)
 @Composable
-fun TreeSeedRigPreview() { KawaiiPlantIllustration(0, growthOverride = 0f) }
+fun TreeSeedRigPreview() {
+    KawaiiPlantIllustration(0, growthOverride = 0f)
+}
 
 @Preview(name = "Painted layered rig · shoot", widthDp = 320, heightDp = 360, showBackground = true)
 @Composable
-fun TreeShootRigPreview() { KawaiiPlantIllustration(24, "cherry", growthOverride = 24f) }
+fun TreeShootRigPreview() {
+    KawaiiPlantIllustration(24, "cherry", growthOverride = 24f)
+}
 
 @Preview(name = "Painted layered rig · young tree", widthDp = 320, heightDp = 360, showBackground = true)
 @Composable
-fun TreeYoungRigPreview() { KawaiiPlantIllustration(72, "cherry", growthOverride = 72f) }
+fun TreeYoungRigPreview() {
+    KawaiiPlantIllustration(72, "cherry", growthOverride = 72f)
+}
 
 @Preview(name = "Painted layered rig · flowering tree", widthDp = 320, heightDp = 360, showBackground = true)
 @Composable
-fun TreeMatureRigPreview() { KawaiiPlantIllustration(120, "cherry", growthOverride = 120f) }
+fun TreeMatureRigPreview() {
+    KawaiiPlantIllustration(120, "cherry", growthOverride = 120f)
+}

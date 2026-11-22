@@ -9,9 +9,14 @@ import org.junit.Test
 class ShopSelectionStateTest {
     @Test
     fun equipsOwnedAccessoryWithEmptyWalletButRequiresAnAvailableTree() {
-        val purchase = ShopSelectionState().purchaseAvailability(
-            coins = 0, unitPrice = 100, owned = true, permanent = false, busy = false,
-        )
+        val purchase =
+            ShopSelectionState().purchaseAvailability(
+                coins = 0,
+                unitPrice = 100,
+                owned = true,
+                permanent = false,
+                busy = false,
+            )
 
         assertEquals(0, purchase.total)
         assertFalse(purchase.canBuyAccessory)

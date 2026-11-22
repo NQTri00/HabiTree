@@ -41,7 +41,12 @@ class GameRepositoryPersistenceTest {
             GameSchema.create(connection)
             val storage = GameStorage(SqlGameDatabase(connection))
             assertTrue(InventoryRepositoryImpl(storage).plantSeed("succulent", "My tree", plotId = 1))
-            val treeId = storage.garden().trees.single().id
+            val treeId =
+                storage
+                    .garden()
+                    .trees
+                    .single()
+                    .id
             database.execSQL("UPDATE meta SET v='1000' WHERE k='coins'")
             val tree = TreeRepositoryImpl(storage)
             val collection = GardenCollectionRepositoryImpl(storage)
@@ -70,7 +75,12 @@ class GameRepositoryPersistenceTest {
                 val storage = GameStorage(SqlGameDatabase(connection))
                 val inventory = InventoryRepositoryImpl(storage)
                 assertTrue(inventory.plantSeed("succulent", "My tree", plotId = 1))
-                val treeId = storage.garden().trees.single().id
+                val treeId =
+                    storage
+                        .garden()
+                        .trees
+                        .single()
+                        .id
                 if (sell) {
                     database.execSQL(
                         "UPDATE trees SET life_state='MATURE', matured_at=? WHERE id=?",
@@ -87,7 +97,13 @@ class GameRepositoryPersistenceTest {
 
                 val result = TreeRepositoryImpl(storage).dispose(treeId, sell, "disposition")
                 assertTrue(result is RepositoryResult.Success)
-                assertNull(storage.garden().plots.single { it.id == 1 }.treeId)
+                assertNull(
+                    storage
+                        .garden()
+                        .plots
+                        .single { it.id == 1 }
+                        .treeId,
+                )
                 val after = collection.load().species.single { it.id == before.id }
                 assertEquals(before.firstPlanted, after.firstPlanted)
                 assertEquals(before.firstMatured, after.firstMatured)
@@ -106,14 +122,25 @@ class GameRepositoryPersistenceTest {
             val storage = GameStorage(SqlGameDatabase(connection))
             val inventory = InventoryRepositoryImpl(storage)
             assertTrue(inventory.plantSeed("succulent", "My tree", plotId = null))
-            val treeId = storage.garden().trees.single().id
+            val treeId =
+                storage
+                    .garden()
+                    .trees
+                    .single()
+                    .id
             val tree = TreeRepositoryImpl(storage)
             assertEquals(WateringOutcome.MissingTree, tree.water(0))
             assertEquals(WateringOutcome.Watered, tree.water(treeId))
 
             val reopenedStorage = GameStorage(SqlGameDatabase(connection))
             val reopenedTree = TreeRepositoryImpl(reopenedStorage)
-            assertTrue(reopenedStorage.garden().trees.single().status.waterActive)
+            assertTrue(
+                reopenedStorage
+                    .garden()
+                    .trees
+                    .single()
+                    .status.waterActive,
+            )
             assertEquals(WateringOutcome.AlreadyWatered, reopenedTree.water(treeId))
         }
     }
@@ -194,8 +221,14 @@ class GameRepositoryPersistenceTest {
         }
     }
 
-    private class InMemoryConnection(private val database: SQLiteDatabase) : GameSqlConnection {
-        override fun query(sql: String, columns: Int, args: List<String>): List<GameSqlRow> =
+    private class InMemoryConnection(
+        private val database: SQLiteDatabase,
+    ) : GameSqlConnection {
+        override fun query(
+            sql: String,
+            columns: Int,
+            args: List<String>,
+        ): List<GameSqlRow> =
             database.rawQuery(sql, args.toTypedArray()).use { cursor ->
                 buildList {
                     while (cursor.moveToNext()) {
@@ -204,7 +237,10 @@ class GameRepositoryPersistenceTest {
                 }
             }
 
-        override fun execute(sql: String, args: List<Any?>) {
+        override fun execute(
+            sql: String,
+            args: List<Any?>,
+        ) {
             database.execSQL(sql, args.toTypedArray())
         }
 

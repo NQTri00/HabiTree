@@ -12,7 +12,10 @@ import com.mamxanh.app.core.components.design.BioButton
 import com.mamxanh.core.ui.R
 
 @Composable
-fun FocusDock(state: FocusDockState, onAction: (FocusDockAction) -> Unit) {
+fun FocusDock(
+    state: FocusDockState,
+    onAction: (FocusDockAction) -> Unit,
+) {
     if (state.hasSession) {
         Row(horizontalArrangement = Arrangement.spacedBy(AppDimensions.Dp12)) {
             val toggleLabel = if (state.running) R.string.copy_tam_dung_676358 else R.string.copy_tiep_tuc_87a7ae

@@ -1,19 +1,5 @@
 package com.mamxanh.app.presentation.bio
 
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
-import com.mamxanh.app.R as AppR
-import com.mamxanh.core.ui.R
-import com.mamxanh.app.core.components.design.AppThemeEffects
-import com.mamxanh.app.core.components.design.AppColors
-import com.mamxanh.app.core.components.design.AppDimensions
-import com.mamxanh.app.core.components.design.AppOpacity
-import com.mamxanh.app.core.components.design.AppRadii
-import com.mamxanh.app.core.components.design.AppTypography
-
-
-
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,34 +10,97 @@ import androidx.compose.ui.draw.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.*
 import androidx.compose.ui.text.font.*
 import androidx.compose.ui.text.style.*
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import com.mamxanh.app.core.components.GardenTypography
-
 import com.mamxanh.app.core.components.design.*
+import com.mamxanh.app.core.components.design.AppColors
+import com.mamxanh.app.core.components.design.AppDimensions
+import com.mamxanh.app.core.components.design.AppOpacity
+import com.mamxanh.app.core.components.design.AppRadii
+import com.mamxanh.app.core.components.design.AppThemeEffects
+import com.mamxanh.app.core.components.design.AppTypography
+import com.mamxanh.core.ui.R
+import com.mamxanh.app.R as AppR
 
-@Composable internal fun BioTheme(world:BioWorld,treeId:String,content:@Composable () -> Unit) {
-    val species=world.tree(treeId)?.s("species")?:"succulent"
-    val p=world.data.o("palettes").o(species)
-    val accent=color(p.s("accent",AppColors.HexCEE3C4));val soft=color(p.s("soft",AppColors.HexE7EFDF));val bg=color(p.s("bg",AppColors.HexE8EDE4));val deep=color(p.s("deep",AppColors.Hex3E5C3C));val muted=color(p.s("muted",AppColors.Hex606B5C))
-    val hsv=FloatArray(3);android.graphics.Color.colorToHSV(deep.toArgb(),hsv)
-    val hue=p.i("hue",AppThemeEffects.FallbackTreeHue).toFloat();val line=Color(androidx.core.graphics.ColorUtils.HSLToColor(floatArrayOf(hue,AppThemeEffects.OutlineSaturation,AppThemeEffects.OutlineLightness)))
-    val palette=BioPalette(accent,soft,bg,deep,muted,line,hue)
-    val monoFont=rememberBioMonoFont()
-    CompositionLocalProvider(LocalBioPalette provides palette,LocalBioMonoFont provides monoFont) {
-        MaterialTheme(colorScheme=lightColorScheme(primary=deep,onPrimary=AppColors.White,primaryContainer=accent,onPrimaryContainer=palette.ink,background=bg,surface=palette.surface,onSurface=palette.ink,outline=line),typography=GardenTypography){
-            val touchIndication=remember(deep){BioTouchIndication(deep)}
-            CompositionLocalProvider(LocalIndication provides touchIndication,content=content)
+@Composable internal fun BioTheme(
+    world: BioWorld,
+    treeId: String,
+    content: @Composable () -> Unit,
+) {
+    val species = world.tree(treeId)?.s("species") ?: "succulent"
+    val p = world.data.o("palettes").o(species)
+    val accent = color(p.s("accent", AppColors.HEX_CEE_3_C_4))
+    val soft = color(p.s("soft", AppColors.HEX_E_7_EFDF))
+    val bg = color(p.s("bg", AppColors.HEX_E_8_EDE_4))
+    val deep = color(p.s("deep", AppColors.HEX_3_E_5_C_3_C))
+    val muted = color(p.s("muted", AppColors.HEX_606_B_5_C))
+    val hsv = FloatArray(3)
+    android.graphics.Color.colorToHSV(deep.toArgb(), hsv)
+    val hue = p.i("hue", AppThemeEffects.FALLBACK_TREE_HUE).toFloat()
+    val line =
+        Color(
+            androidx.core.graphics.ColorUtils.HSLToColor(
+                floatArrayOf(hue, AppThemeEffects.OUTLINE_SATURATION, AppThemeEffects.OUTLINE_LIGHTNESS),
+            ),
+        )
+    val palette = BioPalette(accent, soft, bg, deep, muted, line, hue)
+    val monoFont = rememberBioMonoFont()
+    CompositionLocalProvider(LocalBioPalette provides palette, LocalBioMonoFont provides monoFont) {
+        MaterialTheme(
+            colorScheme =
+                lightColorScheme(
+                    primary = deep,
+                    onPrimary = AppColors.White,
+                    primaryContainer = accent,
+                    onPrimaryContainer = palette.ink,
+                    background = bg,
+                    surface = palette.surface,
+                    onSurface = palette.ink,
+                    outline = line,
+                ),
+            typography = GardenTypography,
+        ) {
+            val touchIndication = remember(deep) { BioTouchIndication(deep) }
+            CompositionLocalProvider(LocalIndication provides touchIndication, content = content)
         }
     }
 }
-@Composable internal fun BioNav(route:String,onGo:(String)->Unit) {
-    val largeText=LocalDensity.current.fontScale>AppThemeEffects.LargeFontScale
-    val parent=when(route){"home","tasks","garden","shop","stats"->route;"task","task-new","focus","templates","insights"->"tasks";"tree","inventory","species","encyclopedia"->"garden";"more"->"";else->"stats"}
-    Column(Modifier.fillMaxWidth().background(lerp(bp.bg,AppColors.White,.10f))){HorizontalDivider(color=bp.line,thickness=AppDimensions.Dp1)
-        Row(Modifier.fillMaxWidth().height(if(largeText)AppDimensions.Dp110 else AppDimensions.Dp79).padding(horizontal=if(LocalConfiguration.current.screenWidthDp<AppThemeEffects.CompactWidth)AppDimensions.Dp6 else AppDimensions.Dp10,vertical=AppDimensions.Dp10),horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp4)){
+
+@Composable internal fun BioNav(
+    route: String,
+    onGo: (String) -> Unit,
+) {
+    val largeText = LocalDensity.current.fontScale > AppThemeEffects.LARGE_FONT_SCALE
+    val parent =
+        when (route) {
+            "home", "tasks", "garden", "shop", "stats" -> route
+            "task", "task-new", "focus", "templates", "insights" -> "tasks"
+            "tree", "inventory", "species", "encyclopedia" -> "garden"
+            "more" -> ""
+            else -> "stats"
+        }
+    Column(Modifier.fillMaxWidth().background(lerp(bp.bg, AppColors.White, .10f))) {
+        HorizontalDivider(color = bp.line, thickness = AppDimensions.Dp1)
+        Row(
+            Modifier.fillMaxWidth().height(if (largeText)AppDimensions.Dp110 else AppDimensions.Dp79).padding(
+                horizontal =
+                    if (LocalConfiguration.current.screenWidthDp <
+                        AppThemeEffects.COMPACT_WIDTH
+                    ) {
+                        AppDimensions.Dp6
+                    } else {
+                        AppDimensions.Dp10
+                    },
+                vertical = AppDimensions.Dp10,
+            ),
+            horizontalArrangement = Arrangement.spacedBy(AppDimensions.Dp4),
+        ) {
             listOf(
                 Triple(
                     "home",
@@ -79,16 +128,46 @@ import com.mamxanh.app.core.components.design.*
                     stringResource(R.string.copy_nhat_ky_1e6c3c),
                 ),
             ).forEach { (r, icons, label) ->
-                val active=parent==r
-                Column(Modifier.weight(1f).fillMaxHeight().background(if(active)AppColors.White.copy(alpha=AppOpacity.Value_6)else AppColors.Transparent,bioShape(AppRadii.Value15)).semantics{selected=active}.clickable(role=Role.Tab){onGo(r)}.padding(top=AppDimensions.Dp5,bottom=AppDimensions.Dp4),horizontalAlignment=Alignment.CenterHorizontally,verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp4)){
+                val active = parent == r
+                Column(
+                    Modifier
+                        .weight(
+                            1f,
+                        ).fillMaxHeight()
+                        .background(
+                            if (active)AppColors.White.copy(alpha = AppOpacity.VALUE_6)else AppColors.Transparent,
+                            bioShape(AppRadii.VALUE_15),
+                        ).semantics {
+                            selected =
+                                active
+                        }.clickable(role = Role.Tab) { onGo(r) }
+                        .padding(top = AppDimensions.Dp5, bottom = AppDimensions.Dp4),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(AppDimensions.Dp4),
+                ) {
                     Icon(
                         painterResource(if (active) icons.second else icons.first),
                         contentDescription = null,
                         modifier = Modifier.size(AppDimensions.Dp21),
                         tint = if (active) bp.deep else bp.muted,
                     )
-                    Bt(label,size=AppTypography.Size11,line=AppTypography.LineHeight15_4,tint=if(active)bp.deep else bp.muted,semi=active,maxLines=if(largeText)2 else 1,align=TextAlign.Center)
-                    Box(Modifier.width(AppDimensions.Dp12).height(AppDimensions.Dp2).background(if(active)bp.deep else AppColors.Transparent,RoundedCornerShape(AppDimensions.Dp2)))
+                    Bt(
+                        label,
+                        size = AppTypography.SIZE_11,
+                        line = AppTypography.LINE_HEIGHT_15_4,
+                        tint = if (active)bp.deep else bp.muted,
+                        semi = active,
+                        maxLines = if (largeText)2 else 1,
+                        align = TextAlign.Center,
+                    )
+                    Box(
+                        Modifier
+                            .width(
+                                AppDimensions.Dp12,
+                            ).height(
+                                AppDimensions.Dp2,
+                            ).background(if (active)bp.deep else AppColors.Transparent, RoundedCornerShape(AppDimensions.Dp2)),
+                    )
                 }
             }
         }

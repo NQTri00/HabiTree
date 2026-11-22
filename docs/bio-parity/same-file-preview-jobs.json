@@ -10,6 +10,11 @@
     "source": "app/src/main/java/com/mamxanh/app/presentation/bio/BioApplication.kt"
   },
   {
+    "name": "BioPurchaseBodyPreview",
+    "preview": "BioPurchaseBodyPreview",
+    "source": "app/src/main/java/com/mamxanh/app/presentation/bio/BioCommerceModalContent.kt"
+  },
+  {
     "name": "BioTemplateRowPreview",
     "preview": "BioTemplateRowPreview",
     "source": "app/src/main/java/com/mamxanh/app/presentation/bio/BioForms.kt"
@@ -28,6 +33,16 @@
     "name": "BioProductPreview",
     "preview": "BioProductPreview",
     "source": "app/src/main/java/com/mamxanh/app/presentation/bio/BioMainScreens.kt"
+  },
+  {
+    "name": "BioModalMessagesPreview",
+    "preview": "BioModalMessagesPreview",
+    "source": "app/src/main/java/com/mamxanh/app/presentation/bio/BioModalMessages.kt"
+  },
+  {
+    "name": "BioTreePickerBodyPreview",
+    "preview": "BioTreePickerBodyPreview",
+    "source": "app/src/main/java/com/mamxanh/app/presentation/bio/BioPlantingModalContent.kt"
   },
   {
     "name": "BioCalendarPreview",
@@ -175,6 +190,11 @@
     "source": "core-ui/src/main/java/com/mamxanh/app/core/components/design/BioTypography.kt"
   },
   {
+    "name": "GardenCareDialogsPreview",
+    "preview": "GardenCareDialogsPreview",
+    "source": "garden/src/main/java/com/mamxanh/app/feature/garden/presentation/ui/garden/GardenCareDialogs.kt"
+  },
+  {
     "name": "LivingGardenControlsPreview",
     "preview": "LivingGardenControlsPreview",
     "source": "garden/src/main/java/com/mamxanh/app/feature/garden/presentation/ui/livinggarden/LivingGardenControls.kt"
@@ -183,6 +203,16 @@
     "name": "LivingGardenScreenPreview",
     "preview": "LivingGardenScreenPreview",
     "source": "garden/src/main/java/com/mamxanh/app/feature/garden/presentation/ui/livinggarden/LivingGardenScreens.kt"
+  },
+  {
+    "name": "PlotProgressPreview",
+    "preview": "PlotProgressPreview",
+    "source": "garden/src/main/java/com/mamxanh/app/feature/garden/presentation/ui/livinggarden/PlotProgress.kt"
+  },
+  {
+    "name": "HomeTaskAndLinksPreview",
+    "preview": "HomeTaskAndLinksPreview",
+    "source": "home/src/main/java/com/mamxanh/app/feature/home/presentation/ui/home/HomeTaskAndLinks.kt"
   },
   {
     "name": "PurchaseConfirmationPreview",
@@ -195,8 +225,18 @@
     "source": "stats/src/main/java/com/mamxanh/app/feature/stats/presentation/ui/timeline/PressedGinkgo.kt"
   },
   {
+    "name": "DayCalendarPreview",
+    "preview": "DayCalendarPreview",
+    "source": "tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/ui/engagement/EngagementDayCalendar.kt"
+  },
+  {
     "name": "EngagementScreenPreview",
     "preview": "EngagementScreenPreview",
     "source": "tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/ui/engagement/EngagementScreens.kt"
+  },
+  {
+    "name": "TreeDetailTabsPreview",
+    "preview": "TreeDetailTabsPreview",
+    "source": "tree/src/main/java/com/mamxanh/app/feature/tree/presentation/ui/detail/component/TreeDetailTabs.kt"
   }
 ]

@@ -7,13 +7,13 @@ import androidx.compose.runtime.setValue
 
 @Stable
 class TreeDetailSelection {
-    var tab by mutableStateOf(DefaultTab)
+    var tab by mutableStateOf(DEFAULT_TAB)
 
     fun open(tab: String?) {
-        this.tab = tab ?: DefaultTab
+        this.tab = tab ?: DEFAULT_TAB
     }
 
     private companion object {
-        const val DefaultTab = "care"
+        const val DEFAULT_TAB = "care"
     }
 }

@@ -17,14 +17,16 @@ data class BackupImportSummary(
 
 enum class NotificationPermissionResult {
     Granted,
-    Denied;
+    Denied,
+    ;
 
-    fun message(): String = AppText.text(
-        when (this) {
-            Granted -> TextKey.CopyDaBatThongBao5f71c6
-            Denied -> TextKey.CopyThongBaoTatViecVaBoDemVanDungDuoc70a974
-        },
-    )
+    fun message(): String =
+        AppText.text(
+            when (this) {
+                Granted -> TextKey.CopyDaBatThongBao5f71c6
+                Denied -> TextKey.CopyThongBaoTatViecVaBoDemVanDungDuoc70a974
+            },
+        )
 }
 
 @Stable
@@ -33,27 +35,31 @@ class SettingsRequestState {
     var backupImport by mutableStateOf<BackupImportSummary?>(null)
 
     fun reminderOptions(persisted: (String) -> Boolean): Map<String, Boolean> =
-        ReminderKeys.associateWith { key -> overrides[key]?.toBoolean() ?: persisted(key) }
+        reminderKeys.associateWith { key -> overrides[key]?.toBoolean() ?: persisted(key) }
 
-    fun setReminder(key: String, enabled: Boolean) {
+    fun setReminder(
+        key: String,
+        enabled: Boolean,
+    ) {
         overrides[key] = enabled.toString()
     }
 
-    fun savedFields(): Map<String, String> = buildMap {
-        overrides.forEach { (key, value) -> put(Prefix + key, value) }
-        backupImport?.let {
-            put("backupTasks", it.tasks)
-            put("backupTrees", it.trees)
-            put("backupOccurrences", it.occurrences)
-            put("backupCreated", it.created)
+    fun savedFields(): Map<String, String> =
+        buildMap {
+            overrides.forEach { (key, value) -> put(PREFIX + key, value) }
+            backupImport?.let {
+                put("backupTasks", it.tasks)
+                put("backupTrees", it.trees)
+                put("backupOccurrences", it.occurrences)
+                put("backupCreated", it.created)
+            }
         }
-    }
 
     fun restoreFields(saved: Map<String, String>): Map<String, String> {
         val other = saved.toMutableMap()
         saved.forEach { (key, value) ->
-            if (key.startsWith(Prefix)) {
-                overrides[key.removePrefix(Prefix)] = value
+            if (key.startsWith(PREFIX)) {
+                overrides[key.removePrefix(PREFIX)] = value
                 other.remove(key)
             }
         }
@@ -73,7 +79,7 @@ class SettingsRequestState {
     }
 
     private companion object {
-        const val Prefix = "settings:"
-        val ReminderKeys = listOf("paused", "treeReminders", "breakPrompts", "reducedMotion")
+        const val PREFIX = "settings:"
+        val reminderKeys = listOf("paused", "treeReminders", "breakPrompts", "reducedMotion")
     }
 }

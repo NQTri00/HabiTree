@@ -1,13 +1,5 @@
 package com.mamxanh.app.core.components.components
 
-import com.mamxanh.app.core.components.design.AppDimensions
-import com.mamxanh.app.core.components.design.AppOpacity
-import com.mamxanh.app.core.components.design.AppTypography
-
-import com.mamxanh.shared.localization.TextKey
-
-import com.mamxanh.shared.localization.AppText
-
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,40 +14,45 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
-import com.mamxanh.app.core.components.MamXanhPreviewTheme
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.tooling.preview.Preview
 import com.mamxanh.app.core.components.Deep
 import com.mamxanh.app.core.components.Green
+import com.mamxanh.app.core.components.MamXanhPreviewTheme
 import com.mamxanh.app.core.components.Pale
+import com.mamxanh.app.core.components.design.AppDimensions
+import com.mamxanh.app.core.components.design.AppOpacity
+import com.mamxanh.app.core.components.design.AppTypography
+import com.mamxanh.shared.localization.AppText
+import com.mamxanh.shared.localization.TextKey
 
 @Composable
 fun GardenPageHeader(
     emoji: String,
     title: String,
     subtitle: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = Pale),
         shape = RoundedCornerShape(AppDimensions.Dp24),
-        border = BorderStroke(AppDimensions.Dp1, Green.copy(alpha = AppOpacity.Value0_14)),
-        elevation = CardDefaults.cardElevation(defaultElevation = AppDimensions.Dp1)
+        border = BorderStroke(AppDimensions.Dp1, Green.copy(alpha = AppOpacity.VALUE_0_14)),
+        elevation = CardDefaults.cardElevation(defaultElevation = AppDimensions.Dp1),
     ) {
         Row(
             modifier = Modifier.fillMaxWidth().padding(AppDimensions.Dp16),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(AppDimensions.Dp14)
+            horizontalArrangement = Arrangement.spacedBy(AppDimensions.Dp14),
         ) {
             Surface(
-                color = androidx.compose.ui.graphics.Color.White.copy(alpha = AppOpacity.Value0_88),
+                color =
+                    androidx.compose.ui.graphics.Color.White
+                        .copy(alpha = AppOpacity.VALUE_0_88),
                 shape = RoundedCornerShape(AppDimensions.Dp18),
-                modifier = Modifier.size(AppDimensions.Dp54)
+                modifier = Modifier.size(AppDimensions.Dp54),
             ) {
                 androidx.compose.foundation.layout.Box(contentAlignment = Alignment.Center) {
                     Text(emoji, fontSize = AppTypography.Sp27)

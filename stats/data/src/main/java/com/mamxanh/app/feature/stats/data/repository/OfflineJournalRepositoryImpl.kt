@@ -6,12 +6,15 @@ import com.mamxanh.app.feature.stats.domain.usecase.JournalRepository
 import com.mamxanh.shared.data.GameStorage
 import com.mamxanh.shared.model.EngagementAction
 
-internal class OfflineJournalRepositoryImpl(private val storage: GameStorage) : JournalRepository {
+internal class OfflineJournalRepositoryImpl(
+    private val storage: GameStorage,
+) : JournalRepository {
     override fun save(note: JournalNote): RepositoryResult<String> {
-        val action = when (note) {
-            is JournalNote.WeeklyReflection -> EngagementAction.Reflection(note.weekStart, note.text)
-            is JournalNote.TimelineMemory -> EngagementAction.MemoryNote(note.memoryId, note.text)
-        }
+        val action =
+            when (note) {
+                is JournalNote.WeeklyReflection -> EngagementAction.Reflection(note.weekStart, note.text)
+                is JournalNote.TimelineMemory -> EngagementAction.MemoryNote(note.memoryId, note.text)
+            }
         val result = storage.engage(action)
         return if (result.success) RepositoryResult.Success(result.message) else RepositoryResult.Error(result.message)
     }

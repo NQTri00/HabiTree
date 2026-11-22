@@ -18,8 +18,11 @@ class ShopSelectionState {
         quantity = value.coerceIn(1, 99)
     }
 
-    private fun total(unitPrice: Int, owned: Boolean, permanent: Boolean): Int =
-        if (owned) 0 else unitPrice * if (permanent) 1 else quantity
+    private fun total(
+        unitPrice: Int,
+        owned: Boolean,
+        permanent: Boolean,
+    ): Int = if (owned) 0 else unitPrice * if (permanent) 1 else quantity
 
     fun purchaseAvailability(
         coins: Int,
@@ -37,7 +40,10 @@ class ShopSelectionState {
         )
     }
 
-    fun accessoryTarget(livingIds: List<String>, homeTreeId: String): String? =
+    fun accessoryTarget(
+        livingIds: List<String>,
+        homeTreeId: String,
+    ): String? =
         targetTree.takeIf(livingIds::contains)
             ?: homeTreeId.takeIf(livingIds::contains)
             ?: livingIds.firstOrNull()
@@ -49,6 +55,8 @@ data class PurchaseAvailability(
     val canBuyAccessory: Boolean,
     val canEquipOrBuyAccessory: Boolean,
 ) {
-    fun canEquipAccessory(hasTarget: Boolean, equipped: Boolean): Boolean =
-        hasTarget && !equipped && canEquipOrBuyAccessory
+    fun canEquipAccessory(
+        hasTarget: Boolean,
+        equipped: Boolean,
+    ): Boolean = hasTarget && !equipped && canEquipOrBuyAccessory
 }

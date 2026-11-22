@@ -13,42 +13,64 @@ android {
         targetSdk = 36
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         resourceConfigurations += listOf("vi", "en")
-        versionCode = providers.gradleProperty("mamxanh.versionCode").orElse("2").get().toInt().also { require(it>0) }
+        versionCode =
+            providers
+                .gradleProperty("mamxanh.versionCode")
+                .orElse("2")
+                .get()
+                .toInt()
+                .also { require(it > 0) }
         versionName = providers.gradleProperty("mamxanh.versionName").orElse("0.2.0").get()
         val apiBaseUrl = providers.gradleProperty("mamxanh.apiBaseUrl").orElse("").get()
-        val encodedUrl = "\"" + apiBaseUrl.replace("\\", "\\\\").replace("\"", "\\\"")
-            .replace("\n", "\\n").replace("\r", "\\r") + "\""
+        val encodedUrl =
+            "\"" +
+                apiBaseUrl
+                    .replace("\\", "\\\\")
+                    .replace("\"", "\\\"")
+                    .replace("\n", "\\n")
+                    .replace("\r", "\\r") + "\""
         buildConfigField("String", "API_BASE_URL", encodedUrl)
     }
-    val signingValues=listOf("MAMXANH_KEYSTORE","MAMXANH_STORE_PASSWORD","MAMXANH_KEY_ALIAS","MAMXANH_KEY_PASSWORD")
-        .map{providers.environmentVariable(it).orNull}
-    if(signingValues.all{!it.isNullOrBlank()}) {
+    val signingValues =
+        listOf("MAMXANH_KEYSTORE", "MAMXANH_STORE_PASSWORD", "MAMXANH_KEY_ALIAS", "MAMXANH_KEY_PASSWORD")
+            .map { providers.environmentVariable(it).orNull }
+    if (signingValues.all { !it.isNullOrBlank() }) {
         signingConfigs.create("production") {
-            storeFile=file(signingValues[0]!!)
-            storePassword=signingValues[1]
-            keyAlias=signingValues[2]
-            keyPassword=signingValues[3]
+            storeFile = file(signingValues[0]!!)
+            storePassword = signingValues[1]
+            keyAlias = signingValues[2]
+            keyPassword = signingValues[3]
         }
     }
     buildTypes {
         getByName("release") {
-            signingConfig=signingConfigs.findByName("production")
+            signingConfig = signingConfigs.findByName("production")
         }
         create("verification") {
             initWith(getByName("debug"))
             // A distinct package allows fresh-data checks without resetting an existing garden.
-            applicationIdSuffix = providers.gradleProperty("mamxanh.verificationSuffix")
-                .orElse(".verification").get().also { suffix ->
-                    require(suffix.startsWith(".") && suffix.drop(1).split('.').all {
-                        it.matches(Regex("[A-Za-z][A-Za-z0-9_]*"))
-                    }) {
-                        "Verification suffix must contain dot-separated package segments."
+            applicationIdSuffix =
+                providers
+                    .gradleProperty("mamxanh.verificationSuffix")
+                    .orElse(".verification")
+                    .get()
+                    .also { suffix ->
+                        require(
+                            suffix.startsWith(".") &&
+                                suffix.drop(1).split('.').all {
+                                    it.matches(Regex("[A-Za-z][A-Za-z0-9_]*"))
+                                },
+                        ) {
+                            "Verification suffix must contain dot-separated package segments."
+                        }
                     }
-                }
             matchingFallbacks += listOf("debug")
         }
     }
-    buildFeatures { compose = true; buildConfig = true }
+    buildFeatures {
+        compose = true
+        buildConfig = true
+    }
     testBuildType = "verification"
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -56,14 +78,20 @@ android {
     }
 }
 tasks.configureEach {
-    if(name=="preReleaseBuild")doFirst {
-        check(listOf("MAMXANH_KEYSTORE","MAMXANH_STORE_PASSWORD","MAMXANH_KEY_ALIAS","MAMXANH_KEY_PASSWORD")
-            .all{!providers.environmentVariable(it).orNull.isNullOrBlank()}) {
-            "Release requires externally managed signing credentials; debug signing is forbidden."
-        }
-        check(providers.gradleProperty("mamxanh.versionCode").isPresent &&
-            providers.gradleProperty("mamxanh.versionName").isPresent) {
-            "Release requires explicit mamxanh.versionCode and mamxanh.versionName."
+    if (name == "preReleaseBuild") {
+        doFirst {
+            check(
+                listOf("MAMXANH_KEYSTORE", "MAMXANH_STORE_PASSWORD", "MAMXANH_KEY_ALIAS", "MAMXANH_KEY_PASSWORD")
+                    .all { !providers.environmentVariable(it).orNull.isNullOrBlank() },
+            ) {
+                "Release requires externally managed signing credentials; debug signing is forbidden."
+            }
+            check(
+                providers.gradleProperty("mamxanh.versionCode").isPresent &&
+                    providers.gradleProperty("mamxanh.versionName").isPresent,
+            ) {
+                "Release requires explicit mamxanh.versionCode and mamxanh.versionName."
+            }
         }
     }
 }

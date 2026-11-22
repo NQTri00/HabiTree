@@ -11,7 +11,9 @@ import com.mamxanh.app.feature.tree.presentation.ui.detail.TreeScreenState
 import kotlinx.serialization.Serializable
 
 @Serializable
-internal data class TreeKey(override val argument: String) : HabiTreeNavKey {
+internal data class TreeKey(
+    override val argument: String,
+) : HabiTreeNavKey {
     override val routeId: String get() = "tree"
 }
 
@@ -24,13 +26,15 @@ class TreeRouteContent(
     val accessories: @Composable () -> Unit,
 )
 
-val LocalTreeRouteContent = compositionLocalOf<(String) -> TreeRouteContent> {
-    error("Tree route requires its state and actions")
-}
+val LocalTreeRouteContent =
+    compositionLocalOf<(String) -> TreeRouteContent> {
+        error("Tree route requires its state and actions")
+    }
 
-val treeFeatureNavigation = HabiTreeFeatureModule(
-    HabiTreeFeatureDestination("tree", content = {
-        val content = LocalTreeRouteContent.current(it.argument)
-        BioTreeScreen(content.state, content.tab, content.onTab, content.onAction, content.hero, content.accessories)
-    }) { TreeKey(it) },
-)
+val treeFeatureNavigation =
+    HabiTreeFeatureModule(
+        HabiTreeFeatureDestination("tree", content = {
+            val content = LocalTreeRouteContent.current(it.argument)
+            BioTreeScreen(content.state, content.tab, content.onTab, content.onAction, content.hero, content.accessories)
+        }) { TreeKey(it) },
+    )

@@ -6,7 +6,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mamxanh.app.feature.tasks.presentation.ui.engagement.EngagementViewModel
-import com.mamxanh.app.feature.tasks.presentation.ui.list.TasksIntent
+import com.mamxanh.app.feature.tasks.presentation.ui.list.TasksAction
 import com.mamxanh.app.feature.tasks.presentation.ui.list.TasksViewModel
 import com.mamxanh.app.presentation.bio.BioNativeHost
 import com.mamxanh.shared.data.GameStorage
@@ -24,13 +24,14 @@ fun MamXanhApp(
     val storage = org.koin.compose.koinInject<GameStorage>()
     DisposableEffect(lifecycleOwner, tasksVm, engagementVm) {
         fun foreground(active: Boolean) {
-            tasksVm.dispatch(TasksIntent.Foreground(active))
+            tasksVm.dispatch(TasksAction.Foreground(active))
             engagementVm.foreground(active)
         }
-        val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_START) foreground(true)
-            if (event == Lifecycle.Event.ON_STOP) foreground(false)
-        }
+        val observer =
+            LifecycleEventObserver { _, event ->
+                if (event == Lifecycle.Event.ON_START) foreground(true)
+                if (event == Lifecycle.Event.ON_STOP) foreground(false)
+            }
         lifecycleOwner.lifecycle.addObserver(observer)
         foreground(lifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED))
         onDispose {
@@ -46,7 +47,14 @@ fun MamXanhApp(
     BioNativeHost(
         storage,
         externalTree = incomingEntity?.takeIf { it < 0 }?.let { -it },
-        externalRoute = if (task == null) "" else if (task.config.verification == "TIMER") "FOCUS" else "INSIGHTS",
+        externalRoute =
+            if (task == null) {
+                ""
+            } else if (task.config.verification == "TIMER") {
+                "FOCUS"
+            } else {
+                "INSIGHTS"
+            },
         externalTask = task?.id ?: 0,
         onExternalHandled = onIncomingHandled,
     )

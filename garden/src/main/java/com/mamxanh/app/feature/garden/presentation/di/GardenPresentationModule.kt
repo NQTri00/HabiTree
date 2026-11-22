@@ -5,7 +5,8 @@ import com.mamxanh.app.feature.garden.presentation.ui.livinggarden.LivingGardenV
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
-val gardenPresentationModule = module {
-    viewModelOf(::GardenViewModel)
-    viewModelOf(::LivingGardenViewModel)
-}
+val gardenPresentationModule =
+    module {
+        viewModelOf(::GardenViewModel)
+        viewModelOf(::LivingGardenViewModel)
+    }

@@ -1,11 +1,11 @@
 package com.mamxanh.app.core.utils
 
+import org.junit.Assert.assertEquals
+import org.junit.Test
 import java.text.DateFormat
 import java.text.DateFormatSymbols
 import java.util.Calendar
 import java.util.Locale
-import org.junit.Assert.assertEquals
-import org.junit.Test
 
 class DisplayDatesTest {
     @Test

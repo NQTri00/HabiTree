@@ -4,7 +4,9 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-actual fun currentDateKey(): String =
-    SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
+actual fun currentDateKey(): String = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date())
 
-actual fun firstDayOfWeekIndex(): Int = java.util.Calendar.getInstance().firstDayOfWeek - 1
+actual fun firstDayOfWeekIndex(): Int =
+    java.util.Calendar
+        .getInstance()
+        .firstDayOfWeek - 1

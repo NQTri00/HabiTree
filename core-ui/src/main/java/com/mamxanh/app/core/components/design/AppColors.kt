@@ -320,9 +320,9 @@ object AppColors {
     val IllustrationGreen = Color(0xFF5E974D)
     val IllustrationLight = Color(0xFFA8C96C)
     val IllustrationOutline = Color(0xFF493C30)
-    const val Hex3E5C3C = "#3e5c3c"
-    const val Hex606B5C = "#606b5c"
-    const val HexCEE3C4 = "#cee3c4"
-    const val HexE7EFDF = "#e7efdf"
-    const val HexE8EDE4 = "#e8ede4"
+    const val HEX_3_E_5_C_3_C = "#3e5c3c"
+    const val HEX_606_B_5_C = "#606b5c"
+    const val HEX_CEE_3_C_4 = "#cee3c4"
+    const val HEX_E_7_EFDF = "#e7efdf"
+    const val HEX_E_8_EDE_4 = "#e8ede4"
 }

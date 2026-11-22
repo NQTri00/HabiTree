@@ -1,10 +1,8 @@
 package com.mamxanh.app.core.components
 
+import androidx.compose.material3.lightColorScheme
 import com.mamxanh.app.core.components.design.AppColors
 import com.mamxanh.app.core.components.design.AppDimensions
-import androidx.compose.ui.graphics.Color
-import androidx.compose.material3.lightColorScheme
-import androidx.compose.ui.unit.dp
 
 val Green = AppColors.Green
 val Deep = AppColors.Deep
@@ -13,20 +11,33 @@ val Cream = AppColors.Cream
 val Gold = AppColors.RewardSurface
 val Muted = AppColors.Muted
 
-val GardenColorScheme = lightColorScheme(
-    primary = AppColors.Green, onPrimary = AppColors.White,
-    primaryContainer = Pale, onPrimaryContainer = Deep,
-    secondary = Green, onSecondary = AppColors.White,
-    secondaryContainer = Pale, onSecondaryContainer = Deep,
-    tertiaryContainer = Gold, onTertiaryContainer = Deep,
-    tertiary = AppColors.SwatchFF467F63, background = AppColors.Cream, onBackground = Deep,
-    surface = AppColors.SwatchFFFFFFFF, onSurface = Deep,
-    surfaceVariant = AppColors.Pale, onSurfaceVariant = Muted,
-    surfaceContainerLowest = AppColors.White, surfaceContainerLow = AppColors.SwatchFFF5FBF7,
-    surfaceContainer = AppColors.SwatchFFF0F8F3, surfaceContainerHigh = AppColors.SwatchFFEDF6F0,
-    surfaceContainerHighest = AppColors.Pale,
-    outline = AppColors.SwatchFF9DB8A9, outlineVariant = AppColors.SwatchFFE4E7DC
-)
+val GardenColorScheme =
+    lightColorScheme(
+        primary = AppColors.Green,
+        onPrimary = AppColors.White,
+        primaryContainer = Pale,
+        onPrimaryContainer = Deep,
+        secondary = Green,
+        onSecondary = AppColors.White,
+        secondaryContainer = Pale,
+        onSecondaryContainer = Deep,
+        tertiaryContainer = Gold,
+        onTertiaryContainer = Deep,
+        tertiary = AppColors.SwatchFF467F63,
+        background = AppColors.Cream,
+        onBackground = Deep,
+        surface = AppColors.SwatchFFFFFFFF,
+        onSurface = Deep,
+        surfaceVariant = AppColors.Pale,
+        onSurfaceVariant = Muted,
+        surfaceContainerLowest = AppColors.White,
+        surfaceContainerLow = AppColors.SwatchFFF5FBF7,
+        surfaceContainer = AppColors.SwatchFFF0F8F3,
+        surfaceContainerHigh = AppColors.SwatchFFEDF6F0,
+        surfaceContainerHighest = AppColors.Pale,
+        outline = AppColors.SwatchFF9DB8A9,
+        outlineVariant = AppColors.SwatchFFE4E7DC,
+    )
 
 // Farm Concept Colors (Image 1)
 val SkyPastel = AppColors.SkyPastel
@@ -61,5 +72,9 @@ val ShopPriceGold = AppColors.ShopPriceGold
 val AwningRed = AppColors.AwningRed
 val AwningCream = AppColors.AwningCream
 
-
-val GardenShapes = androidx.compose.material3.Shapes(small=androidx.compose.foundation.shape.RoundedCornerShape(AppDimensions.Dp24))
+val GardenShapes =
+    androidx.compose.material3.Shapes(
+        small =
+            androidx.compose.foundation.shape
+                .RoundedCornerShape(AppDimensions.Dp24),
+    )

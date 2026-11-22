@@ -17,10 +17,11 @@ class FocusSessionCommandsTest {
 
     @Test
     fun lifecyclePauseTargetsOnlyRunningSessionAndSuppressesSuccessMessage() {
-        repository.sessions = listOf(
-            ActiveFocusSession("paused", ActiveFocusState.Paused),
-            ActiveFocusSession("running", ActiveFocusState.Running),
-        )
+        repository.sessions =
+            listOf(
+                ActiveFocusSession("paused", ActiveFocusState.Paused),
+                ActiveFocusSession("running", ActiveFocusState.Running),
+            )
         assertEquals(RepositoryResult.Success(""), commands.pauseIfRunning())
         assertEquals(listOf("running" to FocusControl.Pause), repository.controls)
         repository.result = RepositoryResult.Error("write failed")
@@ -66,13 +67,21 @@ class FocusSessionCommandsTest {
 
         override fun activeSessions() = sessions
 
-        override fun start(taskId: Long, minutes: Int, key: String) = result
+        override fun start(
+            taskId: Long,
+            minutes: Int,
+            key: String,
+        ) = result
+
         override fun recover(): RepositoryResult<String> {
             recoveries++
             return result
         }
 
-        override fun control(sessionId: String, control: FocusControl): RepositoryResult<String> {
+        override fun control(
+            sessionId: String,
+            control: FocusControl,
+        ): RepositoryResult<String> {
             controls += sessionId to control
             return result
         }

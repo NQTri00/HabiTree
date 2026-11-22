@@ -8,19 +8,26 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class StatsViewModel(private val loadStatistics: LoadGardenStatistics) : BaseViewModel<StatsUiState, UiEvent, StatsIntent>(
-    initialState = StatsUiState(),
-) {
+class StatsViewModel(
+    private val loadStatistics: LoadGardenStatistics,
+) : BaseViewModel<StatsState, UiEvent, StatsAction>(
+        initialState = StatsState(),
+    ) {
     val uiState get() = state
-    init { dispatch(StatsIntent.Refresh) }
-    override fun handleAction(action: StatsIntent) {
+
+    init {
+        dispatch(StatsAction.Refresh)
+    }
+
+    override fun handleAction(action: StatsAction) {
         val intent = action
         when (intent) {
-            StatsIntent.Refresh -> viewModelScope.launch {
-                mutableState.value = mutableState.value.copy(isLoading = true)
-                val statistics = withContext(Dispatchers.IO) { loadStatistics() }
-                mutableState.value = StatsUiState(statistics, false)
-            }
+            StatsAction.Refresh ->
+                viewModelScope.launch {
+                    mutableState.value = mutableState.value.copy(isLoading = true)
+                    val statistics = withContext(Dispatchers.IO) { loadStatistics() }
+                    mutableState.value = StatsState(statistics, false)
+                }
         }
     }
 }

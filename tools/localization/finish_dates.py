@@ -8,7 +8,7 @@ start=text.index('    BioCard(Modifier.fillMaxWidth()){\n        BioSelect(langu
 end=text.index('\n    fun toggle',start)
 card=text[start:end]
 text=text[:start]+text[end:]
-anchor='Bt(AppText.text(TextKey.CopyNhacViecTuyChonCoTheTreDoTietKiemPinKhongCf13dd),size=AppTypography.Size12,tint=bp.muted)'
+anchor='Bt(AppText.text(TextKey.CopyNhacViecTuyChonCoTheTreDoTietKiemPinKhongCf13dd),size=AppTypography.SIZE_12,tint=bp.muted)'
 text=text.replace(anchor,anchor+'\n'+card)
 text=text.replace('listOf("CN","T2","T3","T4","T5","T6","T7")[i]','bioWeekday(i+1)')
 file.write_text(text,encoding='utf-8')

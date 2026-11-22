@@ -12,5 +12,9 @@ typealias Statistics = com.mamxanh.shared.model.Statistics
 typealias TreeWateringResult = com.mamxanh.shared.model.TreeWateringResult
 
 val catalog get() = com.mamxanh.shared.model.catalog
-fun today() = com.mamxanh.shared.time.currentDateKey()
+
+fun today() =
+    com.mamxanh.shared.time
+        .currentDateKey()
+
 fun key(date: Date) = SimpleDateFormat("yyyy-MM-dd", Locale.US).format(date)

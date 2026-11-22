@@ -1,6 +1,12 @@
 package com.mamxanh.app.feature.tree.presentation.ui.detail
 
-data class TreeScreenFertilizer(val id: String, val name: String, val rate: String, val hours: Int, val quantity: Int)
+data class TreeScreenFertilizer(
+    val id: String,
+    val name: String,
+    val rate: String,
+    val hours: Int,
+    val quantity: Int,
+)
 
 data class TreeScreenState(
     val growth: String,

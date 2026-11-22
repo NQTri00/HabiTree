@@ -5,7 +5,9 @@ import com.mamxanh.app.feature.stats.domain.model.TimelineRelated
 import kotlinx.serialization.Serializable
 
 @Serializable
-internal enum class BioRoute(val id: String) {
+internal enum class BioRoute(
+    val id: String,
+) {
     HOME("home"),
     TASKS("tasks"),
     GARDEN("garden"),
@@ -27,11 +29,13 @@ internal enum class BioRoute(val id: String) {
     ENCYCLOPEDIA("encyclopedia"),
     SPECIES("species"),
     ONBOARD("onboard"),
-    MORE("more");
+    MORE("more"),
+    ;
 
     companion object {
-        fun fromId(id: String): BioRoute = entries.firstOrNull { it.id == id }
-            ?: error("Unknown HabiTree route: $id")
+        fun fromId(id: String): BioRoute =
+            entries.firstOrNull { it.id == id }
+                ?: error("Unknown HabiTree route: $id")
     }
 }
 
@@ -44,7 +48,8 @@ internal data class BioDestination(
     constructor(route: String, argument: String) : this(BioRoute.fromId(route), argument)
 }
 
-internal fun TimelineRelated.toBioDestination(): BioDestination = when (this) {
-    is TimelineRelated.Tree -> BioDestination(BioRoute.TREE, entityId)
-    is TimelineRelated.TaskInsights -> BioDestination(BioRoute.INSIGHTS, entityId)
-}
+internal fun TimelineRelated.toBioDestination(): BioDestination =
+    when (this) {
+        is TimelineRelated.Tree -> BioDestination(BioRoute.TREE, entityId)
+        is TimelineRelated.TaskInsights -> BioDestination(BioRoute.INSIGHTS, entityId)
+    }

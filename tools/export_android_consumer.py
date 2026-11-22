@@ -43,6 +43,8 @@ def export(source: Path, ref: str, output: Path, repository: Path, module: str =
         local_projects.update((owner + ":domain", owner + ":data"))
         build_files.extend(f"{directory}/{layer}/build.gradle.kts" for layer in ("domain", "data"))
     extra_inputs = ["mics/tree growth.gif"] if module == "core-ui" else []
+    if subprocess.check_output(["git", "ls-tree", revision, "--", ".editorconfig"], cwd=source):
+        extra_inputs.append(".editorconfig")
 
     output.parent.mkdir(parents=True, exist_ok=True)
     archive_command = [

@@ -1,16 +1,21 @@
 package com.mamxanh.app.feature.shop.data.repository
 
 import com.mamxanh.app.core.domain.RepositoryResult
-import com.mamxanh.app.feature.shop.domain.repository.ShopRepository
 import com.mamxanh.app.feature.shop.domain.model.ShopWallet
+import com.mamxanh.app.feature.shop.domain.repository.ShopRepository
 import com.mamxanh.shared.data.GameStorage
 import com.mamxanh.shared.model.ActionResult
 
-class ShopRepositoryImpl(private val storage: GameStorage) : ShopRepository {
+class ShopRepositoryImpl(
+    private val storage: GameStorage,
+) : ShopRepository {
     override fun equipCan(id: String): RepositoryResult<String> = storage.equipCan(id).toResult()
 
-    override fun purchase(id: String, quantity: Int, key: String): RepositoryResult<String> =
-        storage.purchase(id, quantity, key).toResult()
+    override fun purchase(
+        id: String,
+        quantity: Int,
+        key: String,
+    ): RepositoryResult<String> = storage.purchase(id, quantity, key).toResult()
 
     override fun dailyEarnings(): List<Int> = storage.phaseSnapshot().days.map { it.earned }
 

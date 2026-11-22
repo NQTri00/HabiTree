@@ -6,8 +6,9 @@ import com.mamxanh.app.feature.stats.presentation.ui.stats.StatsViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
-val statsPresentationModule = module {
-    factory { LoadGardenStatistics(get()) }
-    factory { SaveJournalNoteUseCase(get()) }
-    viewModelOf(::StatsViewModel)
-}
+val statsPresentationModule =
+    module {
+        factory { LoadGardenStatistics(get()) }
+        factory { SaveJournalNoteUseCase(get()) }
+        viewModelOf(::StatsViewModel)
+    }

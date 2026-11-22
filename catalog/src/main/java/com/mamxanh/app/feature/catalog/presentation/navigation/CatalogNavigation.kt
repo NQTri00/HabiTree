@@ -6,9 +6,9 @@ import androidx.compose.ui.Modifier
 import com.mamxanh.app.core.presentation.navigation.HabiTreeFeatureDestination
 import com.mamxanh.app.core.presentation.navigation.HabiTreeFeatureModule
 import com.mamxanh.app.core.presentation.navigation.HabiTreeNavKey
+import com.mamxanh.app.feature.catalog.presentation.model.SpeciesDisplay
 import com.mamxanh.app.feature.catalog.presentation.ui.encyclopedia.CollectionGoalDisplay
 import com.mamxanh.app.feature.catalog.presentation.ui.encyclopedia.EncyclopediaScreen
-import com.mamxanh.app.feature.catalog.presentation.model.SpeciesDisplay
 import com.mamxanh.app.feature.catalog.presentation.ui.species.SpeciesScreen
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -21,7 +21,9 @@ internal data object EncyclopediaKey : HabiTreeNavKey {
 
 @Serializable
 @SerialName("com.mamxanh.app.feature.garden.presentation.navigation.SpeciesKey")
-internal data class SpeciesKey(override val argument: String) : HabiTreeNavKey {
+internal data class SpeciesKey(
+    override val argument: String,
+) : HabiTreeNavKey {
     override val routeId: String get() = "species"
 }
 
@@ -38,21 +40,24 @@ class SpeciesRouteContent(
     val onShop: () -> Unit,
 )
 
-val LocalEncyclopediaRouteContent = compositionLocalOf<() -> EncyclopediaRouteContent> {
-    error("Encyclopedia route requires its state and item content")
-}
+val LocalEncyclopediaRouteContent =
+    compositionLocalOf<() -> EncyclopediaRouteContent> {
+        error("Encyclopedia route requires its state and item content")
+    }
 
-val LocalSpeciesRouteContent = compositionLocalOf<(String) -> SpeciesRouteContent> {
-    error("Species route requires its state and actions")
-}
+val LocalSpeciesRouteContent =
+    compositionLocalOf<(String) -> SpeciesRouteContent> {
+        error("Species route requires its state and actions")
+    }
 
-val catalogFeatureNavigation = HabiTreeFeatureModule(
-    HabiTreeFeatureDestination("encyclopedia", content = {
-        val content = LocalEncyclopediaRouteContent.current()
-        EncyclopediaScreen(content.discovered, content.speciesCount, content.goals, content.item)
-    }) { EncyclopediaKey.takeIf { _ -> it.isEmpty() } },
-    HabiTreeFeatureDestination("species", content = {
-        val content = LocalSpeciesRouteContent.current(it.argument)
-        SpeciesScreen(content.state, content.onTree, content.onShop)
-    }) { SpeciesKey(it) },
-)
+val catalogFeatureNavigation =
+    HabiTreeFeatureModule(
+        HabiTreeFeatureDestination("encyclopedia", content = {
+            val content = LocalEncyclopediaRouteContent.current()
+            EncyclopediaScreen(content.discovered, content.speciesCount, content.goals, content.item)
+        }) { EncyclopediaKey.takeIf { _ -> it.isEmpty() } },
+        HabiTreeFeatureDestination("species", content = {
+            val content = LocalSpeciesRouteContent.current(it.argument)
+            SpeciesScreen(content.state, content.onTree, content.onShop)
+        }) { SpeciesKey(it) },
+    )

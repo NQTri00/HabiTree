@@ -19,13 +19,15 @@ class GardenRouteContent(
     val onAction: (GardenAction) -> Unit,
 )
 
-val LocalGardenRouteContent = compositionLocalOf<() -> GardenRouteContent> {
-    error("Garden route requires its state and actions")
-}
+val LocalGardenRouteContent =
+    compositionLocalOf<() -> GardenRouteContent> {
+        error("Garden route requires its state and actions")
+    }
 
-val gardenFeatureNavigation = HabiTreeFeatureModule(
-    HabiTreeFeatureDestination("garden", content = {
-        val content = LocalGardenRouteContent.current()
-        BioGardenScreen(content.state, content.onAction)
-    }) { GardenKey.takeIf { _ -> it.isEmpty() } },
-)
+val gardenFeatureNavigation =
+    HabiTreeFeatureModule(
+        HabiTreeFeatureDestination("garden", content = {
+            val content = LocalGardenRouteContent.current()
+            BioGardenScreen(content.state, content.onAction)
+        }) { GardenKey.takeIf { _ -> it.isEmpty() } },
+    )

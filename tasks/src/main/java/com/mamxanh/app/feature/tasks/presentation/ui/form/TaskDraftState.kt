@@ -12,21 +12,24 @@ class TaskDraftState {
     var isDirty by mutableStateOf(false)
         private set
 
-    val error: String get() = values[ErrorKey].orEmpty()
-    val errorAttempt: String? get() = values[AttemptKey]
+    val error: String get() = values[ERROR_KEY].orEmpty()
+    val errorAttempt: String? get() = values[ATTEMPT_KEY]
 
     operator fun get(field: TaskFormField): String? = values[field.savedKey]
 
-    fun update(field: TaskFormField, value: String) {
+    fun update(
+        field: TaskFormField,
+        value: String,
+    ) {
         values[field.savedKey] = value
         isDirty = true
-        if (error == field.savedKey) values[ErrorKey] = ""
+        if (error == field.savedKey) values[ERROR_KEY] = ""
     }
 
     fun validate(value: (TaskFormField) -> String): Boolean {
         val invalid = taskFormValidationError(value)
-        values[ErrorKey] = invalid?.savedKey.orEmpty()
-        values[AttemptKey] = ((errorAttempt?.toIntOrNull() ?: 0) + 1).toString()
+        values[ERROR_KEY] = invalid?.savedKey.orEmpty()
+        values[ATTEMPT_KEY] = ((errorAttempt?.toIntOrNull() ?: 0) + 1).toString()
         return invalid == null
     }
 
@@ -37,17 +40,20 @@ class TaskDraftState {
 
     fun savedValues(): Map<String, String> = values.toMap()
 
-    fun restore(saved: Map<String, String>, dirty: Boolean): Map<String, String> {
+    fun restore(
+        saved: Map<String, String>,
+        dirty: Boolean,
+    ): Map<String, String> {
         values.clear()
         val other = saved.toMutableMap()
-        StoredKeys.forEach { key -> other.remove(key)?.let { values[key] = it } }
+        storedKeys.forEach { key -> other.remove(key)?.let { values[key] = it } }
         isDirty = dirty
         return other
     }
 
     private companion object {
-        const val ErrorKey = "task-error"
-        const val AttemptKey = "task-error-attempt"
-        val StoredKeys = TaskFormField.entries.map { it.savedKey } + listOf(ErrorKey, AttemptKey)
+        const val ERROR_KEY = "task-error"
+        const val ATTEMPT_KEY = "task-error-attempt"
+        val storedKeys = TaskFormField.entries.map { it.savedKey } + listOf(ERROR_KEY, ATTEMPT_KEY)
     }
 }

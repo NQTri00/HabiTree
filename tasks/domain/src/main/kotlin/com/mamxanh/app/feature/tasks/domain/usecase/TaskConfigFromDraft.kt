@@ -2,7 +2,10 @@ package com.mamxanh.app.feature.tasks.domain.usecase
 
 import com.mamxanh.app.feature.tasks.domain.model.TaskConfig
 
-fun taskConfigFromDraft(fields: Map<String, String>, clock: (String) -> Int): TaskConfig {
+fun taskConfigFromDraft(
+    fields: Map<String, String>,
+    clock: (String) -> Int,
+): TaskConfig {
     val kind = fields["kind"].orEmpty()
     return TaskConfig(
         title = fields["title"].orEmpty(),

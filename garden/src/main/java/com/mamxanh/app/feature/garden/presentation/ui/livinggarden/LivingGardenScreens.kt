@@ -1,12 +1,5 @@
 package com.mamxanh.app.feature.garden.presentation.ui.livinggarden
 
-import androidx.compose.ui.tooling.preview.Preview
-import com.mamxanh.app.core.components.design.AppColors
-import com.mamxanh.app.core.components.design.AppDimensions
-import com.mamxanh.app.core.components.design.AppOpacity
-import com.mamxanh.app.core.components.design.AppTypography
-import com.mamxanh.shared.localization.TextKey
-import com.mamxanh.shared.localization.AppText
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -21,63 +14,148 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import com.mamxanh.app.core.components.*
 import com.mamxanh.app.core.components.components.*
+import com.mamxanh.app.core.components.design.AppColors
+import com.mamxanh.app.core.components.design.AppDimensions
+import com.mamxanh.app.core.components.design.AppOpacity
+import com.mamxanh.app.core.components.design.AppTypography
+import com.mamxanh.shared.localization.AppText
+import com.mamxanh.shared.localization.TextKey
 import com.mamxanh.shared.model.*
-import kotlin.math.ceil
 import kotlin.math.sin
 
-internal fun newKey()=java.util.UUID.randomUUID().toString()
-private fun categoryName(s:String)=when(s){"GROUND"->AppText.text(TextKey.CopyMatDat9d263a);"BORDER"->AppText.text(TextKey.CopyVien5051f2);"ACCENT"->AppText.text(TextKey.CopyDiemNhan0400b9);"AMBIENT"->AppText.text(TextKey.CopyHieuUng40f9c1);"TREE"->AppText.text(TextKey.CopyPhuKien0852d7);"THEME"->AppText.text(TextKey.CopyChuDe59500d);else->s}
-internal fun dateLabel(at:Long)=if(at<=0)AppText.text(TextKey.CopyChuaGhiNhanF7654d) else java.text.SimpleDateFormat("dd/MM/yyyy",java.util.Locale.getDefault()).format(java.util.Date(at))
+internal fun newKey() =
+    java.util.UUID
+        .randomUUID()
+        .toString()
+
+internal fun dateLabel(at: Long) =
+    if (at <=
+        0
+    ) {
+        AppText.text(TextKey.CopyChuaGhiNhanF7654d)
+    } else {
+        java.text.SimpleDateFormat("dd/MM/yyyy", java.util.Locale.getDefault()).format(java.util.Date(at))
+    }
 
 @Composable
-fun LivingGardenScreen(state:LivingGardenUiState,onOpen:(String,String)->Unit,onAct:(LivingGardenAction)->Unit,
-    onSelect:(String)->Unit,onPlace:(Int,String?)->Unit,onRemove:(String)->Unit,onUndo:()->Unit,onSave:()->Unit,onCancel:()->Unit,
-    onTree:(Long)->Unit,onSeedShop:()->Unit,onMemories:()->Unit,reducedMotion:Boolean,onReducedMotion:(Boolean)->Unit,
-    active:Boolean,modifier:Modifier=Modifier,onPlant:(Int)->Unit={},onBack:()->Unit={onOpen("","")}) {
-    val arranging=false
-    val title=when(state.route){"SHOP"->AppText.text(TextKey.CopyTiemTrangTriFbd50e);"INVENTORY"->AppText.text(TextKey.CopyTrangTriCuaBanDa2761);"ARRANGE"->AppText.text(TextKey.CopyGocVuonF4c049);"ENCYCLOPEDIA"->AppText.text(TextKey.CopyBachThaoF2ed64);"SPECIES"->AppText.text(TextKey.CopyHoSoLoaiCfff22);"APPEARANCE"->AppText.text(TextKey.CopyDienMao14bd0c);"DETAIL"->AppText.text(TextKey.CopyTrangTriD48231);"EXPANSION"->AppText.text(TextKey.CopyMoKhuVuon35e0bd);else->state.snapshot.appearance.nickname}
+fun LivingGardenScreen(
+    state: LivingGardenUiState,
+    onOpen: (String, String) -> Unit,
+    onAct: (LivingGardenAction) -> Unit,
+    onSelect: (String) -> Unit,
+    onPlace: (Int, String?) -> Unit,
+    onRemove: (String) -> Unit,
+    onUndo: () -> Unit,
+    onSave: () -> Unit,
+    onCancel: () -> Unit,
+    onTree: (Long) -> Unit,
+    onSeedShop: () -> Unit,
+    onMemories: () -> Unit,
+    reducedMotion: Boolean,
+    onReducedMotion: (Boolean) -> Unit,
+    active: Boolean,
+    modifier: Modifier = Modifier,
+    onPlant: (Int) -> Unit = {},
+    onBack: () -> Unit = { onOpen("", "") },
+) {
+    val arranging = false
+    val title =
+        when (state.route) {
+            "SHOP" -> AppText.text(TextKey.CopyTiemTrangTriFbd50e)
+            "INVENTORY" -> AppText.text(TextKey.CopyTrangTriCuaBanDa2761)
+            "ARRANGE" -> AppText.text(TextKey.CopyGocVuonF4c049)
+            "ENCYCLOPEDIA" -> AppText.text(TextKey.CopyBachThaoF2ed64)
+            "SPECIES" -> AppText.text(TextKey.CopyHoSoLoaiCfff22)
+            "APPEARANCE" -> AppText.text(TextKey.CopyDienMao14bd0c)
+            "DETAIL" -> AppText.text(TextKey.CopyTrangTriD48231)
+            "EXPANSION" -> AppText.text(TextKey.CopyMoKhuVuon35e0bd)
+            else -> state.snapshot.appearance.nickname
+        }
     MintBackdrop(modifier.fillMaxSize()) {
-        ProvideTextStyle(MaterialTheme.typography.bodyMedium.copy(fontSize=AppTypography.Sp13,lineHeight=AppTypography.Sp19,color=Deep)) {
+        ProvideTextStyle(
+            MaterialTheme.typography.bodyMedium.copy(fontSize = AppTypography.Sp13, lineHeight = AppTypography.Sp19, color = Deep),
+        ) {
             Column(Modifier.fillMaxSize()) {
-                Row(Modifier.fillMaxWidth().padding(horizontal=AppDimensions.Dp4),verticalAlignment=Alignment.CenterVertically) {
-                    IconButton({if(arranging)onCancel() else onBack()}) {
-                        Icon(Icons.AutoMirrored.Rounded.ArrowBack,if(arranging)AppText.text(TextKey.CopyHuyBoTriEa6ca2) else AppText.text(TextKey.CopyQuayLai6d7935),Modifier.size(AppDimensions.Dp18),tint=Green)
+                Row(Modifier.fillMaxWidth().padding(horizontal = AppDimensions.Dp4), verticalAlignment = Alignment.CenterVertically) {
+                    IconButton({ if (arranging)onCancel() else onBack() }) {
+                        Icon(
+                            Icons.AutoMirrored.Rounded.ArrowBack,
+                            if (arranging)AppText.text(TextKey.CopyHuyBoTriEa6ca2) else AppText.text(TextKey.CopyQuayLai6d7935),
+                            Modifier.size(AppDimensions.Dp18),
+                            tint = Green,
+                        )
                     }
-                    Text(title,Modifier.weight(1f),color=Deep,fontSize=AppTypography.Sp13,lineHeight=AppTypography.Sp17,fontWeight=FontWeight.Bold,maxLines=1,overflow=TextOverflow.Ellipsis)
-                    if(arranging) {
-                        IconButton(onUndo,enabled=state.undoAvailable && !state.busy){Icon(Icons.AutoMirrored.Rounded.Undo,AppText.text(TextKey.CopyHoanTacE72ff6),Modifier.size(AppDimensions.Dp18),tint=if(state.undoAvailable)Green else Muted)}
-                        GardenCompactAction(AppText.text(TextKey.CopyLuuE91f26),onSave,primary=true,enabled=!state.busy && !state.loading,icon=Icons.Rounded.Check)
+                    Text(
+                        title,
+                        Modifier.weight(1f),
+                        color = Deep,
+                        fontSize = AppTypography.Sp13,
+                        lineHeight = AppTypography.Sp17,
+                        fontWeight = FontWeight.Bold,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                    if (arranging) {
+                        IconButton(onUndo, enabled = state.undoAvailable && !state.busy) {
+                            Icon(
+                                Icons.AutoMirrored.Rounded.Undo,
+                                AppText.text(TextKey.CopyHoanTacE72ff6),
+                                Modifier.size(AppDimensions.Dp18),
+                                tint = if (state.undoAvailable)Green else Muted,
+                            )
+                        }
+                        GardenCompactAction(
+                            AppText.text(TextKey.CopyLuuE91f26),
+                            onSave,
+                            primary = true,
+                            enabled = !state.busy && !state.loading,
+                            icon = Icons.Rounded.Check,
+                        )
                     } else {
                         MintCoinBadge(state.snapshot.coins)
                         Spacer(Modifier.width(AppDimensions.Dp6))
                     }
                 }
-                if(state.loading || state.busy)LinearProgressIndicator(Modifier.fillMaxWidth().height(AppDimensions.Dp2))
-                if(state.message.isNotBlank())Text(state.message,Modifier.fillMaxWidth().padding(horizontal=AppDimensions.Dp12,vertical=AppDimensions.Dp3),color=Green,fontSize=AppTypography.Sp12,lineHeight=AppTypography.Sp17)
-                when(state.route) {
-                    "STUDIO","ARRANGE"->GardenStudio(state,onOpen,onSelect,onPlace,onRemove,onTree,onPlant,reducedMotion,active)
-                    "SHOP","INVENTORY"->CosmeticCatalog(state,onOpen)
-                    else->key(state.route,state.selected) {
-                        val scroll=rememberScrollState()
-                        Column(Modifier.weight(1f).fillMaxWidth().mintScrollEdges(scroll.canScrollBackward,scroll.canScrollForward)
-                            .verticalScroll(scroll).padding(horizontal=AppDimensions.Dp24,vertical=AppDimensions.Dp12),verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp12)) {
-                            when(state.route) {
-                                "EXPANSION"->ExpansionContent(state,onAct)
-                                "DETAIL"->CosmeticDetail(state,onOpen,onAct)
-                                "ENCYCLOPEDIA"->Encyclopedia(state,onOpen)
-                                "SPECIES"->SpeciesDetail(state,onTree,onSeedShop)
-                                "APPEARANCE"->AppearanceContent(state,reducedMotion,onReducedMotion,onAct,onMemories)
+                if (state.loading || state.busy)LinearProgressIndicator(Modifier.fillMaxWidth().height(AppDimensions.Dp2))
+                if (state.message.isNotBlank()) {
+                    Text(
+                        state.message,
+                        Modifier.fillMaxWidth().padding(horizontal = AppDimensions.Dp12, vertical = AppDimensions.Dp3),
+                        color = Green,
+                        fontSize = AppTypography.Sp12,
+                        lineHeight = AppTypography.Sp17,
+                    )
+                }
+                when (state.route) {
+                    "STUDIO", "ARRANGE" -> GardenStudio(state, onOpen, onSelect, onPlace, onRemove, onTree, onPlant, reducedMotion, active)
+                    "SHOP", "INVENTORY" -> CosmeticCatalog(state, onOpen)
+                    else ->
+                        key(state.route, state.selected) {
+                            val scroll = rememberScrollState()
+                            Column(
+                                Modifier
+                                    .weight(1f)
+                                    .fillMaxWidth()
+                                    .mintScrollEdges(scroll.canScrollBackward, scroll.canScrollForward)
+                                    .verticalScroll(scroll)
+                                    .padding(horizontal = AppDimensions.Dp24, vertical = AppDimensions.Dp12),
+                                verticalArrangement = Arrangement.spacedBy(AppDimensions.Dp12),
+                            ) {
+                                when (state.route) {
+                                    "EXPANSION" -> ExpansionContent(state, onAct)
+                                    "DETAIL" -> CosmeticDetail(state, onOpen, onAct)
+                                    "ENCYCLOPEDIA" -> Encyclopedia(state, onOpen)
+                                    "SPECIES" -> SpeciesDetail(state, onTree, onSeedShop)
+                                    "APPEARANCE" -> AppearanceContent(state, reducedMotion, onReducedMotion, onAct, onMemories)
+                                }
                             }
                         }
-                    }
                 }
             }
         }
@@ -86,122 +164,141 @@ fun LivingGardenScreen(state:LivingGardenUiState,onOpen:(String,String)->Unit,on
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun ColumnScope.GardenStudio(state:LivingGardenUiState,onOpen:(String,String)->Unit,onSelect:(String)->Unit,
-    onPlace:(Int,String?)->Unit,onRemove:(String)->Unit,onTree:(Long)->Unit,onPlant:(Int)->Unit,
-    reducedMotion:Boolean,active:Boolean) {
-    var section by rememberSaveable{mutableIntStateOf(1)}
-    val current=state.snapshot.sections.firstOrNull{it.id==section}
-    Column(Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(horizontal=AppDimensions.Dp24,vertical=AppDimensions.Dp12),verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp18)) {
-        GardenScreenIntro(state.snapshot.appearance.nickname,AppText.text(TextKey.CopyKhongGianCuaBanD45f67))
-        GardenNavigationCard(AppText.text(TextKey.CopyBachThaoF2ed64),{onOpen("ENCYCLOPEDIA","")},art=GardenArt.BOOK)
-        Row(Modifier.horizontalScroll(rememberScrollState()),horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp8)){
-            state.snapshot.sections.forEach{s->GardenPill("Khu ${s.id}",section==s.id,{section=s.id},icon=if(s.unlocked)null else Icons.Rounded.Lock)}
+private fun ColumnScope.GardenStudio(
+    state: LivingGardenUiState,
+    onOpen: (String, String) -> Unit,
+    onSelect: (String) -> Unit,
+    onPlace: (Int, String?) -> Unit,
+    onRemove: (String) -> Unit,
+    onTree: (Long) -> Unit,
+    onPlant: (Int) -> Unit,
+    reducedMotion: Boolean,
+    active: Boolean,
+) {
+    var section by rememberSaveable { mutableIntStateOf(1) }
+    val current = state.snapshot.sections.firstOrNull { it.id == section }
+    Column(
+        Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(horizontal = AppDimensions.Dp24, vertical = AppDimensions.Dp12),
+        verticalArrangement = Arrangement.spacedBy(AppDimensions.Dp18),
+    ) {
+        GardenScreenIntro(state.snapshot.appearance.nickname, AppText.text(TextKey.CopyKhongGianCuaBanD45f67))
+        GardenNavigationCard(AppText.text(TextKey.CopyBachThaoF2ed64), { onOpen("ENCYCLOPEDIA", "") }, art = GardenArt.BOOK)
+        Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(AppDimensions.Dp8)) {
+            state.snapshot.sections.forEach { s ->
+                GardenPill("Khu ${s.id}", section == s.id, { section = s.id }, icon = if (s.unlocked)null else Icons.Rounded.Lock)
+            }
         }
-        if(current!=null&&!current.unlocked)GardenPanel{
-            GardenHeading(AppText.text(TextKey.CopyKhu0DangKhoaBdcfda,section))
-            GardenCaption(AppText.text(TextKey.Copy0XuThem6OBd7dbb,current.price))
-            GardenPaintedButton(AppText.text(TextKey.CopyXemMoKhu28c09c),{onOpen("EXPANSION",section.toString())},Modifier.fillMaxWidth())
-        }else {
-            state.garden.plots.filter{it.id in (current?.plots?:emptyList())}.chunked(2).forEach{row->
-                Row(Modifier.fillMaxWidth(),horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp14)){
-                    row.forEach{plot->
-                        val tree=state.garden.trees.firstOrNull{it.id==plot.treeId}
-                        val placed=state.snapshot.placements.filter{it.plotId==plot.id}
-                        GardenBotanicalFrame(Modifier.weight(1f).clickable{if(tree!=null)onTree(tree.id) else if(plot.isUnlocked)onPlant(plot.id)},contentPadding=PaddingValues(AppDimensions.Dp12),cornerSize=AppDimensions.Dp20){
-                            Column(Modifier.fillMaxWidth(),verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp8)){
-                                GardenCaption(plot.id.toString().padStart(2,'0'))
-                                Box(Modifier.fillMaxWidth().height(AppDimensions.Dp84).background(Pale,RoundedCornerShape(AppDimensions.Dp14)),contentAlignment=Alignment.Center){
-                                    if(tree!=null)GardenPlantPortrait(tree.speciesId,tree.decoration,Modifier.fillMaxSize(),withered=!tree.status.alive)
-                                    else Icon(if(plot.isUnlocked)Icons.Rounded.Add else Icons.Rounded.Lock,null,tint=Green)
+        if (current != null && !current.unlocked) {
+            GardenPanel {
+                GardenHeading(AppText.text(TextKey.CopyKhu0DangKhoaBdcfda, section))
+                GardenCaption(AppText.text(TextKey.Copy0XuThem6OBd7dbb, current.price))
+                GardenPaintedButton(
+                    AppText.text(TextKey.CopyXemMoKhu28c09c),
+                    { onOpen("EXPANSION", section.toString()) },
+                    Modifier.fillMaxWidth(),
+                )
+            }
+        } else {
+            state.garden.plots.filter { it.id in (current?.plots ?: emptyList()) }.chunked(2).forEach { row ->
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(AppDimensions.Dp14)) {
+                    row.forEach { plot ->
+                        val tree = state.garden.trees.firstOrNull { it.id == plot.treeId }
+                        val placed = state.snapshot.placements.filter { it.plotId == plot.id }
+                        GardenBotanicalFrame(
+                            Modifier.weight(1f).clickable {
+                                if (tree !=
+                                    null
+                                ) {
+                                    onTree(tree.id)
+                                } else if (plot.isUnlocked) {
+                                    onPlant(plot.id)
                                 }
-                                Text(tree?.name?:if(plot.isUnlocked)AppText.text(TextKey.CopyGieoCay31adde) else AppText.text(TextKey.CopyChuaMoB744b3),color=Deep,fontSize=AppTypography.Sp13,lineHeight=AppTypography.Sp18,fontWeight=FontWeight.SemiBold)
-                                if(tree!=null){MintProgress(tree.status.stageProgress,Modifier.fillMaxWidth());GardenCaption("${tree.status.percentage}%");GardenCaption(tree.status.waterLabel)}
-                                else GardenCaption(if(plot.isUnlocked)AppText.text(TextKey.CopyMotKhoiDauMoi280995) else AppText.text(TextKey.CopyODangKhoa0b475c))
-                                if(placed.isNotEmpty())GardenCaption(AppText.text(TextKey.Copy0TrangTriA468bd,placed.size))
+                            },
+                            contentPadding = PaddingValues(AppDimensions.Dp12),
+                            cornerSize = AppDimensions.Dp20,
+                        ) {
+                            Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(AppDimensions.Dp8)) {
+                                GardenCaption(plot.id.toString().padStart(2, '0'))
+                                Box(
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .height(
+                                            AppDimensions.Dp84,
+                                        ).background(Pale, RoundedCornerShape(AppDimensions.Dp14)),
+                                    contentAlignment = Alignment.Center,
+                                ) {
+                                    if (tree !=
+                                        null
+                                    ) {
+                                        GardenPlantPortrait(
+                                            tree.speciesId,
+                                            tree.decoration,
+                                            Modifier.fillMaxSize(),
+                                            withered = !tree.status.alive,
+                                        )
+                                    } else {
+                                        Icon(if (plot.isUnlocked)Icons.Rounded.Add else Icons.Rounded.Lock, null, tint = Green)
+                                    }
+                                }
+                                Text(
+                                    tree?.name ?: if (plot.isUnlocked) {
+                                        AppText.text(
+                                            TextKey.CopyGieoCay31adde,
+                                        )
+                                    } else {
+                                        AppText.text(TextKey.CopyChuaMoB744b3)
+                                    },
+                                    color = Deep,
+                                    fontSize = AppTypography.Sp13,
+                                    lineHeight = AppTypography.Sp18,
+                                    fontWeight = FontWeight.SemiBold,
+                                )
+                                if (tree !=
+                                    null
+                                ) {
+                                    MintProgress(tree.status.stageProgress, Modifier.fillMaxWidth())
+                                    GardenCaption("${tree.status.percentage}%")
+                                    GardenCaption(tree.status.waterLabel)
+                                } else {
+                                    GardenCaption(
+                                        if (plot.isUnlocked) {
+                                            AppText.text(
+                                                TextKey.CopyMotKhoiDauMoi280995,
+                                            )
+                                        } else {
+                                            AppText.text(TextKey.CopyODangKhoa0b475c)
+                                        },
+                                    )
+                                }
+                                if (placed.isNotEmpty())GardenCaption(AppText.text(TextKey.Copy0TrangTriA468bd, placed.size))
                             }
                         }
                     }
-                    if(row.size==1)Spacer(Modifier.weight(1f))
+                    if (row.size == 1)Spacer(Modifier.weight(1f))
                 }
             }
         }
-        GardenNavigationCard(AppText.text(TextKey.CopyTiemTrangTriFbd50e),{onOpen("SHOP","")},art=GardenArt.SHOP)
-        GardenNavigationCard(AppText.text(TextKey.CopyTrangTriCuaBanDa2761),{onOpen("INVENTORY","")},art=GardenArt.SEED)
-        GardenNavigationCard(AppText.text(TextKey.CopyDienMao14bd0c),{onOpen("APPEARANCE","")},art=GardenArt.LANTERN)
+        GardenNavigationCard(AppText.text(TextKey.CopyTiemTrangTriFbd50e), { onOpen("SHOP", "") }, art = GardenArt.SHOP)
+        GardenNavigationCard(AppText.text(TextKey.CopyTrangTriCuaBanDa2761), { onOpen("INVENTORY", "") }, art = GardenArt.SEED)
+        GardenNavigationCard(AppText.text(TextKey.CopyDienMao14bd0c), { onOpen("APPEARANCE", "") }, art = GardenArt.LANTERN)
     }
 }
 
-@Composable internal fun PlotProgress(progress:Float,label:String?=null) {
-    Box(Modifier.fillMaxWidth().height(if(label==null)AppDimensions.Dp4 else with(LocalDensity.current){AppTypography.Sp12.toDp()}).clip(RoundedCornerShape(AppDimensions.Dp6)).background(AppColors.SwatchFFDCEBE1),contentAlignment=Alignment.Center) {
-        Box(Modifier.fillMaxHeight().fillMaxWidth(progress.coerceIn(0f,1f)).align(Alignment.CenterStart).background(MintDepth.diagonal(listOf(AppColors.SwatchFFA6D869,AppColors.SwatchFF74BA64))))
-        if(label!=null)Text(label,color=Deep,fontSize=AppTypography.Sp9,lineHeight=AppTypography.Sp11,fontWeight=FontWeight.Bold)
-    }
-}
-@Composable private fun GardenParticles(low:Boolean) {
-    val transition=rememberInfiniteTransition(label="garden-ambience")
-    val fraction by transition.animateFloat(0f,1f,infiniteRepeatable(tween(10000,easing=LinearEasing)),label="petals")
-    Canvas(Modifier.fillMaxSize()) {repeat(if(low)4 else 8){i->
-        drawCircle(AppColors.SwatchFFE6E6AC.copy(alpha=AppOpacity.Value_45),AppDimensions.Dp3.toPx(),Offset(((i*.173f+.12f)%1f)*size.width+sin((fraction+i)*6.28f)*AppDimensions.Dp12.toPx(),((fraction+i*.137f)%1f)*size.height))
-    }}
-}
-
-@Composable private fun ColumnScope.CosmeticCatalog(state:LivingGardenUiState,onOpen:(String,String)->Unit) {
-    Row(Modifier.fillMaxWidth().padding(horizontal=AppDimensions.Dp24,vertical=AppDimensions.Dp12).background(Pale,RoundedCornerShape(AppDimensions.Dp15)).padding(AppDimensions.Dp4)) {
-        listOf("SHOP" to AppText.text(TextKey.CopyTiemTrangTriFbd50e),"INVENTORY" to AppText.text(TextKey.CopyDaSoHuu822625)).forEach{(route,label)->
-            Box(Modifier.weight(1f).heightIn(min=AppDimensions.Dp48).background(if(state.route==route)AppColors.White else Pale,RoundedCornerShape(AppDimensions.Dp12)).clickable{onOpen(route,"")},contentAlignment=Alignment.Center){Text(label,color=if(state.route==route)Green else Muted,fontSize=AppTypography.Sp12)}
+@Composable private fun GardenParticles(low: Boolean) {
+    val transition = rememberInfiniteTransition(label = "garden-ambience")
+    val fraction by transition.animateFloat(0f, 1f, infiniteRepeatable(tween(10000, easing = LinearEasing)), label = "petals")
+    Canvas(Modifier.fillMaxSize()) {
+        repeat(if (low)4 else 8) { i ->
+            drawCircle(
+                AppColors.SwatchFFE6E6AC.copy(alpha = AppOpacity.VALUE_45),
+                AppDimensions.Dp3.toPx(),
+                Offset(
+                    ((i * .173f + .12f) % 1f) * size.width + sin((fraction + i) * 6.28f) * AppDimensions.Dp12.toPx(),
+                    ((fraction + i * .137f) % 1f) * size.height,
+                ),
+            )
         }
     }
-    var filter by rememberSaveable{mutableStateOf("ALL")}
-    Row(Modifier.fillMaxWidth().padding(horizontal=AppDimensions.Dp8).horizontalScroll(rememberScrollState()),horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp5)) {
-        (listOf("ALL")+gardenCosmetics.map{it.category}.distinct()).forEach{category->GardenPill(if(category=="ALL")AppText.text(TextKey.CopyTatCa49c73a) else categoryName(category),filter==category,{filter=category})}
-    }
-    val grid=rememberLazyGridState()
-    BoxWithConstraints(Modifier.weight(1f)) {
-        val columns=if(maxWidth>=AppDimensions.Dp600)3 else 2
-        LazyVerticalGrid(GridCells.Fixed(columns),Modifier.fillMaxSize().mintScrollEdges(grid.canScrollBackward,grid.canScrollForward),state=grid,
-            contentPadding=PaddingValues(horizontal=AppDimensions.Dp24,vertical=AppDimensions.Dp16),horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp12),verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp12)) {
-            val items=gardenCosmetics.filter{(filter=="ALL" || it.category==filter) && (state.route!="INVENTORY" || (state.snapshot.owned[it.id] ?: 0)>0)}
-            items(items,key={it.id}){item->
-                SmallCatalogTile(item.name,if((state.snapshot.owned[item.id] ?: 0)>0)AppText.text(TextKey.CopySoHuu0A67ee0,state.snapshot.owned[item.id]) else if(item.tier=="Reward")AppText.text(TextKey.CopyQuaSuuTam218de5) else AppText.text(TextKey.Copy0Xu251e68,item.price),
-                    {onOpen("DETAIL",item.id)}){CosmeticArtwork(item,it)}
-            }
-            if(items.isEmpty())item(span={GridItemSpan(maxLineSpan)}) {GardenPanel {GardenHeading(AppText.text(TextKey.CopyChuaCoTrangTriC94f39));GardenCompactAction(AppText.text(TextKey.CopyGheTiemCb74e9),{onOpen("SHOP","")},icon=Icons.Rounded.Storefront)}}
-        }
-    }
-}
-@Composable internal fun SmallCatalogTile(name:String,value:String,onClick:()->Unit,art:@Composable (Modifier)->Unit) {
-    GardenBotanicalFrame(Modifier.fillMaxWidth().clickable(onClick=onClick),contentPadding=PaddingValues(AppDimensions.Dp12),cornerSize=AppDimensions.Dp20) {
-        Column(Modifier.fillMaxWidth(),verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp10)) {
-            Box(Modifier.fillMaxWidth().height(AppDimensions.Dp100).background(Pale,RoundedCornerShape(AppDimensions.Dp14)),contentAlignment=Alignment.Center){art(Modifier.size(AppDimensions.Dp44))}
-            Text(name,Modifier.heightIn(min=AppDimensions.Dp32),color=Deep,fontSize=AppTypography.Sp12,lineHeight=AppTypography.Sp16,fontWeight=FontWeight.SemiBold,maxLines=2,overflow=TextOverflow.Ellipsis)
-            Text(value,color=Green,fontSize=AppTypography.Sp12,lineHeight=AppTypography.Sp18)
-        }
-    }
-}
-
-@Composable internal fun CosmeticDetail(state:LivingGardenUiState,onOpen:(String,String)->Unit,onAct:(LivingGardenAction)->Unit) {
-    val item=gardenCosmetics.firstOrNull{it.id==state.selected}?:run{GardenCaption(AppText.text(TextKey.CopyVatPhamChuaDuocHoTro5099e1));return}
-    val owned=state.snapshot.owned[item.id]?:0
-    GardenBotanicalFrame(Modifier.fillMaxWidth(),contentPadding=PaddingValues(AppDimensions.Dp28),cornerSize=AppDimensions.Dp28,skin=GardenPanelSkin.HINT){
-        Column(Modifier.fillMaxWidth(),horizontalAlignment=Alignment.CenterHorizontally,verticalArrangement=Arrangement.spacedBy(AppDimensions.Dp16)){
-            MintStatusPill(categoryName(item.category))
-            CosmeticArtwork(item,Modifier.size(AppDimensions.Dp86))
-            Text(item.name,color=Deep,fontSize=AppTypography.Sp26,lineHeight=AppTypography.Sp34,fontWeight=FontWeight.Bold,textAlign=TextAlign.Center)
-            GardenCaption(if(item.tier=="Reward")AppText.text(TextKey.CopyQuaSuuTam218de5) else AppText.text(TextKey.Copy0Xu251e68,item.price))
-        }
-    }
-    MintMetricStrip(listOf(AppText.text(TextKey.CopyDaSoHuu822625) to owned.toString(),AppText.text(TextKey.CopyDangDatAe223b) to state.snapshot.placements.count{it.sku==item.id}.toString()))
-    GardenExpandableSection(AppText.text(TextKey.CopyViTriCachDung82d89c)){
-        GardenCaption("${categoryName(item.category)} · ${item.footprint} · ${item.tier}")
-        GardenCaption(AppText.text(TextKey.CopyChiTrangTriKhongDoiTocDoCayMuaDeCatVaoTu58883c))
-    }
-    if(item.tier=="Reward")GardenNavigationCard(AppText.text(TextKey.CopyMoKhoaQuaSuuTam12f128),{onOpen("ENCYCLOPEDIA","")})
-    else if(!item.permanent||owned==0){
-        GardenPaintedButton(AppText.text(TextKey.CopyMua0Xu39faa9,item.price),{onAct(LivingGardenAction.Buy(item.id,newKey()))},Modifier.fillMaxWidth(),enabled=!state.busy&&state.snapshot.coins>=item.price)
-        val days=ceil((item.price-state.snapshot.coins).coerceAtLeast(0)/state.snapshot.earningRate.coerceAtLeast(1.0)).toInt()
-        GardenCaption(AppText.text(TextKey.CopyUocTinh0Ngay1B69012,days,if(state.snapshot.estimatedRate)AppText.text(TextKey.CopyThamKhao40XuNgayC8596f) else AppText.text(TextKey.CopyTheoThuNhap7NgayF72e2b)))
-    }
-    if(owned>0&&item.slot=="THEME")GardenPaintedButton(AppText.text(TextKey.CopyChonChuDeC1f89a),{onOpen("APPEARANCE",item.id)},Modifier.fillMaxWidth(),primary=false)
 }
 
 @Preview(name = "Garden appearance", widthDp = 375, heightDp = 812)

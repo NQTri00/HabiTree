@@ -38,21 +38,24 @@ class OnboardingRouteContent(
     val templateRow: @Composable (Int) -> Unit,
 )
 
-val LocalHomeRouteContent = compositionLocalOf<() -> HomeRouteContent> {
-    error("Home route requires its state and actions")
-}
+val LocalHomeRouteContent =
+    compositionLocalOf<() -> HomeRouteContent> {
+        error("Home route requires its state and actions")
+    }
 
-val LocalOnboardingRouteContent = compositionLocalOf<() -> OnboardingRouteContent> {
-    error("Onboarding route requires its state and actions")
-}
+val LocalOnboardingRouteContent =
+    compositionLocalOf<() -> OnboardingRouteContent> {
+        error("Onboarding route requires its state and actions")
+    }
 
-val homeFeatureNavigation = HabiTreeFeatureModule(
-    HabiTreeFeatureDestination("onboard", content = {
-        val content = LocalOnboardingRouteContent.current()
-        OnboardingScreen(content.state, content.gutter, content.onAction, content.templateRow)
-    }) { argument -> OnboardingKey.takeIf { argument.isEmpty() } },
-    HabiTreeFeatureDestination("home", content = {
-        val content = LocalHomeRouteContent.current()
-        BioHomeScreen(content.state, content.onAction, content.tree, content.nextTask, content.reward)
-    }) { HomeKey.takeIf { _ -> it.isEmpty() } },
-)
+val homeFeatureNavigation =
+    HabiTreeFeatureModule(
+        HabiTreeFeatureDestination("onboard", content = {
+            val content = LocalOnboardingRouteContent.current()
+            OnboardingScreen(content.state, content.gutter, content.onAction, content.templateRow)
+        }) { argument -> OnboardingKey.takeIf { argument.isEmpty() } },
+        HabiTreeFeatureDestination("home", content = {
+            val content = LocalHomeRouteContent.current()
+            BioHomeScreen(content.state, content.onAction, content.tree, content.nextTask, content.reward)
+        }) { HomeKey.takeIf { _ -> it.isEmpty() } },
+    )

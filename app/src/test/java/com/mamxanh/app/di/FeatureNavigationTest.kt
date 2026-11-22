@@ -9,8 +9,8 @@ import com.mamxanh.app.presentation.bio.BioRoute
 import com.mamxanh.app.presentation.bio.toBioDestination
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
-import org.junit.Assert.assertNotSame
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNotSame
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertSame
 import org.junit.Assert.assertThrows
@@ -41,17 +41,18 @@ class FeatureNavigationTest {
 
         try {
             val live = HabiTreeRouteRegistry(application.koin.getAll<HabiTreeFeatureDestination>())
-            val arguments = mapOf(
-                BioRoute.TASK to "31",
-                BioRoute.TASK_NEW to "31",
-                BioRoute.TREE to "4",
-                BioRoute.SHOP to "4",
-                BioRoute.INVENTORY to "2",
-                BioRoute.FOCUS to "31",
-                BioRoute.INSIGHTS to "31",
-                BioRoute.SPECIES to "succulent",
-                BioRoute.ACHIEVEMENTS to "first-plant",
-            )
+            val arguments =
+                mapOf(
+                    BioRoute.TASK to "31",
+                    BioRoute.TASK_NEW to "31",
+                    BioRoute.TREE to "4",
+                    BioRoute.SHOP to "4",
+                    BioRoute.INVENTORY to "2",
+                    BioRoute.FOCUS to "31",
+                    BioRoute.INSIGHTS to "31",
+                    BioRoute.SPECIES to "succulent",
+                    BioRoute.ACHIEVEMENTS to "first-plant",
+                )
             for (route in BioRoute.entries.filterNot { it == BioRoute.MORE }) {
                 val argument = arguments[route].orEmpty()
                 val saved = BioDestination(route, argument)

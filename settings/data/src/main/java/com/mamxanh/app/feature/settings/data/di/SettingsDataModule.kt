@@ -4,6 +4,7 @@ import com.mamxanh.app.feature.settings.data.repository.OfflineReminderSettingsR
 import com.mamxanh.app.feature.settings.domain.repository.ReminderSettingsRepository
 import org.koin.dsl.module
 
-val settingsDataModule = module {
-    single<ReminderSettingsRepository> { OfflineReminderSettingsRepositoryImpl(get()) }
-}
+val settingsDataModule =
+    module {
+        single<ReminderSettingsRepository> { OfflineReminderSettingsRepositoryImpl(get()) }
+    }

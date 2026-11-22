@@ -9,32 +9,33 @@ import android.os.SystemClock
 import android.view.KeyEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import androidx.compose.runtime.saveable.SaverScope
-import com.mamxanh.app.feature.tasks.presentation.ui.form.TaskFormField
 import androidx.test.core.app.ActivityScenario
 import androidx.test.platform.app.InstrumentationRegistry
-import com.mamxanh.app.data.local.GardenDatabase
-import com.mamxanh.app.presentation.bio.BioController
 import com.mamxanh.app.core.components.localization.AppLanguageController
-import com.mamxanh.core.ui.R as CopyR
+import com.mamxanh.app.data.local.GardenDatabase
+import com.mamxanh.app.feature.tasks.presentation.ui.form.TaskFormField
+import com.mamxanh.app.presentation.bio.BioController
 import com.mamxanh.shared.data.GameStorage
 import com.mamxanh.shared.localization.AppLanguage
 import com.mamxanh.shared.localization.AppText
 import com.mamxanh.shared.localization.TextKey
 import com.mamxanh.shared.model.EngagementAction
 import com.mamxanh.shared.model.TaskConfig
-import java.util.Locale
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Assume.assumeTrue
 import org.junit.Test
+import java.util.Locale
+import com.mamxanh.core.ui.R as CopyR
 
 class NavigationRestorationTest {
     @Test
     fun savedPlantingSelectionRestoresTheChosenPlot() {
         val controller = BioController("garden")
-        val scope = object : SaverScope {
-            override fun canBeSaved(value: Any): Boolean = true
-        }
+        val scope =
+            object : SaverScope {
+                override fun canBeSaved(value: Any): Boolean = true
+            }
         assertEquals("2", controller.plantingSelection.initialDialogPlot(listOf(2, 5)))
         controller.act("bio-seed-picker:5")
 
@@ -54,31 +55,37 @@ class NavigationRestorationTest {
     @Test
     fun reminderLinksOpenTheirEntityAndRecreationKeepsTheSelectedTab() {
         check(context.packageName != "com.mamxanh.app") { "Use the isolated verification app." }
-        val entities = GardenDatabase(context).use { database ->
-            val storage = GameStorage(database)
-            if (!storage.engagementSnapshot().onboarded) {
-                assertTrue(storage.engage(EngagementAction.Onboard("succulent", "", emptyList(), "nav-onboard", skip = true)).success)
+        val entities =
+            GardenDatabase(context).use { database ->
+                val storage = GameStorage(database)
+                if (!storage.engagementSnapshot().onboarded) {
+                    assertTrue(storage.engage(EngagementAction.Onboard("succulent", "", emptyList(), "nav-onboard", skip = true)).success)
+                }
+                if (storage.tasks().none { it.title == TASK_TITLE }) {
+                    assertTrue(
+                        storage
+                            .saveTask(
+                                null,
+                                TaskConfig(
+                                    title = TASK_TITLE,
+                                    kind = "DAILY",
+                                    category = AppText.canonical(TextKey.CopyHocTapA51516),
+                                    frequency = "EVERY_DAY",
+                                    verification = "CLICK",
+                                ),
+                            ).success,
+                    )
+                }
+                if (storage.garden().trees.none { it.name == TREE_NAME }) {
+                    assertTrue(storage.plant("succulent", TREE_NAME, plotId = 1))
+                }
+                storage.tasks().single { it.title == TASK_TITLE }.id to
+                    storage
+                        .garden()
+                        .trees
+                        .single { it.name == TREE_NAME }
+                        .id
             }
-            if (storage.tasks().none { it.title == TASK_TITLE }) {
-                assertTrue(
-                    storage.saveTask(
-                        null,
-                        TaskConfig(
-                            title = TASK_TITLE,
-                            kind = "DAILY",
-                            category = AppText.canonical(TextKey.CopyHocTapA51516),
-                            frequency = "EVERY_DAY",
-                            verification = "CLICK",
-                        ),
-                    ).success,
-                )
-            }
-            if (storage.garden().trees.none { it.name == TREE_NAME }) {
-                assertTrue(storage.plant("succulent", TREE_NAME, plotId = 1))
-            }
-            storage.tasks().single { it.title == TASK_TITLE }.id to
-                storage.garden().trees.single { it.name == TREE_NAME }.id
-        }
 
         ActivityScenario.launch<MainActivity>(reminderIntent(entities.first)).use { scenario ->
             awaitLabel(AppText.text(TextKey.CopyNhipThoiQuen1b8324))
@@ -117,9 +124,10 @@ class NavigationRestorationTest {
         controller.back()
 
         val saver = BioController.Saver
-        val scope = object : SaverScope {
-            override fun canBeSaved(value: Any): Boolean = true
-        }
+        val scope =
+            object : SaverScope {
+                override fun canBeSaved(value: Any): Boolean = true
+            }
         val serialized = checkNotNull(with(saver) { scope.save(controller) })
         val restored = checkNotNull(saver.restore(serialized))
         assertEquals(listOf("", "14", "31", "2"), restored.backStack.map { it.argument })
@@ -175,9 +183,12 @@ class NavigationRestorationTest {
         GardenDatabase(context).use { database ->
             val storage = GameStorage(database)
             if (!storage.engagementSnapshot().onboarded) {
-                assertTrue(storage.engage(
-                    EngagementAction.Onboard("succulent", "", emptyList(), "focus-preset-onboard", skip = true),
-                ).success)
+                assertTrue(
+                    storage
+                        .engage(
+                            EngagementAction.Onboard("succulent", "", emptyList(), "focus-preset-onboard", skip = true),
+                        ).success,
+                )
             }
         }
 
@@ -200,17 +211,21 @@ class NavigationRestorationTest {
         GardenDatabase(context).use { database ->
             val storage = GameStorage(database)
             if (!storage.engagementSnapshot().onboarded) {
-                assertTrue(storage.engage(
-                    EngagementAction.Onboard("succulent", "", emptyList(), "locale-onboard", skip = true),
-                ).success)
+                assertTrue(
+                    storage
+                        .engage(
+                            EngagementAction.Onboard("succulent", "", emptyList(), "locale-onboard", skip = true),
+                        ).success,
+                )
             }
         }
 
         val original = AppLanguageController.current(context)
         val target = AppLanguage.entries.single { it != original }
-        val configuration = Configuration(context.resources.configuration).apply {
-            setLocale(Locale.forLanguageTag(original.tag))
-        }
+        val configuration =
+            Configuration(context.resources.configuration).apply {
+                setLocale(Locale.forLanguageTag(original.tag))
+            }
         val originalResources = context.createConfigurationContext(configuration).resources
         val option = if (target == AppLanguage.English) CopyR.string.app_language_en else CopyR.string.app_language_vi
         val settingsTitle = AppText.forLanguage(TextKey.CopyTheoNhipCuaBan8e2e15, target)
@@ -244,9 +259,12 @@ class NavigationRestorationTest {
         GardenDatabase(context).use { database ->
             val storage = GameStorage(database)
             if (!storage.engagementSnapshot().onboarded) {
-                assertTrue(storage.engage(
-                    EngagementAction.Onboard("succulent", "", emptyList(), "permission-onboard", skip = true),
-                ).success)
+                assertTrue(
+                    storage
+                        .engage(
+                            EngagementAction.Onboard("succulent", "", emptyList(), "permission-onboard", skip = true),
+                        ).success,
+                )
             }
         }
         ActivityScenario.launch<MainActivity>(Intent(context, MainActivity::class.java)).use {
@@ -276,9 +294,12 @@ class NavigationRestorationTest {
         GardenDatabase(context).use { database ->
             val storage = GameStorage(database)
             if (!storage.engagementSnapshot().onboarded) {
-                assertTrue(storage.engage(
-                    EngagementAction.Onboard("succulent", "", emptyList(), "clear-onboard", skip = true),
-                ).success)
+                assertTrue(
+                    storage
+                        .engage(
+                            EngagementAction.Onboard("succulent", "", emptyList(), "clear-onboard", skip = true),
+                        ).success,
+                )
             }
             val taskIds = storage.tasks().map { it.id }
             val treeIds = storage.garden().trees.map { it.id }
@@ -304,10 +325,12 @@ class NavigationRestorationTest {
         }
     }
 
-    private fun reminderIntent(entity: Long) =
-        Intent(context, MainActivity::class.java).putExtra("engagement_task", entity)
+    private fun reminderIntent(entity: Long) = Intent(context, MainActivity::class.java).putExtra("engagement_task", entity)
 
-    private fun awaitLabel(label: String, clickable: Boolean = false): AccessibilityNodeInfo {
+    private fun awaitLabel(
+        label: String,
+        clickable: Boolean = false,
+    ): AccessibilityNodeInfo {
         val deadline = SystemClock.uptimeMillis() + 20_000
         while (SystemClock.uptimeMillis() < deadline) {
             appRoot()?.findLabel(label, clickable)?.let { return it }
@@ -326,8 +349,9 @@ class NavigationRestorationTest {
         error("Android accessibility label remained visible: $label")
     }
 
-    private fun appRoot(): AccessibilityNodeInfo? = instrumentation.uiAutomation.rootInActiveWindow
-        ?.takeIf { it.packageName?.toString() == context.packageName }
+    private fun appRoot(): AccessibilityNodeInfo? =
+        instrumentation.uiAutomation.rootInActiveWindow
+            ?.takeIf { it.packageName?.toString() == context.packageName }
 
     private fun clickLabel(label: String) {
         val target = awaitLabel(label, clickable = true)
@@ -337,16 +361,19 @@ class NavigationRestorationTest {
     private fun clickSystemPermissionButton(id: String) {
         val permissionControllers = setOf("com.android.permissioncontroller", "com.google.android.permissioncontroller")
         val automation = instrumentation.uiAutomation
-        automation.serviceInfo = automation.serviceInfo.apply {
-            flags = flags or android.accessibilityservice.AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS
-        }
+        automation.serviceInfo =
+            automation.serviceInfo.apply {
+                flags = flags or android.accessibilityservice.AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS
+            }
         val deadline = SystemClock.uptimeMillis() + 20_000
         while (SystemClock.uptimeMillis() < deadline) {
             val root = automation.rootInActiveWindow
             val controller = root?.packageName?.toString()
             if (root != null && controller != null && controller in permissionControllers) {
-                val button = root.findAccessibilityNodeInfosByViewId("$controller:id/$id")
-                    .firstOrNull { it.isVisibleToUser && it.isEnabled }
+                val button =
+                    root
+                        .findAccessibilityNodeInfosByViewId("$controller:id/$id")
+                        .firstOrNull { it.isVisibleToUser && it.isEnabled }
                 if (button?.performAction(AccessibilityNodeInfo.ACTION_CLICK) == true) return
             }
             SystemClock.sleep(100)
@@ -376,7 +403,10 @@ class NavigationRestorationTest {
         return null
     }
 
-    private fun AccessibilityNodeInfo.findLabel(label: String, clickable: Boolean = false): AccessibilityNodeInfo? {
+    private fun AccessibilityNodeInfo.findLabel(
+        label: String,
+        clickable: Boolean = false,
+    ): AccessibilityNodeInfo? {
         if (isVisibleToUser && (text?.toString() == label || contentDescription?.toString() == label)) {
             if (!clickable) return this
             var target: AccessibilityNodeInfo? = this
