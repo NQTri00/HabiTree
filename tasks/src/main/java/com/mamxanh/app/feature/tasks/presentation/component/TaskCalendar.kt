@@ -4,9 +4,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -27,9 +30,12 @@ private const val DaysPerWeek = 7
 fun TaskCalendar(days: List<TaskCalendarDay>) {
     Column(verticalArrangement = Arrangement.spacedBy(AppDimensions.Dp6)) {
         days.chunked(DaysPerWeek).forEach { week ->
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(AppDimensions.Dp6)) {
+            Row(
+                Modifier.fillMaxWidth().height(IntrinsicSize.Min),
+                horizontalArrangement = Arrangement.spacedBy(AppDimensions.Dp6),
+            ) {
                 week.forEach { day ->
-                    TaskCalendarCell(day, Modifier.weight(1f))
+                    TaskCalendarCell(day, Modifier.weight(1f).fillMaxHeight())
                 }
                 repeat(DaysPerWeek - week.size) {
                     Spacer(Modifier.weight(1f))
