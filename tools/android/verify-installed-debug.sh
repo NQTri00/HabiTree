@@ -33,6 +33,28 @@ mkdir -p -- "$(dirname -- "$report")"
     launch=$("${device[@]}" shell am start -W -n "$package/.MainActivity" | tr -d '\r')
     printf '%s\n' "$launch"
     grep -Fxq 'Status: ok' <<< "$launch"
-    "${device[@]}" shell pidof "$package"
+    first_pid=$("${device[@]}" shell pidof "$package" | tr -d '\r')
+    printf 'Initial process: %s\n' "$first_pid"
+
+    "${device[@]}" shell input keyevent KEYCODE_HOME
+    for attempt in {1..15}; do
+        "${device[@]}" shell am kill "$package"
+        if ! "${device[@]}" shell pidof "$package" >/dev/null; then
+            break
+        fi
+        sleep 1
+    done
+    if "${device[@]}" shell pidof "$package" >/dev/null; then
+        printf 'The background app process is still present\n' >&2
+        exit 1
+    fi
+    printf 'Background process exited: %s\n' "$first_pid"
+
+    relaunch=$("${device[@]}" shell am start -W -n "$package/.MainActivity" | tr -d '\r')
+    printf '%s\n' "$relaunch"
+    grep -Fxq 'Status: ok' <<< "$relaunch"
+    new_pid=$("${device[@]}" shell pidof "$package" | tr -d '\r')
+    test "$new_pid" != "$first_pid"
+    printf 'Recreated process: %s\n' "$new_pid"
     "${device[@]}" shell am force-stop "$package"
 } | tee "$report"

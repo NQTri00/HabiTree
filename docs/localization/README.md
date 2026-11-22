@@ -18,7 +18,7 @@ Generation refuses missing English translations and mismatched placeholders. It 
 
 The Android language selector is in Settings. Vietnamese remains the migration default. The selected language is persisted, Android 13+ application locales are synchronized, and older Android activities recreate with the selected configuration. User-authored content is preserved.
 
-Shared color, dimension, icon, radius, spacing, opacity and typography values live in `core-ui/.../ui/design`. Edit these definitions for design changes. Vector geometry, database/protocol identifiers, calculations and persisted ISO date formats are data rather than UI copy or spacing tokens.
+Shared color, dimension, icon, radius, spacing, opacity and typography values live in [Core Components](../../core-ui/src/main/java/com/mamxanh/app/core/components/design). Edit those definitions for design changes. Vector geometry, database and protocol identifiers, calculations, and persisted ISO date formats belong to the data that uses them.
 
 The extraction/migration scripts document the migration; they are not part of normal resource generation. In particular, `design_tokens.py` intentionally refuses a second destructive extraction over existing token definitions.
 
