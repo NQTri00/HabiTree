@@ -190,7 +190,7 @@ class NavigationRestorationTest {
 
             scenario.recreate()
             awaitLabel("15:00")
-            awaitLabel(AppText.text(TextKey.CopyBatDauB3cacc))
+            revealLabel(AppText.text(TextKey.CopyBatDauB3cacc))
         }
     }
 
