@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
@@ -28,6 +29,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mamxanh.app.core.components.*
+import com.mamxanh.app.core.components.design.AppThemeEffects
 
 @Composable
 fun MintStatusPill(label: String, modifier: Modifier = Modifier) {
@@ -45,6 +47,29 @@ fun MintTreeStatus(stage: String,state: String,water: String) {
 
 @Composable
 fun MintMetricStrip(metrics: List<Pair<String,String>>, modifier: Modifier = Modifier) {
+    val useRows = LocalDensity.current.fontScale > AppThemeEffects.LargeFontScale &&
+        LocalConfiguration.current.screenWidthDp < AppThemeEffects.CompactWidth
+    if (useRows) {
+        Column(modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(AppDimensions.Dp6)) {
+            metrics.forEach { (label, value) ->
+                GardenBotanicalFrame(
+                    Modifier.fillMaxWidth(),
+                    contentPadding = PaddingValues(horizontal = AppDimensions.Dp12, vertical = AppDimensions.Dp8),
+                    cornerSize = AppDimensions.Dp18,
+                ) {
+                    Row(
+                        Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(AppDimensions.Dp8),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(label, Modifier.weight(1f), color = Muted, fontSize = AppTypography.Sp11)
+                        Text(value, color = Deep, fontSize = AppTypography.Sp14, fontWeight = FontWeight.Bold)
+                    }
+                }
+            }
+        }
+        return
+    }
     Row(modifier.fillMaxWidth().height(IntrinsicSize.Min),horizontalArrangement=Arrangement.spacedBy(AppDimensions.Dp6)) {
         metrics.forEach { (label,value) ->
             GardenBotanicalFrame(Modifier.weight(1f).fillMaxHeight(), contentPadding=PaddingValues(AppDimensions.Dp12),cornerSize=AppDimensions.Dp18) {

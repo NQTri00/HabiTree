@@ -1,5 +1,7 @@
 package com.mamxanh.app.core.components.components
 
+import androidx.compose.ui.platform.LocalConfiguration
+import com.mamxanh.app.core.components.design.AppThemeEffects
 import com.mamxanh.core.ui.R
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -48,10 +50,15 @@ fun mintTreeHeroHeight(speciesId: String = "", availableWidth: Dp? = null): Dp {
 @Composable
 fun MintCompactHeader(coins: Int, title: String = AppText.text(TextKey.CopyMamXanh7d3324), titleSize: androidx.compose.ui.unit.TextUnit = AppTypography.Sp17,
     actions: @Composable RowScope.()->Unit = {}) {
+    val narrowLargeText = LocalDensity.current.fontScale > AppThemeEffects.LargeFontScale &&
+        LocalConfiguration.current.screenWidthDp < AppThemeEffects.CompactWidth
     Row(Modifier.fillMaxWidth()
-        .heightIn(min = AppDimensions.Dp56).padding(horizontal = AppDimensions.Dp24, vertical = AppDimensions.Dp8),
+        .heightIn(min = AppDimensions.Dp56).padding(
+            horizontal = if (narrowLargeText) AppDimensions.Dp12 else AppDimensions.Dp24,
+            vertical = AppDimensions.Dp8,
+        ),
         verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(AppDimensions.Dp8)) {
-        GardenArtwork(GardenArt.SPROUT, Modifier.size(AppDimensions.Dp16))
+        if (!narrowLargeText) GardenArtwork(GardenArt.SPROUT, Modifier.size(AppDimensions.Dp16))
         Text(title, Modifier.weight(1f), fontSize = titleSize, lineHeight = titleSize * 1.2f, fontWeight = FontWeight.Bold, color = Deep)
         actions()
         MintCoinBadge(coins)
