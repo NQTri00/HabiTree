@@ -20,6 +20,8 @@ import com.mamxanh.app.feature.tasks.presentation.ui.list.TaskListAction
 import com.mamxanh.app.feature.tasks.presentation.ui.list.TaskListItem
 import com.mamxanh.app.feature.tasks.presentation.ui.list.TaskListRow
 import com.mamxanh.app.feature.tasks.presentation.ui.list.TaskListState
+import com.mamxanh.shared.localization.AppText
+import com.mamxanh.shared.localization.TextKey
 import org.json.JSONObject
 
 internal fun homeRouteContent(
@@ -152,5 +154,7 @@ internal fun taskListRouteContent(
 private fun BioTaskRowPreview() {
     val context = LocalContext.current
     val world = remember(context) { BioWorld.reference(context) }
-    BioTheme(world, "1") { BioTaskRow(world.tasks.first(), remember { BioController("tasks") }) }
+    val title = AppText.text(TextKey.CopyDoc10TrangSachA3c873)
+    val task = remember(world, title) { JSONObject(world.tasks.first().toString()).put("title", title) }
+    BioTheme(world, "1") { BioTaskRow(task, remember { BioController("tasks") }) }
 }
