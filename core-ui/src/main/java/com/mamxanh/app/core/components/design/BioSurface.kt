@@ -10,10 +10,13 @@ import androidx.compose.ui.*
 import androidx.compose.ui.draw.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.*
 import androidx.compose.ui.text.font.*
 import androidx.compose.ui.text.style.*
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
+import com.mamxanh.core.ui.R
 
 fun bioShape(radius: Int = AppRadii.VALUE_22) =
     RoundedCornerShape(topStart = radius.dp, topEnd = (radius / 2).dp, bottomEnd = radius.dp, bottomStart = radius.dp)
@@ -121,4 +124,13 @@ fun Modifier.bioLift(
             ),
         content = content,
     )
+}
+
+@Preview(name = "Lifted cards", widthDp = 335, showBackground = true)
+@Composable
+private fun BioSurfacePreview() {
+    Column(Modifier.padding(AppDimensions.Dp12), verticalArrangement = Arrangement.spacedBy(AppDimensions.Dp12)) {
+        BioCard(Modifier.fillMaxWidth()) { Bt(stringResource(R.string.copy_vuon_9e4c10)) }
+        BioCard(Modifier.fillMaxWidth(), tint = bp.soft) { Bt(stringResource(R.string.copy_da_tuoi_de2042)) }
+    }
 }

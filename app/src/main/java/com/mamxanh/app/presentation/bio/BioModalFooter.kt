@@ -7,7 +7,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.draw.*
 import androidx.compose.ui.graphics.*
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import com.mamxanh.app.core.components.design.*
 import com.mamxanh.app.core.components.design.AppDimensions
@@ -156,5 +158,17 @@ internal fun BioModalFooter(
                 }
             }, Modifier.weight(1f), enabled = enabled, danger = type in listOf("remove", "sell", "clear-final"))
         }
+    }
+}
+
+@Preview(name = "Destructive confirmation actions", widthDp = 335, showBackground = true)
+@Composable
+private fun BioModalFooterPreview() {
+    val context = LocalContext.current
+    val world = remember(context) { BioWorld.reference(context) }
+    val ui = remember { BioController("tree") }
+    val purchase = ui.shopSelection.purchaseAvailability(world.coins, 0, false, false, false)
+    BioTheme(world, "1") {
+        Column { BioModalFooter("remove", "1", world, ui, purchase, false, false, false, false, {}) }
     }
 }

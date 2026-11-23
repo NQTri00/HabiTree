@@ -14,6 +14,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.*
 import androidx.compose.ui.text.font.*
 import androidx.compose.ui.text.style.*
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import com.mamxanh.core.ui.R
 
@@ -211,5 +212,22 @@ import com.mamxanh.core.ui.R
             ).background(if (white)AppColors.White.copy(alpha = AppOpacity.VALUE_65)else AppColors.SwatchFFD8DFCE),
     ) {
         Box(Modifier.fillMaxHeight().fillMaxWidth(value.coerceIn(0f, 1f)).background(bp.deep))
+    }
+}
+
+@Preview(name = "Care controls", widthDp = 335, showBackground = true)
+@Composable
+private fun BioControlsPreview() {
+    val water = stringResource(R.string.copy_tuoi_cay_0990f6)
+    val watered = stringResource(R.string.copy_da_tuoi_de2042)
+    CompositionLocalProvider(LocalIndication provides BioTouchIndication(bp.deep)) {
+        Column(verticalArrangement = Arrangement.spacedBy(AppDimensions.Dp8)) {
+            BioButton(water, {}, Modifier.fillMaxWidth(), icon = "water")
+            BioButton(watered, {}, Modifier.fillMaxWidth(), icon = "water", enabled = false)
+            BioTag(watered, icon = "check")
+            BioProgress(0.6f)
+            BioTextAction(water, {})
+            BioIconButton("close", {})
+        }
     }
 }

@@ -1,12 +1,15 @@
 package com.mamxanh.app.feature.tasks.presentation.ui.engagement
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import com.mamxanh.app.core.components.*
 import com.mamxanh.app.core.components.components.*
 import com.mamxanh.app.core.components.design.AppDimensions
@@ -108,6 +111,16 @@ private fun TemplateCard(
                 }
             }
             Checkbox(selected || added, onCheckedChange = null, enabled = !added)
+        }
+    }
+}
+
+@Preview(name = "Task template choices", widthDp = 335, heightDp = 600, showBackground = true)
+@Composable
+private fun TemplateContentPreview() {
+    MamXanhPreviewTheme {
+        Column(Modifier.verticalScroll(rememberScrollState())) {
+            TemplateContent(EngagementUiState(route = "TEMPLATES", loading = false), {})
         }
     }
 }

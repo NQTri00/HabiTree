@@ -1,5 +1,7 @@
 package com.mamxanh.app.feature.tasks.presentation.ui.engagement
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -7,6 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import com.mamxanh.app.core.components.*
 import com.mamxanh.app.core.components.components.*
 import com.mamxanh.app.core.components.design.AppColors
@@ -182,6 +185,16 @@ internal fun FocusContent(
                 fontSize = AppTypography.Sp13,
                 lineHeight = AppTypography.Sp19,
             )
+        }
+    }
+}
+
+@Preview(name = "Free focus session", widthDp = 335, heightDp = 600, showBackground = true)
+@Composable
+private fun FocusContentPreview() {
+    MamXanhPreviewTheme {
+        Column(Modifier.verticalScroll(rememberScrollState())) {
+            FocusContent(EngagementUiState(route = "FOCUS", loading = false), {}, { _, _ -> })
         }
     }
 }

@@ -13,6 +13,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.*
 import androidx.compose.ui.text.font.*
 import androidx.compose.ui.text.style.*
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import com.mamxanh.core.ui.R
 
@@ -266,5 +267,18 @@ import com.mamxanh.core.ui.R
                 Bt(bioDisplayDate(value), Modifier.weight(1f), size = AppTypography.SIZE_12, align = TextAlign.End)
             }
         }
+    }
+}
+
+@Preview(name = "Garden sections and empty state", widthDp = 335, showBackground = true)
+@Composable
+private fun BioSectionsPreview() {
+    val garden = stringResource(R.string.copy_vuon_9e4c10)
+    val empty = stringResource(R.string.copy_chua_co_o_trong_6abd67)
+    Column(verticalArrangement = Arrangement.spacedBy(AppDimensions.Dp12)) {
+        BioIntro(garden)
+        BioSection(garden)
+        BioLink(garden, "garden", {})
+        BioEmpty(empty)
     }
 }

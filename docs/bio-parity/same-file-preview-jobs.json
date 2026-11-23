@@ -25,6 +25,11 @@
     "source": "app/src/main/java/com/mamxanh/app/presentation/bio/BioHeroRouteContent.kt"
   },
   {
+    "name": "BioTaskRowPreview",
+    "preview": "BioTaskRowPreview",
+    "source": "app/src/main/java/com/mamxanh/app/presentation/bio/BioHomeTaskRoutes.kt"
+  },
+  {
     "name": "BioMoreComponentPreview",
     "preview": "BioMoreComponentPreview",
     "source": "app/src/main/java/com/mamxanh/app/presentation/bio/BioMainScreens.kt"
@@ -33,6 +38,11 @@
     "name": "BioProductPreview",
     "preview": "BioProductPreview",
     "source": "app/src/main/java/com/mamxanh/app/presentation/bio/BioMainScreens.kt"
+  },
+  {
+    "name": "BioModalFooterPreview",
+    "preview": "BioModalFooterPreview",
+    "source": "app/src/main/java/com/mamxanh/app/presentation/bio/BioModalFooter.kt"
   },
   {
     "name": "BioModalMessagesPreview",
@@ -175,6 +185,21 @@
     "source": "core-ui/src/main/java/com/mamxanh/app/core/components/design/BioChips.kt"
   },
   {
+    "name": "BioContentPreview",
+    "preview": "BioContentPreview",
+    "source": "core-ui/src/main/java/com/mamxanh/app/core/components/design/BioContent.kt"
+  },
+  {
+    "name": "BioControlsPreview",
+    "preview": "BioControlsPreview",
+    "source": "core-ui/src/main/java/com/mamxanh/app/core/components/design/BioControls.kt"
+  },
+  {
+    "name": "BioSectionsPreview",
+    "preview": "BioSectionsPreview",
+    "source": "core-ui/src/main/java/com/mamxanh/app/core/components/design/BioSections.kt"
+  },
+  {
     "name": "language-selector-component",
     "preview": "BioSelectPreview",
     "source": "core-ui/src/main/java/com/mamxanh/app/core/components/design/BioSelectors.kt"
@@ -183,6 +208,11 @@
     "name": "reminder-toggle-components",
     "preview": "BioTogglePreview",
     "source": "core-ui/src/main/java/com/mamxanh/app/core/components/design/BioSelectors.kt"
+  },
+  {
+    "name": "BioSurfacePreview",
+    "preview": "BioSurfacePreview",
+    "source": "core-ui/src/main/java/com/mamxanh/app/core/components/design/BioSurface.kt"
   },
   {
     "name": "BioMonospacePreview",
@@ -198,6 +228,11 @@
     "name": "LivingGardenControlsPreview",
     "preview": "LivingGardenControlsPreview",
     "source": "garden/src/main/java/com/mamxanh/app/feature/garden/presentation/ui/livinggarden/LivingGardenControls.kt"
+  },
+  {
+    "name": "SmallCatalogTilePreview",
+    "preview": "SmallCatalogTilePreview",
+    "source": "garden/src/main/java/com/mamxanh/app/feature/garden/presentation/ui/livinggarden/LivingGardenCosmetics.kt"
   },
   {
     "name": "LivingGardenScreenPreview",
@@ -230,9 +265,19 @@
     "source": "tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/ui/engagement/EngagementDayCalendar.kt"
   },
   {
+    "name": "FocusContentPreview",
+    "preview": "FocusContentPreview",
+    "source": "tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/ui/engagement/EngagementFocus.kt"
+  },
+  {
     "name": "EngagementScreenPreview",
     "preview": "EngagementScreenPreview",
     "source": "tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/ui/engagement/EngagementScreens.kt"
+  },
+  {
+    "name": "TemplateContentPreview",
+    "preview": "TemplateContentPreview",
+    "source": "tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/ui/engagement/EngagementTemplates.kt"
   },
   {
     "name": "TreeDetailTabsPreview",

@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import com.mamxanh.app.core.components.*
 import com.mamxanh.app.core.components.components.*
 import com.mamxanh.app.core.components.design.AppColors
@@ -275,5 +276,15 @@ private fun categoryName(s: String) =
             Modifier.fillMaxWidth(),
             primary = false,
         )
+    }
+}
+
+@Preview(name = "Garden accessory tile", widthDp = 335, showBackground = true)
+@Composable
+private fun SmallCatalogTilePreview() {
+    MamXanhPreviewTheme {
+        SmallCatalogTile(AppText.text(TextKey.CopyPhuKien0852d7), "250", {}) { modifier ->
+            GardenArtwork(GardenArt.FLOWERS, modifier)
+        }
     }
 }

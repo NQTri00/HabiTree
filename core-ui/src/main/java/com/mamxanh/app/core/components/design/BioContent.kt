@@ -10,11 +10,14 @@ import androidx.compose.ui.graphics.*
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.*
 import androidx.compose.ui.text.font.*
 import androidx.compose.ui.text.style.*
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import com.mamxanh.app.core.components.GardenFontFamily
+import com.mamxanh.core.ui.R
 
 @Composable fun Bt(
     text: String,
@@ -118,5 +121,15 @@ import com.mamxanh.app.core.components.GardenFontFamily
             contentScale = ContentScale.Fit,
             colorFilter = filter,
         )
+    }
+}
+
+@Preview(name = "Typography, icon and tree", widthDp = 335, showBackground = true)
+@Composable
+private fun BioContentPreview() {
+    Column(verticalArrangement = Arrangement.spacedBy(AppDimensions.Dp12)) {
+        Bt(stringResource(R.string.copy_vuon_9e4c10), size = AppTypography.SIZE_27, bold = true)
+        Bi("water")
+        BioPlant("cherry", Modifier.size(AppDimensions.Dp100))
     }
 }

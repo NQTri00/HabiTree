@@ -4,9 +4,12 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.*
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import com.mamxanh.app.core.components.design.*
 import com.mamxanh.app.feature.home.presentation.navigation.HomeRouteContent
@@ -142,4 +145,12 @@ internal fun taskListRouteContent(
         },
         reward = { BioReward(world, ui) },
     )
+}
+
+@Preview(name = "Task row", widthDp = 335, showBackground = true)
+@Composable
+private fun BioTaskRowPreview() {
+    val context = LocalContext.current
+    val world = remember(context) { BioWorld.reference(context) }
+    BioTheme(world, "1") { BioTaskRow(world.tasks.first(), remember { BioController("tasks") }) }
 }
