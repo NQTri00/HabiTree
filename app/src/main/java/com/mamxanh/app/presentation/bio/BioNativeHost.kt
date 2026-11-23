@@ -270,7 +270,7 @@ import java.util.*
             }
             else ->
                 if (!ui.busy) {
-                    ui.busy = true
+                    ui.startCommand(command.action)
                     scope.launch {
                         try {
                             val result =

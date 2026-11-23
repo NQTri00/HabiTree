@@ -40,7 +40,8 @@ internal fun BioModalFooter(
         horizontalArrangement = Arrangement.spacedBy(AppDimensions.Dp10),
     ) {
         if (type == "purchase" && seed) {
-            BioButton(stringResource(R.string.copy_mua_vao_tui_4cd4d5), {
+            val buyLabel = if (ui.pendingAction == "buy") R.string.copy_dang_mua_c2f9ae else R.string.copy_mua_vao_tui_4cd4d5
+            BioButton(stringResource(buyLabel), {
                 ui.send(
                     "buy",
                     mapOf(
@@ -50,13 +51,13 @@ internal fun BioModalFooter(
                 )
             }, Modifier.weight(1f), secondary = true, enabled = purchase.canSubmit)
             BioButton(
-                if (ui.shopSelection.quantity >
-                    1
-                ) {
-                    stringResource(R.string.copy_mua_gieo_1_690d4f)
-                } else {
-                    stringResource(R.string.copy_mua_gieo_754323)
-                },
+                stringResource(
+                    when {
+                        ui.pendingAction == "buy-plant" -> R.string.copy_dang_mua_c2f9ae
+                        ui.shopSelection.quantity > 1 -> R.string.copy_mua_gieo_1_690d4f
+                        else -> R.string.copy_mua_gieo_754323
+                    },
+                ),
                 {
                     ui.send(
                         "buy-plant",
@@ -89,7 +90,9 @@ internal fun BioModalFooter(
             val label =
                 when (type) {
                     "purchase" ->
-                        if (permanent) {
+                        if (ui.pendingAction == "buy" || ui.pendingAction == "buy-equip") {
+                            stringResource(R.string.copy_dang_mua_c2f9ae)
+                        } else if (permanent) {
                             if (owned) {
                                 if (world.state.s("equipped") ==
                                     id

@@ -37,6 +37,8 @@ import org.json.JSONObject
     var message by mutableStateOf("")
     var modalMessage by mutableStateOf("")
     var busy by mutableStateOf(false)
+    var pendingAction by mutableStateOf<String?>(null)
+        private set
     val shopSelection = ShopSelectionState()
     val plantingSelection = PlantingSelectionState()
     val gardenBrowse = GardenBrowseState()
@@ -241,6 +243,7 @@ import org.json.JSONObject
 
     fun result(result: BioResult) {
         busy = false
+        pendingAction = null
         if (result.success) {
             modal = ""
             if (result.route.isNotBlank()) {
@@ -260,6 +263,11 @@ import org.json.JSONObject
         } else {
             message = result.message
         }
+    }
+
+    fun startCommand(action: String) {
+        busy = true
+        pendingAction = action
     }
 
     fun act(action: String) {

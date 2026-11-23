@@ -77,8 +77,7 @@ import com.mamxanh.shared.localization.TextKey
                 modalId = id
                 homeTreeState.selectedId = home
                 onboarding.step = step
-                this.busy =
-                    requestedBusy
+                if (requestedBusy) startCommand("buy")
                 restoreFields(referenceFields)
                 if (expanded)tabs["expanded"] = "true"
                 if (bottom)tabs["scrollBottom"] = "true"
