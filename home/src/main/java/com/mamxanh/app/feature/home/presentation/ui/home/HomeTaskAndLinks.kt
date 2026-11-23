@@ -105,7 +105,7 @@ private fun HomeTaskAndLinksPreview() {
     MamXanhPreviewTheme {
         Column(verticalArrangement = Arrangement.spacedBy(AppDimensions.Dp12)) {
             HomeNextTask(HomeTaskSummary(1, title, category, 8), {}, {})
-            HomeLink(GardenArt.BOOK, title, category, {})
+            HomeLink(GardenArt.BOOK, title, AppText.category(category), {})
         }
     }
 }
