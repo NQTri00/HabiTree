@@ -1,10 +1,14 @@
 package com.mamxanh.app
 
 import android.Manifest
+import android.app.Activity
+import android.app.Instrumentation
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.database.sqlite.SQLiteDatabase
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.SystemClock
@@ -18,6 +22,7 @@ import com.mamxanh.app.data.local.GardenDatabase
 import com.mamxanh.app.feature.tasks.presentation.ui.form.TaskFormField
 import com.mamxanh.app.presentation.bio.BioController
 import com.mamxanh.shared.data.GameStorage
+import com.mamxanh.shared.data.sql.GameBackupCodec
 import com.mamxanh.shared.localization.AppLanguage
 import com.mamxanh.shared.localization.AppText
 import com.mamxanh.shared.localization.TextKey
@@ -28,6 +33,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Assume.assumeTrue
 import org.junit.Test
+import java.io.File
 import java.util.Locale
 import com.mamxanh.core.ui.R as CopyR
 
@@ -640,6 +646,92 @@ class NavigationRestorationTest {
     }
 
     private fun reminderIntent(entity: Long) = Intent(context, MainActivity::class.java).putExtra("engagement_task", entity)
+
+    @Test
+    fun encyclopediaKeepsTheCollectedSpeciesTreeAfterRecreation() {
+        check(context.packageName != "com.mamxanh.app")
+        val tree = prepareSelectableTrees().first()
+        val species = AppText.plantName(tree.speciesId, "")
+        val treeName = AppText.plantName(tree.speciesId, tree.name)
+        ActivityScenario.launch<MainActivity>(Intent(context, MainActivity::class.java)).use { scenario ->
+            clickLabel(AppText.text(TextKey.CopyVuon9e4c10))
+            val encyclopedia = AppText.text(TextKey.CopyBachThaoF2ed64)
+            revealLabel(encyclopedia)
+            clickLabel(encyclopedia)
+            revealLabel(species)
+            clickLabel(species)
+            revealLabel(treeName)
+            scenario.recreate()
+            revealLabel(treeName)
+            clickLabel(treeName)
+            awaitLabel(AppText.text(TextKey.CopyCayCuaBan64f9d7))
+            awaitLabel(treeName)
+        }
+    }
+
+    @Test
+    fun backupImportRejectsInvalidBytesAndRestoresAConfirmedSnapshot() {
+        check(context.packageName != "com.mamxanh.app")
+        prepareSelectableTrees()
+        val (balance, bytes) =
+            GardenDatabase(context).use { database ->
+                val storage = GameStorage(database)
+                storage.garden().coins to GameBackupCodec.encode(storage.backup("verification", System.currentTimeMillis()))
+            }
+        val invalid = File.createTempFile("invalid-backup", ".mamxanh", context.cacheDir)
+        val valid = File.createTempFile("valid-backup", ".mamxanh", context.cacheDir)
+        try {
+            invalid.writeText("Invalid backup fixture")
+            valid.writeBytes(bytes)
+            val import = AppText.text(TextKey.CopyKhoiPhucC652d9)
+            val confirmation = AppText.text(TextKey.CopyKhoiPhucDuLieuFeaa4a)
+            val changedBalance = balance + 71
+            editGameFixture("UPDATE meta SET v=? WHERE k='coins'", arrayOf(changedBalance.toString()))
+            ActivityScenario.launch<MainActivity>(Intent(context, MainActivity::class.java)).use {
+                clickLabel(AppText.text(TextKey.CopyNhatKy1e6c3c))
+                clickLabel(AppText.text(TextKey.CopyTuyChon598c1b))
+                val data = AppText.text(TextKey.CopyDuLieuUngDung9843b7)
+                revealLabel(data)
+                clickLabel(data)
+                withBackupPickerResult(invalid) {
+                    clickLabel(import)
+                    awaitLabel(AppText.text(TextKey.CopyKhongTheXuLyTepDuLieuHienTaiGiuNguyenAa333d))
+                }
+                GardenDatabase(context).use { assertEquals(changedBalance, GameStorage(it).garden().coins) }
+                withBackupPickerResult(valid) {
+                    clickLabel(import)
+                    awaitLabel(confirmation)
+                }
+                GardenDatabase(context).use { assertEquals(changedBalance, GameStorage(it).garden().coins) }
+                clickLabel(AppText.text(TextKey.CopyThayTheE4d19c))
+                awaitLabel(AppText.text(TextKey.CopyDaKhoiPhucDuLieuB0b459))
+                awaitLabelGone(confirmation)
+            }
+            GardenDatabase(context).use { assertEquals(balance, GameStorage(it).garden().coins) }
+        } finally {
+            invalid.delete()
+            valid.delete()
+        }
+    }
+
+    private fun withBackupPickerResult(
+        file: File,
+        action: () -> Unit,
+    ) {
+        val filter =
+            IntentFilter(Intent.ACTION_OPEN_DOCUMENT).apply {
+                addCategory(Intent.CATEGORY_OPENABLE)
+                addDataType("*/*")
+            }
+        val result = Instrumentation.ActivityResult(Activity.RESULT_OK, Intent().setData(Uri.fromFile(file)))
+        val monitor = instrumentation.addMonitor(filter, result, true)
+        try {
+            action()
+            assertEquals(1, monitor.hits)
+        } finally {
+            instrumentation.removeMonitor(monitor)
+        }
+    }
 
     private fun awaitLabel(
         label: String,
