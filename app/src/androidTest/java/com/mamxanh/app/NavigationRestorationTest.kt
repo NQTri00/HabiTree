@@ -117,6 +117,55 @@ class NavigationRestorationTest {
     }
 
     @Test
+    fun timelineOpensTheTreeStoredInTheMemory() {
+        check(context.packageName != "com.mamxanh.app")
+        val (memoryTitle, treeName) =
+            GardenDatabase(context).use { database ->
+                val storage = GameStorage(database)
+                if (!storage.engagementSnapshot().onboarded) {
+                    assertTrue(
+                        storage.engage(EngagementAction.Onboard("succulent", "", emptyList(), "timeline-onboard", skip = true)).success,
+                    )
+                }
+                if (storage.garden().trees.isEmpty()) {
+                    assertTrue(storage.plant("succulent", "Timeline first tree", plotId = 1))
+                }
+                val memory = storage.engagementSnapshot().memories.single { it.id == "first-tree" }
+                AppText.history(memory.title) to
+                    storage
+                        .garden()
+                        .trees
+                        .single { it.id == memory.entity }
+                        .name
+            }
+        ActivityScenario.launch<MainActivity>(Intent(context, MainActivity::class.java)).use {
+            clickLabel(AppText.text(TextKey.CopyNhatKy1e6c3c))
+            val timeline = AppText.text(TextKey.CopyKyNiemE3e113)
+            revealLabel(timeline)
+            clickLabel(timeline)
+            awaitLabel(AppText.text(TextKey.CopyDieuMinhMuonNho665bc8))
+            val label = AppText.text(TextKey.CopyXemLienQuan2167e0)
+            val deadline = SystemClock.uptimeMillis() + 20_000
+            var related: AccessibilityNodeInfo? = null
+            while (related == null && SystemClock.uptimeMillis() < deadline) {
+                val root = appRoot()
+                related = root?.findLabel(memoryTitle)?.parent?.findLabel(label, clickable = true)
+                if (related == null) {
+                    root
+                        ?.findAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD)
+                        ?.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD)
+                    SystemClock.sleep(250)
+                }
+            }
+            assertTrue(
+                checkNotNull(related) { "First-tree memory action was not visible" }.performAction(AccessibilityNodeInfo.ACTION_CLICK),
+            )
+            awaitLabel(AppText.text(TextKey.CopyCayCuaBan64f9d7))
+            awaitLabel(treeName)
+        }
+    }
+
+    @Test
     fun lockedPlotConfirmationRestoresAndCancelPreservesTheGarden() {
         check(context.packageName != "com.mamxanh.app")
         val before =
