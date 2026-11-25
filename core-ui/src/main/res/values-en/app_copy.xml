@@ -1152,6 +1152,7 @@
     <string name="data_policy" formatted="false">Days reset in local time; trees retain their planting timezone. Tree progress uses percentages. No sound is currently played; reduced motion is available in Settings.</string>
     <string name="data_accessibility" formatted="false">Text size follows system settings. Controls retain at least 48 dp touch targets; states include text and icons.</string>
     <string name="data_version">Version %1$s · build %2$d · schema %3$d</string>
+    <string name="backup_version">Backup version</string>
     <string name="data_licenses" formatted="false">Open source &amp; licenses</string>
     <string name="data_diagnostics" formatted="false">Export diagnostics</string>
     <string name="data_diagnostics_note" formatted="false">Exports version, Android API, size and row counts only; excludes task names, notes, balance and private tree state.</string>

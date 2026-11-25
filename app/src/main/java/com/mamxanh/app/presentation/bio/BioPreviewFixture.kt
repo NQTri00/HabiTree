@@ -14,6 +14,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInputModeManager
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import com.mamxanh.shared.data.sql.GameSchema
 import com.mamxanh.shared.localization.AppLanguage
 import com.mamxanh.shared.localization.AppText
 import com.mamxanh.shared.localization.TextKey
@@ -78,7 +79,13 @@ import com.mamxanh.shared.localization.TextKey
                 homeTreeState.selectedId = home
                 onboarding.step = step
                 if (requestedBusy) startCommand("buy")
-                restoreFields(referenceFields)
+                val fields =
+                    if (modal == "confirm-import") {
+                        mapOf("backupVersion" to GameSchema.VERSION.toString()) + referenceFields
+                    } else {
+                        referenceFields
+                    }
+                restoreFields(fields)
                 if (expanded)tabs["expanded"] = "true"
                 if (bottom)tabs["scrollBottom"] = "true"
                 if (sheetBottom) {

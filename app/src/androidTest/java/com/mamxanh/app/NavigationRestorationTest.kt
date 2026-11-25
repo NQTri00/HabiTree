@@ -696,7 +696,9 @@ class NavigationRestorationTest {
             val confirmation = AppText.text(TextKey.CopyKhoiPhucDuLieuFeaa4a)
             val changedBalance = balance + 71
             editGameFixture("UPDATE meta SET v=? WHERE k='coins'", arrayOf(changedBalance.toString()))
-            ActivityScenario.launch<MainActivity>(Intent(context, MainActivity::class.java)).use {
+            ActivityScenario.launch<MainActivity>(Intent(context, MainActivity::class.java)).use { scenario ->
+                var versionLabel = ""
+                scenario.onActivity { versionLabel = it.getString(CopyR.string.backup_version) }
                 clickLabel(AppText.text(TextKey.CopyNhatKy1e6c3c))
                 clickLabel(AppText.text(TextKey.CopyTuyChon598c1b))
                 val data = AppText.text(TextKey.CopyDuLieuUngDung9843b7)
@@ -710,6 +712,7 @@ class NavigationRestorationTest {
                 withBackupPickerResult(valid) {
                     clickLabel(import)
                     awaitLabel(confirmation)
+                    awaitLabel(versionLabel)
                 }
                 GardenDatabase(context).use { assertEquals(changedBalance, GameStorage(it).garden().coins) }
                 clickLabel(AppText.text(TextKey.CopyThayTheE4d19c))

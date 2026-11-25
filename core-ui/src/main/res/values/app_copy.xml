@@ -1146,6 +1146,7 @@
     <string name="data_policy" formatted="false">Ngày mới tính theo giờ địa phương; cây giữ múi giờ lúc gieo. Tiến độ cây hiển thị phần trăm. Không có âm thanh đang phát; giảm chuyển động trong Tùy chọn.</string>
     <string name="data_accessibility" formatted="false">Cỡ chữ dùng thiết lập hệ thống. Nút có vùng chạm tối thiểu 48 dp; trạng thái có chữ và biểu tượng.</string>
     <string name="data_version">Phiên bản %1$s · mã %2$d · lược đồ %3$d</string>
+    <string name="backup_version">Phiên bản sao lưu</string>
     <string name="data_licenses" formatted="false">Mã nguồn mở &amp; giấy phép</string>
     <string name="data_diagnostics" formatted="false">Xuất chẩn đoán</string>
     <string name="data_diagnostics_note" formatted="false">Chỉ xuất phiên bản, API Android, dung lượng và số dòng; không gồm tên việc, ghi chú, số dư hay trạng thái cây riêng tư.</string>

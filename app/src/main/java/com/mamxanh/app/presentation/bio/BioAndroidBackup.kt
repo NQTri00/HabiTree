@@ -131,6 +131,7 @@ internal fun BindAndroidBackup(
                                 trees = backup.count("trees").toString(),
                                 occurrences = backup.count("occurrences").toString(),
                                 created = created,
+                                version = backup.schema.toString(),
                             )
                         ui.busy = false
                         backupModel.dispatch(BackupAction.ImportInspected(summary))

@@ -194,6 +194,8 @@ internal fun BioModalMessages(
                     stringResource(
                         R.string.copy_luot_hoan_thanh_02de15,
                     ) to (summary?.occurrences ?: "0"),
+                    stringResource(R.string.backup_version) to
+                        (summary?.version?.takeIf { it.isNotBlank() } ?: stringResource(R.string.copy_khong_ro_8af7da)),
                     stringResource(R.string.copy_tao_luc_b1415f) to
                         (
                             summary

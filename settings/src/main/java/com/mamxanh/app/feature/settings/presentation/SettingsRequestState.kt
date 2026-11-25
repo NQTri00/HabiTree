@@ -13,6 +13,7 @@ data class BackupImportSummary(
     val trees: String,
     val occurrences: String,
     val created: String,
+    val version: String = "",
 )
 
 enum class NotificationPermissionResult {
@@ -52,6 +53,7 @@ class SettingsRequestState {
                 put("backupTrees", it.trees)
                 put("backupOccurrences", it.occurrences)
                 put("backupCreated", it.created)
+                put("backupVersion", it.version)
             }
         }
 
@@ -67,8 +69,9 @@ class SettingsRequestState {
         val trees = other.remove("backupTrees")
         val occurrences = other.remove("backupOccurrences")
         val created = other.remove("backupCreated")
-        if (listOf(tasks, trees, occurrences, created).any { it != null }) {
-            backupImport = BackupImportSummary(tasks ?: "0", trees ?: "0", occurrences ?: "0", created.orEmpty())
+        val version = other.remove("backupVersion")
+        if (listOf(tasks, trees, occurrences, created, version).any { it != null }) {
+            backupImport = BackupImportSummary(tasks ?: "0", trees ?: "0", occurrences ?: "0", created.orEmpty(), version.orEmpty())
         }
         return other
     }
