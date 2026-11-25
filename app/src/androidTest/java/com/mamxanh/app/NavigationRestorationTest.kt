@@ -23,6 +23,7 @@ import com.mamxanh.shared.localization.AppText
 import com.mamxanh.shared.localization.TextKey
 import com.mamxanh.shared.model.EngagementAction
 import com.mamxanh.shared.model.TaskConfig
+import com.mamxanh.shared.model.Tree
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Assume.assumeTrue
@@ -54,31 +55,7 @@ class NavigationRestorationTest {
     @Test
     fun homeTreePickerChangesTheHeroAndPersistsAcrossActivityLaunches() {
         check(context.packageName != "com.mamxanh.app")
-        val trees =
-            GardenDatabase(context).use { database ->
-                val storage = GameStorage(database)
-                if (!storage.engagementSnapshot().onboarded) {
-                    assertTrue(
-                        storage.engage(EngagementAction.Onboard("succulent", "", emptyList(), "home-picker-onboard", skip = true)).success,
-                    )
-                }
-                val initial = storage.garden()
-                val names = initial.trees.map { AppText.plantName(it.speciesId, it.name) }.toMutableSet()
-                val emptyPlots = initial.plots.filter { it.isUnlocked && it.treeId == null }.asReversed()
-                emptyPlots.take((2 - names.size).coerceAtLeast(0)).forEach { plot ->
-                    val garden = storage.garden()
-                    if (garden.inventory.getOrDefault("succulent", 0) == 0) {
-                        SQLiteDatabase
-                            .openDatabase(context.getDatabasePath("mam_xanh.db").path, null, SQLiteDatabase.OPEN_READWRITE)
-                            .use { it.execSQL("INSERT OR REPLACE INTO inventory(item,quantity) VALUES('succulent',1)") }
-                    }
-                    val name = "Home picker fixture ${plot.id}"
-                    assertTrue(storage.plant("succulent", name, plot.id))
-                    names.add(name)
-                }
-                check(names.size >= 2) { "Home picker needs two distinguishable trees" }
-                names.toList()
-            }
+        val trees = prepareSelectableTrees().map { AppText.plantName(it.speciesId, it.name) }
         val launch = Intent(context, MainActivity::class.java)
         val change = AppText.text(TextKey.CopyDoiCayFada9c)
         val picker = AppText.text(TextKey.CopyCayTrenTrangChu76c8b5)
@@ -105,6 +82,88 @@ class NavigationRestorationTest {
             awaitLabel(change)
             awaitLabel(selectedName)
         }
+    }
+
+    @Test
+    fun shopBuysAndEquipsTheAccessoryOnTheSelectedTreeAfterRecreation() {
+        check(context.packageName != "com.mamxanh.app")
+        val trees = prepareSelectableTrees()
+        val sku = "tree_ribbon"
+        val openingBalance = 1_000
+        editGameFixture("UPDATE meta SET v=? WHERE k='coins'", arrayOf(openingBalance.toString()))
+        val product = AppText.text(TextKey.CopyNoDiuDangE01645)
+        val accessories = AppText.text(TextKey.CopyPhuKien0852d7)
+        val chooseTree = AppText.text(TextKey.CopyDeoChoCayAfc821)
+        val equip = AppText.text(TextKey.CopyMuaDeoD9c74d)
+        val equipped = AppText.text(TextKey.CopyDangDung275ca2)
+        val target =
+            ActivityScenario.launch<MainActivity>(Intent(context, MainActivity::class.java)).use { scenario ->
+                clickLabel(AppText.text(TextKey.CopyTiemF1ee00))
+                clickLabel(accessories)
+                revealLabel(product)
+                clickLabel(product)
+                revealLabel(chooseTree)
+                val initiallyShown = awaitLabel(chooseTree, clickable = true)
+                val selected =
+                    trees.first { tree ->
+                        val name = AppText.plantName(tree.speciesId, tree.name)
+                        initiallyShown.findLabel(name) == null
+                    }
+                val name = AppText.plantName(selected.speciesId, selected.name)
+                clickLabel(chooseTree)
+                clickLabel(name)
+                awaitLabel(chooseTree, clickable = true)
+                awaitLabel(name)
+                scenario.recreate()
+                revealLabel(chooseTree)
+                awaitLabel(name)
+                revealLabel(equip)
+                clickLabel(equip)
+                awaitLabelGone(equip)
+                revealLabel(product)
+                awaitLabel(equipped)
+                selected
+            }
+        GardenDatabase(context).use { database ->
+            val stored = GameStorage(database).livingGarden()
+            assertEquals(1, stored.owned[sku])
+            assertEquals(target.id, stored.placements.single { it.sku == sku }.treeId)
+            assertEquals(openingBalance - 150, stored.coins)
+        }
+    }
+
+    private fun prepareSelectableTrees(): List<Tree> =
+        GardenDatabase(context).use { database ->
+            val storage = GameStorage(database)
+            if (!storage.engagementSnapshot().onboarded) {
+                assertTrue(
+                    storage.engage(EngagementAction.Onboard("succulent", "", emptyList(), "picker-onboard", skip = true)).success,
+                )
+            }
+            val initial = storage.garden()
+            val livingNames = initial.trees.filter { it.status.alive }.map { AppText.plantName(it.speciesId, it.name) }.toSet()
+            val emptyPlots = initial.plots.filter { it.isUnlocked && it.treeId == null }.asReversed()
+            emptyPlots.take((2 - livingNames.size).coerceAtLeast(0)).forEach { plot ->
+                if (storage.garden().inventory.getOrDefault("succulent", 0) == 0) {
+                    editGameFixture("INSERT OR REPLACE INTO inventory(item,quantity) VALUES('succulent',1)")
+                }
+                assertTrue(storage.plant("succulent", "Picker fixture tree ${plot.id}", plot.id))
+            }
+            storage
+                .garden()
+                .trees
+                .filter { it.status.alive }
+                .distinctBy { AppText.plantName(it.speciesId, it.name) }
+                .also { check(it.size >= 2) { "Tree pickers need two distinguishable living trees" } }
+        }
+
+    private fun editGameFixture(
+        sql: String,
+        args: Array<String> = emptyArray(),
+    ) {
+        SQLiteDatabase
+            .openDatabase(context.getDatabasePath("mam_xanh.db").path, null, SQLiteDatabase.OPEN_READWRITE)
+            .use { database -> database.execSQL(sql, args) }
     }
 
     @Test
