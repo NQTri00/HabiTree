@@ -150,6 +150,8 @@ The completed build and test entries below describe historical checkpoints. The 
 - The Compose artifact contains 519 distinct PNGs. Of these, 516 match 86b356c byte for byte. The changed default, English and Vietnamese backup confirmations show the version row and both actions inside the phone. The Vietnamese panel is about 10 px shorter than its older web capture, with different fixture values. The galleries preserve the archived web references. [Compose run](https://github.com/NQTri00/HabiTree/actions/runs/45700358576)
 - The published evidence includes the directory tree, all 46 owner pages and a machine-readable index. Coverage matched all 1,676 tracked paths. GitHub returned matching SHA-256 digests for the debug APK and evidence ZIP. [Verified release](https://github.com/NQTri00/HabiTree/releases/tag/android-migration-verified-e857ac75)
 
+- The isolated app and Catalog built from the temporary Maven repository. All 790 Maven files matched their SHA-256 manifest for this revision. [Standalone Maven run](https://github.com/NQTri00/HabiTree/actions/runs/45700358576)
+
 ## Guide-to-check mapping
 
 The route inventory starts with the 22 IDs in `BioRoute`. Home owns `home` and `onboard`. Tasks owns `tasks`, `task`, `task-new`, `focus`, `templates`, `rest`, and `insights`. Garden owns `garden`. Catalog owns `encyclopedia` and `species`. Statistics owns `stats`, `review`, `achievements`, and `timeline`. Shop, Inventory, and Tree own their namesake IDs. Settings owns `settings` and `data`. The shell owns `more`. The registry test covers key and renderer registration. V01 and V02 track the broader visual scenario inventory and comparisons.
