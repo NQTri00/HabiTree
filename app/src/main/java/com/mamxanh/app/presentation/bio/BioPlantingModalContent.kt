@@ -166,9 +166,10 @@ internal fun BioPlantBody(
 private fun BioTreePickerBodyPreview() {
     val context = LocalContext.current
     val world = remember(context) { BioWorld.reference(context) }
+    val choices = world.previewHomeTreeChoices()
     BioTheme(world, "1") {
         Column {
-            BioTreePickerBody(world.previewHomeTreeChoices(), "", loading = false, onPlant = {}) {}
+            BioTreePickerBody(choices, choices.firstOrNull()?.id.orEmpty(), loading = false, onPlant = {}) {}
         }
     }
 }
