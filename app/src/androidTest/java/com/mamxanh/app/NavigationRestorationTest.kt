@@ -226,7 +226,11 @@ class NavigationRestorationTest {
             }
         val archive = AppText.text(TextKey.ActionArchive)
         val confirmation = AppText.text(TextKey.CopyLuuTruViec50123f)
-        ActivityScenario.launch<MainActivity>(reminderIntent(taskId)).use { scenario ->
+        ActivityScenario.launch<MainActivity>(Intent(context, MainActivity::class.java)).use { scenario ->
+            clickLabel(AppText.text(TextKey.CopyViec818768))
+            revealLabel(title)
+            clickLabel(title)
+            awaitLabel(AppText.text(TextKey.CopyLichLichSu7153b3))
             awaitLabel(title)
             revealLabel(archive)
             clickLabel(archive)
