@@ -210,6 +210,41 @@ class NavigationRestorationTest {
     }
 
     @Test
+    fun archiveConfirmationPersistsTheTaskLifecycle() {
+        check(context.packageName != "com.mamxanh.app")
+        val title = "MVI archive test task"
+        val taskId =
+            GardenDatabase(context).use { database ->
+                val storage = GameStorage(database)
+                if (!storage.engagementSnapshot().onboarded) {
+                    assertTrue(
+                        storage.engage(EngagementAction.Onboard("succulent", "", emptyList(), "archive-onboard", skip = true)).success,
+                    )
+                }
+                assertTrue(storage.saveTask(null, TaskConfig(title = title)).success)
+                storage.tasks().first { it.title == title }.id
+            }
+        val archive = AppText.text(TextKey.ActionArchive)
+        val confirmation = AppText.text(TextKey.CopyLuuTruViec50123f)
+        ActivityScenario.launch<MainActivity>(reminderIntent(taskId)).use { scenario ->
+            awaitLabel(title)
+            revealLabel(archive)
+            clickLabel(archive)
+            awaitLabel(confirmation)
+            val node = checkNotNull(appRoot()?.findLabel(archive, clickable = true, last = true))
+            assertTrue(node.performAction(AccessibilityNodeInfo.ACTION_CLICK))
+            awaitLabelGone(confirmation)
+            awaitLabel(AppText.text(TextKey.CopyViecHomNay22a0a4))
+            scenario.recreate()
+            clickLabel(AppText.text(TextKey.CopyLuuTru7e7c5f))
+            awaitLabel(title)
+        }
+        GardenDatabase(context).use { database ->
+            assertEquals("ARCHIVED", GameStorage(database).tasks().single { it.id == taskId }.lifecycle)
+        }
+    }
+
+    @Test
     fun focusPresetUpdatesTheTimerAndSurvivesActivityRecreation() {
         check(context.packageName != "com.mamxanh.app") { "Use the isolated verification app." }
         GardenDatabase(context).use { database ->
@@ -438,6 +473,7 @@ class NavigationRestorationTest {
     private fun AccessibilityNodeInfo.findLabel(
         label: String,
         clickable: Boolean = false,
+        last: Boolean = false,
     ): AccessibilityNodeInfo? {
         if (isVisibleToUser && (text?.toString() == label || contentDescription?.toString() == label)) {
             if (!clickable) return this
@@ -445,8 +481,9 @@ class NavigationRestorationTest {
             while (target != null && !target.isClickable) target = target.parent
             if (target != null && target.isEnabled) return target
         }
-        for (index in 0 until childCount) {
-            getChild(index)?.findLabel(label, clickable)?.let { return it }
+        val children = 0 until childCount
+        for (index in if (last) children.reversed() else children) {
+            getChild(index)?.findLabel(label, clickable, last)?.let { return it }
         }
         return null
     }
