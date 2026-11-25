@@ -238,13 +238,14 @@ class NavigationRestorationTest {
             val node = checkNotNull(appRoot()?.findLabel(archive, clickable = true, last = true))
             assertTrue(node.performAction(AccessibilityNodeInfo.ACTION_CLICK))
             awaitLabelGone(confirmation)
-            awaitLabel(AppText.text(TextKey.CopyViecHomNay22a0a4))
+            GardenDatabase(context).use { database ->
+                assertEquals("ARCHIVED", GameStorage(database).tasks().single { it.id == taskId }.lifecycle)
+            }
             scenario.recreate()
-            clickLabel(AppText.text(TextKey.CopyLuuTru7e7c5f))
-            awaitLabel(title)
-        }
-        GardenDatabase(context).use { database ->
-            assertEquals("ARCHIVED", GameStorage(database).tasks().single { it.id == taskId }.lifecycle)
+            val archived = AppText.text(TextKey.CopyLuuTru7e7c5f)
+            revealLabel(archived, AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD)
+            clickLabel(archived)
+            revealLabel(title)
         }
     }
 
@@ -452,8 +453,10 @@ class NavigationRestorationTest {
         error("Timed out waiting for system permission button: $id")
     }
 
-    private fun revealLabel(label: String) {
-        val action = AccessibilityNodeInfo.ACTION_SCROLL_FORWARD
+    private fun revealLabel(
+        label: String,
+        action: Int = AccessibilityNodeInfo.ACTION_SCROLL_FORWARD,
+    ) {
         val deadline = SystemClock.uptimeMillis() + 20_000
         while (SystemClock.uptimeMillis() < deadline) {
             val root = appRoot()
