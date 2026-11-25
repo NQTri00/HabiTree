@@ -125,6 +125,7 @@ import com.mamxanh.core.ui.R
                         },
                         RoundedCornerShape(AppDimensions.Dp11),
                     ).semantics {
+                        contentDescription = label
                         this.selected = id == selected
                     }.clickable(role = Role.Tab) { onSelect(id) }
                     .padding(horizontal = AppDimensions.Dp6, vertical = AppDimensions.Dp9),
