@@ -53,6 +53,41 @@ class NavigationRestorationTest {
     private val context = instrumentation.targetContext
 
     @Test
+    fun onboardingResumesAtTheSavedStepAndContinuesToHome() {
+        check(context.packageName != "com.mamxanh.app")
+        GardenDatabase(context).use { GameStorage(it).engagementSnapshot() }
+        editGameFixture("INSERT OR REPLACE INTO meta(k,v) VALUES('onboarded','0')")
+        val launch = Intent(context, MainActivity::class.java)
+        val next = AppText.text(TextKey.CopyTiepTuc87a7ae)
+        val seedStep = AppText.text(TextKey.CopyHatDauTien8b8f9a)
+        val reasonStep = AppText.text(TextKey.CopyDieuBanMuonCham4bb700)
+        val templateStep = AppText.text(TextKey.CopyChon25ViecE8b193)
+        val reviewStep = AppText.text(TextKey.CopySanSangNayMam8ad6e8)
+        val home = AppText.text(TextKey.CopyHomNayE6747a)
+        ActivityScenario.launch<MainActivity>(launch).use { scenario ->
+            awaitLabel(AppText.text(TextKey.CopyMotViecNhoMotMamXanh225e73))
+            clickLabel(next)
+            awaitLabel(seedStep)
+            clickLabel(next)
+            awaitLabel(reasonStep)
+            scenario.recreate()
+            awaitLabel(reasonStep)
+            clickLabel(next)
+            awaitLabel(templateStep)
+            clickLabel(next)
+            awaitLabel(reviewStep)
+            clickLabel(AppText.text(TextKey.CopyVaoVuonB6df0e))
+            awaitLabel(home)
+            awaitLabelGone(reviewStep)
+        }
+        GardenDatabase(context).use { assertTrue(GameStorage(it).engagementSnapshot().onboarded) }
+        ActivityScenario.launch<MainActivity>(launch).use {
+            awaitLabel(home)
+            awaitLabelGone(AppText.text(TextKey.CopyMotViecNhoMotMamXanh225e73))
+        }
+    }
+
+    @Test
     fun homeTreePickerChangesTheHeroAndPersistsAcrossActivityLaunches() {
         check(context.packageName != "com.mamxanh.app")
         val trees = prepareSelectableTrees().map { AppText.plantName(it.speciesId, it.name) }
