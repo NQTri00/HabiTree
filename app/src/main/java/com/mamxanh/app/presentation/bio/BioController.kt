@@ -61,6 +61,18 @@ import org.json.JSONObject
         show("seed-picker")
     }
 
+    fun openAccessory(
+        sku: String,
+        target: String,
+    ) {
+        if (world?.native == true) {
+            accessoryTargetArgument = target.ifBlank { accessoryTargetArgument.ifBlank { homeTreeState.selectedId } }
+        } else {
+            shopSelection.targetTree = target.ifBlank { shopSelection.targetTree.ifBlank { homeTreeState.selectedId } }
+        }
+        show("accessory", sku)
+    }
+
     fun resetShopContext() {
         preferredPlantingPlot = null
         accessoryTargetArgument = ""
@@ -338,14 +350,7 @@ import org.json.JSONObject
                 go("shop", param)
             }
             "purchase" -> show("purchase", id)
-            "accessory" -> {
-                if (world?.native == true) {
-                    accessoryTargetArgument = value.ifBlank { accessoryTargetArgument.ifBlank { homeTreeState.selectedId } }
-                } else {
-                    shopSelection.targetTree = value.ifBlank { shopSelection.targetTree.ifBlank { homeTreeState.selectedId } }
-                }
-                show("accessory", id)
-            }
+            "accessory" -> openAccessory(id, value)
             "plant" -> {
                 if (world?.native == true) {
                     preferredPlantingPlot = value.toIntOrNull() ?: preferredPlantingPlot

@@ -37,6 +37,10 @@ class ShopViewModel(
     override fun handleAction(action: ShopAction) {
         val intent = action
         when (intent) {
+            is ShopAction.SelectProduct -> {
+                if (state.value.isPurchasing) return
+                viewModelScope.launch { emitEvent(ShopEvent.ShowProduct(intent.id, intent.accessoryTarget)) }
+            }
             is ShopAction.OpenPurchase -> {
                 if (state.value.purchaseId != intent.id) updatePurchase(intent.id, 1)
             }

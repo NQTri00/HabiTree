@@ -13,6 +13,11 @@ sealed interface ShopAction : UiAction {
         val id: String,
     ) : ShopAction
 
+    data class SelectProduct(
+        val id: String,
+        val accessoryTarget: String?,
+    ) : ShopAction
+
     data class SetQuantity(
         val quantity: Int,
     ) : ShopAction

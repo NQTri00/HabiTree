@@ -41,6 +41,11 @@ internal fun bindLiveShop(
         lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
             model.events.collect { event ->
                 when (event) {
+                    is ShopEvent.ShowProduct -> {
+                        if (ui.route != "shop" || ui.modal.isNotBlank()) return@collect
+                        val target = event.accessoryTarget
+                        if (target == null) ui.show("purchase", event.id) else ui.openAccessory(event.id, target)
+                    }
                     is ShopEvent.PurchaseFinished -> {
                         if (ui.modal == "purchase" && ui.modalId == event.id) {
                             if (event.success) {
@@ -67,6 +72,11 @@ internal class LiveShop(
     private val dispatch: (ShopAction) -> Unit,
 ) {
     fun selectTab(tab: String) = dispatch(ShopAction.SelectTab(tab))
+
+    fun selectProduct(
+        id: String,
+        accessoryTarget: String?,
+    ) = dispatch(ShopAction.SelectProduct(id, accessoryTarget))
 
     fun quantity(id: String): Int = if (state.purchaseId == id) state.quantity else 1
 

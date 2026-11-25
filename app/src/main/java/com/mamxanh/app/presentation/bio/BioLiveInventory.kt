@@ -39,7 +39,7 @@ internal fun liveInventoryRouteContent(
                     }
                     InventoryEvent.FertilizerHelp -> ui.show("fertilizer-help")
                     is InventoryEvent.Plant -> ui.show("plant", event.seed)
-                    is InventoryEvent.Accessory -> ui.act("accessory:" + event.sku + ":" + event.target)
+                    is InventoryEvent.Accessory -> ui.openAccessory(event.sku, event.target)
                     is InventoryEvent.Feedback -> {
                         ui.message =
                             event.message.ifBlank {

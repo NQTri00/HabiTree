@@ -110,14 +110,17 @@ internal fun shopRouteContent(
         onShop = { ui.go("shop") },
         item = { index, modifier ->
             val item = items[index]
-            val target = if (live == null) ui.shopSelection.targetTree else argument.ifBlank { ui.accessoryTargetArgument }
+            val preferredTarget = if (live == null) ui.shopSelection.targetTree else argument.ifBlank { ui.accessoryTargetArgument }
+            val target = preferredTarget.ifBlank { ui.homeTreeState.selectedId }
+            val accessoryTarget = target.takeIf { item.s("category") == "TREE" }
             val wallet = live?.state?.wallet
             BioProduct(
                 world,
                 ui,
                 item,
                 modifier,
-                target = target.ifBlank { ui.homeTreeState.selectedId },
+                target = target,
+                onProductClick = live?.let { binding -> { binding.selectProduct(item.s("id"), accessoryTarget) } },
                 ownedQuantity = if (wallet == null || tab == "accessories") null else wallet.inventory[item.s("id")] ?: 0,
                 equippedCan = wallet?.equippedCan ?: world.state.s("equipped"),
                 accessoryCatalog = accessoryCatalog,
