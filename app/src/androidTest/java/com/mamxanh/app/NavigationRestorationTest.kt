@@ -530,6 +530,7 @@ class NavigationRestorationTest {
 
             scenario.recreate()
             awaitLabel("15:00")
+
             fun setDuration(minutes: String) {
                 val setText = AccessibilityNodeInfo.ACTION_SET_TEXT
                 val editor = checkNotNull(appRoot()?.findAction(setText))
@@ -540,6 +541,7 @@ class NavigationRestorationTest {
                     ),
                 )
             }
+
             setDuration("2")
             val rangeError = AppText.text(TextKey.CopyNhapSoPhutTu51202b514d)
             awaitLabel(rangeError)
