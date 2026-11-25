@@ -39,33 +39,33 @@ The default manifest is `docs/bio-parity/preview-jobs.json`. The English and Vie
 
 ## Popups
 
-`BioApplication` renders `BioModal` using `BioController.modal` and `modalId`. Unless noted below, these two fields restore the current popup and its argument. `BioModal` resolves display state from the world snapshot and controller selections. `BioModalFooter` handles common confirmation callbacks. Command outcomes use the host and controller result path described above.
+`BioApplication` renders `BioModal` using `BioController.modal` and `modalId`. Unless noted below, these two fields restore the current popup and its argument. The live modal reads state from the feature bindings. The controller and reference snapshot supply fixture values for standalone previews. `BioModalFooter` invokes the confirmation callbacks supplied by the modal.
 
 | ID | Owner | Trigger, popup state and result |
 | --- | --- | --- |
-| tree-picker | Home | BioController.act handles bio-picker. The modal lists trees, updates homeTree and closes. |
-| seed-picker | Garden | BioController.act handles bio-seed-picker. The modal uses empty plots and seed availability, retains plot selection and opens the planting or Shop path. |
-| purchase | Shop | BioController.act handles purchase. The modal and footer use price, balance, owned status, quantity and pendingAction. Footer sends buy, buy-equip or equip. |
-| accessory | Shop | BioController.act handles accessory. The modal resolves owned status, eligible living trees and saved targetTree. Submits purchase or equip for the selected tree. |
-| plant | Garden | BioController.act handles plant from Shop or Inventory. BioModal saves plantName and selectedPlot locally by type and ID. The footer uses the planting or buy-and-plant path. |
-| water-all | Garden | Garden adapter opens confirmation. Footer sends confirm-water-all. |
-| unlock | Garden | Garden adapter passes the plot key as modalId. Footer uses wallet and unlocked plot count and sends confirm-unlock. |
+| tree-picker | Home | Home emits `ChooseTree`; the Tree route can open the same picker through its Home binding. The modal lists dashboard trees and dispatches `HomeAction.SelectTree`. Home saves the preference and the active binding closes the modal on the selection event. |
+| seed-picker | Garden | The shell carries the originating plot argument. The modal lists counts from the planting binding and opens planting for the chosen seed. |
+| purchase | Shop | `LiveShop` supplies wallet, per-product quantity and the specific pending action. It dispatches buy, buy-and-plant, buy-and-equip or equip through `ShopViewModel`. |
+| accessory | Tree, entered from Shop or Inventory | `AccessoryViewModel` reads ownership, wallet and living trees from `AccessoryRepository`, restores the selected target by SKU, and dispatches buy or equip. A direct purchase and placement commit in one database transaction. `BioLiveAccessory` closes on success and displays failures in the dialog. |
+| plant | Garden | `PlantingViewModel` loads eligible plots, restores the seed, name and selected plot, and dispatches the planting command through Garden. |
+| water-all | Garden | The Garden adapter opens confirmation. `BioModal` dispatches `GardenIntent.WaterAll` with an operation ID. |
+| unlock | Garden | The Garden adapter passes the plot ID as `modalId`. `GardenViewModel` supplies eligibility and receives `GardenIntent.UnlockPlot`. |
 | fertilizer-help | Tree | Tree care opens guidance. Footer navigates to Garden. |
-| remove | Tree | Tree adapter passes tree ID. Footer sends confirm-remove. |
-| sell | Tree | Tree adapter passes tree ID. Footer sends confirm-sell. |
-| archive | Tasks | BioForms task detail passes task ID. Footer sends confirm-archive. |
+| remove | Tree | The modal uses the Tree ViewModel's quote for the route's tree ID and dispatches `TreeAction.Dispose` with selling disabled. |
+| sell | Tree | The modal uses the Tree ViewModel's selling quote and dispatches `TreeAction.Dispose` with selling enabled. |
+| archive | Tasks | The task detail supplies its ID. The modal dispatches `TaskDetailAction.Archive` to the matching ViewModel. |
 | discard | Tasks | BioController.go or back opens this for a dirty form. Footer invokes discard using the saved pending navigation. |
-| ticket | Tasks engagement | BioSecondaryScreens.restRouteContent opens the popup. Footer checks balance and sends confirm-ticket. |
-| adjust | Tasks engagement | BioSecondaryScreens.insightsRouteContent passes task ID. Footer sends confirm-adjust. |
+| ticket | Tasks engagement | The Rest binding opens confirmation. The modal uses Rest's eligibility and dispatches `RestAction.BuyTicket`. |
+| adjust | Tasks engagement | The Insights binding passes the task ID. The modal dispatches `InsightsAction.ApplyAdjustment` using that ID. |
 | permission | Settings | BioForms.settingsRouteContent opens the popup. Footer requests native permission through the host or shows permission-choice in the fixture path. |
 | permission-choice | Settings | BioModalFooter opens the permission choice from the non-native path. |
 | permission-settings | Settings | BioNativeHost opens this when permission requires system Settings. The host consumes the result of the system action. |
-| clear | Settings | BioForms.backupRouteContent opens the first destructive prompt. Footer opens clear-final. |
-| clear-final | Settings | BioModalFooter opens the final prompt. Confirmation sends clear-data. |
-| recover | Settings | BioForms.backupRouteContent opens the recovery prompt. Confirmation sends recover-data. |
-| confirm-import | Settings | BioNativeHost opens this after reading the selected document. Footer sends confirm-import. Pending document content lives in memory and BioController.Saver drops the popup after restoration. |
+| clear | Settings | `BackupViewModel` emits the first clear prompt. The footer dispatches `BackupAction.ClearNext`. |
+| clear-final | Settings | `BackupViewModel` emits the final prompt. Confirmation dispatches `BackupAction.Confirm(Clear)`; the host performs the Android storage operation. |
+| recover | Settings | `BackupViewModel` emits recovery confirmation and validates the pending operation before the host invokes the recovery file adapter. |
+| confirm-import | Settings | The host inspects the document and sends its summary to `BackupViewModel`. The ViewModel requests confirmation and dispatches restore to the host after the user chooses Replace. Document bytes stay in memory, and recreation requires choosing the document again. |
 | license | Settings | BioForms.backupRouteContent opens the license content. Dismisses locally. |
-| focus-end | Tasks engagement | BioActionDock.BioFocusActions opens the end-session popup. Footer sends confirm-focus-end. |
+| focus-end | Tasks engagement | The Focus action dock opens confirmation. The modal dispatches `FocusAction.End` and reads busy state from the Focus ViewModel. |
 
 ## Per-entry preview index
 
