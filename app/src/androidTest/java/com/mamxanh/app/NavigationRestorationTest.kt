@@ -185,9 +185,7 @@ class NavigationRestorationTest {
             val livingNames = initial.trees.filter { it.status.alive }.map { AppText.plantName(it.speciesId, it.name) }.toSet()
             val emptyPlots = initial.plots.filter { it.isUnlocked && it.treeId == null }.asReversed()
             emptyPlots.take((2 - livingNames.size).coerceAtLeast(0)).forEach { plot ->
-                if (storage.garden().inventory.getOrDefault("succulent", 0) == 0) {
-                    editGameFixture("INSERT OR REPLACE INTO inventory(item,quantity) VALUES('succulent',1)")
-                }
+                ensureFixtureSeed(storage)
                 assertTrue(storage.plant("succulent", "Picker fixture tree ${plot.id}", plot.id))
             }
             storage
@@ -197,6 +195,12 @@ class NavigationRestorationTest {
                 .distinctBy { AppText.plantName(it.speciesId, it.name) }
                 .also { check(it.size >= 2) { "Tree pickers need two distinguishable living trees" } }
         }
+
+    private fun ensureFixtureSeed(storage: GameStorage) {
+        if (storage.garden().inventory.getOrDefault("succulent", 0) == 0) {
+            editGameFixture("INSERT OR REPLACE INTO inventory(item,quantity) VALUES('succulent',1)")
+        }
+    }
 
     private fun editGameFixture(
         sql: String,
@@ -232,7 +236,8 @@ class NavigationRestorationTest {
                     )
                 }
                 if (storage.garden().trees.none { it.name == TREE_NAME }) {
-                    assertTrue(storage.plant("succulent", TREE_NAME, plotId = 1))
+                    ensureFixtureSeed(storage)
+                    assertTrue("Reminder fixture requires an empty unlocked plot", storage.plant("succulent", TREE_NAME))
                 }
                 storage.tasks().single { it.title == TASK_TITLE }.id to
                     storage
@@ -760,8 +765,13 @@ class NavigationRestorationTest {
             ?.takeIf { it.packageName?.toString() == context.packageName }
 
     private fun clickLabel(label: String) {
-        val target = awaitLabel(label, clickable = true)
-        assertTrue("Android rejected click for $label", target.performAction(AccessibilityNodeInfo.ACTION_CLICK))
+        repeat(3) {
+            val target = awaitLabel(label, clickable = true)
+            if (target.performAction(AccessibilityNodeInfo.ACTION_CLICK)) return
+            instrumentation.waitForIdleSync()
+            SystemClock.sleep(100)
+        }
+        error("Android rejected click for $label after refreshing the accessibility node")
     }
 
     private fun clickSystemPermissionButton(id: String) {
