@@ -31,7 +31,13 @@ fun TaskListScreen(
             else -> stringResource(R.string.copy_viec_hom_nay_22a0a4)
         },
         stringResource(R.string.copy_tung_chut_mot_238966),
-        action = { BioIconButton("plus", { onAction(TaskListAction.Add) }) },
+        action = {
+            BioIconButton(
+                "plus",
+                { onAction(TaskListAction.Add) },
+                label = stringResource(R.string.copy_them_viec_c371c2),
+            )
+        },
     )
     if (filter == "today") {
         BioCard(Modifier.fillMaxWidth(), bp.soft, padding = AppSpacing.VALUE_18) {
