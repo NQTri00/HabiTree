@@ -9,6 +9,7 @@ import androidx.compose.ui.*
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.*
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import com.mamxanh.app.core.components.design.*
 import com.mamxanh.app.core.components.design.AppColors
@@ -276,5 +277,13 @@ import com.mamxanh.shared.localization.TextKey
                 footer()
             }
         }
+    }
+}
+
+@Preview(showBackground = true, widthDp = 375, heightDp = 812)
+@Composable
+private fun OnboardingScreenPreview() {
+    Column(Modifier.fillMaxSize()) {
+        OnboardingScreen(OnboardingDisplay(0, "succulent", "", 0, emptyList(), emptyMap(), 0, false), 20, {}, {})
     }
 }

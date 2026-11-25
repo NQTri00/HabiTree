@@ -66,13 +66,6 @@ internal fun BioWorld.statisticsDailyCompletions(): List<Int> {
     return List(7) { daily.optInt(it).coerceAtLeast(0) }
 }
 
-@Preview(name = "Application shell", widthDp = 375, heightDp = 812)
-@Preview(name = "Application shell landscape", widthDp = 844, heightDp = 390)
-@Composable
-private fun BioApplicationShellPreview() {
-    BioReferenceSurface("home")
-}
-
 @Preview(name = "Toast", widthDp = 335, showBackground = true)
 @Composable
 private fun BioToastPreview() {

@@ -9,6 +9,7 @@ import androidx.compose.runtime.saveable.rememberSaveableStateHolder
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mamxanh.app.core.components.design.*
@@ -272,4 +273,11 @@ import com.mamxanh.shared.localization.TextKey
         }
     }
     if (!inspection)BackHandler(enabled = ui.modal.isNotBlank() || ui.route != "home") { ui.back() }
+}
+
+@Preview(name = "Application shell", widthDp = 375, heightDp = 812)
+@Preview(name = "Application shell landscape", widthDp = 844, heightDp = 390)
+@Composable
+private fun BioApplicationShellPreview() {
+    BioReferenceSurface("home")
 }

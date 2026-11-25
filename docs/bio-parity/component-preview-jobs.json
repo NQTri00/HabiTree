@@ -12,7 +12,7 @@
   {
     "name": "home-tree-hero",
     "preview": "TreeHeroPreview",
-    "source": "tree/src/main/java/com/mamxanh/app/feature/tree/presentation/ui/detail/component/TreeHeroFixtures.kt"
+    "source": "tree/src/main/java/com/mamxanh/app/feature/tree/presentation/ui/detail/component/TreeHero.kt"
   },
   {
     "name": "home-next-task",
