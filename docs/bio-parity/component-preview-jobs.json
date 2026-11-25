@@ -12,7 +12,7 @@
   {
     "name": "home-tree-hero",
     "preview": "TreeHeroPreview",
-    "source": "tree/src/main/java/com/mamxanh/app/feature/tree/presentation/ui/detail/component/TreeHero.kt"
+    "source": "tree/src/main/java/com/mamxanh/app/feature/tree/presentation/ui/detail/component/TreeHeroFixtures.kt"
   },
   {
     "name": "home-next-task",
@@ -47,7 +47,7 @@
   {
     "name": "purchase-quantity",
     "preview": "BioPurchaseQuantityPreview",
-    "source": "app/src/main/java/com/mamxanh/app/presentation/bio/BioModal.kt"
+    "source": "app/src/main/java/com/mamxanh/app/presentation/bio/BioModalControls.kt"
   },
   {
     "name": "tasks-calendar",

@@ -22,9 +22,6 @@ import com.mamxanh.app.core.components.design.AppRadii
 import com.mamxanh.app.core.components.design.AppSpacing
 import com.mamxanh.app.core.components.design.AppTypography
 import com.mamxanh.app.feature.home.presentation.ui.home.HomeReward
-import com.mamxanh.app.feature.inventory.presentation.navigation.InventoryRouteContent
-import com.mamxanh.app.feature.shop.presentation.navigation.ShopRouteContent
-import com.mamxanh.app.feature.shop.presentation.ui.shop.ShopTreeContext
 import com.mamxanh.app.feature.tree.domain.repository.AccessorySnapshot
 import com.mamxanh.core.ui.R
 import com.mamxanh.shared.localization.AppText
@@ -242,139 +239,6 @@ internal fun BioReward(
     }
 }
 
-private fun catalogProducts(
-    world: BioWorld,
-    tab: String,
-): List<JSONObject> =
-    when (tab) {
-        "care" -> world.products
-        "accessories" -> world.accessories
-        else -> world.species
-    }
-
-internal fun inventoryRouteContent(
-    world: BioWorld,
-    ui: BioController,
-    live: LiveInventory? = null,
-    accessoryCatalog: AccessorySnapshot? = null,
-): InventoryRouteContent {
-    val tab = live?.state?.tab ?: ui.shopSelection.inventoryTab
-    val items =
-        catalogProducts(world, tab).filter {
-            live?.state?.contains(it.s("id")) ?: (world.inventoryCount(it.s("id"), accessory = tab == "accessories") > 0)
-        }
-    val openShop = {
-        if (live == null) {
-            ui.shopSelection.shopTab = tab
-            ui.go("shop")
-        } else {
-            live.openShop()
-        }
-    }
-    return InventoryRouteContent(
-        tab = tab,
-        itemCount = items.size,
-        onTab = { if (live == null) ui.shopSelection.inventoryTab = it else live.selectTab(it) },
-        onShop = openShop,
-        onBuy = openShop,
-        item = { index, modifier ->
-            val item = items[index]
-            val target =
-                (
-                    if (live ==
-                        null
-                    ) {
-                        ui.shopSelection.targetTree
-                    } else {
-                        ui.accessoryTargetArgument
-                    }
-                ).ifBlank { ui.homeTreeState.selectedId }
-            BioProduct(
-                world,
-                ui,
-                item,
-                modifier,
-                inventory = true,
-                target = target,
-                ownedQuantity = live?.state?.count(item.s("id")),
-                equippedCan = live?.state?.equippedCan ?: world.state.s("equipped"),
-                accessoryCatalog = accessoryCatalog,
-                onProductClick =
-                    live?.let { binding ->
-                        { binding.use(item.s("id"), target, item.b("permanent")) }
-                    },
-            )
-        },
-    )
-}
-
-internal fun shopRouteContent(
-    world: BioWorld,
-    ui: BioController,
-    argument: String,
-    live: LiveShop? = null,
-    accessoryCatalog: AccessorySnapshot? = null,
-): ShopRouteContent {
-    val tab = live?.state?.tab ?: ui.shopSelection.shopTab
-    val items = catalogProducts(world, tab)
-    val selected =
-        if (live == null) {
-            world.tree(argument)?.let { ShopTreeContext(it.s("id"), it.s("name"), it.s("species")) }
-        } else {
-            accessoryCatalog
-                ?.trees
-                ?.firstOrNull { it.id == argument }
-                ?.let { ShopTreeContext(it.id, it.name, it.speciesId) }
-        }
-    return ShopRouteContent(
-        tab = tab,
-        shoppingTree = selected,
-        itemCount = items.size,
-        onTab = {
-            if (live == null) ui.shopSelection.shopTab = it else live.selectTab(it)
-        },
-        onInventory = { ui.go("inventory") },
-        onTree = { ui.go("tree", it) },
-        onShop = { ui.go("shop") },
-        item = { index, modifier ->
-            val item = items[index]
-            val target = if (live == null) ui.shopSelection.targetTree else argument.ifBlank { ui.accessoryTargetArgument }
-            val wallet = live?.state?.wallet
-            BioProduct(
-                world,
-                ui,
-                item,
-                modifier,
-                target = target.ifBlank { ui.homeTreeState.selectedId },
-                ownedQuantity = if (wallet == null || tab == "accessories") null else wallet.inventory[item.s("id")] ?: 0,
-                equippedCan = wallet?.equippedCan ?: world.state.s("equipped"),
-                accessoryCatalog = accessoryCatalog,
-            )
-        },
-    )
-}
-
-@Composable internal fun ColumnScope.BioMore(ui: BioController) {
-    BioIntro(stringResource(R.string.copy_them_mot_chut_006e8b), stringResource(R.string.copy_theo_nhip_cua_ban_5a2ada))
-    Column(verticalArrangement = Arrangement.spacedBy(AppDimensions.Dp12)) {
-        listOf(
-            Triple("focus", "clock", stringResource(R.string.copy_tap_trung_964002)),
-            Triple("templates", "plus", stringResource(R.string.copy_viec_mau_535dc1)),
-            Triple("review", "calendar", stringResource(R.string.copy_nhin_lai_tuan_ff3f0c)),
-            Triple("achievements", "award", stringResource(R.string.copy_dau_moc_dffd66)),
-            Triple("timeline", "book", stringResource(R.string.copy_ky_niem_e3e113)),
-            Triple("insights", "chart", stringResource(R.string.copy_nhip_thoi_quen_1b8324)),
-            Triple("encyclopedia", "book", stringResource(R.string.copy_bach_thao_f2ed64)),
-            Triple("settings", "settings", stringResource(R.string.copy_tuy_chon_nhac_viec_a44d85)),
-            Triple("data", "download", stringResource(R.string.copy_du_lieu_ung_dung_9843b7)),
-        ).forEach { (r, i, t) ->
-            BioLink(t, i, {
-                ui.go(r)
-            })
-        }
-    }
-}
-
 @Preview(name = "Shop products", widthDp = 335, showBackground = true)
 @Composable
 private fun BioProductPreview() {
@@ -388,10 +252,4 @@ private fun BioProductPreview() {
             BioTaskRow(world.tasks.first(), ui)
         }
     }
-}
-
-@Preview(name = "More actions", widthDp = 335, heightDp = 720)
-@Composable
-private fun BioMoreComponentPreview() {
-    BioReferenceSurface("more")
 }

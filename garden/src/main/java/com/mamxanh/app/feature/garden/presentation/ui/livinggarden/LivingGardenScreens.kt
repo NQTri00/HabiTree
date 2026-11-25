@@ -1,6 +1,5 @@
 package com.mamxanh.app.feature.garden.presentation.ui.livinggarden
 
-import androidx.compose.animation.core.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.*
@@ -14,20 +13,16 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import com.mamxanh.app.core.components.*
 import com.mamxanh.app.core.components.components.*
 import com.mamxanh.app.core.components.design.AppColors
 import com.mamxanh.app.core.components.design.AppDimensions
-import com.mamxanh.app.core.components.design.AppOpacity
 import com.mamxanh.app.core.components.design.AppTypography
 import com.mamxanh.shared.localization.AppText
 import com.mamxanh.shared.localization.TextKey
 import com.mamxanh.shared.model.*
-import kotlin.math.sin
 
 internal fun newKey() =
     java.util.UUID
@@ -281,46 +276,5 @@ private fun ColumnScope.GardenStudio(
         GardenNavigationCard(AppText.text(TextKey.CopyTiemTrangTriFbd50e), { onOpen("SHOP", "") }, art = GardenArt.SHOP)
         GardenNavigationCard(AppText.text(TextKey.CopyTrangTriCuaBanDa2761), { onOpen("INVENTORY", "") }, art = GardenArt.SEED)
         GardenNavigationCard(AppText.text(TextKey.CopyDienMao14bd0c), { onOpen("APPEARANCE", "") }, art = GardenArt.LANTERN)
-    }
-}
-
-@Composable private fun GardenParticles(low: Boolean) {
-    val transition = rememberInfiniteTransition(label = "garden-ambience")
-    val fraction by transition.animateFloat(0f, 1f, infiniteRepeatable(tween(10000, easing = LinearEasing)), label = "petals")
-    Canvas(Modifier.fillMaxSize()) {
-        repeat(if (low)4 else 8) { i ->
-            drawCircle(
-                AppColors.SwatchFFE6E6AC.copy(alpha = AppOpacity.VALUE_45),
-                AppDimensions.Dp3.toPx(),
-                Offset(
-                    ((i * .173f + .12f) % 1f) * size.width + sin((fraction + i) * 6.28f) * AppDimensions.Dp12.toPx(),
-                    ((fraction + i * .137f) % 1f) * size.height,
-                ),
-            )
-        }
-    }
-}
-
-@Preview(name = "Garden appearance", widthDp = 375, heightDp = 812)
-@Composable
-private fun LivingGardenScreenPreview() {
-    MamXanhPreviewTheme {
-        LivingGardenScreen(
-            state = LivingGardenUiState(route = "APPEARANCE", loading = false),
-            onOpen = { _, _ -> },
-            onAct = {},
-            onSelect = {},
-            onPlace = { _, _ -> },
-            onRemove = {},
-            onUndo = {},
-            onSave = {},
-            onCancel = {},
-            onTree = {},
-            onSeedShop = {},
-            onMemories = {},
-            reducedMotion = true,
-            onReducedMotion = {},
-            active = true,
-        )
     }
 }

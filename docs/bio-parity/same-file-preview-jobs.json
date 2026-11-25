@@ -2,12 +2,12 @@
   {
     "name": "BioApplicationShellPreview",
     "preview": "BioApplicationShellPreview",
-    "source": "app/src/main/java/com/mamxanh/app/presentation/bio/BioApplication.kt"
+    "source": "app/src/main/java/com/mamxanh/app/presentation/bio/BioShellContent.kt"
   },
   {
     "name": "BioToastPreview",
     "preview": "BioToastPreview",
-    "source": "app/src/main/java/com/mamxanh/app/presentation/bio/BioApplication.kt"
+    "source": "app/src/main/java/com/mamxanh/app/presentation/bio/BioShellContent.kt"
   },
   {
     "name": "BioPurchaseBodyPreview",
@@ -27,12 +27,12 @@
   {
     "name": "BioTaskRowPreview",
     "preview": "BioTaskRowPreview",
-    "source": "app/src/main/java/com/mamxanh/app/presentation/bio/BioHomeTaskRoutes.kt"
+    "source": "app/src/main/java/com/mamxanh/app/presentation/bio/BioTaskListContent.kt"
   },
   {
     "name": "BioMoreComponentPreview",
     "preview": "BioMoreComponentPreview",
-    "source": "app/src/main/java/com/mamxanh/app/presentation/bio/BioMainScreens.kt"
+    "source": "app/src/main/java/com/mamxanh/app/presentation/bio/BioMoreContent.kt"
   },
   {
     "name": "BioProductPreview",
@@ -237,7 +237,7 @@
   {
     "name": "LivingGardenScreenPreview",
     "preview": "LivingGardenScreenPreview",
-    "source": "garden/src/main/java/com/mamxanh/app/feature/garden/presentation/ui/livinggarden/LivingGardenScreens.kt"
+    "source": "garden/src/main/java/com/mamxanh/app/feature/garden/presentation/ui/livinggarden/LivingGardenScreensFixtures.kt"
   },
   {
     "name": "PlotProgressPreview",
@@ -272,7 +272,7 @@
   {
     "name": "EngagementScreenPreview",
     "preview": "EngagementScreenPreview",
-    "source": "tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/ui/engagement/EngagementScreens.kt"
+    "source": "tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/ui/engagement/EngagementScreensFixtures.kt"
   },
   {
     "name": "TemplateContentPreview",

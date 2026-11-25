@@ -9,7 +9,6 @@ import androidx.compose.ui.*
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.*
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import com.mamxanh.app.core.components.design.*
 import com.mamxanh.app.core.components.design.AppColors
@@ -37,40 +36,7 @@ import com.mamxanh.shared.localization.TextKey
     templateRow: @Composable (Int) -> Unit,
 ) {
     val step = state.step
-    val footer: @Composable () -> Unit = {
-        if (step ==
-            3
-        ) {
-            Bt(
-                stringResource(R.string.copy_da_chon_0_5_chon_it_nhat_2_viec_e813b8, state.selectedCount),
-                Modifier.fillMaxWidth().padding(bottom = AppDimensions.Dp8),
-                size = AppTypography.SIZE_12,
-                tint = bp.muted,
-            )
-        }
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(AppDimensions.Dp10)) {
-            BioButton(
-                stringResource(R.string.copy_quay_lai_6d7935),
-                { onAction(OnboardingAction.Back) },
-                Modifier.weight(1f),
-                secondary = true,
-                enabled = step > 0,
-            )
-            BioButton(
-                if (step ==
-                    4
-                ) {
-                    stringResource(R.string.copy_vao_vuon_b6df0e)
-                } else {
-                    stringResource(R.string.copy_tiep_tuc_87a7ae)
-                },
-                { onAction(OnboardingAction.Next) },
-                Modifier.weight(1f),
-                enabled =
-                    step != 3 || state.selectedCount in 2..5,
-            )
-        }
-    }
+    val footer: @Composable () -> Unit = { OnboardingFooter(step, state.selectedCount, onAction) }
     val scroll = rememberScrollState()
     Box(Modifier.weight(1f).fillMaxWidth()) {
         Column(
@@ -310,13 +276,5 @@ import com.mamxanh.shared.localization.TextKey
                 footer()
             }
         }
-    }
-}
-
-@Preview(showBackground = true, widthDp = 375, heightDp = 812)
-@Composable
-private fun OnboardingScreenPreview() {
-    Column(Modifier.fillMaxSize()) {
-        OnboardingScreen(OnboardingDisplay(0, "succulent", "", 0, emptyList(), emptyMap(), 0, false), 20, {}, {})
     }
 }

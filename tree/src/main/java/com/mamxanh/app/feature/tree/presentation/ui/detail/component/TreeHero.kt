@@ -20,7 +20,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import com.mamxanh.app.core.components.design.*
 import com.mamxanh.core.ui.R
 
@@ -285,29 +284,4 @@ fun TreeHero(
             }
         }
     }
-}
-
-@Preview(name = "Home tree hero", widthDp = 335, showBackground = true)
-@Preview(name = "Home tree hero at large text", widthDp = 280, fontScale = 1.5f, showBackground = true)
-@Composable
-private fun TreeHeroPreview() {
-    TreeHero(
-        TreeHeroState(
-            species = "cherry",
-            name = "Spring cherry",
-            stageLabel = "Growing",
-            growthCaption = "Growing with you",
-            stage = 3,
-            stages = 9,
-            progress = 46,
-            home = true,
-            compact = false,
-            dead = false,
-            watered = true,
-            busy = false,
-            selectedOnHome = true,
-            canBrowseTrees = false,
-            accessoryIcon = null,
-        ),
-    ) {}
 }
