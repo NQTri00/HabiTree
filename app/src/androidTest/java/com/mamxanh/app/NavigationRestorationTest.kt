@@ -180,6 +180,10 @@ class NavigationRestorationTest {
             clickLabel(AppText.text(TextKey.CopyViec818768))
             clickLabel(addTask)
             awaitLabel(titleLabel)
+            val saveTask = AppText.text(TextKey.CopyLuuViec522a3d)
+            revealLabel(saveTask)
+            clickLabel(saveTask)
+            awaitLabel(AppText.text(TextKey.CopyNhapTenViec1100KyTu712679))
             val setText = AccessibilityNodeInfo.ACTION_SET_TEXT
             val editor = checkNotNull(appRoot()?.findAction(setText))
             assertTrue(
