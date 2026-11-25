@@ -102,9 +102,17 @@ class NavigationRestorationTest {
             awaitLabel(garden)
         }
 
-        ActivityScenario.launch<MainActivity>(reminderIntent(-entities.second)).use {
+        ActivityScenario.launch<MainActivity>(reminderIntent(-entities.second)).use { scenario ->
             awaitLabel(AppText.text(TextKey.CopyCayCuaBan64f9d7))
             awaitLabel(TREE_NAME)
+            val info = AppText.text(TextKey.CopyThongTin4aa16c)
+            val species = AppText.text(TextKey.CopyHoSoLoaiCfff22)
+            revealLabel(info)
+            clickLabel(info)
+            revealLabel(species)
+            scenario.recreate()
+            awaitLabel(AppText.text(TextKey.CopyCayCuaBan64f9d7))
+            revealLabel(species)
         }
     }
 
