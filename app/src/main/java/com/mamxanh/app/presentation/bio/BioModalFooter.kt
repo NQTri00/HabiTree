@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.*
 import com.mamxanh.app.core.components.design.*
 import com.mamxanh.app.core.components.design.AppDimensions
 import com.mamxanh.app.feature.shop.presentation.ui.shop.PurchaseAvailability
+import com.mamxanh.app.feature.shop.presentation.ui.shop.ShopPendingAction
 import com.mamxanh.core.ui.R
 
 @Composable
@@ -28,6 +29,30 @@ internal fun BioModalFooter(
     owned: Boolean,
     full: Boolean,
     dismiss: () -> Unit,
+    confirmArchive: (() -> Unit)? = null,
+    archiveBusy: Boolean = false,
+    confirmFocusEnd: (() -> Unit)? = null,
+    focusBusy: Boolean = false,
+    confirmGardenAction: (() -> Unit)? = null,
+    gardenBusy: Boolean = false,
+    canUnlock: Boolean? = null,
+    confirmDisposition: (() -> Unit)? = null,
+    treeBusy: Boolean = false,
+    confirmTicket: (() -> Unit)? = null,
+    restBusy: Boolean = false,
+    canBuyTicket: Boolean? = null,
+    confirmAdjustment: (() -> Unit)? = null,
+    insightsBusy: Boolean = false,
+    buy: (() -> Unit)? = null,
+    shopBuying: Boolean = false,
+    pendingPurchase: ShopPendingAction? = null,
+    buyAndEquip: (() -> Unit)? = null,
+    equip: (() -> Unit)? = null,
+    buyAndPlant: (() -> Unit)? = null,
+    quantity: Int = ui.shopSelection.quantity,
+    equippedCan: String = world.state.s("equipped"),
+    requestPermission: (() -> Unit)? = null,
+    backupAction: (() -> Unit)? = null,
 ) {
     HorizontalDivider(color = bp.line)
     Row(
@@ -40,33 +65,27 @@ internal fun BioModalFooter(
         horizontalArrangement = Arrangement.spacedBy(AppDimensions.Dp10),
     ) {
         if (type == "purchase" && seed) {
-            val buyLabel = if (ui.pendingAction == "buy") R.string.copy_dang_mua_c2f9ae else R.string.copy_mua_vao_tui_4cd4d5
+            val buyLabel =
+                if (pendingPurchase == ShopPendingAction.Buy ||
+                    ui.pendingAction == "buy"
+                ) {
+                    R.string.copy_dang_mua_c2f9ae
+                } else {
+                    R.string.copy_mua_vao_tui_4cd4d5
+                }
             BioButton(stringResource(buyLabel), {
-                ui.send(
-                    "buy",
-                    mapOf(
-                        "id" to id,
-                        "quantity" to ui.shopSelection.quantity.toString(),
-                    ),
-                )
+                if (buy != null) buy() else Unit
             }, Modifier.weight(1f), secondary = true, enabled = purchase.canSubmit)
             BioButton(
                 stringResource(
                     when {
-                        ui.pendingAction == "buy-plant" -> R.string.copy_dang_mua_c2f9ae
-                        ui.shopSelection.quantity > 1 -> R.string.copy_mua_gieo_1_690d4f
+                        pendingPurchase == ShopPendingAction.BuyAndPlant || ui.pendingAction == "buy-plant" -> R.string.copy_dang_mua_c2f9ae
+                        quantity > 1 -> R.string.copy_mua_gieo_1_690d4f
                         else -> R.string.copy_mua_gieo_754323
                     },
                 ),
                 {
-                    ui.send(
-                        "buy-plant",
-                        mapOf(
-                            "id" to id,
-                            "quantity" to ui.shopSelection.quantity.toString(),
-                            "plot" to ui.plantingSelection.plotKey,
-                        ),
-                    )
+                    if (buyAndPlant != null) buyAndPlant() else Unit
                 },
                 Modifier.weight(1f),
                 enabled =
@@ -85,16 +104,20 @@ internal fun BioModalFooter(
                 dismiss,
                 Modifier.weight(1f),
                 secondary = true,
-                enabled = !ui.busy,
+                enabled = !ui.busy && !shopBuying,
             )
             val label =
                 when (type) {
                     "purchase" ->
-                        if (ui.pendingAction == "buy" || ui.pendingAction == "buy-equip") {
+                        if (pendingPurchase == ShopPendingAction.Buy ||
+                            pendingPurchase == ShopPendingAction.BuyAndEquip ||
+                            ui.pendingAction == "buy" ||
+                            ui.pendingAction == "buy-equip"
+                        ) {
                             stringResource(R.string.copy_dang_mua_c2f9ae)
                         } else if (permanent) {
                             if (owned) {
-                                if (world.state.s("equipped") ==
+                                if (equippedCan ==
                                     id
                                 ) {
                                     stringResource(R.string.copy_dang_dung_275ca2)
@@ -126,38 +149,44 @@ internal fun BioModalFooter(
                 }
             val enabled =
                 !ui.busy &&
+                    !shopBuying &&
+                    !archiveBusy &&
+                    !focusBusy &&
+                    !gardenBusy &&
+                    !treeBusy &&
+                    !restBusy &&
+                    !insightsBusy &&
                     when (type) {
-                        "purchase" -> purchase.canSubmit && !(owned && world.state.s("equipped") == id)
+                        "purchase" -> purchase.canSubmit && !(owned && equippedCan == id)
                         "unlock" ->
-                            world.coins >=
-                                400 + (world.state.i("unlocked", 5) - 5).coerceAtLeast(0) * 200
-                        ;"ticket" -> world.coins >= 250
+                            canUnlock ?: (world.coins >= 400 + (world.state.i("unlocked", 5) - 5).coerceAtLeast(0) * 200)
+                        "ticket" -> canBuyTicket ?: (world.coins >= 250)
                         else -> true
                     }
             BioButton(label, {
                 when (type) {
                     "purchase" ->
-                        ui.send(
-                            if (owned) {
-                                "equip:$id"
-                            } else if (permanent) {
-                                "buy-equip"
-                            } else {
-                                "buy"
-                            },
-                            mapOf(
-                                "id" to id,
-                                "quantity" to ui.shopSelection.quantity.toString(),
-                            ),
-                        )
+                        if (!permanent && buy != null) {
+                            buy()
+                        } else if (permanent && owned && equip != null) {
+                            equip()
+                        } else if (permanent && !owned && buyAndEquip != null) {
+                            buyAndEquip()
+                        } else {
+                            Unit
+                        }
                     "plant", "fertilizer-help" -> ui.go("garden")
                     "discard" -> ui.discard()
-                    "permission" -> if (world.native)ui.send("permission-allow")else ui.show("permission-choice")
-                    "clear" -> ui.show("clear-final")
-                    "clear-final" -> ui.send("clear-data")
-                    "recover" -> ui.send("recover-data")
-                    "confirm-import" -> ui.send("confirm-import")
-                    else -> ui.send("confirm-$type", mapOf("id" to id))
+                    "focus-end" -> confirmFocusEnd?.invoke()
+                    "ticket" -> confirmTicket?.invoke()
+                    "adjust" -> confirmAdjustment?.invoke()
+                    "unlock", "water-all" -> confirmGardenAction?.invoke()
+                    "remove", "sell" -> confirmDisposition?.invoke()
+                    "archive" -> if (confirmArchive != null) confirmArchive() else Unit
+                    "permission" -> if (requestPermission != null) requestPermission() else ui.show("permission-choice")
+                    "clear" -> if (backupAction != null) backupAction() else ui.show("clear-final")
+                    "clear-final", "recover", "confirm-import" -> backupAction?.invoke()
+                    else -> Unit
                 }
             }, Modifier.weight(1f), enabled = enabled, danger = type in listOf("remove", "sell", "clear-final"))
         }

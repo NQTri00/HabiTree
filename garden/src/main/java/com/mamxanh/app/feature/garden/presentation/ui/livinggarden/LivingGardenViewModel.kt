@@ -27,11 +27,24 @@ class LivingGardenViewModel(
             ),
     ) {
     private val history = mutableListOf<List<GardenPlacement>>()
+    private var observingCollection = false
 
     init {
         viewModelScope.launch {
-            storage.changes.collect { if (mutableState.value.route.isNotBlank() || mutableState.value.loading)refresh() }
+            storage.changes.collect {
+                if (observingCollection ||
+                    mutableState.value.route.isNotBlank() ||
+                    mutableState.value.loading
+                ) {
+                    refresh()
+                }
+            }
         }
+    }
+
+    fun observeCollection(active: Boolean) {
+        observingCollection = active
+        if (active) viewModelScope.launch { refresh() }
     }
 
     fun discover(ids: List<String>) {

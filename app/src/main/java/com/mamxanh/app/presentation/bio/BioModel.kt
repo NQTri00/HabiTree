@@ -1,7 +1,6 @@
 package com.mamxanh.app.presentation.bio
 
 import android.content.Context
-import com.mamxanh.app.feature.catalog.domain.repository.GardenCollection
 import com.mamxanh.shared.localization.AppText
 import com.mamxanh.shared.localization.TextKey
 import org.json.JSONArray
@@ -49,19 +48,22 @@ internal data class BioWorld(
     val data: JSONObject,
     val loading: Boolean = false,
     val native: Boolean = false,
-    val inventoryQuantities: Map<String, Int>? = null,
-    val gardenCollection: GardenCollection? = null,
-    val plantingPlots: List<Int>? = null,
+    val reminderScheduleInput: BioReminderScheduleInput? = null,
+    val liveTrees: List<BioShellTree> = emptyList(),
+    val liveCoins: Int = 0,
+    val liveOnboarded: Boolean = true,
 ) {
     val state get() = data.o("state")
     val catalog get() = data.o("catalog")
     val trees get() = state.a("trees").objects()
+    val treeIds get() = if (native) liveTrees.map { it.id } else trees.map { it.s("id") }
     val tasks get() = state.a("tasks").objects()
     val species get() = catalog.a("species").objects()
     val products get() = data.a("products").objects()
     val accessories get() = catalog.a("cosmetics").objects().filter { it.s("category") == "TREE" }
     val records get() = data.a("records").objects()
-    val coins get() = state.i("coins")
+    val coins get() = if (native) liveCoins else state.i("coins")
+    val onboarded get() = if (native) liveOnboarded else state.b("onboarded")
     val settings get() = state.o("settings")
 
     fun species(id: String) = species.firstOrNull { it.s("id") == id } ?: species.first()
@@ -69,6 +71,8 @@ internal data class BioWorld(
     fun product(id: String) = (species + products + accessories).firstOrNull { it.s("id") == id } ?: JSONObject()
 
     fun tree(id: String) = trees.firstOrNull { it.s("id") == id }
+
+    fun treeSpecies(id: String): String? = if (native) liveTrees.firstOrNull { it.id == id }?.species else tree(id)?.s("species")
 
     fun task(id: String) = tasks.firstOrNull { it.s("id") == id }
 
@@ -79,10 +83,9 @@ internal data class BioWorld(
     fun inventoryCount(
         id: String,
         accessory: Boolean,
-    ): Int = if (accessory) owned(id) else inventoryQuantities?.getOrDefault(id, 0) ?: count(id)
+    ): Int = if (accessory) owned(id) else count(id)
 
     fun emptyPlots(): List<Int> {
-        plantingPlots?.let { return it }
         val all =
             state.optJSONArray("openPlots")?.let { a ->
                 (0 until a.length()).map { a.optInt(it) }
@@ -156,11 +159,6 @@ internal val bioRoutes get() =
         "onboard" to AppText.text(TextKey.CopyBatDauB3cacc),
         "more" to AppText.text(TextKey.RouteMore),
     )
-
-internal data class BioCommand(
-    val action: String,
-    val values: Map<String, String> = emptyMap(),
-)
 
 internal data class BioResult(
     val success: Boolean,

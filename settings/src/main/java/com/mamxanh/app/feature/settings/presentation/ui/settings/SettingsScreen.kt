@@ -18,13 +18,17 @@ fun SettingsScreen(
     onToggle: (String, Boolean) -> Unit,
     onSave: (String, String) -> Unit,
     onLink: (SettingsLink) -> Unit,
+    editQuietHours: ((String, String) -> Unit)? = null,
+    busy: Boolean = false,
 ) {
     val languageTitle = stringResource(R.string.app_language_title)
     val languageDescription = stringResource(R.string.app_language_description)
     val vietnamese = stringResource(R.string.app_language_vi)
     val english = stringResource(R.string.app_language_en)
-    var start by rememberSaveable { mutableStateOf(state.quietStart) }
-    var end by rememberSaveable { mutableStateOf(state.quietEnd) }
+    var previewStart by rememberSaveable { mutableStateOf(state.quietStart) }
+    var previewEnd by rememberSaveable { mutableStateOf(state.quietEnd) }
+    val start = if (editQuietHours == null) previewStart else state.quietStart
+    val end = if (editQuietHours == null) previewEnd else state.quietEnd
     Bt(
         stringResource(R.string.copy_theo_nhip_cua_ban_8e2e15),
         size = AppTypography.SIZE_27,
@@ -59,13 +63,20 @@ fun SettingsScreen(
     BioDetails(stringResource(R.string.copy_gio_yen_lang_112f45)) {
         Row(horizontalArrangement = Arrangement.spacedBy(AppDimensions.Dp12)) {
             BioTimeField(stringResource(R.string.copy_bat_dau_b3cacc), start, {
-                start =
-                    it
+                if (editQuietHours == null) previewStart = it else editQuietHours(it, end)
             }, Modifier.weight(1f))
-            ;BioTimeField(stringResource(R.string.copy_ket_thuc_351849), end, { end = it }, Modifier.weight(1f))
+            ;BioTimeField(stringResource(R.string.copy_ket_thuc_351849), end, {
+                if (editQuietHours ==
+                    null
+                ) {
+                    previewEnd = it
+                } else {
+                    editQuietHours(start, it)
+                }
+            }, Modifier.weight(1f))
         }
     }
-    BioButton(stringResource(R.string.copy_luu_tuy_chon_3847ca), { onSave(start, end) }, Modifier.fillMaxWidth())
+    BioButton(stringResource(R.string.copy_luu_tuy_chon_3847ca), { onSave(start, end) }, Modifier.fillMaxWidth(), enabled = !busy)
     BioButton(
         stringResource(R.string.copy_quyen_thong_bao_58e97d),
         { onLink(SettingsLink.Permission) },

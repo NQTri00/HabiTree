@@ -56,13 +56,7 @@ private fun taskFormValue(
     Row(horizontalArrangement = Arrangement.spacedBy(AppDimensions.Dp12)) {
         BioButton(stringResource(R.string.copy_huy_74fcd3), { ui.back() }, Modifier.weight(1f), secondary = true, enabled = !ui.busy)
         BioButton(stringResource(R.string.copy_luu_viec_522a3d), {
-            if (ui.taskDraft.validate(::value)) {
-                val values =
-                    TaskFormField.entries.associate { field ->
-                        field.savedKey to taskFormValue(world, ui, field)
-                    }
-                ui.send("save-task", values + ("id" to ui.param))
-            }
+            ui.taskDraft.validate(::value)
         }, Modifier.weight(1f), enabled = !ui.busy)
     }
 }
@@ -79,14 +73,7 @@ internal fun selectedBioTemplates(ui: BioController) = ui.taskSelection.selected
         } else {
             stringResource(R.string.copy_them_0_viec_d0390c, chosen.size)
         },
-        {
-            ui.send(
-                "templates",
-                mapOf(
-                    "ids" to chosen.joinToString(","),
-                ),
-            )
-        },
+        {},
         Modifier.fillMaxWidth(),
         enabled = chosen.isNotEmpty() && !ui.busy,
     )
@@ -122,12 +109,7 @@ internal fun focusMinutes(
         ),
     ) { action ->
         when (action) {
-            FocusDockAction.Start ->
-                ui.send(
-                    "start-focus",
-                    mapOf("minutes" to (if (task != null) "25" else minutes), "task" to taskId),
-                )
-            FocusDockAction.Toggle -> ui.send("focus-toggle")
+            FocusDockAction.Start, FocusDockAction.Toggle -> Unit
             FocusDockAction.End -> ui.show("focus-end")
         }
     }

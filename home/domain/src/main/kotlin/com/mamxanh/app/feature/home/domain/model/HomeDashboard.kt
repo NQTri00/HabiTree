@@ -23,6 +23,7 @@ data class HomeTreeCare(
     val stateLabel: String = "",
     val waterLabel: String = "",
     val fertilizerLabel: String = "",
+    val mature: Boolean = false,
 )
 
 data class HomeTaskSummary(
@@ -32,6 +33,7 @@ data class HomeTaskSummary(
     val reward: Int,
     val timer: Boolean = false,
     val canComplete: Boolean = true,
+    val minutes: Int = 0,
 )
 
 data class HomeDashboard(
@@ -47,4 +49,5 @@ data class HomeDashboard(
     val streak: Int = 0,
     val nextTasks: List<HomeTaskSummary> = emptyList(),
     val nextGoal: String = "",
+    val canClaimReward: Boolean = false,
 )

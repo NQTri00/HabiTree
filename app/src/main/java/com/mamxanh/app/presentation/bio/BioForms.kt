@@ -14,8 +14,10 @@ import androidx.compose.ui.unit.*
 import com.mamxanh.app.core.components.design.*
 import com.mamxanh.app.feature.settings.presentation.navigation.BackupRouteContent
 import com.mamxanh.app.feature.settings.presentation.navigation.SettingsRouteContent
+import com.mamxanh.app.feature.settings.presentation.ui.backup.BackupAction
 import com.mamxanh.app.feature.settings.presentation.ui.backup.BackupDisplay
 import com.mamxanh.app.feature.settings.presentation.ui.backup.BackupScreenAction
+import com.mamxanh.app.feature.settings.presentation.ui.backup.BackupViewModel
 import com.mamxanh.app.feature.settings.presentation.ui.settings.SettingsDisplay
 import com.mamxanh.app.feature.settings.presentation.ui.settings.SettingsLink
 import com.mamxanh.app.feature.tasks.presentation.navigation.FocusRouteContent
@@ -70,10 +72,10 @@ internal fun taskDetailRouteContent(
     return TaskDetailRouteContent(
         t = display,
         onTasks = { ui.go("tasks") },
-        onComplete = { if (display?.timer == true) ui.go("focus", id) else ui.send("complete:$id") },
+        onComplete = { if (display?.timer == true) ui.go("focus", id) else Unit },
         onEdit = { ui.go("task-new", id) },
         onInsights = { ui.go("insights", id) },
-        onLifecycle = { ui.send("lifecycle:$id:$it") },
+        onLifecycle = { Unit },
         onArchive = { ui.show("archive", id) },
     )
 }
@@ -107,11 +109,12 @@ internal fun focusRouteContent(
     ui: BioController,
     argument: String,
     actions: (@Composable () -> Unit)?,
+    selection: LiveFocus? = null,
 ): FocusRouteContent {
     val focus = world.state.o("focus")
     return FocusRouteContent(
         state =
-            FocusDisplay(
+            selection?.display(bioDisplayDate(world.data.s("date"))) ?: FocusDisplay(
                 title = focus.s("title", AppText.text(TextKey.CopyMotKhoangRiengMinh9ead0d)),
                 present = focus.s("id").isNotBlank(),
                 running = focus.s("state") == "RUNNING",
@@ -134,8 +137,8 @@ internal fun focusRouteContent(
                         .objects()
                         .map { it.s("title") },
             ),
-        onTask = { ui.taskSelection.focusTask = it },
-        onMinutes = { ui.taskSelection.focusMinutes = it },
+        onTask = selection?.let { it::selectTask } ?: { ui.taskSelection.focusTask = it },
+        onMinutes = selection?.let { it::setMinutes } ?: { ui.taskSelection.focusMinutes = it },
         actions = actions,
     )
 }
@@ -166,8 +169,9 @@ internal fun templatesRouteContent(
     world: BioWorld,
     ui: BioController,
     actions: (@Composable () -> Unit)?,
+    selection: LiveTemplates? = null,
 ): TemplatesRouteContent {
-    val chosen = selectedBioTemplates(ui).toSet()
+    val chosen = selection?.selected ?: selectedBioTemplates(ui).toSet()
     return TemplatesRouteContent(
         templates =
             world.catalog
@@ -175,7 +179,7 @@ internal fun templatesRouteContent(
                 .objects()
                 .map { it.toTemplateDisplay() },
         chosen = chosen,
-        onToggle = ui.taskSelection::toggleTemplate,
+        onToggle = selection?.let { it::toggle } ?: ui.taskSelection::toggleTemplate,
         actions = actions,
     )
 }
@@ -188,10 +192,10 @@ internal fun settingsRouteContent(
     val options = ui.settingsRequests.reminderOptions { settings.b(it) }
     return SettingsRouteContent(
         state = SettingsDisplay(options, settings.s("quietStart", "22:00"), settings.s("quietEnd", "07:00")),
-        onLanguage = { ui.send("language", mapOf("tag" to it)) },
+        onLanguage = { Unit },
         onToggle = ui.settingsRequests::setReminder,
         onSave = { start, end ->
-            ui.send("settings", options.mapValues { it.value.toString() } + mapOf("quietStart" to start, "quietEnd" to end))
+            Unit
         },
         onLink = { link ->
             when (link) {
@@ -207,15 +211,21 @@ internal fun settingsRouteContent(
 internal fun backupRouteContent(
     world: BioWorld,
     ui: BioController,
+    model: BackupViewModel? = null,
+    display: BackupDisplay? = null,
 ): BackupRouteContent =
-    BackupRouteContent(BackupDisplay(world.state.i("bytes", 3072) / 1024, world.state.b("safety"))) { action ->
-        when (action) {
-            BackupScreenAction.Export -> ui.send("export")
-            BackupScreenAction.Import -> ui.send("import")
-            BackupScreenAction.Recover -> ui.show("recover")
-            BackupScreenAction.Clear -> ui.show("clear")
-            BackupScreenAction.License -> ui.show("license")
-            BackupScreenAction.Diagnostics -> ui.send("diagnostics")
+    BackupRouteContent(display ?: BackupDisplay(world.state.i("bytes", 3072) / 1024, world.state.b("safety"))) { action ->
+        if (model != null) {
+            model.dispatch(BackupAction.Screen(action))
+        } else {
+            when (action) {
+                BackupScreenAction.Export -> Unit
+                BackupScreenAction.Import -> Unit
+                BackupScreenAction.Recover -> ui.show("recover")
+                BackupScreenAction.Clear -> ui.show("clear")
+                BackupScreenAction.License -> ui.show("license")
+                BackupScreenAction.Diagnostics -> Unit
+            }
         }
     }
 

@@ -18,6 +18,7 @@ import com.mamxanh.app.core.components.design.AppOpacity
 import com.mamxanh.app.core.components.design.AppRadii
 import com.mamxanh.app.core.components.design.AppTypography
 import com.mamxanh.app.feature.shop.presentation.ui.shop.PurchaseAvailability
+import com.mamxanh.app.feature.tree.domain.repository.AccessoryTree
 import com.mamxanh.core.ui.R
 import org.json.JSONObject
 
@@ -31,6 +32,9 @@ internal fun BioPurchaseBody(
     permanent: Boolean,
     total: Int,
     full: Boolean,
+    shop: LiveShop? = null,
+    coins: Int = world.coins,
+    stock: Int = world.count(id),
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -49,7 +53,7 @@ internal fun BioPurchaseBody(
         Column(Modifier.weight(1f)) {
             Bt(item.s("name"), size = AppTypography.SIZE_17, bold = true)
             val price = stringResource(R.string.copy_0_xu_mon_3dd1cb, item.i("price"))
-            val inInventory = stringResource(R.string.copy_trong_tui_0_79a061, world.count(id))
+            val inInventory = stringResource(R.string.copy_trong_tui_0_79a061, stock)
             Bt("$price · $inInventory", size = AppTypography.SIZE_12, tint = bp.muted)
         }
     }
@@ -79,17 +83,17 @@ internal fun BioPurchaseBody(
     }
     if (!permanent) {
         BioPurchaseQuantity(
-            quantity = ui.shopSelection.quantity,
-            busy = ui.busy,
-            onQuantity = { ui.shopSelection.updateQuantity(it) },
+            quantity = shop?.quantity(id) ?: ui.shopSelection.quantity,
+            busy = ui.busy || shop?.state?.isPurchasing == true,
+            onQuantity = { if (shop == null) ui.shopSelection.updateQuantity(it) else shop.setQuantity(it) },
         )
     }
     BioMetrics(
         listOf(
             stringResource(R.string.copy_tong_13fdba) to total.toString(),
-            stringResource(R.string.copy_vi_39a29f) to world.coins.toString(),
+            stringResource(R.string.copy_vi_39a29f) to coins.toString(),
             (
-                if (world.coins <
+                if (coins <
                     total
                 ) {
                     stringResource(R.string.copy_can_them_e011ae)
@@ -97,10 +101,10 @@ internal fun BioPurchaseBody(
                     stringResource(R.string.copy_con_lai_b3edb1)
                 }
             ) to
-                kotlin.math.abs(world.coins - total).toString(),
+                kotlin.math.abs(coins - total).toString(),
         ),
     )
-    if (world.coins <
+    if (coins <
         total
     ) {
         Bt(
@@ -108,7 +112,7 @@ internal fun BioPurchaseBody(
                 R.string.copy_khoang_0_ngay_uoc_tinh_40_xu_ngay_8be6c6,
                 kotlin.math
                     .ceil(
-                        (total - world.coins) / 40.0,
+                        (total - coins) / 40.0,
                     ).toInt(),
             ),
             size = AppTypography.SIZE_12,
@@ -129,13 +133,15 @@ internal fun BioPurchaseBody(
 @Composable
 internal fun BioAccessoryBody(
     id: String,
-    world: BioWorld,
     ui: BioController,
     item: JSONObject,
     owned: Boolean,
     purchase: PurchaseAvailability,
-    living: List<JSONObject>,
-    target: JSONObject?,
+    trees: List<AccessoryTree>,
+    living: List<AccessoryTree>,
+    target: AccessoryTree?,
+    live: LiveAccessory?,
+    coins: Int,
 ) {
     Box(
         Modifier
@@ -164,11 +170,11 @@ internal fun BioAccessoryBody(
         BioSelect(
             stringResource(R.string.copy_deo_cho_cay_afc821),
             living.map {
-                it.s("id") to
-                    it.s("name")
+                it.id to
+                    it.name
             },
-            target?.s("id").orEmpty(),
-            onSelect = { ui.shopSelection.targetTree = it },
+            target?.id.orEmpty(),
+            onSelect = { if (live == null) ui.shopSelection.targetTree = it else live.select(it) },
         )
     } else {
         Bt(
@@ -177,12 +183,12 @@ internal fun BioAccessoryBody(
             tint = bp.muted,
         )
     }
-    val other = world.trees.firstOrNull { it.s("decor") == id && it.s("id") != target?.s("id") }
+    val other = trees.firstOrNull { it.decoration == id && it.id != target?.id }
     if (other != null &&
         owned
     ) {
         Bt(
-            stringResource(R.string.copy_chuyen_tu_0_khong_mat_them_xu_c8b60f, other.s("name")),
+            stringResource(R.string.copy_chuyen_tu_0_khong_mat_them_xu_c8b60f, other.name),
             size = AppTypography.SIZE_12,
             tint = bp.muted,
         )
@@ -193,16 +199,16 @@ internal fun BioAccessoryBody(
         tint = bp.muted,
     )
     if (!owned &&
-        world.coins < item.i("price")
+        coins < item.i("price")
     ) {
         BioError(
             stringResource(
                 R.string.copy_can_them_0_xu_d7d41b,
-                item.i("price") - world.coins,
+                item.i("price") - coins,
             ),
         )
     }
-    val using = target?.s("decor") == id
+    val using = target?.decoration == id
     Column(verticalArrangement = Arrangement.spacedBy(AppDimensions.Dp10)) {
         BioButton(
             if (using) {
@@ -213,13 +219,7 @@ internal fun BioAccessoryBody(
                 stringResource(R.string.copy_mua_deo_d9c74d)
             },
             {
-                ui.send(
-                    "accessory-use",
-                    mapOf(
-                        "id" to id,
-                        "tree" to target?.s("id").orEmpty(),
-                    ),
-                )
+                if (live != null) live.equip() else Unit
             },
             Modifier.fillMaxWidth(),
             enabled =
@@ -230,12 +230,7 @@ internal fun BioAccessoryBody(
         )
         if (!owned) {
             BioButton(stringResource(R.string.copy_chi_mua_vao_tui_cbc02d), {
-                ui.send(
-                    "accessory-buy",
-                    mapOf(
-                        "id" to id,
-                    ),
-                )
+                if (live != null) live.buy() else Unit
             }, Modifier.fillMaxWidth(), secondary = true, enabled = purchase.canBuyAccessory)
         }
     }

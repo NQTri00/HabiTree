@@ -1,10 +1,14 @@
 package com.mamxanh.app.feature.tasks.data.di
 
+import com.mamxanh.app.feature.tasks.data.repository.InsightsRepositoryImpl
+import com.mamxanh.app.feature.tasks.data.repository.RestRepositoryImpl
 import com.mamxanh.app.feature.tasks.domain.model.Task
 import com.mamxanh.app.feature.tasks.domain.model.TaskConfig
 import com.mamxanh.app.feature.tasks.domain.model.TaskHistoryEntry
 import com.mamxanh.app.feature.tasks.domain.model.TaskProgress
 import com.mamxanh.app.feature.tasks.domain.model.TaskTimerProgress
+import com.mamxanh.app.feature.tasks.domain.repository.InsightsRepository
+import com.mamxanh.app.feature.tasks.domain.repository.RestRepository
 import com.mamxanh.app.feature.tasks.domain.repository.TaskOperationResult
 import com.mamxanh.app.feature.tasks.domain.repository.TaskRepository
 import com.mamxanh.shared.data.GameStorage
@@ -128,5 +132,7 @@ private fun TaskConfig.toStorage() =
 
 val taskDataModule =
     module {
+        single<InsightsRepository> { InsightsRepositoryImpl(get()) }
+        single<RestRepository> { RestRepositoryImpl(get()) }
         single<TaskRepository> { AndroidTaskRepository(get(), get()) }
     }

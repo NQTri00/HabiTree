@@ -1,6 +1,10 @@
 package com.mamxanh.app.feature.tasks.presentation.ui.list
 
-sealed interface TaskListAction {
+import com.mamxanh.app.core.presentation.UiAction
+
+sealed interface TaskListAction : UiAction {
+    data object ClaimReward : TaskListAction
+
     data object Add : TaskListAction
 
     data object Focus : TaskListAction

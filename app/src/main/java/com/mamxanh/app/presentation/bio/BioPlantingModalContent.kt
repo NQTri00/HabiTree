@@ -18,8 +18,11 @@ import org.json.JSONObject
 
 @Composable
 internal fun BioTreePickerBody(
-    world: BioWorld,
-    ui: BioController,
+    choices: List<HomeTreeChoice>,
+    selectedId: String,
+    loading: Boolean,
+    onPlant: () -> Unit,
+    onSelect: (String) -> Unit,
 ) {
     Bt(
         stringResource(R.string.copy_chon_cay_sac_mau_se_di_cung_ban_58b284),
@@ -27,43 +30,55 @@ internal fun BioTreePickerBody(
         tint = bp.muted,
     )
     Column(verticalArrangement = Arrangement.spacedBy(AppDimensions.Dp9)) {
-        world.trees.forEach { t ->
+        choices.forEach { tree ->
             BioChoice(
-                t.s("name"),
-                world.data
-                    .o("palettes")
-                    .o(t.s("species"))
-                    .s("name"),
-                t.s("species"),
-                ui.homeTreeState.selectedId == t.s("id"),
-                { ui.act("bio-pin:" + t.s("id")) },
+                tree.name,
+                tree.palette,
+                tree.species,
+                selectedId == tree.id,
+                { onSelect(tree.id) },
             )
         }
     }
-    if (world.trees.isEmpty()) {
-        BioButton(stringResource(R.string.copy_gieo_cay_dau_tien_afd3c1), {
-            ui.show("seed-picker")
-        }, Modifier.fillMaxWidth(), "plus")
+    if (!loading && choices.isEmpty()) {
+        BioButton(stringResource(R.string.copy_gieo_cay_dau_tien_afd3c1), onPlant, Modifier.fillMaxWidth(), "plus")
     }
 }
+
+internal data class HomeTreeChoice(
+    val id: String,
+    val name: String,
+    val species: String,
+    val palette: String,
+)
+
+internal fun BioWorld.homeTreeChoice(
+    id: String,
+    name: String,
+    species: String,
+) = HomeTreeChoice(id, name, species, data.o("palettes").o(species).s("name"))
+
+internal fun BioWorld.previewHomeTreeChoices() = trees.map { homeTreeChoice(it.s("id"), it.s("name"), it.s("species")) }
 
 @Composable
 internal fun BioSeedPickerBody(
     world: BioWorld,
     ui: BioController,
+    planting: LivePlanting? = null,
 ) {
+    fun count(seed: String) = planting?.count(seed) ?: world.count(seed)
     Bt(stringResource(R.string.copy_hat_dang_co_chon_de_gieo_237689), size = AppTypography.SIZE_12, tint = bp.muted)
     Column(verticalArrangement = Arrangement.spacedBy(AppDimensions.Dp9)) {
         world.species
             .filter {
-                world.count(it.s("id")) >
+                count(it.s("id")) >
                     0
             }.forEach { s ->
                 BioChoice(
                     s.s(
                         "name",
                     ),
-                    stringResource(R.string.copy_con_0_hat_149c5e, world.count(s.s("id"))),
+                    stringResource(R.string.copy_con_0_hat_149c5e, count(s.s("id"))),
                     s.s("id"),
                     false,
                     {
@@ -74,7 +89,7 @@ internal fun BioSeedPickerBody(
             }
     }
     if (world.species.none {
-            world.count(it.s("id")) >
+            count(it.s("id")) >
                 0
         }
     ) {
@@ -85,8 +100,7 @@ internal fun BioSeedPickerBody(
         )
     }
     BioButton(stringResource(R.string.copy_chon_hat_o_tiem_a4c334), {
-        ui.shopSelection.shopTab =
-            "seeds"
+        ui.requestShopTab("seeds")
         ;ui.go("shop")
     }, Modifier.fillMaxWidth(), "shop", true)
 }
@@ -94,14 +108,16 @@ internal fun BioSeedPickerBody(
 @Composable
 internal fun BioPlantBody(
     id: String,
-    world: BioWorld,
-    ui: BioController,
     item: JSONObject,
     full: Boolean,
+    stock: Int,
     plantName: String,
     selectedPlot: String,
+    eligiblePlots: List<Int>,
     onName: (String) -> Unit,
     onPlot: (String) -> Unit,
+    onPlant: () -> Unit,
+    canPlant: Boolean,
 ) {
     if (full) {
         Bt(
@@ -118,7 +134,7 @@ internal fun BioPlantBody(
             Column {
                 Bt(item.s("name"), size = AppTypography.SIZE_17, bold = true)
                 Bt(
-                    stringResource(R.string.copy_trong_tui_0_hat_d56e0e, world.count(id)),
+                    stringResource(R.string.copy_trong_tui_0_hat_d56e0e, stock),
                     size = AppTypography.SIZE_12,
                     tint = bp.muted,
                 )
@@ -129,7 +145,7 @@ internal fun BioPlantBody(
         }, placeholder = stringResource(R.string.copy_mam_binh_yen_df7062))
         BioSelect(
             stringResource(R.string.copy_o_trong_5da6bd),
-            world.emptyPlots().map {
+            eligiblePlots.map {
                 it.toString() to
                     stringResource(R.string.copy_o_5b7240, it.toString().padStart(2, '0'))
             },
@@ -141,16 +157,7 @@ internal fun BioPlantBody(
             size = AppTypography.SIZE_12,
             tint = bp.muted,
         )
-        BioButton(stringResource(R.string.copy_gieo_hat_6d82a9), {
-            ui.send(
-                "plant",
-                mapOf(
-                    "id" to id,
-                    "plot" to selectedPlot,
-                    "name" to plantName,
-                ),
-            )
-        }, Modifier.fillMaxWidth(), enabled = world.count(id) > 0 && !ui.busy)
+        BioButton(stringResource(R.string.copy_gieo_hat_6d82a9), onPlant, Modifier.fillMaxWidth(), enabled = canPlant)
     }
 }
 
@@ -161,7 +168,7 @@ private fun BioTreePickerBodyPreview() {
     val world = remember(context) { BioWorld.reference(context) }
     BioTheme(world, "1") {
         Column {
-            BioTreePickerBody(world, remember { BioController("home") })
+            BioTreePickerBody(world.previewHomeTreeChoices(), "", loading = false, onPlant = {}) {}
         }
     }
 }

@@ -7,6 +7,14 @@ sealed interface ShopEvent : UiEvent {
         val message: String,
     ) : ShopEvent
 
+    data class PurchaseFinished(
+        val id: String,
+        val success: Boolean,
+        val message: String,
+        val openTree: Boolean = false,
+        val treeId: Long? = null,
+    ) : ShopEvent
+
     data object InventoryChanged : ShopEvent
 
     data object OpenGarden : ShopEvent

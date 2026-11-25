@@ -16,6 +16,7 @@ BIO = Path("app/src/main/java/com/mamxanh/app/presentation/bio")
 STRING = r'"([^"]*)"'
 FIXTURE = re.compile(r'BioReferenceSurface\s*\(([^\n]*)')
 ARGUMENTS = ("route", "route_argument", "popup", "popup_argument", "tabs")
+PARAMETERS = dict(zip(("route", "param", "modal", "id", "tab"), ARGUMENTS))
 
 
 def inventory(root: Path) -> list[dict[str, str]]:
@@ -46,16 +47,17 @@ def inventory(root: Path) -> list[dict[str, str]]:
             if next_declaration:
                 remaining = remaining[:next_declaration.start()]
             fixture = FIXTURE.search(remaining)
-            arguments = []
+            row = dict.fromkeys(ARGUMENTS, "")
             if fixture:
                 text = fixture.group(1)
-                while len(arguments) < len(ARGUMENTS):
-                    argument = re.match(r'\s*' + STRING + r'\s*[,)]', text)
-                    if argument is None:
+                for index, argument in enumerate(text.split(",", maxsplit=len(ARGUMENTS))):
+                    match = re.match(r'\s*(?:(\w+)\s*=\s*)?' + STRING, argument)
+                    if match is None or index == len(ARGUMENTS):
                         break
-                    arguments.append(argument.group(1))
-                    text = text[argument.end():]
-            row = {key: arguments[i] if i < len(arguments) else "" for i, key in enumerate(ARGUMENTS)}
+                    parameter, value = match.groups()
+                    key = PARAMETERS.get(parameter) if parameter else ARGUMENTS[index]
+                    if key is not None:
+                        row[key] = value
             values = dict(re.findall(r'(\w+)\s*=\s*("[^"]*"|[\d.]+f?)', annotation))
             row.update(
                 batch=batch, name=job["name"], source=job["source"], function=function,
@@ -75,12 +77,17 @@ def popup_triggers(root: Path, popup_ids: set[str]) -> dict[str, str]:
     for source in sorted((root / BIO).glob("*.kt")):
         if source.name == "BioPreviewFixture.kt":
             continue
-        for number, line in enumerate(source.read_text(encoding="utf-8").splitlines(), start=1):
-            direct = set(re.findall(r'\bshow\(\s*"([a-z-]+)"', line))
-            if '->show(name,id)' in line:
-                direct.update(re.findall(STRING, line.split("->", 1)[0]))
-            for popup in direct & popup_ids:
-                triggers[popup].append(f"{source.relative_to(root).as_posix()}:{number}")
+        code = source.read_text(encoding="utf-8")
+        matches = (
+            (r'\bshow\(\s*("([a-z-]+)")', 1),
+            (r'^\s*((?:"[a-z-]+"\s*,?\s*)+)\s*->\s*show\(\s*name\s*,\s*id', 1),
+            (r'val modal = if \(event\.sell\) ("sell" else "remove")', 1),
+        )
+        for pattern, group in matches:
+            for match in re.finditer(pattern, code, re.MULTILINE):
+                number = code.count("\n", 0, match.start(group)) + 1
+                for popup in set(re.findall(STRING, match.group(group))) & popup_ids:
+                    triggers[popup].append(f"{source.relative_to(root).as_posix()}:{number}")
     return {popup: " | ".join(paths) for popup, paths in triggers.items()}
 
 
@@ -88,8 +95,10 @@ def coverage(root: Path, rows: list[dict[str, str]]) -> None:
     destinations = (root / BIO / "BioDestination.kt").read_text(encoding="utf-8")
     route_ids = set(re.findall(r'^\s+[A-Z_]+\("' + r'([a-z-]+)"\)[,;]', destinations, re.MULTILINE))
     modal_source = (root / BIO / "BioModal.kt").read_text(encoding="utf-8")
-    title = next(line for line in modal_source.splitlines() if "val title=when(type)" in line)
-    popup_ids = set(re.findall(STRING + r"->", title))
+    title = re.search(r"val title\s*=\s*when\s*\(type\)\s*\{(.*?)\belse\s*->", modal_source, re.DOTALL)
+    if title is None:
+        raise ValueError("Missing popup title declaration in BioModal.kt")
+    popup_ids = set(re.findall(r'^\s*' + STRING + r'\s*->', title.group(1), re.MULTILINE))
     triggers = popup_triggers(root, popup_ids)
     missing_triggers = sorted(popup for popup, locations in triggers.items() if not locations)
     if missing_triggers:

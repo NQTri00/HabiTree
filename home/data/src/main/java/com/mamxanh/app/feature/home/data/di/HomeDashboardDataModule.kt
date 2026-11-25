@@ -9,11 +9,13 @@ import com.mamxanh.app.feature.home.domain.repository.OnboardingRepository
 import com.mamxanh.app.feature.home.domain.usecase.HomeDashboardRepository
 import com.mamxanh.shared.data.GameStorage
 import com.mamxanh.shared.model.EngagementAction
+import com.mamxanh.shared.model.TreeGrowthState
 import org.koin.dsl.module
 import com.mamxanh.shared.feature.home.domain.HomeDashboardRepository as SharedHomeDashboardRepository
 
 private class AndroidHomeDashboardRepository(
     private val source: SharedHomeDashboardRepository,
+    private val storage: GameStorage,
 ) : HomeDashboardRepository {
     override fun load(): HomeDashboard {
         val snapshot = source.load()
@@ -41,6 +43,7 @@ private class AndroidHomeDashboardRepository(
                             stateLabel = status.stateLabel,
                             waterLabel = status.waterLabel,
                             fertilizerLabel = status.fertilizerLabel,
+                            mature = status.state == TreeGrowthState.MATURE,
                         ),
                     )
                 },
@@ -61,10 +64,12 @@ private class AndroidHomeDashboardRepository(
                         task.category,
                         task.reward,
                         timer = task.config.verification == "TIMER",
+                        minutes = task.config.minutes,
                         canComplete = task.available && !task.doneToday && !task.finished && task.lifecycle == "ACTIVE",
                     )
                 },
             nextGoal = snapshot.nextGoal,
+            canClaimReward = storage.canClaimDailyBonus() && !storage.isDailyBonusClaimed(),
         )
     }
 }
@@ -92,5 +97,5 @@ val homeDashboardDataModule =
                 }
             }
         }
-        single<HomeDashboardRepository> { AndroidHomeDashboardRepository(get<SharedHomeDashboardRepository>()) }
+        single<HomeDashboardRepository> { AndroidHomeDashboardRepository(get<SharedHomeDashboardRepository>(), get()) }
     }

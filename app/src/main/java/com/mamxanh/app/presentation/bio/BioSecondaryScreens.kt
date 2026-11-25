@@ -27,6 +27,7 @@ import com.mamxanh.app.feature.tasks.presentation.component.TaskCalendarStatus
 import com.mamxanh.app.feature.tasks.presentation.navigation.InsightsRouteContent
 import com.mamxanh.app.feature.tasks.presentation.navigation.RestRouteContent
 import com.mamxanh.app.feature.tasks.presentation.ui.insights.InsightTaskLink
+import com.mamxanh.app.feature.tasks.presentation.ui.insights.InsightsReminderDraft
 import com.mamxanh.app.feature.tasks.presentation.ui.insights.TaskInsightsDisplay
 import com.mamxanh.app.feature.tasks.presentation.ui.rest.RestScreenState
 import com.mamxanh.shared.localization.AppText
@@ -57,16 +58,17 @@ private fun BioCalendar(
     world: BioWorld,
     count: Int = 7,
     recordOverride: JSONArray? = null,
+    dayStates: Map<String, String>? = null,
 ) {
     val records = recordOverride ?: world.data.optJSONArray("days")
     val byDate = records?.objects()?.associateBy { it.s("date") }.orEmpty()
     val days =
         bioDates(world.data.s("date"), count).mapIndexed { index, date ->
-            val record = byDate[date]
+            val record = if (dayStates == null) byDate[date]?.s("state") else dayStates[date]
             val status =
                 when {
                     record != null ->
-                        when (record.s("state")) {
+                        when (record) {
                             "SUCCESS" -> TaskCalendarStatus.Completed
                             "REST" -> TaskCalendarStatus.Rest
                             "PROTECTED" -> TaskCalendarStatus.Protected
@@ -87,11 +89,30 @@ private fun BioCalendar(
 internal fun weeklyReviewRouteContent(
     world: BioWorld,
     ui: BioController,
+    live: LiveJournal? = null,
 ): WeeklyReviewRouteContent {
     val review = world.data.o("review")
     val display =
-        if (world.native && review.length() == 0) {
-            null
+        if (live != null) {
+            live.state.weeklyReview?.let {
+                WeeklyReviewDisplay(
+                    startDisplay = it.start,
+                    reflection = it.reflection,
+                    completed = it.completed,
+                    scheduled = it.scheduled,
+                    focusMinutes = it.focusMinutes,
+                    previousRate = it.previousRate,
+                    earned = it.earned,
+                    spent = it.spent,
+                    careDays = it.careDays,
+                    milestones = it.milestones,
+                    consistent = it.consistent,
+                    improve = it.improve,
+                    tickets = it.tickets,
+                    dailyCompletions = List(7) { index -> (it.dailyCompletions.getOrNull(index) ?: 0).coerceAtLeast(0) },
+                    dayLabels = world.statisticsDayLabels(),
+                )
+            }
         } else {
             WeeklyReviewDisplay(
                 startDisplay = review.s("start", "2026-11-16"),
@@ -111,37 +132,67 @@ internal fun weeklyReviewRouteContent(
                 dayLabels = world.statisticsDayLabels(),
             )
         }
+    val week = live?.state?.weeklyReview?.start ?: review.s("start")
     return WeeklyReviewRouteContent(
         review = display,
-        onTasks = { ui.go("tasks") },
-        onSaveNote = { note -> ui.send("reflection", mapOf("note" to note, "week" to review.s("start"))) },
-        onRest = { ui.go("rest") },
+        onTasks = { if (live == null) ui.go("tasks") else live.openTasks() },
+        onSaveNote = { note -> live?.saveReflection(week, note) },
+        onRest = { if (live == null) ui.go("rest") else live.openRest() },
+        draft = live?.state?.reflection(week, display?.reflection.orEmpty()),
+        onEdit = live?.let { route -> { note -> route.editReflection(week, note) } },
+        busy = live?.state?.busy == true,
     )
 }
 
 internal fun restRouteContent(
     world: BioWorld,
     ui: BioController,
+    live: LiveRest? = null,
 ): RestRouteContent =
     RestRouteContent(
         state =
             RestScreenState(
-                tomorrow = world.data.s("tomorrow", "2026-11-18"),
-                scheduledDays = world.state.a("rest").strings(),
-                tickets = world.state.i("tickets"),
-                canBuy = world.coins >= 250,
+                tomorrow =
+                    if (live == null) {
+                        world.data.s("tomorrow", "2026-11-18")
+                    } else {
+                        live.state.schedule
+                            ?.tomorrow
+                            .orEmpty()
+                    },
+                scheduledDays =
+                    if (live == null) {
+                        world.state.a("rest").strings()
+                    } else {
+                        live.state.schedule
+                            ?.days
+                            ?.filterValues { it == "REST" }
+                            ?.keys
+                            ?.toList()
+                            .orEmpty()
+                    },
+                tickets = if (live == null) world.state.i("tickets") else live.state.schedule?.tickets ?: 0,
+                canBuy = if (live == null) world.coins >= 250 else live.state.schedule?.canBuyTicket == true,
             ),
-        onSchedule = { ui.send("rest", mapOf("date" to it)) },
-        onBuy = { ui.show("ticket") },
-        onProtect = { ui.send("protect", mapOf("date" to it)) },
-        calendar = { BioCalendar(world, 30) },
+        onSchedule = { live?.schedule(it) },
+        onBuy = { if (live == null) ui.show("ticket") else live.requestTicket() },
+        onProtect = { live?.protect(it) },
+        calendar = { BioCalendar(world, 30, dayStates = live?.state?.schedule?.days) },
+        controls =
+            live?.controls(
+                live.state.schedule
+                    ?.tomorrow
+                    .orEmpty(),
+            ),
     )
 
 internal fun insightsRouteContent(
     world: BioWorld,
     ui: BioController,
     argument: String,
+    live: LiveInsights? = null,
 ): InsightsRouteContent {
+    if (live != null) return liveInsightsContent(world, argument, live)
     val task = world.task(argument)
     val id = task?.s("id").orEmpty()
     val insight =
@@ -186,77 +237,123 @@ internal fun insightsRouteContent(
         onAddTask = { ui.go("task-new") },
         onTask = { ui.go("insights", it) },
         onAdjust = { ui.show("adjust", id) },
-        onSaveReminder = { minute, mode, follow ->
-            ui.send("reminder", mapOf("id" to id, "minute" to minute, "mode" to mode, "followUp" to follow.toString()))
-        },
+        onSaveReminder = { _, _, _ -> },
         onSettings = { ui.go("settings") },
         calendar = { BioCalendar(world, period.toInt(), insight?.optJSONArray("days")) },
     )
 }
 
-internal fun achievementEntries(world: BioWorld): List<AchievementDisplay> =
-    if (world.native) {
-        world.data.a("achievements").objects().map {
-            AchievementDisplay(it.s("title"), it.s("criterion"), it.i("progress"), it.i("target", 1), it.l("unlockedAt") > 0)
-        }
-    } else {
-        val defaults =
-            listOf(
-                Triple(AppText.text(TextKey.CopyBuocDauTien5dbfda), AppText.text(TextKey.CopyHoanThanhMotViecHopLe912065), 1 to 1),
-                Triple(
-                    AppText.text(TextKey.CopyBaNgayTotLanhD6a627),
-                    AppText.text(TextKey.Copy3NgayCoLichHoanThanh0527b6),
-                    3 to 3,
-                ),
-                Triple(AppText.text(TextKey.CopyMotTuanDeuDanD7d5ad), AppText.text(TextKey.Copy7NgayCoLichHoanThanh86a291), 5 to 7),
-                Triple(
-                    AppText.text(TextKey.CopyKhoiDauTapTrungC3b5b9),
-                    AppText.text(TextKey.CopyHoanThanhMotPhienItNhat25Phut6bcfa2),
-                    0 to 1,
-                ),
-                Triple(
-                    AppText.text(TextKey.CopyNhipHocTapF10229),
-                    AppText.text(TextKey.Copy10LanHoanThanhViecHocDcd041),
-                    6 to 10,
-                ),
-                Triple(
-                    AppText.text(TextKey.CopyBanTayXanh9bd1dc),
-                    AppText.text(TextKey.CopyTuoiCayTrong10NgayKhacNhau786a07),
-                    3 to 10,
-                ),
-                Triple(
-                    AppText.text(TextKey.CopyBongHoaDauTien4d67d1),
-                    AppText.text(TextKey.CopyMotLoaiHoaDatGiaiDoanCuoi468527),
-                    0 to 1,
-                ),
-                Triple(
-                    AppText.text(TextKey.CopyCayTruongThanhDauTienF9a6e3),
-                    AppText.text(TextKey.CopyMotLoaiKhongHoaDatGiaiDoanCuoi120850),
-                    1 to 1,
-                ),
-                Triple(
-                    AppText.text(TextKey.CopyGocVuonDaDang8a3813),
-                    AppText.text(TextKey.CopyDangSoHuu3LoaiKhacNhauA27bf0),
-                    3 to 3,
-                ),
-                Triple(
-                    AppText.text(TextKey.CopyThangDeuDanD8b460),
-                    AppText.text(TextKey.Copy20NgayCoLichHoanThanh4b7346),
-                    5 to 20,
-                ),
+private fun liveInsightsContent(
+    world: BioWorld,
+    id: String,
+    live: LiveInsights,
+): InsightsRouteContent {
+    val detail =
+        live.state.snapshot.detail
+            ?.takeIf { it.task.id == id }
+    val display =
+        detail?.let {
+            TaskInsightsDisplay(
+                it.task.id,
+                it.task.title,
+                it.streak,
+                it.longest,
+                it.rate,
+                it.focusMinutes,
+                it.commonHour,
+                it.suggestion,
+                it.minute,
+                it.mode,
+                it.followUp,
             )
-        defaults.map { (title, criterion, progress) ->
-            AchievementDisplay(title, criterion, progress.first, progress.second)
         }
+    return InsightsRouteContent(
+        task = display,
+        tasks =
+            live.state.snapshot.tasks
+                .map { InsightTaskLink(it.id, it.title) },
+        period = live.period,
+        onPeriod = live::setPeriod,
+        onAddTask = live::addTask,
+        onTask = live::openTask,
+        onAdjust = { live.requestAdjustment(id) },
+        onSaveReminder = { minute, mode, follow -> live.saveReminder(id, InsightsReminderDraft(minute, mode, follow)) },
+        onSettings = live::openSettings,
+        calendar = { BioCalendar(world, live.period.toInt(), dayStates = detail?.days.orEmpty()) },
+        reminderDraft = display?.let { live.state.reminders[id] ?: InsightsReminderDraft(it.minute, it.mode, it.followUp) },
+        editReminder = { live.editReminder(id, it) },
+        busy = live.state.busy,
+    )
+}
+
+internal fun previewAchievements(): List<AchievementDisplay> {
+    val defaults =
+        listOf(
+            Triple(AppText.text(TextKey.CopyBuocDauTien5dbfda), AppText.text(TextKey.CopyHoanThanhMotViecHopLe912065), 1 to 1),
+            Triple(
+                AppText.text(TextKey.CopyBaNgayTotLanhD6a627),
+                AppText.text(TextKey.Copy3NgayCoLichHoanThanh0527b6),
+                3 to 3,
+            ),
+            Triple(AppText.text(TextKey.CopyMotTuanDeuDanD7d5ad), AppText.text(TextKey.Copy7NgayCoLichHoanThanh86a291), 5 to 7),
+            Triple(
+                AppText.text(TextKey.CopyKhoiDauTapTrungC3b5b9),
+                AppText.text(TextKey.CopyHoanThanhMotPhienItNhat25Phut6bcfa2),
+                0 to 1,
+            ),
+            Triple(
+                AppText.text(TextKey.CopyNhipHocTapF10229),
+                AppText.text(TextKey.Copy10LanHoanThanhViecHocDcd041),
+                6 to 10,
+            ),
+            Triple(
+                AppText.text(TextKey.CopyBanTayXanh9bd1dc),
+                AppText.text(TextKey.CopyTuoiCayTrong10NgayKhacNhau786a07),
+                3 to 10,
+            ),
+            Triple(
+                AppText.text(TextKey.CopyBongHoaDauTien4d67d1),
+                AppText.text(TextKey.CopyMotLoaiHoaDatGiaiDoanCuoi468527),
+                0 to 1,
+            ),
+            Triple(
+                AppText.text(TextKey.CopyCayTruongThanhDauTienF9a6e3),
+                AppText.text(TextKey.CopyMotLoaiKhongHoaDatGiaiDoanCuoi120850),
+                1 to 1,
+            ),
+            Triple(
+                AppText.text(TextKey.CopyGocVuonDaDang8a3813),
+                AppText.text(TextKey.CopyDangSoHuu3LoaiKhacNhauA27bf0),
+                3 to 3,
+            ),
+            Triple(
+                AppText.text(TextKey.CopyThangDeuDanD8b460),
+                AppText.text(TextKey.Copy20NgayCoLichHoanThanh4b7346),
+                5 to 20,
+            ),
+        )
+    return defaults.map { (title, criterion, progress) ->
+        AchievementDisplay(title, criterion, progress.first, progress.second)
     }
+}
 
 internal fun timelineRouteContent(
     world: BioWorld,
     ui: BioController,
+    live: LiveJournal? = null,
 ): TimelineRouteContent {
     val notes = world.state.o("notes")
     val memories =
-        world.state.a("memories").objects().map { memory ->
+        live?.state?.memories?.map {
+            val date =
+                java.text.DateFormat
+                    .getDateTimeInstance(
+                        java.text.DateFormat.SHORT,
+                        java.text.DateFormat.SHORT,
+                        bioLocale(),
+                    ).format(java.util.Date(it.at))
+            TimelineMemory(it.id, date, it.title, it.related, it.note)
+        } ?: world.state.a("memories").objects().map { memory ->
             val id = memory.s("id")
             TimelineMemory(
                 id = id,
@@ -269,30 +366,57 @@ internal fun timelineRouteContent(
     return TimelineRouteContent(
         memories = memories,
         onRelated = { target ->
-            val destination = target.toBioDestination()
-            ui.go(destination.routeId, destination.argument)
+            if (live == null) {
+                val destination = target.toBioDestination()
+                ui.go(destination.routeId, destination.argument)
+            } else {
+                live.openRelated(target)
+            }
         },
-        onSaveNote = { id, note -> ui.send("memory-note", mapOf("id" to id, "note" to note)) },
+        onSaveNote = { id, note -> live?.saveMemory(id, note) },
+        noteFor = live?.let { route -> { memory -> route.state.memory(memory.id, memory.note) } },
+        onEdit = live?.let { it::editMemory },
+        busy = live?.state?.busy == true,
     )
 }
 
 internal fun encyclopediaRouteContent(
     world: BioWorld,
     ui: BioController,
+    live: LiveCatalog? = null,
 ): EncyclopediaRouteContent {
     val species = world.species
-    val collection = world.gardenCollection
+    val collection = live?.state?.collection
     return EncyclopediaRouteContent(
         discovered =
-            collection?.species?.count { it.discovered }
-                ?: world.records.count { it.b("discovered") },
+            if (live == null) {
+                world.records.count { it.b("discovered") }
+            } else {
+                collection?.species?.count { it.discovered } ?: 0
+            },
         speciesCount = species.size,
         goals =
-            collection?.milestones?.toEncyclopediaGoals()
-                ?: world.data.a("goals").objects().filter { it.s("id") !in listOf("expansion", "section") }.map {
+            if (live != null) {
+                collection?.milestones?.toEncyclopediaGoals().orEmpty()
+            } else {
+                world.data.a("goals").objects().filter { it.s("id") !in listOf("expansion", "section") }.map {
                     CollectionGoalDisplay(it.s("title"), it.i("n"), it.i("target", 1), it.s("reward"))
-                },
-        item = { index, modifier -> BioProduct(world, ui, species[index], modifier, encyclopedia = true) },
+                }
+            },
+        item = { index, modifier ->
+            val item = species[index]
+            val entry = live?.state?.species(item.s("id"))
+            BioProduct(
+                world,
+                ui,
+                item,
+                modifier,
+                encyclopedia = true,
+                catalogStatus = if (live == null) null else entry?.status ?: AppText.text(TextKey.CopyChuaKhamPhaC0b0cb),
+                catalogKnown = if (live == null) null else entry?.let { it.discovered || it.planted > 0 || it.ownedSeeds > 0 } ?: false,
+                onProductClick = live?.let { binding -> { binding.openSpecies(item.s("id")) } },
+            )
+        },
     )
 }
 
@@ -300,13 +424,28 @@ internal fun speciesRouteContent(
     world: BioWorld,
     ui: BioController,
     argument: String,
+    live: LiveCatalog? = null,
 ): SpeciesRouteContent {
     val species = world.species(argument)
     val id = species.s("id")
-    val record = world.record(id)
-    val collected = world.gardenCollection?.species?.firstOrNull { it.id == id }
-    val trees = world.trees.filter { it.s("species") == id }
+    val record = if (live == null) world.record(id) else org.json.JSONObject()
+    val collected = live?.state?.species(id)
+    val trees =
+        if (live == null) {
+            world.trees.filter { it.s("species") == id }.map {
+                SpeciesTreeDisplay(it.s("id"), it.s("name"), living = it.s("state") != "dead", stage = it.i("stage"))
+            }
+        } else {
+            live.state.trees.takeIf { live.state.treeSpeciesId == id }.orEmpty().map {
+                SpeciesTreeDisplay(it.id.toString(), it.name, living = it.living, stage = it.stage)
+            }
+        }
     val noRecord = AppText.text(TextKey.CopyChuaGhiNhanF7654d)
+
+    fun recordDate(timestamp: Long?): String =
+        timestamp
+            ?.takeIf { it > 0 }
+            ?.let { SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date(it)) } ?: noRecord
     return SpeciesRouteContent(
         state =
             speciesDisplay(
@@ -319,19 +458,20 @@ internal fun speciesRouteContent(
                 highest = record.i("highest"),
                 stages = species.i("stages"),
                 planted = record.i("planted"),
-                owned = world.count(id),
-                firstPlanted = record.s("firstPlanted", noRecord),
-                firstMatured = record.s("firstMatured", noRecord),
-                trees =
-                    trees.map {
-                        SpeciesTreeDisplay(it.s("id"), it.s("name"), living = it.s("state") != "dead", stage = it.i("stage"))
-                    },
+                owned = if (live == null) world.count(id) else collected?.ownedSeeds ?: 0,
+                firstPlanted = if (live == null) record.s("firstPlanted", noRecord) else recordDate(collected?.firstPlanted),
+                firstMatured = if (live == null) record.s("firstMatured", noRecord) else recordDate(collected?.firstMatured),
+                trees = trees,
                 collection = collected,
             ),
-        onTree = { ui.go("tree", it) },
+        onTree = { if (live == null) ui.go("tree", it) else live.openTree(it) },
         onShop = {
-            ui.shopSelection.shopTab = "seeds"
-            ui.go("shop")
+            if (live == null) {
+                ui.shopSelection.shopTab = "seeds"
+                ui.go("shop")
+            } else {
+                live.openSeeds()
+            }
         },
     )
 }

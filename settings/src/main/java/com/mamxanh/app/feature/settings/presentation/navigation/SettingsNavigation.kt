@@ -1,5 +1,6 @@
 package com.mamxanh.app.feature.settings.presentation.navigation
 
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.compositionLocalOf
 import com.mamxanh.app.core.presentation.navigation.HabiTreeFeatureDestination
 import com.mamxanh.app.core.presentation.navigation.HabiTreeFeatureModule
@@ -28,6 +29,8 @@ class SettingsRouteContent(
     val onToggle: (String, Boolean) -> Unit,
     val onSave: (String, String) -> Unit,
     val onLink: (SettingsLink) -> Unit,
+    val editQuietHours: ((String, String) -> Unit)? = null,
+    val busy: Boolean = false,
 )
 
 class BackupRouteContent(
@@ -36,12 +39,12 @@ class BackupRouteContent(
 )
 
 val LocalSettingsRouteContent =
-    compositionLocalOf<() -> SettingsRouteContent> {
+    compositionLocalOf<@Composable () -> SettingsRouteContent> {
         error("Settings route requires its state and actions")
     }
 
 val LocalBackupRouteContent =
-    compositionLocalOf<() -> BackupRouteContent> {
+    compositionLocalOf<@Composable () -> BackupRouteContent> {
         error("Backup route requires its state and actions")
     }
 
@@ -49,7 +52,15 @@ val settingsFeatureNavigation =
     HabiTreeFeatureModule(
         HabiTreeFeatureDestination("settings", content = {
             val content = LocalSettingsRouteContent.current()
-            SettingsScreen(content.state, content.onLanguage, content.onToggle, content.onSave, content.onLink)
+            SettingsScreen(
+                content.state,
+                content.onLanguage,
+                content.onToggle,
+                content.onSave,
+                content.onLink,
+                content.editQuietHours,
+                content.busy,
+            )
         }) { argument -> SettingsKey.takeIf { argument.isEmpty() } },
         HabiTreeFeatureDestination("data", content = {
             val content = LocalBackupRouteContent.current()

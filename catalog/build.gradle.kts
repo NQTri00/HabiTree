@@ -19,6 +19,8 @@ kotlin {
 }
 dependencies {
     implementation(project(":core-presentation"))
+    implementation(libs.koin.android)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
     api(project(":catalog:domain"))
     implementation(project(":core-ui"))
     implementation(platform(libs.androidx.compose.bom))

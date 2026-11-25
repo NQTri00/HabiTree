@@ -16,6 +16,7 @@ import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.ui.NavDisplay
 import com.mamxanh.app.core.components.design.*
@@ -30,6 +31,7 @@ import com.mamxanh.app.feature.catalog.presentation.navigation.LocalSpeciesRoute
 import com.mamxanh.app.feature.garden.presentation.navigation.LocalGardenRouteContent
 import com.mamxanh.app.feature.home.presentation.navigation.LocalHomeRouteContent
 import com.mamxanh.app.feature.home.presentation.navigation.LocalOnboardingRouteContent
+import com.mamxanh.app.feature.home.presentation.ui.home.HomeAction
 import com.mamxanh.app.feature.inventory.presentation.navigation.LocalInventoryRouteContent
 import com.mamxanh.app.feature.settings.presentation.navigation.LocalBackupRouteContent
 import com.mamxanh.app.feature.settings.presentation.navigation.LocalSettingsRouteContent
@@ -39,7 +41,6 @@ import com.mamxanh.app.feature.stats.presentation.navigation.LocalStatisticsRout
 import com.mamxanh.app.feature.stats.presentation.navigation.LocalTimelineRouteContent
 import com.mamxanh.app.feature.stats.presentation.navigation.LocalWeeklyReviewRouteContent
 import com.mamxanh.app.feature.stats.presentation.navigation.StatisticsRouteContent
-import com.mamxanh.app.feature.stats.presentation.ui.stats.StatisticsLink
 import com.mamxanh.app.feature.stats.presentation.ui.stats.StatisticsScreenState
 import com.mamxanh.app.feature.tasks.presentation.navigation.LocalFocusRouteContent
 import com.mamxanh.app.feature.tasks.presentation.navigation.LocalInsightsRouteContent
@@ -61,8 +62,22 @@ import com.mamxanh.shared.localization.TextKey
         },
     modifier: Modifier = Modifier,
     routes: HabiTreeRouteRegistry = previewRouteRegistry,
+    refreshWorld: suspend () -> Unit = {},
 ) {
     ui.world = world
+    val livePlanting = if (world.native) bindLivePlanting(world, ui) else null
+    val treeHomeSelection = if (world.native && ui.route == "tree") bindTreeHomeSelection(world, ui) else null
+    val accessoryCatalog =
+        if (world.native && ui.route in setOf("home", "shop", "inventory", "tree")) {
+            bindLiveAccessoryCatalog(world, ui.modal)
+        } else {
+            null
+        }
+    val liveCatalog = if (world.native && ui.route in setOf("encyclopedia", "species")) bindLiveCatalog(world, ui) else null
+    val liveShop = if (world.native) bindLiveShop(world, ui) else null
+    val liveForm = if (world.native && ui.route == "task-new") bindLiveTaskForm(ui) else null
+    val liveTemplates = if (world.native && ui.route == "templates") bindLiveTemplates(ui) else null
+    val liveFocus = if (world.native && ui.route == "focus") bindLiveFocus(ui) else null
     val holders = rememberSaveableStateHolder()
     val primary = ui.route in listOf("home", "tasks", "garden", "shop", "stats")
     val inspection = LocalInspectionMode.current
@@ -96,17 +111,41 @@ import com.mamxanh.shared.localization.TextKey
             val navigationVisible = ui.route !in listOf("onboard", "data") && !actionDockVisible
             CompositionLocalProvider(
                 LocalBioExpanded provides (ui.tabs["expanded"] == "true"),
-                LocalStatisticsRouteContent provides { statisticsRouteContent(world, ui) },
-                LocalWeeklyReviewRouteContent provides { weeklyReviewRouteContent(world, ui) },
-                LocalAchievementsRouteContent provides { achievementEntries(world) },
-                LocalTimelineRouteContent provides { timelineRouteContent(world, ui) },
-                LocalGardenRouteContent provides { gardenRouteContent(world, ui) },
-                LocalEncyclopediaRouteContent provides { encyclopediaRouteContent(world, ui) },
-                LocalSpeciesRouteContent provides { argument -> speciesRouteContent(world, ui, argument) },
-                LocalSettingsRouteContent provides { settingsRouteContent(world, ui) },
-                LocalBackupRouteContent provides { backupRouteContent(world, ui) },
-                LocalRestRouteContent provides { restRouteContent(world, ui) },
-                LocalInsightsRouteContent provides { argument -> insightsRouteContent(world, ui, argument) },
+                LocalStatisticsRouteContent provides {
+                    if (world.native) liveStatisticsRouteContent(world, ui) else statisticsRouteContent(world, ui)
+                },
+                LocalWeeklyReviewRouteContent provides {
+                    if (world.native) {
+                        weeklyReviewRouteContent(world, ui, bindLiveJournal(ui, world, loadTimeline = false))
+                    } else {
+                        weeklyReviewRouteContent(world, ui)
+                    }
+                },
+                LocalAchievementsRouteContent provides {
+                    if (world.native) liveAchievements(world, ui) else previewAchievements()
+                },
+                LocalTimelineRouteContent provides {
+                    timelineRouteContent(world, ui, if (world.native) bindLiveJournal(ui, world, loadTimeline = true) else null)
+                },
+                LocalGardenRouteContent provides {
+                    if (world.native) liveGardenRouteContent(world, ui) else gardenRouteContent(world, ui)
+                },
+                LocalEncyclopediaRouteContent provides { encyclopediaRouteContent(world, ui, liveCatalog) },
+                LocalSpeciesRouteContent provides { argument -> speciesRouteContent(world, ui, argument, liveCatalog) },
+                LocalSettingsRouteContent provides {
+                    if (world.native) liveSettingsRouteContent(world, ui) else settingsRouteContent(world, ui)
+                },
+                LocalBackupRouteContent provides {
+                    val model = if (world.native) backupViewModel() else null
+                    val backup = model?.state?.collectAsStateWithLifecycle()?.value
+                    backupRouteContent(world, ui, model, backup?.display)
+                },
+                LocalRestRouteContent provides {
+                    restRouteContent(world, ui, if (world.native) bindLiveRest(world, ui) else null)
+                },
+                LocalInsightsRouteContent provides { argument ->
+                    insightsRouteContent(world, ui, argument, if (world.native) bindLiveInsights(world, ui, argument) else null)
+                },
                 LocalTemplatesRouteContent provides {
                     templatesRouteContent(
                         world,
@@ -114,23 +153,32 @@ import com.mamxanh.shared.localization.TextKey
                         if (compactScreen) {
                             null
                         } else {
-                            { BioTemplateActions(ui) }
+                            { if (liveTemplates == null) BioTemplateActions(ui) else liveTemplates.Actions() }
                         },
+                        selection = liveTemplates,
                     )
                 },
-                LocalTaskListRouteContent provides { taskListRouteContent(world, ui) },
-                LocalTaskDetailRouteContent provides { argument -> taskDetailRouteContent(world, ui, argument) },
+                LocalTaskListRouteContent provides {
+                    if (world.native) liveTaskListRouteContent(ui) else taskListRouteContent(world, ui)
+                },
+                LocalTaskDetailRouteContent provides { argument ->
+                    if (world.native) liveTaskDetailRouteContent(ui, argument) else taskDetailRouteContent(world, ui, argument)
+                },
                 LocalTaskFormRouteContent provides { argument ->
-                    taskFormRouteContent(
-                        world,
-                        ui,
-                        argument,
-                        if (compactScreen) {
-                            null
-                        } else {
-                            { BioTaskFormActions(world, ui) }
-                        },
-                    )
+                    if (liveForm != null && ui.param == argument) {
+                        liveForm.content(compactScreen)
+                    } else {
+                        taskFormRouteContent(
+                            world,
+                            ui,
+                            argument,
+                            if (compactScreen) {
+                                null
+                            } else {
+                                { BioTaskFormActions(world, ui) }
+                            },
+                        )
+                    }
                 },
                 LocalFocusRouteContent provides { argument ->
                     focusRouteContent(
@@ -140,15 +188,48 @@ import com.mamxanh.shared.localization.TextKey
                         if (compactScreen) {
                             null
                         } else {
-                            { BioFocusActions(world, ui) }
+                            { if (liveFocus == null) BioFocusActions(world, ui) else liveFocus.Actions(world) }
                         },
+                        selection = liveFocus,
                     )
                 },
-                LocalInventoryRouteContent provides { inventoryRouteContent(world, ui) },
-                LocalShopRouteContent provides { argument -> shopRouteContent(world, ui, argument) },
-                LocalHomeRouteContent provides { homeRouteContent(world, ui, shortScreen) },
-                LocalOnboardingRouteContent provides { onboardingRouteContent(world, ui, gutter) },
-                LocalTreeRouteContent provides { argument -> treeRouteContent(world, ui, argument, compactScreen) },
+                LocalInventoryRouteContent provides {
+                    if (world.native) liveInventoryRouteContent(world, ui, accessoryCatalog) else inventoryRouteContent(world, ui)
+                },
+                LocalShopRouteContent provides { argument -> shopRouteContent(world, ui, argument, liveShop, accessoryCatalog) },
+                LocalHomeRouteContent provides {
+                    if (world.native) {
+                        liveHomeRouteContent(
+                            world,
+                            ui,
+                            shortScreen,
+                            accessoryCatalog,
+                        )
+                    } else {
+                        homeRouteContent(world, ui, shortScreen)
+                    }
+                },
+                LocalOnboardingRouteContent provides {
+                    if (world.native) {
+                        liveOnboardingRouteContent(
+                            world,
+                            ui,
+                            gutter,
+                            refreshWorld,
+                        )
+                    } else {
+                        onboardingRouteContent(world, ui, gutter)
+                    }
+                },
+                LocalTreeRouteContent provides { argument ->
+                    if (world.native) {
+                        liveTreeRouteContent(world, ui, argument, compactScreen, accessoryCatalog) { id ->
+                            treeHomeSelection?.dispatch(HomeAction.SelectTree(id))
+                        }
+                    } else {
+                        treeRouteContent(world, ui, argument, compactScreen)
+                    }
+                },
             ) {
                 Column(Modifier.fillMaxSize()) {
                     val title =
@@ -224,9 +305,9 @@ import com.mamxanh.shared.localization.TextKey
                     if (actionDockVisible) {
                         BioActionDock {
                             when (ui.route) {
-                                "task-new" -> BioTaskFormActions(world, ui)
-                                "templates" -> BioTemplateActions(ui)
-                                "focus" -> BioFocusActions(world, ui)
+                                "task-new" -> if (liveForm == null) BioTaskFormActions(world, ui) else liveForm.Actions()
+                                "templates" -> if (liveTemplates == null) BioTemplateActions(ui) else liveTemplates.Actions()
+                                "focus" -> if (liveFocus == null) BioFocusActions(world, ui) else liveFocus.Actions(world)
                                 else -> Unit
                             }
                         }
@@ -234,8 +315,7 @@ import com.mamxanh.shared.localization.TextKey
                     if (navigationVisible) {
                         BioNav(ui.route) {
                             if (it == "shop") {
-                                ui.shopSelection.targetTree = ""
-                                ui.plantingSelection.clear()
+                                ui.resetShopContext()
                             }
                             ui.go(it, root = true)
                         }
@@ -251,7 +331,11 @@ import com.mamxanh.shared.localization.TextKey
                             .padding(start = AppDimensions.Dp15, end = AppDimensions.Dp15, bottom = bottom),
                     )
                 }
-                if (ui.modal.isNotBlank())CompositionLocalProvider(LocalBioButtonSize provides 13) { BioModal(world, ui) }
+                if (ui.modal.isNotBlank()) {
+                    CompositionLocalProvider(LocalBioButtonSize provides 13) {
+                        BioModal(world, ui, livePlanting, liveShop, treeHomeSelection)
+                    }
+                }
             }
         }
     }
@@ -280,26 +364,15 @@ private fun statisticsRouteContent(
         state =
             StatisticsScreenState(
                 total = statistics.i("total"),
-                treeCount = world.trees.size,
+                treeCount = world.treeIds.size,
                 week = statistics.i("week"),
                 today = statistics.i("today"),
                 streak = statistics.i("streak"),
                 dailyCompletions = world.statisticsDailyCompletions(),
                 dayLabels = world.statisticsDayLabels(),
             ),
-        onNavigate = { link ->
-            val route =
-                when (link) {
-                    StatisticsLink.Review -> BioRoute.REVIEW
-                    StatisticsLink.Achievements -> BioRoute.ACHIEVEMENTS
-                    StatisticsLink.Timeline -> BioRoute.TIMELINE
-                    StatisticsLink.Focus -> BioRoute.FOCUS
-                    StatisticsLink.Settings -> BioRoute.SETTINGS
-                    StatisticsLink.More -> BioRoute.MORE
-                }
-            ui.go(route.id)
-        },
-        onRefresh = { ui.send("refresh") },
+        onNavigate = { ui.go(it.destination().id) },
+        onRefresh = { Unit },
     )
 }
 

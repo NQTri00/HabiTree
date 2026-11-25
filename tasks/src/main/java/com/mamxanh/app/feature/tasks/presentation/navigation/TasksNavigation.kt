@@ -13,11 +13,13 @@ import com.mamxanh.app.feature.tasks.presentation.ui.form.TaskFormDisplay
 import com.mamxanh.app.feature.tasks.presentation.ui.form.TaskFormField
 import com.mamxanh.app.feature.tasks.presentation.ui.form.TaskFormScreen
 import com.mamxanh.app.feature.tasks.presentation.ui.insights.InsightTaskLink
+import com.mamxanh.app.feature.tasks.presentation.ui.insights.InsightsReminderDraft
 import com.mamxanh.app.feature.tasks.presentation.ui.insights.TaskInsightsDisplay
 import com.mamxanh.app.feature.tasks.presentation.ui.insights.TaskInsightsScreen
 import com.mamxanh.app.feature.tasks.presentation.ui.list.TaskListAction
 import com.mamxanh.app.feature.tasks.presentation.ui.list.TaskListScreen
 import com.mamxanh.app.feature.tasks.presentation.ui.list.TaskListState
+import com.mamxanh.app.feature.tasks.presentation.ui.rest.RestControls
 import com.mamxanh.app.feature.tasks.presentation.ui.rest.RestScreen
 import com.mamxanh.app.feature.tasks.presentation.ui.rest.RestScreenState
 import com.mamxanh.app.feature.tasks.presentation.ui.templates.TaskTemplateDisplay
@@ -73,10 +75,11 @@ class RestRouteContent(
     val onBuy: () -> Unit,
     val onProtect: (String) -> Unit,
     val calendar: @Composable () -> Unit,
+    val controls: RestControls? = null,
 )
 
 val LocalRestRouteContent =
-    compositionLocalOf<() -> RestRouteContent> {
+    compositionLocalOf<@Composable () -> RestRouteContent> {
         error("Rest route requires its state and actions")
     }
 
@@ -91,10 +94,13 @@ class InsightsRouteContent(
     val onSaveReminder: (String, String, Boolean) -> Unit,
     val onSettings: () -> Unit,
     val calendar: @Composable () -> Unit,
+    val reminderDraft: InsightsReminderDraft? = null,
+    val editReminder: ((InsightsReminderDraft) -> Unit)? = null,
+    val busy: Boolean = false,
 )
 
 val LocalInsightsRouteContent =
-    compositionLocalOf<(String) -> InsightsRouteContent> {
+    compositionLocalOf<@Composable (String) -> InsightsRouteContent> {
         error("Insights route requires its state and actions")
     }
 
@@ -117,7 +123,7 @@ class TaskListRouteContent(
 )
 
 val LocalTaskListRouteContent =
-    compositionLocalOf<() -> TaskListRouteContent> {
+    compositionLocalOf<@Composable () -> TaskListRouteContent> {
         error("TaskList route requires its state and actions")
     }
 
@@ -132,7 +138,7 @@ class TaskDetailRouteContent(
 )
 
 val LocalTaskDetailRouteContent =
-    compositionLocalOf<(String) -> TaskDetailRouteContent> {
+    compositionLocalOf<@Composable (String) -> TaskDetailRouteContent> {
         error("TaskDetail route requires its state and actions")
     }
 
@@ -215,6 +221,7 @@ val tasksFeatureNavigation =
                 onBuy = content.onBuy,
                 onProtect = content.onProtect,
                 calendar = content.calendar,
+                controls = content.controls,
             )
         }) { RestKey.takeIf { _ -> it.isEmpty() } },
         HabiTreeFeatureDestination("insights", content = {
@@ -230,6 +237,9 @@ val tasksFeatureNavigation =
                 onSaveReminder = content.onSaveReminder,
                 onSettings = content.onSettings,
                 calendar = content.calendar,
+                reminderDraft = content.reminderDraft,
+                editReminder = content.editReminder,
+                busy = content.busy,
             )
         }) { InsightsKey(it) },
     )

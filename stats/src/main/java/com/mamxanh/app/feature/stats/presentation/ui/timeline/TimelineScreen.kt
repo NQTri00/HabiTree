@@ -17,6 +17,9 @@ fun TimelineScreen(
     memories: List<TimelineMemory>,
     onRelated: (TimelineRelated) -> Unit,
     onSaveNote: (String, String) -> Unit,
+    noteFor: ((TimelineMemory) -> String)? = null,
+    onEdit: ((String, String) -> Unit)? = null,
+    busy: Boolean = false,
 ) {
     Bt(
         stringResource(R.string.copy_dieu_minh_muon_nho_665bc8),
@@ -43,7 +46,8 @@ fun TimelineScreen(
             verticalArrangement = Arrangement.spacedBy(AppDimensions.Dp28),
         ) {
             memories.forEach { m ->
-                var note by rememberSaveable(m.id) { mutableStateOf(m.note) }
+                var previewNote by rememberSaveable(m.id) { mutableStateOf(m.note) }
+                val note = noteFor?.invoke(m) ?: previewNote
                 Column(
                     Modifier.drawBehind {
                         drawCircle(
@@ -63,14 +67,14 @@ fun TimelineScreen(
                     BioField(
                         "",
                         note,
-                        { note = it.take(1000) },
+                        { if (onEdit == null) previewNote = it.take(1000) else onEdit(m.id, it) },
                         multiline = true,
                         placeholder = stringResource(R.string.copy_mot_dieu_muon_nho_200cc4),
                     )
                     Spacer(Modifier.height(AppDimensions.Dp8))
                     BioTextAction(
                         stringResource(R.string.copy_luu_ghi_chu_e3d8bd),
-                        { onSaveNote(m.id, note) },
+                        { if (!busy) onSaveNote(m.id, note) },
                         modifier = Modifier.fillMaxWidth(),
                     )
                 }

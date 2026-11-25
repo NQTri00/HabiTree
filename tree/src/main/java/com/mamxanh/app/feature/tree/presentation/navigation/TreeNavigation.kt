@@ -27,7 +27,7 @@ class TreeRouteContent(
 )
 
 val LocalTreeRouteContent =
-    compositionLocalOf<(String) -> TreeRouteContent> {
+    compositionLocalOf<@Composable (String) -> TreeRouteContent> {
         error("Tree route requires its state and actions")
     }
 

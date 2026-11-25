@@ -25,6 +25,7 @@ import com.mamxanh.app.feature.home.presentation.ui.home.HomeReward
 import com.mamxanh.app.feature.inventory.presentation.navigation.InventoryRouteContent
 import com.mamxanh.app.feature.shop.presentation.navigation.ShopRouteContent
 import com.mamxanh.app.feature.shop.presentation.ui.shop.ShopTreeContext
+import com.mamxanh.app.feature.tree.domain.repository.AccessorySnapshot
 import com.mamxanh.core.ui.R
 import com.mamxanh.shared.localization.AppText
 import com.mamxanh.shared.localization.TextKey
@@ -66,8 +67,9 @@ internal fun accessoryIcon(id: String) =
 internal fun BioReward(
     world: BioWorld,
     ui: BioController,
+    claim: () -> Unit = { Unit },
 ) {
-    HomeReward(world.state.b("claimed"), world.data.o("phase").b("canClaim")) { ui.send("claim") }
+    HomeReward(world.state.b("claimed"), world.data.o("phase").b("canClaim"), claim)
 }
 
 @Composable internal fun BioProduct(
@@ -78,16 +80,22 @@ internal fun BioReward(
     inventory: Boolean = false,
     target: String = "",
     encyclopedia: Boolean = false,
+    onProductClick: (() -> Unit)? = null,
+    ownedQuantity: Int? = null,
+    equippedCan: String = world.state.s("equipped"),
+    catalogStatus: String? = null,
+    catalogKnown: Boolean? = null,
+    accessoryCatalog: AccessorySnapshot? = null,
 ) {
     val id = item.s("id")
     val seed = world.species.any { it.s("id") == id }
     val accessory =
         item.s("category") == "TREE"
-    val owned =
-        (if (inventory)world.inventoryCount(id, accessory) else world.owned(id)) > 0
-    val equipped = world.trees.any { it.s("decor") == id }
+    val quantity = ownedQuantity ?: world.inventoryCount(id, accessory)
+    val owned = if (inventory) quantity > 0 else accessoryCatalog?.owns(id) ?: (world.owned(id) > 0)
+    val equipped = accessoryCatalog?.equipped(id) ?: world.trees.any { it.s("decor") == id }
     val known =
-        world.record(id).b("discovered") || world.record(id).i("planted") > 0 || world.count(id) > 0
+        !encyclopedia || (catalogKnown ?: (world.record(id).b("discovered") || world.record(id).i("planted") > 0 || world.count(id) > 0))
     val action = {
         if (encyclopedia) {
             ui.go("species", id)
@@ -97,7 +105,7 @@ internal fun BioReward(
             if (seed) {
                 ui.act("plant:$id:${ui.plantingSelection.plotKey}")
             } else if (item.b("permanent")) {
-                ui.send("equip:$id")
+                Unit
             } else {
                 ui.show("fertilizer-help")
             }
@@ -105,7 +113,7 @@ internal fun BioReward(
             ui.show("purchase", id)
         }
     }
-    BioCard(modifier, padding = AppSpacing.VALUE_12, onClick = action) {
+    BioCard(modifier, padding = AppSpacing.VALUE_12, onClick = onProductClick ?: action) {
         val backdrop =
             Brush.linearGradient(
                 if (seed &&
@@ -160,7 +168,7 @@ internal fun BioReward(
         Spacer(Modifier.height(AppDimensions.Dp10))
         if (encyclopedia) {
             Bt(
-                world.record(id).s("status", stringResource(R.string.copy_chua_kham_pha_c0b0cb)),
+                catalogStatus ?: world.record(id).s("status", stringResource(R.string.copy_chua_kham_pha_c0b0cb)),
                 size = AppTypography.SIZE_11,
                 tint = bp.muted,
                 line = AppTypography.LINE_HEIGHT_15_4,
@@ -199,7 +207,7 @@ internal fun BioReward(
             Bt(
                 if (inventory) {
                     if (item.b("permanent")) {
-                        if (world.state.s("equipped") ==
+                        if (equippedCan ==
                             id
                         ) {
                             stringResource(R.string.copy_dang_dung_275ca2)
@@ -207,12 +215,12 @@ internal fun BioReward(
                             stringResource(R.string.copy_trang_bi_9e8e12)
                         }
                     } else {
-                        "×${world.inventoryCount(id, accessory)}"
+                        "×$quantity"
                     }
                 } else if (item.b("permanent") &&
-                    world.count(id) > 0
+                    quantity > 0
                 ) {
-                    if (world.state.s("equipped") ==
+                    if (equippedCan ==
                         id
                     ) {
                         stringResource(R.string.copy_dang_dung_275ca2)
@@ -247,32 +255,53 @@ private fun catalogProducts(
 internal fun inventoryRouteContent(
     world: BioWorld,
     ui: BioController,
+    live: LiveInventory? = null,
+    accessoryCatalog: AccessorySnapshot? = null,
 ): InventoryRouteContent {
-    val tab = ui.shopSelection.inventoryTab
+    val tab = live?.state?.tab ?: ui.shopSelection.inventoryTab
     val items =
         catalogProducts(world, tab).filter {
-            world.inventoryCount(it.s("id"), accessory = tab == "accessories") > 0
+            live?.state?.contains(it.s("id")) ?: (world.inventoryCount(it.s("id"), accessory = tab == "accessories") > 0)
         }
     val openShop = {
-        ui.shopSelection.shopTab = tab
-        ui.go("shop")
+        if (live == null) {
+            ui.shopSelection.shopTab = tab
+            ui.go("shop")
+        } else {
+            live.openShop()
+        }
     }
     return InventoryRouteContent(
         tab = tab,
         itemCount = items.size,
-        onTab = { ui.shopSelection.inventoryTab = it },
+        onTab = { if (live == null) ui.shopSelection.inventoryTab = it else live.selectTab(it) },
         onShop = openShop,
         onBuy = openShop,
         item = { index, modifier ->
+            val item = items[index]
+            val target =
+                (
+                    if (live ==
+                        null
+                    ) {
+                        ui.shopSelection.targetTree
+                    } else {
+                        ui.accessoryTargetArgument
+                    }
+                ).ifBlank { ui.homeTreeState.selectedId }
             BioProduct(
                 world,
                 ui,
-                items[index],
+                item,
                 modifier,
                 inventory = true,
-                target =
-                    ui.shopSelection.targetTree.ifBlank {
-                        ui.homeTreeState.selectedId
+                target = target,
+                ownedQuantity = live?.state?.count(item.s("id")),
+                equippedCan = live?.state?.equippedCan ?: world.state.s("equipped"),
+                accessoryCatalog = accessoryCatalog,
+                onProductClick =
+                    live?.let { binding ->
+                        { binding.use(item.s("id"), target, item.b("permanent")) }
                     },
             )
         },
@@ -283,20 +312,44 @@ internal fun shopRouteContent(
     world: BioWorld,
     ui: BioController,
     argument: String,
+    live: LiveShop? = null,
+    accessoryCatalog: AccessorySnapshot? = null,
 ): ShopRouteContent {
-    val tab = ui.shopSelection.shopTab
+    val tab = live?.state?.tab ?: ui.shopSelection.shopTab
     val items = catalogProducts(world, tab)
-    val selected = argument.takeIf { it.isNotBlank() }?.let(world::tree)
+    val selected =
+        if (live == null) {
+            world.tree(argument)?.let { ShopTreeContext(it.s("id"), it.s("name"), it.s("species")) }
+        } else {
+            accessoryCatalog
+                ?.trees
+                ?.firstOrNull { it.id == argument }
+                ?.let { ShopTreeContext(it.id, it.name, it.speciesId) }
+        }
     return ShopRouteContent(
         tab = tab,
-        shoppingTree = selected?.let { ShopTreeContext(it.s("id"), it.s("name"), it.s("species")) },
+        shoppingTree = selected,
         itemCount = items.size,
-        onTab = { ui.shopSelection.shopTab = it },
+        onTab = {
+            if (live == null) ui.shopSelection.shopTab = it else live.selectTab(it)
+        },
         onInventory = { ui.go("inventory") },
         onTree = { ui.go("tree", it) },
         onShop = { ui.go("shop") },
         item = { index, modifier ->
-            BioProduct(world, ui, items[index], modifier, target = ui.shopSelection.targetTree.ifBlank { ui.homeTreeState.selectedId })
+            val item = items[index]
+            val target = if (live == null) ui.shopSelection.targetTree else argument.ifBlank { ui.accessoryTargetArgument }
+            val wallet = live?.state?.wallet
+            BioProduct(
+                world,
+                ui,
+                item,
+                modifier,
+                target = target.ifBlank { ui.homeTreeState.selectedId },
+                ownedQuantity = if (wallet == null || tab == "accessories") null else wallet.inventory[item.s("id")] ?: 0,
+                equippedCan = wallet?.equippedCan ?: world.state.s("equipped"),
+                accessoryCatalog = accessoryCatalog,
+            )
         },
     )
 }

@@ -33,7 +33,7 @@ import com.mamxanh.app.R as AppR
     treeId: String,
     content: @Composable () -> Unit,
 ) {
-    val species = world.tree(treeId)?.s("species") ?: "succulent"
+    val species = world.treeSpecies(treeId) ?: "succulent"
     val p = world.data.o("palettes").o(species)
     val accent = color(p.s("accent", AppColors.HEX_CEE_3_C_4))
     val soft = color(p.s("soft", AppColors.HEX_E_7_EFDF))

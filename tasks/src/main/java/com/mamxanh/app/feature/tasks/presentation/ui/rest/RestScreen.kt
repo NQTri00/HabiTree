@@ -17,9 +17,13 @@ fun RestScreen(
     onBuy: () -> Unit,
     onProtect: (String) -> Unit,
     calendar: @Composable () -> Unit,
+    controls: RestControls? = null,
 ) {
-    var restDate by rememberSaveable { mutableStateOf(state.tomorrow) }
-    var protectDate by rememberSaveable { mutableStateOf("") }
+    var previewRest by rememberSaveable { mutableStateOf(state.tomorrow) }
+    var previewProtection by rememberSaveable { mutableStateOf("") }
+    val restDate = controls?.restDate ?: previewRest
+    val protectDate = controls?.protectionDate ?: previewProtection
+    val busy = controls?.busy == true
     Bt(
         stringResource(R.string.copy_nghi_cung_la_mot_nhip_e4f3b6),
         size = AppTypography.SIZE_27,
@@ -27,13 +31,21 @@ fun RestScreen(
         spacing = AppTypography.TRACKING_MINUS_1,
     )
     BioCard(Modifier.fillMaxWidth()) { calendar() }
-    BioDateField(stringResource(R.string.copy_ngay_nghi_sap_toi_a8efda), restDate, { restDate = it }, futureOnly = true)
+    BioDateField(stringResource(R.string.copy_ngay_nghi_sap_toi_a8efda), restDate, {
+        if (controls ==
+            null
+        ) {
+            previewRest = it
+        } else {
+            controls.onRestDate(it)
+        }
+    }, futureOnly = true)
     Bt(
         stringResource(R.string.copy_toi_da_2_ngay_thang_dat_truoc_ngay_nghi_khong_thuong_8811c2),
         size = AppTypography.SIZE_12,
         tint = bp.muted,
     )
-    BioButton(stringResource(R.string.copy_len_lich_nghi_d71876), { onSchedule(restDate) }, Modifier.fillMaxWidth())
+    BioButton(stringResource(R.string.copy_len_lich_nghi_d71876), { onSchedule(restDate) }, Modifier.fillMaxWidth(), enabled = !busy)
     val rest = state.scheduledDays
     if (rest.isNotEmpty()) {
         BioCard(Modifier.fillMaxWidth()) {
@@ -48,15 +60,23 @@ fun RestScreen(
     BioSection(stringResource(R.string.copy_ve_bao_ve_5a852e))
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
         BioTag(stringResource(R.string.copy_0_ve_604049, state.tickets), "award")
-        BioButton(stringResource(R.string.copy_mua_250_xu_aa5fe3), onBuy, secondary = true, enabled = state.canBuy)
+        BioButton(stringResource(R.string.copy_mua_250_xu_aa5fe3), onBuy, secondary = true, enabled = state.canBuy && !busy)
     }
-    BioDateField(stringResource(R.string.copy_ngay_da_bo_lo_9f55ee), protectDate, { protectDate = it })
+    BioDateField(stringResource(R.string.copy_ngay_da_bo_lo_9f55ee), protectDate, {
+        if (controls ==
+            null
+        ) {
+            previewProtection = it
+        } else {
+            controls.onProtectionDate(it)
+        }
+    })
     BioButton(
         stringResource(R.string.copy_dung_ve_767d96),
         { onProtect(protectDate) },
         Modifier.fillMaxWidth(),
         enabled =
-            state.tickets > 0 && protectDate.isNotBlank(),
+            state.tickets > 0 && protectDate.isNotBlank() && !busy,
     )
 }
 

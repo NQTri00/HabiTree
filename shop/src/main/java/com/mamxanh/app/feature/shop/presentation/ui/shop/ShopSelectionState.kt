@@ -18,27 +18,13 @@ class ShopSelectionState {
         quantity = value.coerceIn(1, 99)
     }
 
-    private fun total(
-        unitPrice: Int,
-        owned: Boolean,
-        permanent: Boolean,
-    ): Int = if (owned) 0 else unitPrice * if (permanent) 1 else quantity
-
     fun purchaseAvailability(
         coins: Int,
         unitPrice: Int,
         owned: Boolean,
         permanent: Boolean,
         busy: Boolean,
-    ): PurchaseAvailability {
-        val total = total(unitPrice, owned, permanent)
-        return PurchaseAvailability(
-            total = total,
-            canSubmit = !busy && coins >= total,
-            canBuyAccessory = !busy && coins >= unitPrice,
-            canEquipOrBuyAccessory = !busy && (owned || coins >= unitPrice),
-        )
-    }
+    ): PurchaseAvailability = purchaseAvailability(coins, unitPrice, owned, permanent, busy, quantity)
 
     fun accessoryTarget(
         livingIds: List<String>,
@@ -47,6 +33,23 @@ class ShopSelectionState {
         targetTree.takeIf(livingIds::contains)
             ?: homeTreeId.takeIf(livingIds::contains)
             ?: livingIds.firstOrNull()
+}
+
+fun purchaseAvailability(
+    coins: Int,
+    unitPrice: Int,
+    owned: Boolean,
+    permanent: Boolean,
+    busy: Boolean,
+    quantity: Int,
+): PurchaseAvailability {
+    val total = if (owned) 0 else unitPrice * if (permanent) 1 else quantity.coerceIn(1, 99)
+    return PurchaseAvailability(
+        total = total,
+        canSubmit = !busy && coins >= total,
+        canBuyAccessory = !busy && coins >= unitPrice,
+        canEquipOrBuyAccessory = !busy && (owned || coins >= unitPrice),
+    )
 }
 
 data class PurchaseAvailability(

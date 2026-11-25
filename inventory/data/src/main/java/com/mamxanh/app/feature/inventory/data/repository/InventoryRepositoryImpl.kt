@@ -9,6 +9,10 @@ class InventoryRepositoryImpl(
 ) : InventoryRepository {
     override fun quantities(): Map<String, Int> = storage.inventoryQuantities()
 
+    override fun equippedCan(): String = storage.garden().equippedCan
+
+    override fun accessoryQuantities(): Map<String, Int> = storage.livingGarden().owned
+
     override fun equipWateringCan(id: String): InventoryActionResult {
         val result = storage.equipCan(id)
         return InventoryActionResult(result.success, result.message)

@@ -4,4 +4,5 @@ data class ShopWallet(
     val coins: Int,
     val inventory: Map<String, Int>,
     val equippedCan: String = "can_basic",
+    val hasPlantingPlot: Boolean = false,
 )

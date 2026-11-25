@@ -26,7 +26,7 @@ class InventoryRouteContent(
 )
 
 val LocalInventoryRouteContent =
-    compositionLocalOf<() -> InventoryRouteContent> {
+    compositionLocalOf<@Composable () -> InventoryRouteContent> {
         error("Inventory route requires its state and actions")
     }
 

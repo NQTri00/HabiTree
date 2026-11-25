@@ -8,6 +8,10 @@ data class InventoryActionResult(
 interface InventoryRepository {
     fun quantities(): Map<String, Int>
 
+    fun equippedCan(): String
+
+    fun accessoryQuantities(): Map<String, Int>
+
     fun equipWateringCan(id: String): InventoryActionResult
 
     fun plantSeed(

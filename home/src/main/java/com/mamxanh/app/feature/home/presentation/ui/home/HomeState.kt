@@ -7,4 +7,5 @@ data class HomeState(
     val dashboard: HomeDashboard = HomeDashboard(),
     val isLoading: Boolean = true,
     val isDailyClearVisible: Boolean = false,
+    val selectedTreeId: String = "0",
 ) : UiState

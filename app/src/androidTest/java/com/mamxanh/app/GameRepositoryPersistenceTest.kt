@@ -180,6 +180,78 @@ class GameRepositoryPersistenceTest {
     }
 
     @Test
+    fun shopPurchaseKeepsCanWhenEquippingRollsBack() {
+        SQLiteDatabase.create(null).use { database ->
+            val connection = InMemoryConnection(database)
+            GameSchema.create(connection)
+            database.execSQL("UPDATE meta SET v='1000' WHERE k='coins'")
+            val shop = ShopRepositoryImpl(GameStorage(SqlGameDatabase(connection)))
+            val before = shop.loadWallet()
+            val can = "can_copper"
+            database.execSQL(
+                """
+                CREATE TEMP TRIGGER reject_shop_equip BEFORE INSERT ON meta
+                WHEN NEW.k = 'can_equipped'
+                BEGIN SELECT RAISE(ABORT, 'simulated equip write failure'); END
+                """.trimIndent(),
+            )
+
+            assertTrue(shop.purchaseAndEquip(can, 1, "shop-equip-rollback") is RepositoryResult.Success)
+            val after = shop.loadWallet()
+            assertTrue(after.coins < before.coins)
+            assertEquals((before.inventory[can] ?: 0) + 1, after.inventory[can])
+            assertEquals(before.equippedCan, after.equippedCan)
+            assertTrue(shop.purchaseAndEquip(can, 1, "shop-equip-rollback") is RepositoryResult.Error)
+            assertEquals(after, shop.loadWallet())
+
+            database.execSQL("DROP TRIGGER reject_shop_equip")
+            assertTrue(shop.equipCan(can) is RepositoryResult.Success)
+            assertEquals(after.copy(equippedCan = can), shop.loadWallet())
+        }
+    }
+
+    @Test
+    fun shopPurchaseKeepsSeedsWhenPlantingRollsBack() {
+        SQLiteDatabase.create(null).use { database ->
+            val connection = InMemoryConnection(database)
+            GameSchema.create(connection)
+            database.execSQL("UPDATE meta SET v='1000' WHERE k='coins'")
+            val storage = GameStorage(SqlGameDatabase(connection))
+            val shop = ShopRepositoryImpl(storage)
+            val before = shop.loadWallet()
+            val plot =
+                storage
+                    .garden()
+                    .plots
+                    .first { it.isUnlocked && it.treeId == null }
+                    .id
+            database.execSQL(
+                """
+                CREATE TEMP TRIGGER reject_shop_planting BEFORE INSERT ON meta
+                WHEN NEW.k = 'garden_layout_version'
+                BEGIN SELECT RAISE(ABORT, 'simulated layout write failure'); END
+                """.trimIndent(),
+            )
+
+            val result = shop.purchaseAndPlant("succulent", 2, plot, "shop-plant-rollback")
+            check(result is RepositoryResult.Success)
+            assertNull(result.value.treeId)
+            val after = shop.loadWallet()
+            assertTrue(after.coins < before.coins)
+            assertEquals((before.inventory["succulent"] ?: 0) + 2, after.inventory["succulent"])
+            assertNull(
+                storage
+                    .garden()
+                    .plots
+                    .single { it.id == plot }
+                    .treeId,
+            )
+            assertTrue(shop.purchaseAndPlant("succulent", 2, plot, "shop-plant-rollback") is RepositoryResult.Error)
+            assertEquals(after, shop.loadWallet())
+        }
+    }
+
+    @Test
     fun rejectedAndFailedPlantingPreserveTheSeedUntilPlantingSucceeds() {
         SQLiteDatabase.create(null).use { database ->
             val connection = InMemoryConnection(database)

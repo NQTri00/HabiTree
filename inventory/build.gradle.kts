@@ -20,6 +20,10 @@ kotlin {
 dependencies {
     implementation(project(":core-ui"))
     implementation(project(":core-presentation"))
+    implementation(project(":inventory:domain"))
+    implementation(libs.koin.android)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.savedstate)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.foundation)
     implementation(libs.androidx.compose.ui)

@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.os.Build
+import android.os.Bundle
 import android.os.SystemClock
 import android.view.KeyEvent
 import android.view.accessibility.AccessibilityNodeInfo
@@ -30,23 +31,20 @@ import com.mamxanh.core.ui.R as CopyR
 
 class NavigationRestorationTest {
     @Test
-    fun savedPlantingSelectionRestoresTheChosenPlot() {
+    fun seedPickerRestoresTheOriginatingPlotArgument() {
         val controller = BioController("garden")
         val scope =
             object : SaverScope {
                 override fun canBeSaved(value: Any): Boolean = true
             }
-        assertEquals("2", controller.plantingSelection.initialDialogPlot(listOf(2, 5)))
-        controller.act("bio-seed-picker:5")
+        controller.openSeedPicker(5)
 
         val saver = BioController.Saver
         val saved = checkNotNull(with(saver) { scope.save(controller) })
         val restored = checkNotNull(saver.restore(saved))
 
         assertEquals("seed-picker", restored.modal)
-        assertEquals("5", restored.plantingSelection.initialDialogPlot(listOf(2, 5)))
-        restored.plantingSelection.clear()
-        assertEquals("2", restored.plantingSelection.initialDialogPlot(listOf(2, 5)))
+        assertEquals(5, restored.preferredPlantingPlot)
     }
 
     private val instrumentation = InstrumentationRegistry.getInstrumentation()
@@ -111,16 +109,12 @@ class NavigationRestorationTest {
     }
 
     @Test
-    fun restoresDraftPopupAndEntityStack() {
+    fun restoresDiscardConfirmationAndEntityStack() {
         val controller = BioController()
         controller.go("tree", "14")
         controller.go("tree", "31")
         controller.go("task-new", "2")
         controller.taskDraft.update(TaskFormField.Title, "Draft title")
-        controller.taskSelection.filter = "paused"
-        controller.taskSelection.focusTask = "2"
-        controller.taskSelection.focusMinutes = "30"
-        controller.taskSelection.toggleTemplate("study25")
         controller.back()
 
         val saver = BioController.Saver
@@ -131,17 +125,8 @@ class NavigationRestorationTest {
         val serialized = checkNotNull(with(saver) { scope.save(controller) })
         val restored = checkNotNull(saver.restore(serialized))
         assertEquals(listOf("", "14", "31", "2"), restored.backStack.map { it.argument })
-        assertEquals("Draft title", restored.taskDraft[TaskFormField.Title])
-        assertTrue(restored.taskDraft.isDirty)
-        assertEquals("paused", restored.taskSelection.filter)
-        assertEquals("2", restored.taskSelection.focusTask)
-        assertEquals("30", restored.taskSelection.focusMinutes)
-        assertEquals(listOf("study25"), restored.taskSelection.selectedTemplates())
         assertEquals("discard", restored.modal)
-        restored.back()
-        assertEquals("", restored.modal)
         assertEquals("task-new", restored.route)
-        restored.back()
         restored.discard()
         assertEquals("tree", restored.route)
         assertEquals("31", restored.param)
@@ -174,6 +159,49 @@ class NavigationRestorationTest {
             } finally {
                 storage.engage(EngagementAction.Settings(previous))
             }
+        }
+    }
+
+    @Test
+    fun taskDraftSurvivesActivityRecreationAndCanBeDiscarded() {
+        check(context.packageName != "com.mamxanh.app") { "Use the isolated verification app." }
+        GardenDatabase(context).use { database ->
+            val storage = GameStorage(database)
+            if (!storage.engagementSnapshot().onboarded) {
+                val request = EngagementAction.Onboard("succulent", "", emptyList(), "task-draft-onboard", skip = true)
+                assertTrue(storage.engage(request).success)
+            }
+        }
+
+        val addTask = AppText.text(TextKey.CopyThemViecC371c2)
+        val titleLabel = AppText.text(TextKey.CopyTenViec672c8c)
+        val draft = "Recreated task draft"
+        ActivityScenario.launch<MainActivity>(Intent(context, MainActivity::class.java)).use { scenario ->
+            clickLabel(AppText.text(TextKey.CopyViec818768))
+            clickLabel(addTask)
+            awaitLabel(titleLabel)
+            val setText = AccessibilityNodeInfo.ACTION_SET_TEXT
+            val editor = checkNotNull(appRoot()?.findAction(setText))
+            assertTrue(
+                editor.performAction(
+                    setText,
+                    Bundle().apply {
+                        putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, draft)
+                    },
+                ),
+            )
+            awaitLabel(draft)
+
+            scenario.recreate()
+            awaitLabel(draft)
+            scenario.onActivity { it.onBackPressedDispatcher.onBackPressed() }
+            awaitLabel(AppText.text(TextKey.CopyBoThayDoiB07820))
+            clickLabel(AppText.text(TextKey.CopyBoThayDoiE01800))
+            awaitLabel(addTask, clickable = true)
+
+            clickLabel(addTask)
+            awaitLabel(titleLabel)
+            awaitLabelGone(draft)
         }
     }
 

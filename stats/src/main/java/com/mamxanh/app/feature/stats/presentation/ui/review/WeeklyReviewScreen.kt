@@ -17,6 +17,9 @@ fun WeeklyReviewScreen(
     onTasks: () -> Unit,
     onSaveNote: (String) -> Unit,
     onRest: () -> Unit,
+    draft: String? = null,
+    onEdit: ((String) -> Unit)? = null,
+    busy: Boolean = false,
 ) {
     if (review ==
         null
@@ -30,7 +33,8 @@ fun WeeklyReviewScreen(
         )
         return
     }
-    var note by rememberSaveable { mutableStateOf(review.reflection) }
+    var previewNote by rememberSaveable { mutableStateOf(review.reflection) }
+    val note = draft ?: previewNote
     Bt(
         AppText.text(TextKey.CopyTuanTuA3719d) + bioDisplayDate(review.startDisplay),
         size = AppTypography.SIZE_11,
@@ -83,9 +87,9 @@ fun WeeklyReviewScreen(
         )
     }
     BioField(stringResource(R.string.copy_mot_dieu_muon_nho_455aad), note, {
-        note = it.take(2000)
+        if (onEdit == null) previewNote = it.take(2000) else onEdit(it)
     }, multiline = true, placeholder = stringResource(R.string.copy_tuan_nay_minh_e6de5c))
-    BioButton(stringResource(R.string.copy_luu_suy_ngam_18cdd3), { onSaveNote(note) }, Modifier.fillMaxWidth())
+    BioButton(stringResource(R.string.copy_luu_suy_ngam_18cdd3), { onSaveNote(note) }, Modifier.fillMaxWidth(), enabled = !busy)
     BioLink(
         stringResource(R.string.copy_lich_nghi_bao_ve_8eda57),
         "moon",

@@ -39,12 +39,12 @@ class OnboardingRouteContent(
 )
 
 val LocalHomeRouteContent =
-    compositionLocalOf<() -> HomeRouteContent> {
+    compositionLocalOf<@Composable () -> HomeRouteContent> {
         error("Home route requires its state and actions")
     }
 
 val LocalOnboardingRouteContent =
-    compositionLocalOf<() -> OnboardingRouteContent> {
+    compositionLocalOf<@Composable () -> OnboardingRouteContent> {
         error("Onboarding route requires its state and actions")
     }
 

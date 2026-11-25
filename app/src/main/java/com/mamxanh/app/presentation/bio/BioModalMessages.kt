@@ -13,6 +13,9 @@ import androidx.compose.ui.unit.*
 import com.mamxanh.app.core.components.design.*
 import com.mamxanh.app.core.components.design.AppColors
 import com.mamxanh.app.core.components.design.AppTypography
+import com.mamxanh.app.feature.garden.domain.model.GardenWatering
+import com.mamxanh.app.feature.settings.presentation.BackupImportSummary
+import com.mamxanh.app.feature.tree.domain.repository.TreeCareReceipt
 import com.mamxanh.core.ui.R
 import org.json.JSONObject
 
@@ -23,16 +26,29 @@ internal fun BioModalMessages(
     ui: BioController,
     tree: JSONObject?,
     dismiss: () -> Unit,
+    requestPermission: (() -> Unit)? = null,
+    openPermissionSettings: (() -> Unit)? = null,
+    importSummary: BackupImportSummary? = null,
+    dispositionName: String? = null,
+    saleQuote: TreeCareReceipt? = null,
+    watering: GardenWatering? = null,
+    unlockCost: Int? = null,
+    unlockCoins: Int = world.coins,
 ) {
     when (type) {
         "water-all" -> {
+            val counts =
+                watering ?: GardenWatering(
+                    eligible = world.trees.count { !it.b("watered") && it.s("state") != "dead" },
+                    active = world.trees.count { it.b("watered") },
+                    dead = world.trees.count { it.s("state") == "dead" },
+                )
             BioTag(stringResource(R.string.copy_mien_phi_dfc4f7), modifier = Modifier.fillMaxWidth())
             BioFacts(
                 listOf(
-                    stringResource(R.string.copy_can_tuoi_a0957f) to
-                        world.trees.count { !it.b("watered") && it.s("state") != "dead" }.toString(),
-                    stringResource(R.string.copy_da_tuoi_de2042) to world.trees.count { it.b("watered") }.toString(),
-                    stringResource(R.string.copy_kho_heo_bf546a) to world.trees.count { it.s("state") == "dead" }.toString(),
+                    stringResource(R.string.copy_can_tuoi_a0957f) to counts.eligible.toString(),
+                    stringResource(R.string.copy_da_tuoi_de2042) to counts.active.toString(),
+                    stringResource(R.string.copy_kho_heo_bf546a) to counts.dead.toString(),
                 ),
             )
             Bt(
@@ -43,18 +59,16 @@ internal fun BioModalMessages(
         }
         "unlock" -> {
             val cost =
-                400 + (world.state.i("unlocked", 5) - 5).coerceAtLeast(0) * 200
+                unlockCost ?: (400 + (world.state.i("unlocked", 5) - 5).coerceAtLeast(0) * 200)
             BioFacts(
                 listOf(
                     stringResource(R.string.copy_gia_mo_o_708ec3) to stringResource(R.string.copy_0_xu_251e68, cost),
-                    stringResource(R.string.copy_vi_hien_tai_127da5) to stringResource(R.string.copy_0_xu_251e68, world.coins),
+                    stringResource(R.string.copy_vi_hien_tai_127da5) to stringResource(R.string.copy_0_xu_251e68, unlockCoins),
                 ),
             )
-            if (world.coins <
-                cost
-            ) {
+            if (unlockCoins < cost) {
                 Bt(
-                    stringResource(R.string.copy_can_them_0_xu_d7d41b, cost - world.coins),
+                    stringResource(R.string.copy_can_them_0_xu_d7d41b, cost - unlockCoins),
                     size = AppTypography.SIZE_12,
                     tint = bp.muted,
                 )
@@ -67,7 +81,7 @@ internal fun BioModalMessages(
                 tint = bp.muted,
             )
         "remove", "sell" -> {
-            Bt(tree?.s("name").orEmpty(), size = AppTypography.SIZE_17, bold = true)
+            Bt(dispositionName ?: tree?.s("name").orEmpty(), size = AppTypography.SIZE_17, bold = true)
             Bt(
                 stringResource(R.string.copy_cay_roi_o_vinh_vien_khong_hoan_lai_hat_hoac_tien_tri_af5127),
                 size = AppTypography.SIZE_12,
@@ -76,14 +90,15 @@ internal fun BioModalMessages(
             if (type ==
                 "sell"
             ) {
-                val sale = world.species(tree?.s("species") ?: "succulent").i("sale")
+                val sale = saleQuote?.nominal ?: if (world.native) 0 else world.species(tree?.s("species") ?: "succulent").i("sale")
+                val granted = saleQuote?.granted ?: minOf(sale, (50 - world.state.i("earned")).coerceAtLeast(0))
                 BioFacts(
                     listOf(
                         stringResource(R.string.copy_gia_ban_358aea) to stringResource(R.string.copy_0_xu_251e68, sale),
                         stringResource(R.string.copy_nhan_hom_nay_78a91a) to
                             stringResource(
                                 R.string.copy_0_xu_251e68,
-                                minOf(sale, (50 - world.state.i("earned")).coerceAtLeast(0)),
+                                granted,
                             ),
                     ),
                 )
@@ -130,7 +145,7 @@ internal fun BioModalMessages(
                 tint = bp.muted,
             )
         "permission-choice", "permission-settings" -> {
-            BioButton(stringResource(R.string.copy_cho_phep_f1a437), { ui.send("permission-allow") }, Modifier.fillMaxWidth())
+            BioButton(stringResource(R.string.copy_cho_phep_f1a437), { requestPermission?.invoke() }, Modifier.fillMaxWidth())
             BioButton(
                 if (type ==
                     "permission-choice"
@@ -145,7 +160,7 @@ internal fun BioModalMessages(
                     ) {
                         dismiss()
                     } else {
-                        ui.send("permission-settings")
+                        openPermissionSettings?.invoke()
                     }
                 },
                 Modifier.fillMaxWidth(),
@@ -171,16 +186,17 @@ internal fun BioModalMessages(
                 tint = bp.muted,
             )
         "confirm-import" -> {
+            val summary = importSummary ?: ui.settingsRequests.backupImport
             BioFacts(
                 listOf(
-                    stringResource(R.string.copy_viec_818768) to (ui.settingsRequests.backupImport?.tasks ?: "0"),
-                    stringResource(R.string.copy_cay_c854d7) to (ui.settingsRequests.backupImport?.trees ?: "0"),
+                    stringResource(R.string.copy_viec_818768) to (summary?.tasks ?: "0"),
+                    stringResource(R.string.copy_cay_c854d7) to (summary?.trees ?: "0"),
                     stringResource(
                         R.string.copy_luot_hoan_thanh_02de15,
-                    ) to (ui.settingsRequests.backupImport?.occurrences ?: "0"),
+                    ) to (summary?.occurrences ?: "0"),
                     stringResource(R.string.copy_tao_luc_b1415f) to
                         (
-                            ui.settingsRequests.backupImport
+                            summary
                                 ?.created
                                 ?.takeIf { it.isNotBlank() } ?: stringResource(
                                 R.string.copy_khong_ro_8af7da,

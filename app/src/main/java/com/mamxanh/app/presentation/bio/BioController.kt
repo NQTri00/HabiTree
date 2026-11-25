@@ -9,7 +9,11 @@ import com.mamxanh.app.feature.home.presentation.ui.home.HomeTreeState
 import com.mamxanh.app.feature.home.presentation.ui.onboarding.OnboardingSelectionState
 import com.mamxanh.app.feature.settings.presentation.SettingsRequestState
 import com.mamxanh.app.feature.shop.presentation.ui.shop.ShopSelectionState
+import com.mamxanh.app.feature.tasks.presentation.ui.focus.FocusAction
+import com.mamxanh.app.feature.tasks.presentation.ui.focus.FocusViewModel
 import com.mamxanh.app.feature.tasks.presentation.ui.form.TaskDraftState
+import com.mamxanh.app.feature.tasks.presentation.ui.form.TaskFormAction
+import com.mamxanh.app.feature.tasks.presentation.ui.form.TaskFormViewModel
 import com.mamxanh.app.feature.tasks.presentation.ui.list.TaskScreenSelection
 import com.mamxanh.app.feature.tree.presentation.ui.detail.TreeDetailSelection
 import org.json.JSONObject
@@ -18,8 +22,6 @@ import org.json.JSONObject
     initialRoute: String = "home",
     initialParam: String = "",
     initialModal: String = "",
-    var execute: (BioCommand) -> Unit = {
-    },
 ) {
     private val destinations = mutableStateListOf(BioDestination(initialRoute, initialParam))
     private val navigator = HabiTreeNavigator(destinations)
@@ -34,6 +36,8 @@ import org.json.JSONObject
     var modalId by mutableStateOf("")
     val homeTreeState = HomeTreeState()
     val treeDetail = TreeDetailSelection()
+    var pendingTreeTab by mutableStateOf<String?>(null)
+    var pendingShopTab by mutableStateOf<String?>(null)
     var message by mutableStateOf("")
     var modalMessage by mutableStateOf("")
     var busy by mutableStateOf(false)
@@ -41,21 +45,56 @@ import org.json.JSONObject
         private set
     val shopSelection = ShopSelectionState()
     val plantingSelection = PlantingSelectionState()
+    var preferredPlantingPlot by mutableStateOf<Int?>(null)
+    var accessoryTargetArgument by mutableStateOf("")
+        private set
+
+    fun browseTree(
+        from: String,
+        to: String,
+    ) {
+        if (route == "tree" && param == from) param = to
+    }
+
+    fun openSeedPicker(plot: Int?) {
+        preferredPlantingPlot = plot
+        show("seed-picker")
+    }
+
+    fun resetShopContext() {
+        preferredPlantingPlot = null
+        accessoryTargetArgument = ""
+        shopSelection.targetTree = ""
+        plantingSelection.clear()
+    }
+
+    var plantingBusy: (() -> Boolean)? = null
+    var shopBuying: (() -> Boolean)? = null
+    var dismissModal: (() -> Unit)? = null
+    var selectLanguage: (String) -> Unit = {}
+    var requestNotificationPermission: () -> Unit = {}
+    var openNotificationSettings: () -> Unit = {}
     val gardenBrowse = GardenBrowseState()
     val onboarding = OnboardingSelectionState()
     val taskDraft = TaskDraftState()
+    var liveTaskForm: TaskFormViewModel? = null
+    private val taskFormDirty: Boolean get() = liveTaskForm?.state?.value?.dirty ?: taskDraft.isDirty
+    private val taskFormBusy: Boolean get() = liveTaskForm?.state?.value?.busy == true
     val taskSelection = TaskScreenSelection()
     val settingsRequests = SettingsRequestState()
     var pendingRoute by mutableStateOf("tasks")
     var pendingParam by mutableStateOf("")
     var pendingBack by mutableStateOf(false)
     var pendingRoot by mutableStateOf(false)
+    private var pendingDiscardTreeTab: String? = null
     var world: BioWorld? = null
     val tabs = mutableStateMapOf("insightDays" to "7")
     val fields = mutableStateMapOf<String, String>()
 
+    var liveFocus: FocusViewModel? = null
+
     private fun pauseFocus() {
-        if (route == "focus" && world?.state?.o("focus")?.s("state") == "RUNNING")send("focus-pause")
+        if (route == "focus") liveFocus?.dispatch(FocusAction.Leave)
     }
 
     private fun saved(): String =
@@ -64,34 +103,16 @@ import org.json.JSONObject
             "param" to param,
             "modal" to modal,
             "modalId" to modalId,
+            "treeTabRequest" to pendingTreeTab.orEmpty(),
+            "shopTabRequest" to pendingShopTab.orEmpty(),
             "homeTree" to homeTreeState.selectedId,
-            "quantity" to shopSelection.quantity,
-            "targetTree" to shopSelection.targetTree,
-            "plot" to plantingSelection.plotKey,
-            "step" to onboarding.step,
-            "seed" to onboarding.seed,
-            "category" to onboarding.category,
-            "templates" to org.json.JSONArray(onboarding.selectedTemplates),
-            "dirty" to taskDraft.isDirty,
+            "targetTree" to accessoryTargetArgument,
+            "plot" to preferredPlantingPlot?.toString().orEmpty(),
             "pendingRoute" to pendingRoute,
             "pendingParam" to pendingParam,
             "pendingBack" to pendingBack,
             "pendingRoot" to pendingRoot,
-            "tabs" to
-                JSONObject(
-                    tabs.toMap() +
-                        mapOf(
-                            "tree" to treeDetail.tab,
-                            "shop" to shopSelection.shopTab,
-                            "inventory" to shopSelection.inventoryTab,
-                            TaskScreenSelection.FILTER_KEY to taskSelection.filter,
-                            GardenBrowseState.SAVED_FILTER_KEY to gardenBrowse.filter,
-                        ),
-                ),
-            "fields" to
-                JSONObject(
-                    fields.toMap() + taskDraft.savedValues() + taskSelection.savedFields() + settingsRequests.savedFields(),
-                ),
+            "pendingDiscardTreeTab" to pendingDiscardTreeTab.orEmpty(),
             "history" to
                 org.json.JSONArray().apply {
                     destinations
@@ -110,9 +131,8 @@ import org.json.JSONObject
                         modalId = s.s("modalId")
                         homeTreeState.selectedId = s.s("homeTree", "0")
                         shopSelection.updateQuantity(s.i("quantity", 1))
-                        shopSelection.targetTree =
-                            s.s("targetTree")
-                        plantingSelection.select(s.s("plot"))
+                        accessoryTargetArgument = s.s("targetTree")
+                        preferredPlantingPlot = s.s("plot").toIntOrNull()
                         onboarding.step = s.i("step")
                         onboarding.seed = s.s("seed", OnboardingSelectionState.DEFAULT_SEED)
                         onboarding.category =
@@ -123,8 +143,11 @@ import org.json.JSONObject
                         pendingBack = s.b("pendingBack")
                         pendingRoot =
                             s.b("pendingRoot")
+                        pendingDiscardTreeTab = s.s("pendingDiscardTreeTab").ifBlank { null }
                         val savedTabs = s.o("tabs")
                         savedTabs.keys().forEach { setTab(it, savedTabs.s(it)) }
+                        pendingTreeTab = s.s("treeTabRequest", savedTabs.s("tree")).ifBlank { null }
+                        pendingShopTab = s.s("shopTabRequest", savedTabs.s("shop")).ifBlank { null }
                         val savedFields = s.o("fields")
                         restoreFields(savedFields.keys().asSequence().associateWith { savedFields.s(it) }, s.b("dirty"))
                         val entries = s.a("history")
@@ -135,6 +158,10 @@ import org.json.JSONObject
                     }
                 }.getOrElse { BioController() }
             })
+    }
+
+    fun requestShopTab(tab: String) {
+        if (world?.native == true) pendingShopTab = tab else shopSelection.shopTab = tab
     }
 
     fun setTab(
@@ -171,14 +198,16 @@ import org.json.JSONObject
         root: Boolean = false,
         treeTab: String? = null,
     ) {
+        if (route == "task-new" && taskFormBusy) return
         if (route == "task-new" &&
-            taskDraft.isDirty &&
-            next != "task-new"
+            taskFormDirty &&
+            (next != route || id != param)
         ) {
             pendingRoute = next
             pendingParam = id
             pendingBack = false
             pendingRoot = root
+            pendingDiscardTreeTab = treeTab
             show("discard")
             return
         }
@@ -187,22 +216,26 @@ import org.json.JSONObject
         navigator.goTo(BioDestination(next, id), replaceStack = root)
         modal = ""
         message = ""
-        if (next == "tree")treeDetail.open(treeTab)
+        if (next == "tree") {
+            if (world?.native == true) pendingTreeTab = treeTab ?: "care" else treeDetail.open(treeTab)
+        }
         if (next == "task-new")clearFields()
     }
 
     fun back() {
-        if (busy) return
+        if (busy || (route == "task-new" && taskFormBusy) || plantingBusy?.invoke() == true || shopBuying?.invoke() == true) return
         if (modal.isNotBlank()) {
-            modal = ""
+            val dismiss = dismissModal
+            if (dismiss != null) dismiss() else modal = ""
             return
         }
-        if (route == "task-new" && taskDraft.isDirty) {
+        if (route == "task-new" && taskFormDirty) {
             val previous = navigator.previous
             pendingRoute = previous?.route?.id ?: "tasks"
             pendingParam = previous?.argument.orEmpty()
             pendingBack = true
             pendingRoot = false
+            pendingDiscardTreeTab = null
             show("discard")
             return
         }
@@ -211,16 +244,18 @@ import org.json.JSONObject
     }
 
     fun discard() {
+        liveTaskForm?.dispatch(TaskFormAction.Discard)
         clearFields()
         modal = ""
         if (pendingBack) {
             navigator.goBack(BioDestination(pendingRoute, pendingParam))
         } else {
             if (!pendingRoot) navigator.goBack(BioDestination(BioRoute.HOME))
-            go(pendingRoute, pendingParam, root = pendingRoot)
+            go(pendingRoute, pendingParam, root = pendingRoot, treeTab = pendingDiscardTreeTab)
         }
         pendingBack = false
         pendingRoot = false
+        pendingDiscardTreeTab = null
     }
 
     fun show(
@@ -232,13 +267,6 @@ import org.json.JSONObject
         modalMessage = ""
         shopSelection.updateQuantity(1)
         message = ""
-    }
-
-    fun send(
-        action: String,
-        values: Map<String, String> = emptyMap(),
-    ) {
-        if (!busy)execute(BioCommand(action, values))
     }
 
     fun result(result: BioResult) {
@@ -281,36 +309,49 @@ import org.json.JSONObject
             "back" -> back()
             "bio-picker" -> show("tree-picker")
             "bio-pin" -> {
+                if (world?.native == true) return
                 homeTreeState.selectedId = id
                 modal = ""
-                send("pin", mapOf("id" to id))
             }
             "bio-tree-decor" -> go("tree", id, treeTab = "decor")
             "bio-accessory-shop" -> {
-                shopSelection.shopTab = "accessories"
-                shopSelection.targetTree = id.ifBlank { homeTreeState.selectedId }
-                go("shop", shopSelection.targetTree)
+                requestShopTab("accessories")
+                val target = id.ifBlank { homeTreeState.selectedId }
+                if (world?.native == true) accessoryTargetArgument = target else shopSelection.targetTree = target
+                go("shop", target)
             }
             "bio-seed-picker" -> {
-                plantingSelection.select(id)
-                show("seed-picker")
+                if (world?.native == true) {
+                    openSeedPicker(id.toIntOrNull())
+                } else {
+                    plantingSelection.select(id)
+                    show("seed-picker")
+                }
             }
             "bio-shop-seeds" -> {
-                shopSelection.shopTab = "seeds"
+                requestShopTab("seeds")
                 go("shop")
             }
             "shop-care" -> {
-                shopSelection.shopTab = "care"
-                shopSelection.targetTree = param
-                go("shop", shopSelection.targetTree)
+                requestShopTab("care")
+                if (world?.native == true) accessoryTargetArgument = param else shopSelection.targetTree = param
+                go("shop", param)
             }
             "purchase" -> show("purchase", id)
             "accessory" -> {
-                shopSelection.targetTree = value.ifBlank { shopSelection.targetTree.ifBlank { homeTreeState.selectedId } }
+                if (world?.native == true) {
+                    accessoryTargetArgument = value.ifBlank { accessoryTargetArgument.ifBlank { homeTreeState.selectedId } }
+                } else {
+                    shopSelection.targetTree = value.ifBlank { shopSelection.targetTree.ifBlank { homeTreeState.selectedId } }
+                }
                 show("accessory", id)
             }
             "plant" -> {
-                plantingSelection.select(value)
+                if (world?.native == true) {
+                    preferredPlantingPlot = value.toIntOrNull() ?: preferredPlantingPlot
+                } else {
+                    plantingSelection.select(value)
+                }
                 show("plant", id)
             }
             "unlock",
@@ -332,15 +373,16 @@ import org.json.JSONObject
                     id,
                 )
             "tree-prev", "tree-next" -> {
-                val trees = world?.trees.orEmpty()
-                val i = trees.indexOfFirst { it.s("id") == param }.coerceAtLeast(0)
-                if (trees.isNotEmpty()) {
+                if (world?.native == true) return
+                val ids = world?.treeIds.orEmpty()
+                val i = ids.indexOf(param).coerceAtLeast(0)
+                if (ids.isNotEmpty()) {
                     param =
-                        trees[(i + (if (name == "tree-next")1 else trees.size - 1)) % trees.size].s("id")
+                        ids[(i + (if (name == "tree-next") 1 else ids.size - 1)) % ids.size]
                 }
             }
             "focus-task" -> go("focus", id)
-            else -> send(action)
+            else -> Unit
         }
     }
 }

@@ -117,14 +117,16 @@ internal fun treeRouteContent(
     return TreeRouteContent(
         state = state,
         tab = ui.treeDetail.tab,
-        onTab = { ui.treeDetail.tab = it },
+        onTab = {
+            ui.treeDetail.tab = it
+        },
         onAction = { action ->
             when (action) {
                 TreeScreenAction.Encyclopedia -> ui.go("encyclopedia")
-                TreeScreenAction.Water -> ui.send("water:$id")
-                is TreeScreenAction.Fertilize -> ui.send("fertilize:$id:${action.id}")
+                TreeScreenAction.Water -> Unit
+                is TreeScreenAction.Fertilize -> Unit
                 TreeScreenAction.BuyFertilizer -> ui.act("shop-care")
-                TreeScreenAction.Unequip -> ui.send("unequip:$id")
+                TreeScreenAction.Unequip -> Unit
                 TreeScreenAction.BuyAccessory -> ui.act("bio-accessory-shop:$id")
                 TreeScreenAction.Species -> ui.go("species", speciesId)
                 TreeScreenAction.Sell -> ui.show("sell", id)

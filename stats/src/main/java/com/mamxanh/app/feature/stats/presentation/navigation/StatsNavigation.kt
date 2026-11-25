@@ -46,7 +46,7 @@ class StatisticsRouteContent(
 )
 
 val LocalStatisticsRouteContent =
-    compositionLocalOf<() -> StatisticsRouteContent> {
+    compositionLocalOf<@Composable () -> StatisticsRouteContent> {
         error("Statistics route requires its state and actions")
     }
 
@@ -61,39 +61,45 @@ class WeeklyReviewRouteContent(
     val onTasks: () -> Unit,
     val onSaveNote: (String) -> Unit,
     val onRest: () -> Unit,
+    val draft: String? = null,
+    val onEdit: ((String) -> Unit)? = null,
+    val busy: Boolean = false,
 )
 
 class TimelineRouteContent(
     val memories: List<TimelineMemory>,
     val onRelated: (TimelineRelated) -> Unit,
     val onSaveNote: (String, String) -> Unit,
+    val noteFor: ((TimelineMemory) -> String)? = null,
+    val onEdit: ((String, String) -> Unit)? = null,
+    val busy: Boolean = false,
 )
 
 val LocalWeeklyReviewRouteContent =
-    compositionLocalOf<() -> WeeklyReviewRouteContent> {
+    compositionLocalOf<@Composable () -> WeeklyReviewRouteContent> {
         error("Weekly Review route requires its state and actions")
     }
 
 val LocalAchievementsRouteContent =
-    compositionLocalOf<() -> List<AchievementDisplay>> {
+    compositionLocalOf<@Composable () -> List<AchievementDisplay>> {
         error("Achievements route requires its state")
     }
 
 val LocalTimelineRouteContent =
-    compositionLocalOf<() -> TimelineRouteContent> {
+    compositionLocalOf<@Composable () -> TimelineRouteContent> {
         error("Timeline route requires its state and actions")
     }
 
 @Composable
 private fun WeeklyReviewEntry() {
     val content = LocalWeeklyReviewRouteContent.current()
-    WeeklyReviewScreen(content.review, content.onTasks, content.onSaveNote, content.onRest)
+    WeeklyReviewScreen(content.review, content.onTasks, content.onSaveNote, content.onRest, content.draft, content.onEdit, content.busy)
 }
 
 @Composable
 private fun TimelineEntry() {
     val content = LocalTimelineRouteContent.current()
-    TimelineScreen(content.memories, content.onRelated, content.onSaveNote)
+    TimelineScreen(content.memories, content.onRelated, content.onSaveNote, content.noteFor, content.onEdit, content.busy)
 }
 
 val statsFeatureNavigation =

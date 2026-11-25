@@ -28,6 +28,15 @@ data class CollectionMilestone(
     val unlocked: Boolean,
 )
 
-fun interface GardenCollectionRepository {
+data class CollectedTree(
+    val id: Long,
+    val name: String,
+    val living: Boolean,
+    val stage: Int,
+)
+
+interface GardenCollectionRepository {
     fun load(): GardenCollection
+
+    fun loadTrees(speciesId: String): List<CollectedTree>
 }

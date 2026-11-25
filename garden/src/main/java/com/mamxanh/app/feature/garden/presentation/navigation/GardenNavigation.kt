@@ -1,5 +1,6 @@
 package com.mamxanh.app.feature.garden.presentation.navigation
 
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.compositionLocalOf
 import com.mamxanh.app.core.presentation.navigation.HabiTreeFeatureDestination
 import com.mamxanh.app.core.presentation.navigation.HabiTreeFeatureModule
@@ -20,7 +21,7 @@ class GardenRouteContent(
 )
 
 val LocalGardenRouteContent =
-    compositionLocalOf<() -> GardenRouteContent> {
+    compositionLocalOf<@Composable () -> GardenRouteContent> {
         error("Garden route requires its state and actions")
     }
 

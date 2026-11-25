@@ -10,4 +10,8 @@ data class ShopState(
     val filter: ShopFilter = ShopFilter.SEEDS,
     val isPurchasing: Boolean = false,
     val outcome: PurchaseOutcome? = null,
+    val tab: String = "seeds",
+    val pendingAction: ShopPendingAction? = null,
+    val purchaseId: String = "",
+    val quantity: Int = 1,
 ) : UiState

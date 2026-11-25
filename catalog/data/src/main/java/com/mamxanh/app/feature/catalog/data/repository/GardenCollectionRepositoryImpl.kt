@@ -1,16 +1,29 @@
 package com.mamxanh.app.feature.catalog.data.repository
 
 import com.mamxanh.app.feature.catalog.domain.repository.CollectedSpecies
+import com.mamxanh.app.feature.catalog.domain.repository.CollectedTree
 import com.mamxanh.app.feature.catalog.domain.repository.CollectionMilestone
 import com.mamxanh.app.feature.catalog.domain.repository.GardenCollection
 import com.mamxanh.app.feature.catalog.domain.repository.GardenCollectionRepository
 import com.mamxanh.shared.data.GameStorage
+import com.mamxanh.shared.localization.AppText
+import com.mamxanh.shared.model.TreeGrowthState
 import com.mamxanh.shared.model.gardenCosmetics
 import org.koin.dsl.module
 
 class GardenCollectionRepositoryImpl(
     private val storage: GameStorage,
 ) : GardenCollectionRepository {
+    override fun loadTrees(speciesId: String): List<CollectedTree> =
+        storage.garden().trees.filter { it.speciesId == speciesId }.map { tree ->
+            CollectedTree(
+                id = tree.id,
+                name = AppText.plantName(tree.speciesId, tree.name),
+                living = tree.status.state != TreeGrowthState.DEAD,
+                stage = tree.status.stageIndex + 1,
+            )
+        }
+
     override fun load(): GardenCollection {
         val snapshot = storage.livingGarden()
         val treeAccessories = gardenCosmetics.filter { it.slot == "TREE" }.map { it.id }.toSet()

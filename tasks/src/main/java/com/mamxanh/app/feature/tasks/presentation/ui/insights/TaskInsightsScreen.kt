@@ -21,6 +21,9 @@ fun TaskInsightsScreen(
     onSaveReminder: (String, String, Boolean) -> Unit,
     onSettings: () -> Unit,
     calendar: @Composable () -> Unit,
+    reminderDraft: InsightsReminderDraft? = null,
+    editReminder: ((InsightsReminderDraft) -> Unit)? = null,
+    busy: Boolean = false,
 ) {
     if (task ==
         null
@@ -72,13 +75,13 @@ fun TaskInsightsScreen(
         )
         ;if (task.suggestion.isNotBlank())BioButton(task.suggestion, onAdjust, secondary = true)
     }
-    var minute by rememberSaveable(task.id) { mutableStateOf(task.minute) }
-    var mode by rememberSaveable(task.id) { mutableStateOf(task.mode) }
-    var follow by rememberSaveable(task.id) { mutableStateOf(task.followUp) }
+    var previewMinute by rememberSaveable(task.id) { mutableStateOf(task.minute) }
+    var previewMode by rememberSaveable(task.id) { mutableStateOf(task.mode) }
+    var previewFollow by rememberSaveable(task.id) { mutableStateOf(task.followUp) }
+    val draft = reminderDraft ?: InsightsReminderDraft(previewMinute, previewMode, previewFollow)
     Bt(stringResource(R.string.copy_nhac_viec_9e9055), size = AppTypography.SIZE_17, bold = true)
-    BioTimeField(stringResource(R.string.copy_gio_nhac_d9dac9), minute, {
-        minute =
-            it
+    BioTimeField(stringResource(R.string.copy_gio_nhac_d9dac9), draft.minute, {
+        if (editReminder == null) previewMinute = it else editReminder(draft.copy(minute = it))
     })
     BioSelect(
         stringResource(R.string.copy_khi_nao_b5af31),
@@ -87,17 +90,19 @@ fun TaskInsightsScreen(
             "AT" to stringResource(R.string.copy_theo_gio_4bd1ce),
             "BEFORE" to stringResource(R.string.copy_truoc_khung_gio_c97c51),
         ),
-        mode,
+        draft.mode,
         onSelect = {
-            mode =
-                it
+            if (editReminder == null) previewMode = it else editReminder(draft.copy(mode = it))
         },
     )
-    BioToggle(stringResource(R.string.copy_nhac_nhe_them_mot_lan_544e8e), follow) { follow = it }
+    BioToggle(stringResource(R.string.copy_nhac_nhe_them_mot_lan_544e8e), draft.followUp) {
+        if (editReminder == null) previewFollow = it else editReminder(draft.copy(followUp = it))
+    }
     BioButton(
         stringResource(R.string.copy_luu_nhac_viec_de3aa9),
-        { onSaveReminder(minute, mode, follow) },
+        { onSaveReminder(draft.minute, draft.mode, draft.followUp) },
         Modifier.fillMaxWidth(),
+        enabled = !busy,
     )
     BioLink(stringResource(R.string.copy_quyen_nhac_toan_cuc_8225b7), "bell", onSettings)
 }

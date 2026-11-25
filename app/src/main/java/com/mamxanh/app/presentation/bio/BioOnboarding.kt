@@ -1,66 +1,125 @@
 package com.mamxanh.app.presentation.bio
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.repeatOnLifecycle
 import com.mamxanh.app.feature.home.presentation.navigation.OnboardingRouteContent
 import com.mamxanh.app.feature.home.presentation.ui.onboarding.OnboardingAction
 import com.mamxanh.app.feature.home.presentation.ui.onboarding.OnboardingDisplay
+import com.mamxanh.app.feature.home.presentation.ui.onboarding.OnboardingEvent
+import com.mamxanh.app.feature.home.presentation.ui.onboarding.OnboardingState
+import com.mamxanh.app.feature.home.presentation.ui.onboarding.OnboardingViewModel
 import com.mamxanh.shared.localization.AppText
 import com.mamxanh.shared.localization.TextKey
+import kotlinx.coroutines.CancellationException
+import org.koin.androidx.compose.koinViewModel
+
+@Composable
+internal fun liveOnboardingRouteContent(
+    world: BioWorld,
+    ui: BioController,
+    gutter: Int,
+    refreshWorld: suspend () -> Unit,
+): OnboardingRouteContent {
+    val viewModel = koinViewModel<OnboardingViewModel>()
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    val lifecycle = LocalLifecycleOwner.current.lifecycle
+    val refresh by rememberUpdatedState(refreshWorld)
+    LaunchedEffect(viewModel, lifecycle) {
+        lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewModel.events.collect { event ->
+                when (event) {
+                    is OnboardingEvent.Feedback -> ui.message = event.message
+                    is OnboardingEvent.Finished -> {
+                        try {
+                            refresh()
+                        } catch (cancelled: CancellationException) {
+                            throw cancelled
+                        } catch (failure: Exception) {
+                            android.util.Log.w("BioOnboarding", "Onboarding completed before display refresh failed", failure)
+                        }
+                        if (ui.route == "onboard") {
+                            ui.result(BioResult(true, event.message, "home"))
+                            viewModel.acknowledgeCompletion()
+                        }
+                    }
+                }
+            }
+        }
+    }
+    val finished = !world.loading && world.onboarded
+    LaunchedEffect(finished, state.submitting, state.completed, state.recoveringSubmission) {
+        if (finished && !state.submitting && (state.completed || state.recoveringSubmission) && ui.route == "onboard") {
+            ui.go("home", root = true)
+            viewModel.acknowledgeCompletion()
+        }
+    }
+    return onboardingRouteContent(world, ui, gutter, state) { action ->
+        val finish = action == OnboardingAction.Skip || (action == OnboardingAction.Next && state.step >= 4)
+        viewModel.dispatch(if (finished && finish) OnboardingAction.ContinueCompleted else action)
+    }
+}
 
 internal fun onboardingRouteContent(
     world: BioWorld,
     ui: BioController,
     gutter: Int,
+    liveState: OnboardingState? = null,
+    dispatch: ((OnboardingAction) -> Unit)? = null,
 ): OnboardingRouteContent {
     val templates = world.catalog.a("templates").objects()
-    val category = ui.onboarding.category
-    val chosen = ui.onboarding.selectedTemplates.toSet()
+    val category = liveState?.category ?: ui.onboarding.category
+    val chosen = (liveState?.templateIds ?: ui.onboarding.selectedTemplates).toSet()
+    val seed = liveState?.seed ?: ui.onboarding.seed
     val byCategory = templates.sortedBy { it.s("category") != category }
-
-    fun finish(skip: Boolean) {
-        if (world.native && world.state.b("onboarded")) {
-            ui.go("home", root = true)
-        } else if (skip) {
-            ui.send("onboard", mapOf("skip" to "true"))
-        } else {
-            ui.send(
-                "onboard",
-                mapOf(
-                    "seed" to ui.onboarding.seed,
-                    "category" to ui.onboarding.category,
-                    "ids" to ui.onboarding.selectedTemplates.joinToString(","),
-                    "remind" to (ui.fields["onboard-remind"] ?: "false"),
-                ),
-            )
-        }
-    }
 
     return OnboardingRouteContent(
         state =
             OnboardingDisplay(
-                step = ui.onboarding.step,
-                seed = ui.onboarding.seed,
+                step = liveState?.step ?: ui.onboarding.step,
+                seed = seed,
                 category = category,
                 selectedCount = chosen.size,
                 selectedTitles = templates.filter { it.s("id") in chosen }.map { it.s("title") },
-                seedNames = (listOf("succulent", "monstera", "snake") + ui.onboarding.seed).associateWith { world.species(it).s("name") },
+                seedNames = (listOf("succulent", "monstera", "snake") + seed).associateWith { world.species(it).s("name") },
                 templateCount = byCategory.size,
-                remind = ui.fields["onboard-remind"] == "true",
+                remind = liveState?.reminders ?: (ui.fields["onboard-remind"] == "true"),
             ),
         gutter = gutter,
-        onAction = { action ->
-            when (action) {
-                OnboardingAction.Back -> ui.onboarding.previousStep()
-                OnboardingAction.Next -> if (!ui.onboarding.advance()) finish(skip = false)
-                OnboardingAction.Skip -> finish(skip = true)
-                is OnboardingAction.Choose -> if (action.step == 1) ui.onboarding.seed = action.id else ui.onboarding.category = action.id
-                is OnboardingAction.Remind -> ui.fields["onboard-remind"] = action.enabled.toString()
-            }
-        },
+        onAction =
+            dispatch ?: { action ->
+                when (action) {
+                    OnboardingAction.Back -> ui.onboarding.previousStep()
+                    OnboardingAction.Next -> {
+                        ui.onboarding.advance()
+                    }
+                    OnboardingAction.Skip -> ui.go("home", root = true)
+                    OnboardingAction.ContinueCompleted -> ui.go("home", root = true)
+                    is OnboardingAction.Choose ->
+                        if (action.step ==
+                            1
+                        ) {
+                            ui.onboarding.seed = action.id
+                        } else {
+                            ui.onboarding.category = action.id
+                        }
+                    is OnboardingAction.Remind -> ui.fields["onboard-remind"] = action.enabled.toString()
+                    is OnboardingAction.ToggleTemplate -> Unit
+                }
+                Unit
+            },
         templateRow = { index ->
             val template = byCategory[index]
             val id = template.s("id")
             BioTemplateRow(template, id in chosen, onboarding = true) {
-                if (!ui.onboarding.toggleTemplate(id)) {
+                if (dispatch != null) {
+                    dispatch(OnboardingAction.ToggleTemplate(id))
+                } else if (!ui.onboarding.toggleTemplate(id)) {
                     ui.message = AppText.text(TextKey.CopyBanDaChon5ViecBoChonMotViecDeDoi95f1ae)
                 }
             }

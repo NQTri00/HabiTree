@@ -5,6 +5,22 @@ import com.mamxanh.app.core.presentation.UiAction
 sealed interface GardenIntent : UiAction {
     data object Refresh : GardenIntent
 
+    data object OpenInventory : GardenIntent
+
+    data object OpenCatalog : GardenIntent
+
+    data object PickSeed : GardenIntent
+
+    data object ConfirmWaterAll : GardenIntent
+
+    data class Filter(
+        val value: String,
+    ) : GardenIntent
+
+    data class SelectPlot(
+        val plotId: Int,
+    ) : GardenIntent
+
     data class WaterAll(
         val key: String,
     ) : GardenIntent

@@ -12,6 +12,18 @@ import com.mamxanh.shared.model.ReminderPreference
 internal class OfflineReminderSettingsRepositoryImpl(
     private val storage: GameStorage,
 ) : ReminderSettingsRepository {
+    override fun load(): ReminderSettings {
+        val settings = storage.engagementSnapshot().settings
+        return ReminderSettings(
+            settings.paused,
+            settings.quietStart,
+            settings.quietEnd,
+            settings.treeReminders,
+            settings.reducedMotion,
+            settings.breakPrompts,
+        )
+    }
+
     override fun save(settings: ReminderSettings): RepositoryResult<String> {
         val stored =
             EngagementSettings(

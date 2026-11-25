@@ -16,6 +16,8 @@ internal fun BioHero(
     tree: JSONObject,
     home: Boolean = false,
     short: Boolean = false,
+    water: (() -> Unit)? = null,
+    dispatch: ((TreeHeroAction) -> Unit)? = null,
 ) {
     val treeId = tree.s("id")
     val species = tree.s("species")
@@ -38,13 +40,17 @@ internal fun BioHero(
             accessoryIcon = tree.s("decor").takeIf { it.isNotBlank() && world.owned(it) > 0 }?.let(::accessoryIcon),
         ),
     ) { action ->
+        if (dispatch != null) {
+            dispatch(action)
+            return@TreeHero
+        }
         when (action) {
             TreeHeroAction.ChooseTree -> ui.show("tree-picker")
             TreeHeroAction.PinTree -> ui.act("bio-pin:$treeId")
             TreeHeroAction.OpenTree -> ui.go("tree", treeId)
             TreeHeroAction.PreviousTree -> ui.act("tree-prev")
             TreeHeroAction.NextTree -> ui.act("tree-next")
-            TreeHeroAction.Water -> ui.send("water:$treeId")
+            TreeHeroAction.Water -> if (water != null) water() else Unit
             TreeHeroAction.Decorate -> ui.act("bio-tree-decor:$treeId")
         }
     }
