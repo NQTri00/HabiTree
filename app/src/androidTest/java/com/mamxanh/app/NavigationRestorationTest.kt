@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.database.sqlite.SQLiteDatabase
 import android.os.Build
 import android.os.Bundle
 import android.os.SystemClock
@@ -49,6 +50,62 @@ class NavigationRestorationTest {
 
     private val instrumentation = InstrumentationRegistry.getInstrumentation()
     private val context = instrumentation.targetContext
+
+    @Test
+    fun homeTreePickerChangesTheHeroAndPersistsAcrossActivityLaunches() {
+        check(context.packageName != "com.mamxanh.app")
+        val trees =
+            GardenDatabase(context).use { database ->
+                val storage = GameStorage(database)
+                if (!storage.engagementSnapshot().onboarded) {
+                    assertTrue(
+                        storage.engage(EngagementAction.Onboard("succulent", "", emptyList(), "home-picker-onboard", skip = true)).success,
+                    )
+                }
+                val initial = storage.garden()
+                val names = initial.trees.map { AppText.plantName(it.speciesId, it.name) }.toMutableSet()
+                val emptyPlots = initial.plots.filter { it.isUnlocked && it.treeId == null }.asReversed()
+                emptyPlots.take((2 - names.size).coerceAtLeast(0)).forEach { plot ->
+                    val garden = storage.garden()
+                    if (garden.inventory.getOrDefault("succulent", 0) == 0) {
+                        SQLiteDatabase
+                            .openDatabase(context.getDatabasePath("mam_xanh.db").path, null, SQLiteDatabase.OPEN_READWRITE)
+                            .use { it.execSQL("INSERT OR REPLACE INTO inventory(item,quantity) VALUES('succulent',1)") }
+                    }
+                    val name = "Home picker fixture ${plot.id}"
+                    assertTrue(storage.plant("succulent", name, plot.id))
+                    names.add(name)
+                }
+                check(names.size >= 2) { "Home picker needs two distinguishable trees" }
+                names.toList()
+            }
+        val launch = Intent(context, MainActivity::class.java)
+        val change = AppText.text(TextKey.CopyDoiCayFada9c)
+        val picker = AppText.text(TextKey.CopyCayTrenTrangChu76c8b5)
+        val selectedName =
+            ActivityScenario.launch<MainActivity>(launch).use {
+                clickLabel(change)
+                awaitLabel(picker)
+                val first = trees.first()
+                revealLabel(first)
+                clickLabel(first)
+                awaitLabelGone(picker)
+                awaitLabel(first)
+
+                clickLabel(change)
+                awaitLabel(picker)
+                val second = trees[1]
+                revealLabel(second)
+                clickLabel(second)
+                awaitLabelGone(picker)
+                awaitLabel(second)
+                second
+            }
+        ActivityScenario.launch<MainActivity>(launch).use {
+            awaitLabel(change)
+            awaitLabel(selectedName)
+        }
+    }
 
     @Test
     fun reminderLinksOpenTheirEntityAndRecreationKeepsTheSelectedTab() {
