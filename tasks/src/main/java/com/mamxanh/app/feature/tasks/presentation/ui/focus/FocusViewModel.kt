@@ -24,7 +24,10 @@ class FocusViewModel(
         FocusState(
             taskId = savedState["focus:task"] ?: argument.ifBlank { "0" },
             minutes = savedState["focus:minutes"] ?: DEFAULT_FOCUS_MINUTES.toString(),
-            lastValidMinutes = savedState["focus:last-valid-minutes"] ?: DEFAULT_FOCUS_MINUTES,
+            lastValidMinutes =
+                savedState["focus:last-valid-minutes"]
+                    ?: savedState.get<String>("focus:minutes")?.toIntOrNull()?.takeIf { it in FreeFocusMinutes }
+                    ?: DEFAULT_FOCUS_MINUTES,
         ),
     ) {
     private val sessionOperations = Mutex()
