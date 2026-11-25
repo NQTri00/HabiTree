@@ -73,7 +73,6 @@ import org.koin.androidx.compose.koinViewModel
     val seed = world.species.any { it.s("id") == id }
     val permanent = item.b("permanent")
     val wallet = shop?.state?.wallet
-    val coins = wallet?.coins ?: world.coins
     val stock = wallet?.inventory?.get(id) ?: if (wallet == null) world.count(id) else 0
     val equippedCan = wallet?.equippedCan ?: world.state.s("equipped")
     val accessory =
@@ -83,6 +82,7 @@ import org.koin.androidx.compose.koinViewModel
             null
         }
     val owned = if (type == "accessory") accessory?.state?.snapshot?.owns(id) ?: (world.owned(id) > 0) else permanent && stock > 0
+    val coins = accessory?.state?.snapshot?.coins ?: wallet?.coins ?: world.coins
     val accessoryTrees =
         if (type == "accessory") {
             accessory?.state?.snapshot?.trees ?: world.trees.map {

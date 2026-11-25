@@ -11,6 +11,7 @@ data class AccessoryTree(
 data class AccessorySnapshot(
     val quantities: Map<String, Int> = emptyMap(),
     val trees: List<AccessoryTree> = emptyList(),
+    val coins: Int = 0,
 ) {
     fun owns(sku: String): Boolean = (quantities[sku] ?: 0) > 0
 

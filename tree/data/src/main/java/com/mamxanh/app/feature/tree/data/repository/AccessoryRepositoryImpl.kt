@@ -15,6 +15,7 @@ internal class AccessoryRepositoryImpl(
         val byTree = collection.placements.filter { it.sku in treeAccessories }.groupBy { it.treeId }
         return AccessorySnapshot(
             quantities = collection.owned,
+            coins = collection.coins,
             trees =
                 storage.garden().trees.map {
                     AccessoryTree(

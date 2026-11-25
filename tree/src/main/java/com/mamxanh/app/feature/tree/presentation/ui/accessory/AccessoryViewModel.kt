@@ -84,7 +84,7 @@ class AccessoryViewModel(
     ) {
         val target = current.selected.toLongOrNull()
         if (current.loading || current.sku.isBlank() || equip && (target == null || current.selected !in current.eligibleTargets)) return
-        mutableState.value = current.copy(busy = true)
+        mutableState.value = current.copy(pending = if (equip) AccessoryAction.Equip else AccessoryAction.Buy)
         val key = UUID.randomUUID().toString()
         viewModelScope.launch {
             try {
@@ -103,7 +103,7 @@ class AccessoryViewModel(
             } catch (_: Exception) {
                 emitEvent(AccessoryEvent.Completed(current.sku, false, AppText.text(TextKey.CopyChuaTheCapNhatVuiLongThuLai42c8ac)))
             } finally {
-                mutableState.value = state.value.copy(busy = false)
+                mutableState.value = state.value.copy(pending = null)
             }
         }
     }

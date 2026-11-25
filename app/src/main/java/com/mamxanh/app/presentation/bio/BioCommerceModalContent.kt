@@ -19,6 +19,7 @@ import com.mamxanh.app.core.components.design.AppRadii
 import com.mamxanh.app.core.components.design.AppTypography
 import com.mamxanh.app.feature.shop.presentation.ui.shop.PurchaseAvailability
 import com.mamxanh.app.feature.tree.domain.repository.AccessoryTree
+import com.mamxanh.app.feature.tree.presentation.ui.accessory.AccessoryAction
 import com.mamxanh.core.ui.R
 import org.json.JSONObject
 
@@ -211,7 +212,9 @@ internal fun BioAccessoryBody(
     val using = target?.decoration == id
     Column(verticalArrangement = Arrangement.spacedBy(AppDimensions.Dp10)) {
         BioButton(
-            if (using) {
+            if (live?.state?.pending == AccessoryAction.Equip) {
+                stringResource(if (owned) R.string.shop_equipping_accessory else R.string.copy_dang_mua_c2f9ae)
+            } else if (using) {
                 stringResource(R.string.copy_dang_dung_275ca2)
             } else if (owned) {
                 stringResource(R.string.copy_deo_cho_cay_afc821)
@@ -229,7 +232,9 @@ internal fun BioAccessoryBody(
                 ),
         )
         if (!owned) {
-            BioButton(stringResource(R.string.copy_chi_mua_vao_tui_cbc02d), {
+            val buyLabel =
+                if (live?.state?.pending == AccessoryAction.Buy) R.string.copy_dang_mua_c2f9ae else R.string.copy_chi_mua_vao_tui_cbc02d
+            BioButton(stringResource(buyLabel), {
                 if (live != null) live.buy() else Unit
             }, Modifier.fillMaxWidth(), secondary = true, enabled = purchase.canBuyAccessory)
         }

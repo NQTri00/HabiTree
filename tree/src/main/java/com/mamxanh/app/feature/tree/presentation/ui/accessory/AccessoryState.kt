@@ -7,8 +7,9 @@ data class AccessoryState(
     val sku: String = "",
     val selected: String = "",
     val snapshot: AccessorySnapshot = AccessorySnapshot(),
-    val busy: Boolean = false,
+    val pending: AccessoryAction? = null,
     val loading: Boolean = true,
 ) : UiState {
+    val busy: Boolean get() = pending != null
     val eligibleTargets: List<String> get() = snapshot.trees.filter { it.living }.map { it.id }
 }

@@ -1152,6 +1152,7 @@
     <string name="data_safety_note" formatted="false">Khôi phục bản an toàn sẽ thay dữ liệu hiện tại. Hãy xuất bản sao hiện tại trước nếu muốn giữ cả hai.</string>
     <string name="shop_purchase_quantity" formatted="false">Số lượng mua</string>
     <string name="shop_decrease_quantity" formatted="false">Giảm số lượng</string>
+    <string name="shop_equipping_accessory" formatted="false">Đang đeo…</string>
     <string name="shop_increase_quantity" formatted="false">Tăng số lượng</string>
     <string name="tasks_calendar_legend" formatted="false">✓ Hoàn thành · N Nghỉ · ◇ Bảo vệ · Bỏ lỡ · Trống: chưa ghi nhận</string>
     <string name="tasks_calendar_completed" formatted="false">Hoàn thành</string>
