@@ -182,7 +182,11 @@ class NavigationRestorationTest {
                 )
             }
             val initial = storage.garden()
-            val livingNames = initial.trees.filter { it.status.alive }.map { AppText.plantName(it.speciesId, it.name) }.toSet()
+            val livingNames =
+                initial.trees
+                    .filter { it.status.alive }
+                    .map { AppText.plantName(it.speciesId, it.name) }
+                    .toSet()
             val emptyPlots = initial.plots.filter { it.isUnlocked && it.treeId == null }.asReversed()
             emptyPlots.take((2 - livingNames.size).coerceAtLeast(0)).forEach { plot ->
                 ensureFixtureSeed(storage)

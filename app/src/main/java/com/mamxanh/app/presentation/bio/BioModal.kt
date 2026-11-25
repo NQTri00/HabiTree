@@ -21,8 +21,6 @@ import com.mamxanh.app.feature.shop.presentation.ui.shop.purchaseAvailability
 import com.mamxanh.app.feature.tasks.presentation.ui.detail.TaskDetailAction
 import com.mamxanh.app.feature.tasks.presentation.ui.focus.FocusAction
 import com.mamxanh.app.feature.tree.domain.repository.AccessoryTree
-import com.mamxanh.app.feature.tree.presentation.ui.detail.TreeAction
-import com.mamxanh.app.feature.tree.presentation.ui.detail.TreeViewModel
 import com.mamxanh.shared.localization.AppText
 import org.koin.androidx.compose.koinViewModel
 
@@ -41,20 +39,12 @@ import org.koin.androidx.compose.koinViewModel
     val id = ui.modalId
     val item = world.product(id)
     val disposition = type == "remove" || type == "sell"
-    val treeId = id.toLongOrNull()
-    val treeModel =
+    val treeDisposition =
         if (world.native && disposition && ui.route == "tree" && ui.param == id) {
-            koinViewModel<TreeViewModel>()
+            bindBioTreeDisposition(id, type == "sell")
         } else {
             null
         }
-    val treeState = treeModel?.state?.collectAsStateWithLifecycle()?.value
-    val quote = treeState?.takeIf { it.dispositionId == treeId && it.selling == (type == "sell") }?.quote
-    LaunchedEffect(treeModel, treeId, type) {
-        if (treeModel != null && treeId != null && quote == null) {
-            treeModel.dispatch(TreeAction.AskDisposition(treeId, type == "sell", openDialog = false))
-        }
-    }
     val tree = if (world.native) null else world.tree(id)
     val seed = world.species.any { it.s("id") == id }
     val permanent = item.b("permanent")
@@ -126,10 +116,10 @@ import org.koin.androidx.compose.koinViewModel
             accessory?.busy != true &&
             backupState?.pending == null &&
             gardenState?.isLoading != true &&
-            treeState?.isLoading != true
+            treeDisposition?.loading != true
         ) {
             accessory?.close()
-            treeModel?.dispatch(TreeAction.DismissDisposition)
+            treeDisposition?.dismiss()
             if (type == "confirm-import") backup?.dispatch(BackupAction.Cancelled)
             ui.modal = ""
             ui.modalMessage = ""
@@ -204,8 +194,8 @@ import org.koin.androidx.compose.koinViewModel
                         tree,
                         dismiss,
                         importSummary = backupSummary,
-                        dispositionName = treeState?.detail?.takeIf { it.id == treeId }?.name,
-                        saleQuote = quote,
+                        dispositionName = treeDisposition?.name,
+                        saleQuote = treeDisposition?.quote,
                         watering = gardenState?.garden?.waterAll,
                         unlockCost = gardenState?.nextUnlockCost,
                         unlockCoins = gardenState?.garden?.coins ?: world.coins,
@@ -229,13 +219,28 @@ import org.koin.androidx.compose.koinViewModel
                     } else {
                         null
                     }
-                val archiveBusy = archive?.state?.collectAsStateWithLifecycle()?.value?.busy == true
+                val archiveBusy =
+                    archive
+                        ?.state
+                        ?.collectAsStateWithLifecycle()
+                        ?.value
+                        ?.busy == true
                 val focus = ui.liveFocus.takeIf { type == "focus-end" }
-                val focusBusy = focus?.state?.collectAsStateWithLifecycle()?.value?.busy == true
+                val focusBusy =
+                    focus
+                        ?.state
+                        ?.collectAsStateWithLifecycle()
+                        ?.value
+                        ?.busy == true
                 val rest = if (world.native && ui.route == "rest" && type == "ticket") restViewModel() else null
                 val restState = rest?.state?.collectAsStateWithLifecycle()?.value
                 val insights = if (world.native && ui.route == "insights" && type == "adjust") insightsViewModel() else null
-                val insightsBusy = insights?.state?.collectAsStateWithLifecycle()?.value?.busy == true
+                val insightsBusy =
+                    insights
+                        ?.state
+                        ?.collectAsStateWithLifecycle()
+                        ?.value
+                        ?.busy == true
                 BioModalFooter(
                     type,
                     id,
@@ -269,14 +274,8 @@ import org.koin.androidx.compose.koinViewModel
                         },
                     gardenBusy = gardenState?.isLoading == true,
                     canUnlock = gardenState?.canUnlock(id.toIntOrNull()),
-                    confirmDisposition =
-                        treeModel?.let { model ->
-                            {
-                                id.toLongOrNull()?.let { model.dispatch(TreeAction.Dispose(it, type == "sell")) }
-                                Unit
-                            }
-                        },
-                    treeBusy = world.native && disposition && (quote == null || treeState?.isLoading == true),
+                    confirmDisposition = treeDisposition?.confirm,
+                    treeBusy = world.native && disposition && (treeDisposition?.quote == null || treeDisposition.loading),
                     confirmTicket =
                         rest?.let { model ->
                             { model.dispatch(com.mamxanh.app.feature.tasks.presentation.ui.rest.RestAction.BuyTicket) }

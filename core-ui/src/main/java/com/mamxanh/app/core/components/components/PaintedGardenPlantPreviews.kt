@@ -13,7 +13,8 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun PaintedGardenPlantPreview() {
     Column {
-        listOf("cherry", "pine", "succulent", "monstera", "ficus", "snake", "cactus", "aloe", "lavender", "pilea").chunked(3).forEach { row ->
+        val speciesIds = listOf("cherry", "pine", "succulent", "monstera", "ficus", "snake", "cactus", "aloe", "lavender", "pilea")
+        speciesIds.chunked(3).forEach { row ->
             Row(Modifier.fillMaxWidth()) {
                 row.forEach { species ->
                     Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {

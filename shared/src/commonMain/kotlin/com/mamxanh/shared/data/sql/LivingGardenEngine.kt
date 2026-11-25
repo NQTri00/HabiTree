@@ -344,8 +344,9 @@ class LivingGardenEngine(
         }
 
     private fun equipAccessory(action: LivingGardenAction.EquipAccessory): ActionResult {
-        val item = gardenCosmetics.firstOrNull { it.id == action.sku && it.slot == "TREE" }
-            ?: return ActionResult(false, AppText.text(TextKey.CopyKhongTimThayVatPhamDedf1b))
+        val item =
+            gardenCosmetics.firstOrNull { it.id == action.sku && it.slot == "TREE" }
+                ?: return ActionResult(false, AppText.text(TextKey.CopyKhongTimThayVatPhamDedf1b))
         if (num("SELECT COUNT(*) FROM garden_receipts WHERE id=?", action.key) > 0) {
             return ActionResult(false, AppText.text(TextKey.CopyGiaoDichDaXuLyAa0715))
         }
