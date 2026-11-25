@@ -109,6 +109,40 @@ class NavigationRestorationTest {
     }
 
     @Test
+    fun lockedPlotConfirmationRestoresAndCancelPreservesTheGarden() {
+        check(context.packageName != "com.mamxanh.app")
+        val before =
+            GardenDatabase(context).use { database ->
+                val storage = GameStorage(database)
+                if (!storage.engagementSnapshot().onboarded) {
+                    assertTrue(
+                        storage.engage(EngagementAction.Onboard("succulent", "", emptyList(), "locked-plot-onboard", skip = true)).success,
+                    )
+                }
+                storage.garden()
+            }
+        val lockedPlot = before.plots.first { !it.isUnlocked }
+        val addPlot = AppText.text(TextKey.CopyThemOTrong9979ac)
+        val confirmation = AppText.text(TextKey.CopyMoO001668e, lockedPlot.id.toString())
+        ActivityScenario.launch<MainActivity>(Intent(context, MainActivity::class.java)).use { scenario ->
+            clickLabel(AppText.text(TextKey.CopyVuon9e4c10))
+            awaitLabel(AppText.text(TextKey.CopyVuonCuaBanAd1c1b))
+            revealLabel(addPlot)
+            clickLabel(addPlot)
+            awaitLabel(confirmation)
+            scenario.recreate()
+            awaitLabel(confirmation)
+            clickLabel(AppText.text(TextKey.CopyHuy74fcd3))
+            awaitLabelGone(confirmation)
+        }
+        GardenDatabase(context).use { database ->
+            val after = GameStorage(database).garden()
+            assertEquals(before.plots, after.plots)
+            assertEquals(before.coins, after.coins)
+        }
+    }
+
+    @Test
     fun restoresDiscardConfirmationAndEntityStack() {
         val controller = BioController()
         controller.go("tree", "14")
