@@ -21,7 +21,11 @@ class FocusViewModel(
     private val savedState: SavedStateHandle,
     argument: String,
 ) : BaseViewModel<FocusState, FocusEvent, FocusAction>(
-        FocusState(savedState["focus:task"] ?: argument.ifBlank { "0" }, savedState["focus:minutes"] ?: "25"),
+        FocusState(
+            taskId = savedState["focus:task"] ?: argument.ifBlank { "0" },
+            minutes = savedState["focus:minutes"] ?: DEFAULT_FOCUS_MINUTES.toString(),
+            lastValidMinutes = savedState["focus:last-valid-minutes"] ?: DEFAULT_FOCUS_MINUTES,
+        ),
     ) {
     private val sessionOperations = Mutex()
 
@@ -49,10 +53,12 @@ class FocusViewModel(
             }
             is FocusAction.SetMinutes -> {
                 savedState["focus:minutes"] = action.value
-                mutableState.value = current.copy(minutes = action.value)
+                val lastValidMinutes = action.value.toIntOrNull()?.takeIf { it in FreeFocusMinutes } ?: current.lastValidMinutes
+                savedState["focus:last-valid-minutes"] = lastValidMinutes
+                mutableState.value = current.copy(minutes = action.value, lastValidMinutes = lastValidMinutes)
             }
             is FocusAction.Start -> {
-                if (action.taskId == 0L && action.minutes !in 5..120) return
+                if (action.taskId == 0L && action.minutes !in FreeFocusMinutes) return
                 val key = UUID.randomUUID().toString()
                 mutate { commands.start(action.taskId, action.minutes, key) }
             }

@@ -5,10 +5,14 @@ import com.mamxanh.app.feature.tasks.presentation.ui.engagement.EngagementUiStat
 import com.mamxanh.shared.localization.AppText
 import com.mamxanh.shared.localization.TextKey
 
+internal const val DEFAULT_FOCUS_MINUTES = 25
+internal val FreeFocusMinutes = 5..120
+
 data class FocusState(
     val taskId: String,
     val minutes: String,
     val busy: Boolean = false,
+    val lastValidMinutes: Int = DEFAULT_FOCUS_MINUTES,
 ) : UiState {
     fun display(
         engagement: EngagementUiState,
@@ -23,7 +27,7 @@ data class FocusState(
             present = current != null,
             running = current?.state == "RUNNING",
             onBreak = current?.state == "BREAK",
-            remaining = current?.remaining?.toInt() ?: 1500,
+            remaining = current?.remaining?.toInt() ?: lastValidMinutes * 60,
             date = date,
             minutes = task?.config?.minutes?.toString() ?: minutes,
             task = taskId,

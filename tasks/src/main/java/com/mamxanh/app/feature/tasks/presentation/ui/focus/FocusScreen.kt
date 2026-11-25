@@ -75,7 +75,8 @@ fun ColumnScope.FocusScreen(
             { Bi("sun") },
         )
     }
-    val remaining = if (present) state.remaining else (minutes.toIntOrNull() ?: 0).coerceIn(0, 240) * 60
+    val planned = minutes.toIntOrNull()?.takeIf { state.task != "0" || it in FreeFocusMinutes }
+    val remaining = if (present) state.remaining else planned?.coerceIn(0, 240)?.times(60) ?: state.remaining
     if (!present && landscape && configuration.screenWidthDp >= FocusLayout.SideBySideMinimumWidth.value) {
         Row(
             Modifier.fillMaxWidth(),
@@ -218,7 +219,7 @@ private fun FocusDurationField(
     onMinutes: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val invalid = (minutes.toIntOrNull() ?: 0) !in 5..120
+    val invalid = (minutes.toIntOrNull() ?: 0) !in FreeFocusMinutes
     BioField(
         stringResource(R.string.copy_phut_tap_trung_5_120_ca7d24),
         minutes,
