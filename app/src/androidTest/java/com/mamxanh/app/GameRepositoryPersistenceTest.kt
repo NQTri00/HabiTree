@@ -52,6 +52,10 @@ class GameRepositoryPersistenceTest {
             val collection = GardenCollectionRepositoryImpl(storage)
             val sku = "tree_ribbon"
 
+            assertTrue(tree.equipAccessory(sku, treeId + 1, "direct-purchase") is RepositoryResult.Error)
+            assertNull(collection.load().ownedAccessories[sku])
+            assertEquals(1000, storage.garden().coins)
+
             assertTrue(tree.equipAccessory(sku, treeId, "direct-purchase") is RepositoryResult.Success)
             assertEquals(sku, collection.load().decorationsByTree[treeId])
             assertEquals(1, collection.load().ownedAccessories[sku])

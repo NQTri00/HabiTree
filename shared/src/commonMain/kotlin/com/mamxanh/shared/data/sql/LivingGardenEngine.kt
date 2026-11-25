@@ -251,6 +251,7 @@ class LivingGardenEngine(
                     receipt(action.key, "BUY")
                     ActionResult(true, AppText.text(TextKey.CopyDaThemVaoTuiChuaDatTrongVuon7c39aa))
                 }
+                is LivingGardenAction.EquipAccessory -> equipAccessory(action)
                 is LivingGardenAction.Layout -> {
                     if (num("SELECT COUNT(*) FROM garden_receipts WHERE id=?", action.key) >
                         0
@@ -269,13 +270,7 @@ class LivingGardenEngine(
                     if (before.filter { p -> gardenCosmetics.none { it.id == p.sku } }.any { it !in action.placements }) {
                         return@transaction ActionResult(false, AppText.text(TextKey.CopyGiuNguyenVatPhamTuPhienBanMoiHonC49b8f))
                     }
-                    exec("DELETE FROM garden_layout")
-                    action.placements.forEach { exec("INSERT INTO garden_layout VALUES(?,?,?,?)", it.id, it.sku, it.plotId, it.treeId) }
-                    (before + action.placements).map { it.treeId }.filter { it != 0L }.distinct().forEach { id ->
-                        val sku = action.placements.firstOrNull { it.treeId == id }?.sku
-                        put("decoration_$id", gardenCosmetics.firstOrNull { it.id == sku }?.art?.ifBlank { "NONE" } ?: "NONE")
-                    }
-                    bump()
+                    writeLayout(before, action.placements)
                     receipt(action.key, "LAYOUT")
                     ActionResult(true, AppText.text(TextKey.CopyDaLuuKhuVuonA02d1c))
                 }
@@ -348,12 +343,64 @@ class LivingGardenEngine(
             }
         }
 
+    private fun equipAccessory(action: LivingGardenAction.EquipAccessory): ActionResult {
+        val item = gardenCosmetics.firstOrNull { it.id == action.sku && it.slot == "TREE" }
+            ?: return ActionResult(false, AppText.text(TextKey.CopyKhongTimThayVatPhamDedf1b))
+        if (num("SELECT COUNT(*) FROM garden_receipts WHERE id=?", action.key) > 0) {
+            return ActionResult(false, AppText.text(TextKey.CopyGiaoDichDaXuLyAa0715))
+        }
+        val plot =
+            rows(
+                "SELECT p.id FROM garden_plots p JOIN trees t ON t.id=p.tree_id WHERE t.id=? AND p.unlocked=1 AND t.disposition='' AND t.life_state<>'DEAD'",
+                1,
+                action.treeId,
+            ).firstOrNull()?.int(0) ?: return ActionResult(false, AppText.text(TextKey.CopyChonMotCayConSong6d5572))
+        val owned = own(item.id)
+        val purchasing = owned == 0
+        if (purchasing && item.tier == "Reward") {
+            return ActionResult(false, AppText.text(TextKey.CopyMoKhoaQuaBoSuuTam6250f5))
+        }
+        val before = placements()
+        val treeSkus = gardenCosmetics.filter { it.slot == "TREE" }.map { it.id }.toSet()
+        val next = before.filterNot { it.treeId == action.treeId && it.sku in treeSkus }.toMutableList()
+        if (next.count { it.sku == item.id } >= owned.coerceAtLeast(1)) {
+            next.removeAt(next.indexOfFirst { it.sku == item.id })
+        }
+        next.add(GardenPlacement("accessory:${action.key}", item.id, plot, action.treeId))
+        validate(next, extraOwnedSku = item.id.takeIf { purchasing })?.let { return ActionResult(false, it) }
+        if (purchasing) {
+            if (!phase.spend(action.key, "COSMETIC", item.id, item.price)) {
+                return ActionResult(false, AppText.text(TextKey.CopyChuaDuXuF1444b))
+            }
+            exec("INSERT OR REPLACE INTO inventory VALUES(?,1)", item.id)
+        }
+        writeLayout(before, next)
+        receipt(action.key, "EQUIP")
+        return ActionResult(true, AppText.text(TextKey.CopyDaLuuKhuVuonA02d1c))
+    }
+
+    private fun writeLayout(
+        before: List<GardenPlacement>,
+        next: List<GardenPlacement>,
+    ) {
+        exec("DELETE FROM garden_layout")
+        next.forEach { exec("INSERT INTO garden_layout VALUES(?,?,?,?)", it.id, it.sku, it.plotId, it.treeId) }
+        (before + next).map { it.treeId }.filter { it != 0L }.distinct().forEach { id ->
+            val sku = next.firstOrNull { it.treeId == id }?.sku
+            put("decoration_$id", gardenCosmetics.firstOrNull { it.id == sku }?.art?.ifBlank { "NONE" } ?: "NONE")
+        }
+        bump()
+    }
+
     private fun receipt(
         key: String,
         kind: String,
     ) = exec("INSERT INTO garden_receipts VALUES(?,?,?)", key, kind, clock.now())
 
-    private fun validate(values: List<GardenPlacement>): String? {
+    private fun validate(
+        values: List<GardenPlacement>,
+        extraOwnedSku: String? = null,
+    ): String? {
         if (values.size > 200 ||
             values.any { it.id.isBlank() } ||
             values.map { it.id }.distinct().size != values.size
@@ -363,7 +410,10 @@ class LivingGardenEngine(
         val known = values.filter { p -> gardenCosmetics.any { it.id == p.sku } }
         val old = placements()
         if (values.filter { it !in known }.any { it !in old })return AppText.text(TextKey.CopyVatPhamChuaDuocHoTroB49bc7)
-        for ((sku, items) in known.groupBy { it.sku })if (items.size > own(sku))return AppText.text(TextKey.CopyKhongDuVatPhamSoHuuD8c480)
+        for ((sku, items) in known.groupBy { it.sku }) {
+            val available = own(sku) + if (sku == extraOwnedSku) 1 else 0
+            if (items.size > available) return AppText.text(TextKey.CopyKhongDuVatPhamSoHuuD8c480)
+        }
         val slots = mutableSetOf<String>()
         for (p in known) {
             val item = gardenCosmetics.first { it.id == p.sku }

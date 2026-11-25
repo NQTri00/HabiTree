@@ -8,7 +8,6 @@ import com.mamxanh.shared.data.GameStorage
 import com.mamxanh.shared.localization.AppText
 import com.mamxanh.shared.localization.TextKey
 import com.mamxanh.shared.model.ActionResult
-import com.mamxanh.shared.model.GardenPlacement
 import com.mamxanh.shared.model.LivingGardenAction
 import com.mamxanh.shared.model.LivingGardenSnapshot
 import com.mamxanh.shared.model.TreeWateringResult
@@ -59,16 +58,10 @@ class TreeRepositoryImpl(
         treeId: Long?,
         purchaseKey: String,
     ): RepositoryResult<String> {
-        var snapshot = storage.livingGarden()
-        if (snapshot.owned.getOrDefault(sku, 0) == 0) {
-            purchaseIfMissing(snapshot, sku, purchaseKey)?.let { return it }
-            snapshot = storage.livingGarden()
-        }
         if (treeId == null) return accessoryError(TextKey.CopyChonMotCayTruocKhiDeoPhuKien4f5562)
-        return updateAccessory(snapshot, treeId, sku)
+        val result = storage.designGarden(LivingGardenAction.EquipAccessory(sku, treeId, purchaseKey))
+        return if (result.success) RepositoryResult.Success(result.message) else RepositoryResult.Error(result.message)
     }
-
-    override fun unequipAccessory(treeId: Long): RepositoryResult<String> = updateAccessory(storage.livingGarden(), treeId, sku = null)
 
     private fun purchaseIfMissing(
         snapshot: LivingGardenSnapshot,
@@ -80,27 +73,15 @@ class TreeRepositoryImpl(
         return if (result.success) null else RepositoryResult.Error(result.message)
     }
 
-    private fun updateAccessory(
-        snapshot: LivingGardenSnapshot,
-        treeId: Long,
-        sku: String?,
-    ): RepositoryResult<String> {
+    override fun unequipAccessory(treeId: Long): RepositoryResult<String> {
+        val snapshot = storage.livingGarden()
         val garden = storage.garden()
         if (garden.trees.none { it.id == treeId && it.status.alive }) {
             return accessoryError(TextKey.CopyChonMotCayConSong6d5572)
         }
-        val plot =
-            garden.plots.firstOrNull { it.treeId == treeId }
-                ?: return accessoryError(TextKey.CopyKhongTimThayOTrong4ab339)
+        if (garden.plots.none { it.treeId == treeId }) return accessoryError(TextKey.CopyKhongTimThayOTrong4ab339)
         val treeSkus = gardenCosmetics.filter { it.slot == "TREE" }.map { it.id }.toSet()
-        val placements = snapshot.placements.filterNot { it.treeId == treeId && it.sku in treeSkus }.toMutableList()
-        if (sku != null) {
-            if (placements.count { it.sku == sku } >= snapshot.owned.getOrDefault(sku, 0)) {
-                val previous = placements.firstOrNull { it.sku == sku }
-                if (previous != null) placements.remove(previous)
-            }
-            placements.add(GardenPlacement(UUID.randomUUID().toString(), sku, plot.id, treeId))
-        }
+        val placements = snapshot.placements.filterNot { it.treeId == treeId && it.sku in treeSkus }
         val result = storage.designGarden(LivingGardenAction.Layout(snapshot.version, placements, UUID.randomUUID().toString()))
         return if (result.success) RepositoryResult.Success(result.message) else RepositoryResult.Error(result.message)
     }

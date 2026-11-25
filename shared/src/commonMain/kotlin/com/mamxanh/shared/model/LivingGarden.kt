@@ -165,6 +165,12 @@ sealed interface LivingGardenAction {
         val key: String,
     ) : LivingGardenAction
 
+    data class EquipAccessory(
+        val sku: String,
+        val treeId: Long,
+        val key: String,
+    ) : LivingGardenAction
+
     data class Expand(
         val section: Int,
         val key: String,
