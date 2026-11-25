@@ -94,10 +94,18 @@ def popup_triggers(root: Path, popup_ids: set[str]) -> dict[str, str]:
 def coverage(root: Path, rows: list[dict[str, str]]) -> None:
     destinations = (root / BIO / "BioDestination.kt").read_text(encoding="utf-8")
     route_ids = set(re.findall(r'^\s+[A-Z_]+\("' + r'([a-z-]+)"\)[,;]', destinations, re.MULTILINE))
-    modal_source = (root / BIO / "BioModal.kt").read_text(encoding="utf-8")
-    title = re.search(r"val title\s*=\s*when\s*\(type\)\s*\{(.*?)\belse\s*->", modal_source, re.DOTALL)
+    title_source = root / BIO / "BioModalSurface.kt"
+    prefix = r"internal fun bioModalTitle\(.*?\)\s*:\s*String\s*="
+    if not title_source.is_file():
+        title_source = root / BIO / "BioModal.kt"
+        prefix = r"val title\s*="
+    title = re.search(
+        prefix + r"\s*when\s*\(type\)\s*\{(.*?)\belse\s*->",
+        title_source.read_text(encoding="utf-8"),
+        re.DOTALL,
+    )
     if title is None:
-        raise ValueError("Missing popup title declaration in BioModal.kt")
+        raise ValueError(f"Missing popup title declaration in {title_source.name}")
     popup_ids = set(re.findall(r'^\s*' + STRING + r'\s*->', title.group(1), re.MULTILINE))
     triggers = popup_triggers(root, popup_ids)
     missing_triggers = sorted(popup for popup, locations in triggers.items() if not locations)
