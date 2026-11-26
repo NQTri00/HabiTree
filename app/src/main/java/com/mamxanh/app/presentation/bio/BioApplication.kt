@@ -78,21 +78,21 @@ import com.mamxanh.shared.localization.TextKey
         BoxWithConstraints(modifier.fillMaxSize().background(bp.bg)) {
             val gutter =
                 if (maxWidth < AppDimensions.Dp359) {
-                    16
+                    AppDimensions.Dp16
                 } else if (maxWidth >= AppDimensions.Dp400) {
-                    22
+                    AppDimensions.Dp22
                 } else {
-                    20
+                    AppDimensions.Dp20
                 }
             val compactScreen = maxHeight < AppDimensions.Dp600
             val shortScreen = maxHeight < AppDimensions.Dp700
             val topInset =
                 if (maxHeight < AppDimensions.Dp600) {
-                    14
+                    AppDimensions.Dp14
                 } else if (maxWidth < AppDimensions.Dp359) {
-                    16
+                    AppDimensions.Dp16
                 } else {
-                    20
+                    AppDimensions.Dp20
                 }
             val actionDockVisible = compactScreen && ui.route in listOf("task-new", "templates", "focus")
             val navigationVisible = ui.route !in listOf("onboard", "data") && !actionDockVisible
@@ -201,11 +201,11 @@ import com.mamxanh.shared.localization.TextKey
                         liveOnboardingRouteContent(
                             world,
                             ui,
-                            gutter,
+                            gutter.value.toInt(),
                             refreshWorld,
                         )
                     } else {
-                        onboardingRouteContent(world, ui, gutter)
+                        onboardingRouteContent(world, ui, gutter.value.toInt())
                     }
                 },
                 LocalTreeRouteContent provides { argument ->
@@ -265,7 +265,7 @@ import com.mamxanh.shared.localization.TextKey
                     )
                 }
                 if (ui.modal.isNotBlank()) {
-                    CompositionLocalProvider(LocalBioButtonSize provides 13) {
+                    CompositionLocalProvider(LocalBioButtonSize provides AppTypography.SIZE_13) {
                         BioModal(world, ui, livePlanting, liveShop, treeHomeSelection)
                     }
                 }

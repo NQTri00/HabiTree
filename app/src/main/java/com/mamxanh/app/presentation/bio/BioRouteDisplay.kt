@@ -23,8 +23,8 @@ internal fun BioRouteDisplay(
     ui: BioController,
     routes: HabiTreeRouteRegistry,
     holders: SaveableStateHolder,
-    gutter: Int,
-    topInset: Int,
+    gutter: Dp,
+    topInset: Dp,
     modifier: Modifier = Modifier,
 ) {
     NavDisplay(
@@ -56,9 +56,9 @@ internal fun BioRouteDisplay(
                                             },
                                         ),
                                     ).padding(
-                                        start = gutter.dp,
-                                        end = gutter.dp,
-                                        top = topInset.dp,
+                                        start = gutter,
+                                        end = gutter,
+                                        top = topInset,
                                         bottom = AppDimensions.Dp24,
                                     ),
                                 verticalArrangement = Arrangement.spacedBy(AppDimensions.Dp18),
