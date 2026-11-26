@@ -57,22 +57,29 @@ import org.koin.androidx.compose.koinViewModel
         } else {
             null
         }
-    val owned = if (type == "accessory") accessory?.state?.snapshot?.owns(id) ?: (world.owned(id) > 0) else permanent && stock > 0
-    val coins = accessory?.state?.snapshot?.coins ?: wallet?.coins ?: world.coins
+    val accessorySnapshot = accessory?.state?.snapshot
+    val owned =
+        when {
+            type != "accessory" -> permanent && stock > 0
+            world.native -> accessorySnapshot?.owns(id) == true
+            else -> world.owned(id) > 0
+        }
+    val coins = accessorySnapshot?.coins ?: wallet?.coins ?: world.coins
     val accessoryTrees =
-        if (type == "accessory") {
-            accessory?.state?.snapshot?.trees ?: world.trees.map {
-                AccessoryTree(it.s("id"), it.s("name"), it.s("decor"), it.s("state") != "dead")
-            }
-        } else {
-            emptyList()
+        when {
+            type != "accessory" -> emptyList()
+            world.native -> accessorySnapshot?.trees.orEmpty()
+            else ->
+                world.trees.map {
+                    AccessoryTree(it.s("id"), it.s("name"), it.s("decor"), it.s("state") != "dead")
+                }
         }
     val living = accessoryTrees.filter { it.living }
     val targetId =
-        if (accessory == null) {
-            ui.shopSelection.accessoryTarget(living.map { it.id }, ui.homeTreeState.selectedId)
-        } else {
-            accessory.selected
+        when {
+            type != "accessory" -> null
+            world.native -> accessory?.selected
+            else -> ui.shopSelection.accessoryTarget(living.map { it.id }, ui.homeTreeState.selectedId)
         }
     val target = living.firstOrNull { it.id == targetId }
     val quantity = shop?.quantity(id) ?: ui.shopSelection.quantity
