@@ -533,11 +533,12 @@ class NavigationRestorationTest {
 
             val durationField = AppText.text(TextKey.CopyPhutTapTrung5120Ca7d24)
 
-            fun setDuration(minutes: String) {
+            fun setDuration(before: String, minutes: String) {
                 revealLabel(durationField, clickable = false)
                 val setText = AccessibilityNodeInfo.ACTION_SET_TEXT
                 val editor = checkNotNull(appRoot()?.findAction(setText))
-                assertEquals(durationField, editor.contentDescription?.toString())
+                assertTrue(editor.isEditable)
+                assertEquals(before, editor.text?.toString())
                 assertTrue(
                     editor.performAction(
                         setText,
@@ -546,14 +547,14 @@ class NavigationRestorationTest {
                 )
             }
 
-            setDuration("2")
+            setDuration(before = "15", minutes = "2")
             val rangeError = AppText.text(TextKey.CopyNhapSoPhutTu51202b514d)
             revealLabel(rangeError, clickable = false)
             revealLabel("15:00", AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD, clickable = false)
             scenario.recreate()
             awaitLabel("15:00")
             revealLabel(rangeError, clickable = false)
-            setDuration("15")
+            setDuration(before = "2", minutes = "15")
             revealLabel(AppText.text(TextKey.CopyBatDauB3cacc))
         }
     }
