@@ -193,8 +193,7 @@ class NavigationRestorationTest {
             revealLabel(product)
             clickLabel(product)
             revealLabel(chooseTree)
-            val picker = awaitLabel(chooseTree, clickable = true)
-            assertTrue(picker.findLabel(treeName) != null)
+            awaitLabel(chooseTree, clickable = true, descendant = treeName)
         }
     }
 
@@ -817,13 +816,15 @@ class NavigationRestorationTest {
     private fun awaitLabel(
         label: String,
         clickable: Boolean = false,
+        descendant: String? = null,
     ): AccessibilityNodeInfo {
         val deadline = SystemClock.uptimeMillis() + 20_000
         while (SystemClock.uptimeMillis() < deadline) {
-            appRoot()?.findLabel(label, clickable)?.let { return it }
+            val node = appRoot()?.findLabel(label, clickable)
+            if (node != null && (descendant == null || node.findLabel(descendant) != null)) return node
             SystemClock.sleep(100)
         }
-        error("Timed out waiting for Android accessibility label: $label")
+        error("Timed out waiting for Android accessibility label: $label ${descendant.orEmpty()}")
     }
 
     private fun awaitLabelGone(label: String) {
