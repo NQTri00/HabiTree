@@ -3,7 +3,6 @@ package com.mamxanh.app.presentation.bio
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.*
 import androidx.compose.ui.draw.*
 import androidx.compose.ui.graphics.*
@@ -12,7 +11,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.mamxanh.app.core.components.design.*
 import com.mamxanh.app.feature.garden.presentation.ui.garden.GardenIntent
 import com.mamxanh.app.feature.garden.presentation.ui.garden.GardenViewModel
-import com.mamxanh.app.feature.home.presentation.ui.home.HomeAction
 import com.mamxanh.app.feature.home.presentation.ui.home.HomeViewModel
 import com.mamxanh.app.feature.settings.presentation.ui.backup.BackupAction
 import com.mamxanh.app.feature.settings.presentation.ui.backup.BackupOperation
@@ -20,7 +18,6 @@ import com.mamxanh.app.feature.settings.presentation.ui.settings.SettingsAction
 import com.mamxanh.app.feature.shop.presentation.ui.shop.purchaseAvailability
 import com.mamxanh.app.feature.tasks.presentation.ui.detail.TaskDetailAction
 import com.mamxanh.app.feature.tree.domain.repository.AccessoryTree
-import com.mamxanh.shared.localization.AppText
 import com.mamxanh.shared.model.gardenCosmetics
 import org.koin.androidx.compose.koinViewModel
 
@@ -124,10 +121,6 @@ import org.koin.androidx.compose.koinViewModel
             null
         }
     val gardenState = garden?.state?.collectAsStateWithLifecycle()?.value
-    var plantName by rememberSaveable(type, id) { mutableStateOf("") }
-    var selectedPlot by rememberSaveable(type, id) {
-        mutableStateOf(if (world.native || type != "plant") "" else ui.plantingSelection.initialDialogPlot(world.emptyPlots()))
-    }
     val dismiss = {
         if (!ui.busy &&
             planting?.state?.busy != true &&
@@ -161,50 +154,11 @@ import org.koin.androidx.compose.koinViewModel
         dismiss = dismiss,
         content = {
             when (type) {
-                "tree-picker" -> {
-                    val home =
-                        when {
-                            !world.native -> null
-                            ui.route == "home" -> koinViewModel<HomeViewModel>()
-                            else -> treeHomeSelection
-                        }
-                    val homeState = home?.state?.collectAsStateWithLifecycle()?.value
-                    val choices =
-                        homeState?.dashboard?.trees?.map {
-                            world.homeTreeChoice(it.id.toString(), AppText.plantName(it.speciesId, it.name), it.speciesId)
-                        } ?: world.previewHomeTreeChoices()
-                    BioTreePickerBody(
-                        choices,
-                        ui.homeTreeState.selectedId,
-                        loading = homeState?.isLoading == true,
-                        onPlant = { ui.show("seed-picker") },
-                    ) { id ->
-                        if (home == null) ui.selectPreviewTree(id) else home.dispatch(HomeAction.SelectTree(id))
-                    }
-                }
+                "tree-picker" -> BioBoundTreePicker(world, ui, treeHomeSelection)
                 "seed-picker" -> BioSeedPickerBody(world, ui, planting)
                 "purchase" -> BioPurchaseBody(id, world, ui, details, seed, permanent, total, full, shop, coins, stock)
                 "accessory" -> BioAccessoryBody(id, ui, price, owned, purchase, accessoryTrees, living, target, accessory, coins)
-                "plant" ->
-                    BioPlantBody(
-                        id,
-                        details.name,
-                        full,
-                        plantStock,
-                        planting?.state?.name ?: plantName,
-                        if (planting == null) {
-                            selectedPlot
-                        } else {
-                            planting.state.plotId
-                                ?.toString()
-                                .orEmpty()
-                        },
-                        if (planting == null) world.emptyPlots() else planting.state.eligible,
-                        onName = { if (planting == null) plantName = it.take(100) else planting.setName(it) },
-                        onPlot = { if (planting == null) selectedPlot = it else planting.selectPlot(it) },
-                        onPlant = { planting?.plant() },
-                        canPlant = plantStock > 0 && !ui.busy && (planting?.canPlant ?: true),
-                    )
+                "plant" -> BioBoundPlantDialog(world, ui, id, details.name, full, plantStock, planting)
                 else ->
                     BioModalMessages(
                         type,

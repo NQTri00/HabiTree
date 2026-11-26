@@ -78,6 +78,10 @@ The completed build and test entries below describe historical checkpoints. The 
 
   The Onboarding follow-up carries the catalog time window into the habit card cadence. Local English and Vietnamese full-screen previews show the three scheduled windows. The Vietnamese card and footer placement closely track the equal-size web reference. Local formatting, architecture verification, and all four APK assemblies passed without GitHub CI.
 
+  The exact `e8cc8b2` source rendered the full inventory locally using Android CLI. Three sequential groups fit the Windows command-line limit and produced 522 unique images from all 503 registered methods. The English and default galleries pair 126 scenes with archived web captures each, and the Vietnamese gallery pairs all 144. Hash comparison against the previous Linux-hosted archive found 65 identical files and 457 differing files, including routes with unchanged source. This cross-environment comparison does not establish which pixel changes are UI regressions.
+
+  The modal host now delegates its binding for Tree Picker and Planting to the existing planting component file. The host is 290 lines including imports. Local formatting, architecture verification and all four APK assemblies passed. Fresh local Vietnamese Plant and Tree Picker previews matched both previous Windows images byte for byte.
+
 - [ ] **MVI09 · Verify the integrated implementation as a single batch.** Once MVI01–MVI08 are complete, run the formatting checks, `verifyArchitecture`, and all four Android assemblies. Then run the full hosted unit and device suites, including targeted lifecycle and event checks wherever the existing suites do not cover a migrated route. After builds and tests pass, render the full Compose inventory in one batch. Review screens, popups, both languages, and adaptive states against the preceding Android images and the approved web images. Record exact revision, commands, counts, and any differences under V02–V05.
 
 ## Remaining final delivery gates
