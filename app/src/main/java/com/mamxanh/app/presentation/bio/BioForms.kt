@@ -35,6 +35,7 @@ import com.mamxanh.app.feature.tasks.presentation.ui.templates.TaskTemplateDispl
 import com.mamxanh.app.feature.tasks.presentation.ui.templates.TemplateRow
 import com.mamxanh.shared.localization.AppText
 import com.mamxanh.shared.localization.TextKey
+import com.mamxanh.shared.model.habitTemplates
 import org.json.JSONObject
 
 internal fun taskDetailRouteContent(
@@ -143,6 +144,27 @@ internal fun focusRouteContent(
     )
 }
 
+internal fun displayedTemplates(reference: BioWorld?) =
+    if (reference == null) {
+        habitTemplates.map {
+            TaskTemplateDisplay(
+                id = it.id,
+                title = it.config.title,
+                category = it.config.category,
+                minutes = it.config.minutes,
+                effort = it.effort,
+                timer = it.config.verification == "TIMER",
+                weekends = it.config.frequency == "WEEKENDS",
+                reward = it.config.reward,
+            )
+        }
+    } else {
+        reference.catalog
+            .a("templates")
+            .objects()
+            .map { it.toTemplateDisplay() }
+    }
+
 private fun JSONObject.toTemplateDisplay() =
     TaskTemplateDisplay(
         id = s("id"),
@@ -173,11 +195,7 @@ internal fun templatesRouteContent(
 ): TemplatesRouteContent {
     val chosen = selection?.selected ?: selectedBioTemplates(ui).toSet()
     return TemplatesRouteContent(
-        templates =
-            world.catalog
-                .a("templates")
-                .objects()
-                .map { it.toTemplateDisplay() },
+        templates = displayedTemplates(world.takeIf { selection == null }),
         chosen = chosen,
         onToggle = selection?.let { it::toggle } ?: ui.taskSelection::toggleTemplate,
         actions = actions,

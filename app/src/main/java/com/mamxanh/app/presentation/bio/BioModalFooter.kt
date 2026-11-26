@@ -66,9 +66,7 @@ internal fun BioModalFooter(
     ) {
         if (type == "purchase" && seed) {
             val buyLabel =
-                if (pendingPurchase == ShopPendingAction.Buy ||
-                    ui.pendingAction == "buy"
-                ) {
+                if (pendingPurchase == ShopPendingAction.Buy) {
                     R.string.copy_dang_mua_c2f9ae
                 } else {
                     R.string.copy_mua_vao_tui_4cd4d5
@@ -79,7 +77,7 @@ internal fun BioModalFooter(
             BioButton(
                 stringResource(
                     when {
-                        pendingPurchase == ShopPendingAction.BuyAndPlant || ui.pendingAction == "buy-plant" -> R.string.copy_dang_mua_c2f9ae
+                        pendingPurchase == ShopPendingAction.BuyAndPlant -> R.string.copy_dang_mua_c2f9ae
                         quantity > 1 -> R.string.copy_mua_gieo_1_690d4f
                         else -> R.string.copy_mua_gieo_754323
                     },
@@ -110,9 +108,7 @@ internal fun BioModalFooter(
                 when (type) {
                     "purchase" ->
                         if (pendingPurchase == ShopPendingAction.Buy ||
-                            pendingPurchase == ShopPendingAction.BuyAndEquip ||
-                            ui.pendingAction == "buy" ||
-                            ui.pendingAction == "buy-equip"
+                            pendingPurchase == ShopPendingAction.BuyAndEquip
                         ) {
                             stringResource(R.string.copy_dang_mua_c2f9ae)
                         } else if (permanent) {

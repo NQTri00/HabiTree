@@ -14,6 +14,12 @@ sealed interface TreeAction : UiAction {
         val id: Long,
     ) : TreeAction
 
+    data object OpenAccessoryShop : TreeAction
+
+    data class OpenAccessory(
+        val sku: String,
+    ) : TreeAction
+
     data object OpenFertilizerShop : TreeAction
 
     data class SelectTab(

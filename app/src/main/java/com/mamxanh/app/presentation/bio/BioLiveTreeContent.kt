@@ -14,9 +14,9 @@ import com.mamxanh.shared.localization.AppText
 import com.mamxanh.shared.localization.TextKey
 import com.mamxanh.shared.model.FertilizerTier
 import com.mamxanh.shared.model.catalog
+import com.mamxanh.shared.model.gardenCosmetics
 
 internal fun liveTreeContent(
-    world: BioWorld,
     ui: BioController,
     id: String,
     compact: Boolean,
@@ -25,6 +25,7 @@ internal fun liveTreeContent(
     selectHomeTree: (String) -> Unit,
 ): TreeRouteContent {
     val tree = live.state.detail?.takeIf { it.id.toString() == id }
+    val cosmetics = gardenCosmetics
     val speciesCatalog = catalog
     val species = speciesCatalog.firstOrNull { it.id == tree?.speciesId } ?: speciesCatalog.first()
     val state =
@@ -36,7 +37,12 @@ internal fun liveTreeContent(
                 canFertilize = it.canFertilize,
                 busy = ui.busy || live.state.isLoading,
                 hasDecoration = it.decoration.isNotBlank(),
-                decorationName = world.product(it.decoration).s("name").lowercase(),
+                decorationName =
+                    cosmetics
+                        .firstOrNull { cosmetic -> cosmetic.id == it.decoration }
+                        ?.name
+                        .orEmpty()
+                        .lowercase(),
                 speciesName = species.name,
                 stage = it.stage,
                 stages = species.formCount,
@@ -66,7 +72,7 @@ internal fun liveTreeContent(
                 is TreeScreenAction.Fertilize -> live.fertilize(action.id)
                 TreeScreenAction.BuyFertilizer -> live.dispatch(TreeAction.OpenFertilizerShop)
                 TreeScreenAction.Unequip -> live.unequip()
-                TreeScreenAction.BuyAccessory -> ui.act("bio-accessory-shop:" + id)
+                TreeScreenAction.BuyAccessory -> live.dispatch(TreeAction.OpenAccessoryShop)
                 TreeScreenAction.Species -> tree?.let { ui.go("species", it.speciesId) }
                 TreeScreenAction.Sell -> live.askDisposition(true)
                 TreeScreenAction.Remove -> live.askDisposition(false)
@@ -118,10 +124,18 @@ internal fun liveTreeContent(
             }
         },
         accessories = {
-            val products = world.accessories
-            BioGrid(
-                products.size,
-            ) { index, modifier -> BioProduct(world, ui, products[index], modifier, target = id, accessoryCatalog = accessoryCatalog) }
+            val products = cosmetics.filter { it.category == "TREE" }
+            BioGrid(products.size) { index, modifier ->
+                val item = products[index]
+                BioAccessoryCard(
+                    item.id,
+                    item.name,
+                    item.price,
+                    accessoryCatalog?.owns(item.id) == true,
+                    accessoryCatalog?.equipped(item.id) == true,
+                    modifier,
+                ) { live.dispatch(TreeAction.OpenAccessory(item.id)) }
+            }
         },
     )
 }

@@ -10,6 +10,12 @@ sealed interface TreeEvent : UiEvent {
 
     data object Back : TreeEvent
 
+    data object OpenAccessoryShop : TreeEvent
+
+    data class OpenAccessory(
+        val sku: String,
+    ) : TreeEvent
+
     data object OpenFertilizerShop : TreeEvent
 
     data class Feedback(

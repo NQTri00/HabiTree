@@ -183,7 +183,15 @@ import com.mamxanh.shared.localization.TextKey
                 LocalInventoryRouteContent provides {
                     if (world.native) liveInventoryRouteContent(world, ui, accessoryCatalog) else inventoryRouteContent(world, ui)
                 },
-                LocalShopRouteContent provides { argument -> shopRouteContent(world, ui, argument, liveShop, accessoryCatalog) },
+                LocalShopRouteContent provides { argument ->
+                    if (liveShop ==
+                        null
+                    ) {
+                        shopRouteContent(world, ui, argument)
+                    } else {
+                        shopRouteContent(ui, argument, liveShop, accessoryCatalog)
+                    }
+                },
                 LocalHomeRouteContent provides {
                     if (world.native) {
                         liveHomeRouteContent(

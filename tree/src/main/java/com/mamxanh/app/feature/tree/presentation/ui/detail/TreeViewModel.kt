@@ -67,6 +67,8 @@ class TreeViewModel(
                 mutableState.value = mutableState.value.copy(dispositionId = null, quote = null)
                 return
             }
+            TreeAction.OpenAccessoryShop -> viewModelScope.launch { emitEvent(TreeEvent.OpenAccessoryShop) }
+            is TreeAction.OpenAccessory -> viewModelScope.launch { emitEvent(TreeEvent.OpenAccessory(intent.sku)) }
             TreeAction.OpenFertilizerShop -> {
                 viewModelScope.launch { emitEvent(TreeEvent.OpenFertilizerShop) }
                 return

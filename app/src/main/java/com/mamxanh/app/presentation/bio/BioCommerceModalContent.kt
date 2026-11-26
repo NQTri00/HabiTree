@@ -21,14 +21,13 @@ import com.mamxanh.app.feature.shop.presentation.ui.shop.PurchaseAvailability
 import com.mamxanh.app.feature.tree.domain.repository.AccessoryTree
 import com.mamxanh.app.feature.tree.presentation.ui.accessory.AccessoryAction
 import com.mamxanh.core.ui.R
-import org.json.JSONObject
 
 @Composable
 internal fun BioPurchaseBody(
     id: String,
     world: BioWorld,
     ui: BioController,
-    item: JSONObject,
+    item: BioPurchaseDetails,
     seed: Boolean,
     permanent: Boolean,
     total: Int,
@@ -52,24 +51,24 @@ internal fun BioPurchaseBody(
             }
         }
         Column(Modifier.weight(1f)) {
-            Bt(item.s("name"), size = AppTypography.SIZE_17, bold = true)
-            val price = stringResource(R.string.copy_0_xu_mon_3dd1cb, item.i("price"))
+            Bt(item.name, size = AppTypography.SIZE_17, bold = true)
+            val price = stringResource(R.string.copy_0_xu_mon_3dd1cb, item.price)
             val inInventory = stringResource(R.string.copy_trong_tui_0_79a061, stock)
             Bt("$price · $inInventory", size = AppTypography.SIZE_12, tint = bp.muted)
         }
     }
     Bt(
-        item.s("description").ifBlank {
+        item.description.ifBlank {
             if (permanent) {
                 stringResource(
                     R.string.copy_tuoi_trong_0_gio_dung_lau_dai_7c36d5,
-                    item.i("hours"),
+                    item.hours,
                 )
             } else {
                 stringResource(
                     R.string.copy_0_trong_1_gio_dung_khi_cay_da_tuoi_mot_lan_moi_24_gi_acf259,
-                    item.s("rate"),
-                    item.i("hours"),
+                    item.rate,
+                    item.hours,
                 )
             }
         },
@@ -78,7 +77,7 @@ internal fun BioPurchaseBody(
     )
     if (seed) {
         BioTag(
-            stringResource(R.string.copy_0_giai_doan_26f2b4, bioTier(item.s("tier")), item.i("stages")),
+            stringResource(R.string.copy_0_giai_doan_26f2b4, bioTier(item.tier), item.stages),
             modifier = Modifier.fillMaxWidth(),
         )
     }
@@ -135,7 +134,7 @@ internal fun BioPurchaseBody(
 internal fun BioAccessoryBody(
     id: String,
     ui: BioController,
-    item: JSONObject,
+    price: Int,
     owned: Boolean,
     purchase: PurchaseAvailability,
     trees: List<AccessoryTree>,
@@ -162,7 +161,7 @@ internal fun BioAccessoryBody(
                     R.string.copy_da_so_huu_822625,
                 )
             } else {
-                stringResource(R.string.copy_0_xu_251e68, item.i("price"))
+                stringResource(R.string.copy_0_xu_251e68, price)
             },
             modifier = Modifier.align(Alignment.BottomEnd).padding(AppDimensions.Dp12),
         )
@@ -200,12 +199,12 @@ internal fun BioAccessoryBody(
         tint = bp.muted,
     )
     if (!owned &&
-        coins < item.i("price")
+        coins < price
     ) {
         BioError(
             stringResource(
                 R.string.copy_can_them_0_xu_d7d41b,
-                item.i("price") - coins,
+                price - coins,
             ),
         )
     }
@@ -248,8 +247,9 @@ private fun BioPurchaseBodyPreview() {
     val world = remember(context) { BioWorld.reference(context) }
     BioTheme(world, "1") {
         Column {
-            val item = world.species.first()
-            BioPurchaseBody(item.s("id"), world, remember { BioController("shop") }, item, true, false, item.i("price"), false)
+            val seed = world.species.first()
+            val item = seed.referencePurchaseDetails()
+            BioPurchaseBody(seed.s("id"), world, remember { BioController("shop") }, item, true, false, item.price, false)
         }
     }
 }

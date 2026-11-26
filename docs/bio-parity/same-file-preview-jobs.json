@@ -35,6 +35,11 @@
     "source": "app/src/main/java/com/mamxanh/app/presentation/bio/BioMoreContent.kt"
   },
   {
+    "name": "BioAccessoryCardPreview",
+    "preview": "BioAccessoryCardPreview",
+    "source": "app/src/main/java/com/mamxanh/app/presentation/bio/BioAccessoryCard.kt"
+  },
+  {
     "name": "BioProductPreview",
     "preview": "BioProductPreview",
     "source": "app/src/main/java/com/mamxanh/app/presentation/bio/BioMainScreens.kt"

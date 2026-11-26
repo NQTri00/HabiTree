@@ -14,7 +14,7 @@ import com.mamxanh.app.core.components.design.*
 import com.mamxanh.app.core.components.design.AppDimensions
 import com.mamxanh.app.core.components.design.AppTypography
 import com.mamxanh.core.ui.R
-import org.json.JSONObject
+import com.mamxanh.shared.model.catalog
 
 @Composable
 internal fun BioTreePickerBody(
@@ -66,33 +66,28 @@ internal fun BioSeedPickerBody(
     ui: BioController,
     planting: LivePlanting? = null,
 ) {
-    fun count(seed: String) = planting?.count(seed) ?: world.count(seed)
+    fun count(seed: String) = if (world.native) planting?.count(seed) ?: 0 else world.count(seed)
+    val seeds =
+        if (!world.native) {
+            world.species.map { it.s("id") to it.s("name") }
+        } else {
+            catalog.map { it.id to it.name }
+        }
+    val available = seeds.filter { (id, _) -> count(id) > 0 }
     Bt(stringResource(R.string.copy_hat_dang_co_chon_de_gieo_237689), size = AppTypography.SIZE_12, tint = bp.muted)
     Column(verticalArrangement = Arrangement.spacedBy(AppDimensions.Dp9)) {
-        world.species
-            .filter {
-                count(it.s("id")) >
-                    0
-            }.forEach { s ->
-                BioChoice(
-                    s.s(
-                        "name",
-                    ),
-                    stringResource(R.string.copy_con_0_hat_149c5e, count(s.s("id"))),
-                    s.s("id"),
-                    false,
-                    {
-                        ui.show("plant", s.s("id"))
-                    },
-                    "plus",
-                )
-            }
-    }
-    if (world.species.none {
-            count(it.s("id")) >
-                0
+        available.forEach { (id, name) ->
+            BioChoice(
+                name,
+                stringResource(R.string.copy_con_0_hat_149c5e, count(id)),
+                id,
+                false,
+                { ui.show("plant", id) },
+                "plus",
+            )
         }
-    ) {
+    }
+    if (available.isEmpty()) {
         Bt(
             stringResource(R.string.copy_chua_co_hat_trong_tui_095661),
             size = AppTypography.SIZE_12,
@@ -108,7 +103,7 @@ internal fun BioSeedPickerBody(
 @Composable
 internal fun BioPlantBody(
     id: String,
-    item: JSONObject,
+    seedName: String,
     full: Boolean,
     stock: Int,
     plantName: String,
@@ -132,7 +127,7 @@ internal fun BioPlantBody(
         ) {
             BioPlant(id, Modifier.size(AppDimensions.Dp85))
             Column {
-                Bt(item.s("name"), size = AppTypography.SIZE_17, bold = true)
+                Bt(seedName, size = AppTypography.SIZE_17, bold = true)
                 Bt(
                     stringResource(R.string.copy_trong_tui_0_hat_d56e0e, stock),
                     size = AppTypography.SIZE_12,

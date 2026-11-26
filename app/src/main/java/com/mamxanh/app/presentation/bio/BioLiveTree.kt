@@ -75,7 +75,9 @@ internal fun liveTreeRouteContent(
                     is TreeEvent.BrowseTo -> {
                         ui.browseTree(event.fromId.toString(), event.treeId.toString())
                     }
-                    TreeEvent.OpenFertilizerShop -> ui.act("shop-care")
+                    TreeEvent.OpenFertilizerShop -> ui.openCareShop(argument)
+                    TreeEvent.OpenAccessoryShop -> ui.openAccessoryShop(argument)
+                    is TreeEvent.OpenAccessory -> if (ui.modal.isBlank()) ui.openAccessory(event.sku, argument)
                     is TreeEvent.ConfirmDisposition -> {
                         val modal = if (event.sell) "sell" else "remove"
                         if (event.id.toString() == argument && (ui.modal != modal || ui.modalId != argument)) {
@@ -95,7 +97,6 @@ internal fun liveTreeRouteContent(
         }
     }
     return liveTreeContent(
-        world,
         ui,
         argument,
         compact,

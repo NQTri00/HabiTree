@@ -10,7 +10,7 @@ import java.util.Locale
 
 private fun liveBioData(reference: BioWorld): JSONObject =
     JSONObject().apply {
-        for (key in listOf("catalog", "products", "icons", "palettes")) put(key, reference.data.opt(key))
+        put("palettes", reference.data.opt("palettes"))
         put("date", SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date()))
     }
 

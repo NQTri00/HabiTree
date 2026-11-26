@@ -11,6 +11,7 @@ import com.mamxanh.app.feature.catalog.presentation.ui.encyclopedia.CatalogActio
 import com.mamxanh.app.feature.catalog.presentation.ui.encyclopedia.CatalogEvent
 import com.mamxanh.app.feature.catalog.presentation.ui.encyclopedia.CatalogState
 import com.mamxanh.app.feature.catalog.presentation.ui.encyclopedia.CatalogViewModel
+import com.mamxanh.shared.model.lifecycleProfiles
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -21,7 +22,10 @@ internal fun bindLiveCatalog(
     val model = koinViewModel<CatalogViewModel>()
     val state by model.state.collectAsStateWithLifecycle()
     val lifecycle = LocalLifecycleOwner.current.lifecycle
-    val speciesId = ui.param.takeIf { ui.route == "species" }?.let { world.species(it).s("id") }
+    val speciesId =
+        ui.param.takeIf { ui.route == "species" }?.let { argument ->
+            lifecycleProfiles.firstOrNull { it.id == argument }?.id ?: lifecycleProfiles.first().id
+        }
     LaunchedEffect(model, world, speciesId) {
         if (!world.loading) model.dispatch(CatalogAction.Refresh(speciesId))
     }

@@ -173,6 +173,31 @@ class NavigationRestorationTest {
         }
     }
 
+    @Test
+    fun treeAccessoryShopKeepsTheOriginatingTreeInTheBannerAndPicker() {
+        check(context.packageName != "com.mamxanh.app")
+        val tree = prepareSelectableTrees().last()
+        val treeName = AppText.plantName(tree.speciesId, tree.name)
+        val intent = Intent(context, MainActivity::class.java).putExtra("engagement_task", -tree.id)
+        val decoration = context.getString(CopyR.string.copy_trang_tri_d48231)
+        val browse = AppText.text(TextKey.CopyTiemPhuKienE4d7d0)
+        val backToTree = AppText.text(TextKey.CopyVeCayB033ce)
+        val product = AppText.text(TextKey.CopyNoDiuDangE01645)
+        val chooseTree = AppText.text(TextKey.CopyDeoChoCayAfc821)
+        ActivityScenario.launch<MainActivity>(intent).use {
+            clickLabel(decoration)
+            revealLabel(browse)
+            clickLabel(browse)
+            awaitLabel(backToTree)
+            awaitLabel(treeName)
+            revealLabel(product)
+            clickLabel(product)
+            revealLabel(chooseTree)
+            val picker = awaitLabel(chooseTree, clickable = true)
+            assertTrue(picker.findLabel(treeName) != null)
+        }
+    }
+
     private fun prepareSelectableTrees(): List<Tree> =
         GardenDatabase(context).use { database ->
             val storage = GameStorage(database)

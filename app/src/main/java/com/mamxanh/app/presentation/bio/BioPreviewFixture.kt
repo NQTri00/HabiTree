@@ -14,6 +14,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInputModeManager
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import com.mamxanh.app.feature.shop.presentation.ui.shop.ShopPendingAction
 import com.mamxanh.shared.data.sql.GameSchema
 import com.mamxanh.shared.localization.AppLanguage
 import com.mamxanh.shared.localization.AppText
@@ -78,7 +79,10 @@ import com.mamxanh.shared.localization.TextKey
                 modalId = id
                 homeTreeState.selectedId = home
                 onboarding.step = step
-                if (requestedBusy) startCommand("buy")
+                if (requestedBusy) {
+                    this.busy = true
+                    previewPurchase = ShopPendingAction.Buy
+                }
                 val fields =
                     if (modal == "confirm-import") {
                         mapOf("backupVersion" to GameSchema.VERSION.toString()) + referenceFields

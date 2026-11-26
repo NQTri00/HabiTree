@@ -8,6 +8,7 @@ import com.mamxanh.app.feature.garden.presentation.ui.garden.PlantingSelectionSt
 import com.mamxanh.app.feature.home.presentation.ui.home.HomeTreeState
 import com.mamxanh.app.feature.home.presentation.ui.onboarding.OnboardingSelectionState
 import com.mamxanh.app.feature.settings.presentation.SettingsRequestState
+import com.mamxanh.app.feature.shop.presentation.ui.shop.ShopPendingAction
 import com.mamxanh.app.feature.shop.presentation.ui.shop.ShopSelectionState
 import com.mamxanh.app.feature.tasks.presentation.ui.form.TaskDraftState
 import com.mamxanh.app.feature.tasks.presentation.ui.list.TaskScreenSelection
@@ -37,8 +38,7 @@ import org.json.JSONObject
     var message by mutableStateOf("")
     var modalMessage by mutableStateOf("")
     var busy by mutableStateOf(false)
-    var pendingAction by mutableStateOf<String?>(null)
-        private set
+    var previewPurchase by mutableStateOf<ShopPendingAction?>(null)
     val shopSelection = ShopSelectionState()
     val plantingSelection = PlantingSelectionState()
     var preferredPlantingPlot by mutableStateOf<Int?>(null)
@@ -54,6 +54,7 @@ import org.json.JSONObject
 
     fun openSeedPicker(plot: Int?) {
         preferredPlantingPlot = plot
+        if (world?.native != true) plantingSelection.select(plot?.toString().orEmpty())
         show("seed-picker")
     }
 
@@ -160,6 +161,23 @@ import org.json.JSONObject
                     }
                 }.getOrElse { BioController() }
             })
+    }
+
+    fun openAccessoryShop(tree: String = "") {
+        openTreeShop("accessories", tree.ifBlank { homeTreeState.selectedId })
+    }
+
+    fun openCareShop(tree: String) {
+        openTreeShop("care", tree)
+    }
+
+    private fun openTreeShop(
+        tab: String,
+        tree: String,
+    ) {
+        requestShopTab(tab)
+        if (world?.native == true) accessoryTargetArgument = tree else shopSelection.targetTree = tree
+        go("shop", tree)
     }
 
     fun requestShopTab(tab: String) {
@@ -275,7 +293,7 @@ import org.json.JSONObject
 
     fun result(result: BioResult) {
         busy = false
-        pendingAction = null
+        previewPurchase = null
         if (result.success) {
             modal = ""
             if (result.route.isNotBlank()) {
@@ -295,89 +313,18 @@ import org.json.JSONObject
         }
     }
 
-    fun startCommand(action: String) {
-        busy = true
-        pendingAction = action
+    fun selectPreviewTree(id: String) {
+        if (world?.native == true) return
+        homeTreeState.selectedId = id
+        modal = ""
     }
 
-    fun act(action: String) {
-        val parts = action.split(':')
-        val name = parts[0]
-        val id = parts.getOrElse(1) { "" }
-        val value = parts.getOrElse(2) { "" }
-        when (name) {
-            "go" -> go(id, value)
-            "tab" -> setTab(id, value)
-            "back" -> back()
-            "bio-picker" -> show("tree-picker")
-            "bio-pin" -> {
-                if (world?.native == true) return
-                homeTreeState.selectedId = id
-                modal = ""
-            }
-            "bio-tree-decor" -> go("tree", id, treeTab = "decor")
-            "bio-accessory-shop" -> {
-                requestShopTab("accessories")
-                val target = id.ifBlank { homeTreeState.selectedId }
-                if (world?.native == true) accessoryTargetArgument = target else shopSelection.targetTree = target
-                go("shop", target)
-            }
-            "bio-seed-picker" -> {
-                if (world?.native == true) {
-                    openSeedPicker(id.toIntOrNull())
-                } else {
-                    plantingSelection.select(id)
-                    show("seed-picker")
-                }
-            }
-            "bio-shop-seeds" -> {
-                requestShopTab("seeds")
-                go("shop")
-            }
-            "shop-care" -> {
-                requestShopTab("care")
-                if (world?.native == true) accessoryTargetArgument = param else shopSelection.targetTree = param
-                go("shop", param)
-            }
-            "purchase" -> show("purchase", id)
-            "accessory" -> openAccessory(id, value)
-            "plant" -> {
-                if (world?.native == true) {
-                    preferredPlantingPlot = value.toIntOrNull() ?: preferredPlantingPlot
-                } else {
-                    plantingSelection.select(value)
-                }
-                show("plant", id)
-            }
-            "unlock",
-            "sell",
-            "remove",
-            "archive",
-            "water-all",
-            "ticket",
-            "adjust",
-            "permission",
-            "recover",
-            "clear",
-            "license",
-            "focus-end",
-            "fertilizer-help",
-            ->
-                show(
-                    name,
-                    id,
-                )
-            "tree-prev", "tree-next" -> {
-                if (world?.native == true) return
-                val ids = world?.treeIds.orEmpty()
-                val i = ids.indexOf(param).coerceAtLeast(0)
-                if (ids.isNotEmpty()) {
-                    param =
-                        ids[(i + (if (name == "tree-next") 1 else ids.size - 1)) % ids.size]
-                }
-            }
-            "focus-task" -> go("focus", id)
-            else -> Unit
+    fun browsePreviewTree(forward: Boolean) {
+        if (world?.native == true) return
+        val ids = world?.treeIds.orEmpty()
+        val current = ids.indexOf(param).coerceAtLeast(0)
+        if (ids.isNotEmpty()) {
+            param = ids[(current + (if (forward) 1 else ids.size - 1)) % ids.size]
         }
     }
 }

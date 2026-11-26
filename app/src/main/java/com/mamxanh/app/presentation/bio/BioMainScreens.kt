@@ -2,7 +2,6 @@ package com.mamxanh.app.presentation.bio
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -22,7 +21,6 @@ import com.mamxanh.app.core.components.design.AppRadii
 import com.mamxanh.app.core.components.design.AppSpacing
 import com.mamxanh.app.core.components.design.AppTypography
 import com.mamxanh.app.feature.home.presentation.ui.home.HomeReward
-import com.mamxanh.app.feature.tree.domain.repository.AccessorySnapshot
 import com.mamxanh.core.ui.R
 import com.mamxanh.shared.localization.AppText
 import com.mamxanh.shared.localization.TextKey
@@ -77,30 +75,33 @@ internal fun BioReward(
     inventory: Boolean = false,
     target: String = "",
     encyclopedia: Boolean = false,
-    onProductClick: (() -> Unit)? = null,
-    ownedQuantity: Int? = null,
-    equippedCan: String = world.state.s("equipped"),
-    catalogStatus: String? = null,
-    catalogKnown: Boolean? = null,
-    accessoryCatalog: AccessorySnapshot? = null,
 ) {
     val id = item.s("id")
     val seed = world.species.any { it.s("id") == id }
     val accessory =
         item.s("category") == "TREE"
-    val quantity = ownedQuantity ?: world.inventoryCount(id, accessory)
-    val owned = if (inventory) quantity > 0 else accessoryCatalog?.owns(id) ?: (world.owned(id) > 0)
-    val equipped = accessoryCatalog?.equipped(id) ?: world.trees.any { it.s("decor") == id }
+    if (accessory && !encyclopedia) {
+        val owned =
+            if (inventory) {
+                world.inventoryCount(id, accessory = true) > 0
+            } else {
+                world.owned(id) > 0
+            }
+        val equipped = world.trees.any { it.s("decor") == id }
+        BioAccessoryCard(id, item.s("name"), item.i("price"), owned, equipped, modifier) {
+            ui.openAccessory(id, target)
+        }
+        return
+    }
+    val quantity = world.inventoryCount(id, accessory)
     val known =
-        !encyclopedia || (catalogKnown ?: (world.record(id).b("discovered") || world.record(id).i("planted") > 0 || world.count(id) > 0))
+        !encyclopedia || world.record(id).b("discovered") || world.record(id).i("planted") > 0 || world.count(id) > 0
     val action = {
         if (encyclopedia) {
             ui.go("species", id)
-        } else if (accessory) {
-            ui.act("accessory:$id:$target")
         } else if (inventory) {
             if (seed) {
-                ui.act("plant:$id:${ui.plantingSelection.plotKey}")
+                ui.show("plant", id)
             } else if (item.b("permanent")) {
                 Unit
             } else {
@@ -110,7 +111,48 @@ internal fun BioReward(
             ui.show("purchase", id)
         }
     }
-    BioCard(modifier, padding = AppSpacing.VALUE_12, onClick = onProductClick ?: action) {
+    val status =
+        if (encyclopedia) {
+            world.record(id).s("status", stringResource(R.string.copy_chua_kham_pha_c0b0cb))
+        } else {
+            null
+        }
+    BioProductCard(
+        BioProductDisplay(id, item.s("name"), item.i("price"), seed, item.b("permanent"), item.s("tier")),
+        modifier,
+        quantity,
+        world.state.s("equipped"),
+        inventory,
+        status,
+        known,
+        action,
+    )
+}
+
+internal data class BioProductDisplay(
+    val id: String,
+    val name: String,
+    val price: Int,
+    val seed: Boolean = false,
+    val permanent: Boolean = false,
+    val tier: String = "",
+)
+
+@Composable
+internal fun BioProductCard(
+    item: BioProductDisplay,
+    modifier: Modifier,
+    quantity: Int,
+    equippedCan: String,
+    inventory: Boolean = false,
+    catalogStatus: String? = null,
+    known: Boolean = true,
+    onClick: () -> Unit,
+) {
+    val encyclopedia = catalogStatus != null
+    val id = item.id
+    val seed = item.seed
+    BioCard(modifier, padding = AppSpacing.VALUE_12, onClick = onClick) {
         val backdrop =
             Brush.linearGradient(
                 if (seed &&
@@ -143,20 +185,18 @@ internal fun BioReward(
                 Bi(
                     if (seed) {
                         "leaf"
-                    } else if (accessory) {
-                        accessoryIcon(id)
-                    } else if (item.b("permanent")) {
+                    } else if (item.permanent) {
                         "water"
                     } else {
                         "fertilizer"
                     },
-                    size = if (accessory)AppIcons.SIZE_32 else AppIcons.PRODUCT_ARTWORK_SIZE,
+                    size = AppIcons.PRODUCT_ARTWORK_SIZE,
                 )
             }
         }
         Spacer(Modifier.height(AppDimensions.Dp10))
         Bt(
-            item.s("name"),
+            item.name,
             Modifier.heightIn(min = AppDimensions.Dp36),
             size = AppTypography.SIZE_13,
             line = AppTypography.LINE_HEIGHT_18_85,
@@ -165,45 +205,15 @@ internal fun BioReward(
         Spacer(Modifier.height(AppDimensions.Dp10))
         if (encyclopedia) {
             Bt(
-                catalogStatus ?: world.record(id).s("status", stringResource(R.string.copy_chua_kham_pha_c0b0cb)),
+                catalogStatus.orEmpty(),
                 size = AppTypography.SIZE_11,
                 tint = bp.muted,
                 line = AppTypography.LINE_HEIGHT_15_4,
             )
-        } else if (accessory) {
-            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                Bt(
-                    if (equipped) {
-                        stringResource(R.string.copy_dang_dung_275ca2)
-                    } else if (owned) {
-                        stringResource(R.string.copy_da_so_huu_822625)
-                    } else {
-                        stringResource(R.string.copy_0_xu_251e68, item.i("price"))
-                    },
-                    Modifier.weight(1f),
-                    size = AppTypography.SIZE_13,
-                    tint = bp.deep,
-                )
-                ;Box(
-                    Modifier.size(AppDimensions.Dp27).border(AppDimensions.Dp1, bp.line, RoundedCornerShape(AppDimensions.Dp8)),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Bi(
-                        if (equipped) {
-                            "check"
-                        } else if (owned) {
-                            "next"
-                        } else {
-                            "plus"
-                        },
-                        size = AppIcons.SIZE_14,
-                    )
-                }
-            }
         } else {
             Bt(
                 if (inventory) {
-                    if (item.b("permanent")) {
+                    if (item.permanent) {
                         if (equippedCan ==
                             id
                         ) {
@@ -214,7 +224,7 @@ internal fun BioReward(
                     } else {
                         "×$quantity"
                     }
-                } else if (item.b("permanent") &&
+                } else if (item.permanent &&
                     quantity > 0
                 ) {
                     if (equippedCan ==
@@ -225,7 +235,7 @@ internal fun BioReward(
                         stringResource(R.string.copy_da_so_huu_822625)
                     }
                 } else {
-                    stringResource(R.string.copy_0_xu_251e68, item.i("price"))
+                    stringResource(R.string.copy_0_xu_251e68, item.price)
                 },
                 size = AppTypography.SIZE_13,
                 tint = bp.deep,
@@ -233,7 +243,7 @@ internal fun BioReward(
             if (seed &&
                 !inventory
             ) {
-                Bt(bioTier(item.s("tier")), size = AppTypography.SIZE_12, line = AppTypography.LINE_HEIGHT_17, tint = bp.muted)
+                Bt(bioTier(item.tier), size = AppTypography.SIZE_12, line = AppTypography.LINE_HEIGHT_17, tint = bp.muted)
             }
         }
     }

@@ -125,9 +125,9 @@ internal fun treeRouteContent(
                 TreeScreenAction.Encyclopedia -> ui.go("encyclopedia")
                 TreeScreenAction.Water -> Unit
                 is TreeScreenAction.Fertilize -> Unit
-                TreeScreenAction.BuyFertilizer -> ui.act("shop-care")
+                TreeScreenAction.BuyFertilizer -> ui.openCareShop(id)
                 TreeScreenAction.Unequip -> Unit
-                TreeScreenAction.BuyAccessory -> ui.act("bio-accessory-shop:$id")
+                TreeScreenAction.BuyAccessory -> ui.openAccessoryShop(id)
                 TreeScreenAction.Species -> ui.go("species", speciesId)
                 TreeScreenAction.Sell -> ui.show("sell", id)
                 TreeScreenAction.Remove -> ui.show("remove", id)

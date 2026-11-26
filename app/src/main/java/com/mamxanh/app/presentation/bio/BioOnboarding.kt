@@ -14,8 +14,10 @@ import com.mamxanh.app.feature.home.presentation.ui.onboarding.OnboardingDisplay
 import com.mamxanh.app.feature.home.presentation.ui.onboarding.OnboardingEvent
 import com.mamxanh.app.feature.home.presentation.ui.onboarding.OnboardingState
 import com.mamxanh.app.feature.home.presentation.ui.onboarding.OnboardingViewModel
+import com.mamxanh.app.feature.tasks.presentation.ui.templates.TemplateRow
 import com.mamxanh.shared.localization.AppText
 import com.mamxanh.shared.localization.TextKey
+import com.mamxanh.shared.model.catalog
 import kotlinx.coroutines.CancellationException
 import org.koin.androidx.compose.koinViewModel
 
@@ -72,11 +74,12 @@ internal fun onboardingRouteContent(
     liveState: OnboardingState? = null,
     dispatch: ((OnboardingAction) -> Unit)? = null,
 ): OnboardingRouteContent {
-    val templates = world.catalog.a("templates").objects()
+    val templates = displayedTemplates(world.takeIf { liveState == null })
     val category = liveState?.category ?: ui.onboarding.category
     val chosen = (liveState?.templateIds ?: ui.onboarding.selectedTemplates).toSet()
     val seed = liveState?.seed ?: ui.onboarding.seed
-    val byCategory = templates.sortedBy { it.s("category") != category }
+    val seedNames = if (liveState == null) emptyMap() else catalog.associate { it.id to it.name }
+    val byCategory = templates.sortedBy { it.category != category }
 
     return OnboardingRouteContent(
         state =
@@ -85,8 +88,11 @@ internal fun onboardingRouteContent(
                 seed = seed,
                 category = category,
                 selectedCount = chosen.size,
-                selectedTitles = templates.filter { it.s("id") in chosen }.map { it.s("title") },
-                seedNames = (listOf("succulent", "monstera", "snake") + seed).associateWith { world.species(it).s("name") },
+                selectedTitles = templates.filter { it.id in chosen }.map { it.title },
+                seedNames =
+                    (listOf("succulent", "monstera", "snake") + seed).associateWith {
+                        if (liveState == null) world.species(it).s("name") else seedNames[it] ?: seedNames.values.first()
+                    },
                 templateCount = byCategory.size,
                 remind = liveState?.reminders ?: (ui.fields["onboard-remind"] == "true"),
             ),
@@ -115,8 +121,8 @@ internal fun onboardingRouteContent(
             },
         templateRow = { index ->
             val template = byCategory[index]
-            val id = template.s("id")
-            BioTemplateRow(template, id in chosen, onboarding = true) {
+            val id = template.id
+            TemplateRow(template, id in chosen, onboarding = true) {
                 if (dispatch != null) {
                     dispatch(OnboardingAction.ToggleTemplate(id))
                 } else if (!ui.onboarding.toggleTemplate(id)) {

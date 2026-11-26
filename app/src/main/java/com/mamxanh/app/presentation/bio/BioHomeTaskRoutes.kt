@@ -38,6 +38,7 @@ import com.mamxanh.app.feature.tree.presentation.ui.detail.component.TreeHeroAct
 import com.mamxanh.app.feature.tree.presentation.ui.detail.component.TreeHeroState
 import com.mamxanh.shared.localization.AppText
 import com.mamxanh.shared.localization.TextKey
+import com.mamxanh.shared.model.lifecycleProfiles
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
@@ -81,7 +82,7 @@ internal fun liveHomeRouteContent(
                     is HomeEvent.OpenTree -> ui.go("tree", event.id.toString())
                     is HomeEvent.OpenTask -> ui.go(if (event.startTimer) "focus" else "task", event.id)
                     is HomeEvent.CompleteTask -> tasks.dispatch(TaskListAction.Complete(event.id, timer = false))
-                    is HomeEvent.DecorateTree -> ui.act("bio-tree-decor:${event.id}")
+                    is HomeEvent.DecorateTree -> ui.go("tree", event.id.toString(), treeTab = "decor")
                     is HomeEvent.WaterTree -> trees.dispatch(TreeAction.Water(event.id))
                     is HomeEvent.FertilizeTree -> ui.show("fertilizer-help", event.id.toString())
                     is HomeEvent.Feedback -> ui.message = event.message
@@ -100,8 +101,8 @@ private fun BioController.openHomeShortcut(action: HomeScreenAction) {
         HomeScreenAction.PickSeed -> show("seed-picker")
         HomeScreenAction.ViewTasks -> go("tasks")
         HomeScreenAction.AddTask -> go("task-new")
-        HomeScreenAction.BrowseSeeds -> act("bio-seed-picker")
-        HomeScreenAction.BrowseAccessories -> act("bio-accessory-shop")
+        HomeScreenAction.BrowseSeeds -> openSeedPicker(null)
+        HomeScreenAction.BrowseAccessories -> openAccessoryShop()
         HomeScreenAction.Review -> go("review")
     }
 }
@@ -173,7 +174,7 @@ internal fun homeRouteContent(
                                 stageLabel = AppText.text(stageLabel),
                                 growthCaption = AppText.text(caption),
                                 stage = care.stageIndex + 1,
-                                stages = world.species(selected.speciesId).i("stages", 6),
+                                stages = lifecycleProfiles.firstOrNull { it.id == selected.speciesId }?.stageCount ?: 6,
                                 progress = care.percentage,
                                 home = true,
                                 compact = short,

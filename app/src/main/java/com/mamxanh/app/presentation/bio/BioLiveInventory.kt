@@ -51,7 +51,7 @@ internal fun liveInventoryRouteContent(
         }
     }
     if (state.loading || state.busy) LinearProgressIndicator()
-    return inventoryRouteContent(world, ui, LiveInventory(state, model::dispatch), accessoryCatalog)
+    return inventoryRouteContent(ui, LiveInventory(state, model::dispatch), accessoryCatalog)
 }
 
 internal class LiveInventory(

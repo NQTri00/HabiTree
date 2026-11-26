@@ -21,6 +21,7 @@ import com.mamxanh.app.feature.shop.presentation.ui.shop.purchaseAvailability
 import com.mamxanh.app.feature.tasks.presentation.ui.detail.TaskDetailAction
 import com.mamxanh.app.feature.tree.domain.repository.AccessoryTree
 import com.mamxanh.shared.localization.AppText
+import com.mamxanh.shared.model.gardenCosmetics
 import org.koin.androidx.compose.koinViewModel
 
 @Composable internal fun BioModal(
@@ -37,7 +38,12 @@ import org.koin.androidx.compose.koinViewModel
     val backupSummary = backupState?.importSummary
     val settingsModel = if (world.native && type.startsWith("permission")) settingsViewModel() else null
     val id = ui.modalId
-    val item = world.product(id)
+    val cosmetic = if (world.native && type == "accessory") gardenCosmetics.firstOrNull { it.id == id } else null
+    val referenceItem = if (world.native) null else world.product(id)
+    val livePurchase = world.native && (type == "purchase" || type == "plant")
+    val product = if (livePurchase) livePurchaseProduct(id) else null
+    val details = product?.details ?: referenceItem?.referencePurchaseDetails() ?: BioPurchaseDetails(name = "", price = 0)
+    val price = cosmetic?.price ?: details.price
     val disposition = type == "remove" || type == "sell"
     val treeDisposition =
         if (world.native && disposition && ui.route == "tree" && ui.param == id) {
@@ -46,11 +52,12 @@ import org.koin.androidx.compose.koinViewModel
             null
         }
     val tree = if (world.native) null else world.tree(id)
-    val seed = world.species.any { it.s("id") == id }
-    val permanent = item.b("permanent")
+    val seed = product?.seed ?: (!world.native && world.species.any { it.s("id") == id })
+    val permanent = cosmetic?.permanent ?: product?.permanent ?: (referenceItem?.b("permanent") == true)
     val wallet = shop?.state?.wallet
-    val stock = wallet?.inventory?.get(id) ?: if (wallet == null) world.count(id) else 0
-    val equippedCan = wallet?.equippedCan ?: world.state.s("equipped")
+    val stock = if (world.native) wallet?.inventory?.get(id) ?: 0 else world.count(id)
+    val equippedCan = if (world.native) wallet?.equippedCan.orEmpty() else world.state.s("equipped")
+    val plantStock = if (world.native) planting?.count(id) ?: 0 else world.count(id)
     val accessory =
         if (world.native && type == "accessory") {
             bindLiveAccessory(ui, id, ui.accessoryTargetArgument, ui.homeTreeState.selectedId, world)
@@ -64,7 +71,12 @@ import org.koin.androidx.compose.koinViewModel
             world.native -> accessorySnapshot?.owns(id) == true
             else -> world.owned(id) > 0
         }
-    val coins = accessorySnapshot?.coins ?: wallet?.coins ?: world.coins
+    val coins =
+        when {
+            !world.native -> world.coins
+            type == "accessory" -> accessorySnapshot?.coins ?: 0
+            else -> wallet?.coins ?: 0
+        }
     val accessoryTrees =
         when {
             type != "accessory" -> emptyList()
@@ -86,7 +98,7 @@ import org.koin.androidx.compose.koinViewModel
     val purchase =
         purchaseAvailability(
             coins,
-            item.i("price"),
+            price,
             owned,
             permanent,
             ui.busy ||
@@ -104,7 +116,7 @@ import org.koin.androidx.compose.koinViewModel
             !world.native && (type == "plant" || type == "purchase") -> world.emptyPlots().isEmpty()
             else -> false
         }
-    val title = bioModalTitle(type, id, permanent, full) { item.s("name") }
+    val title = bioModalTitle(type, id, permanent, full) { cosmetic?.name ?: details.name }
     val garden =
         if (world.native && ui.route == "garden" && type in setOf("unlock", "water-all")) {
             koinViewModel<GardenViewModel>()
@@ -167,18 +179,18 @@ import org.koin.androidx.compose.koinViewModel
                         loading = homeState?.isLoading == true,
                         onPlant = { ui.show("seed-picker") },
                     ) { id ->
-                        if (home == null) ui.act("bio-pin:" + id) else home.dispatch(HomeAction.SelectTree(id))
+                        if (home == null) ui.selectPreviewTree(id) else home.dispatch(HomeAction.SelectTree(id))
                     }
                 }
                 "seed-picker" -> BioSeedPickerBody(world, ui, planting)
-                "purchase" -> BioPurchaseBody(id, world, ui, item, seed, permanent, total, full, shop, coins, stock)
-                "accessory" -> BioAccessoryBody(id, ui, item, owned, purchase, accessoryTrees, living, target, accessory, coins)
+                "purchase" -> BioPurchaseBody(id, world, ui, details, seed, permanent, total, full, shop, coins, stock)
+                "accessory" -> BioAccessoryBody(id, ui, price, owned, purchase, accessoryTrees, living, target, accessory, coins)
                 "plant" ->
                     BioPlantBody(
                         id,
-                        item,
+                        details.name,
                         full,
-                        planting?.count(id) ?: world.count(id),
+                        plantStock,
                         planting?.state?.name ?: plantName,
                         if (planting == null) {
                             selectedPlot
@@ -191,7 +203,7 @@ import org.koin.androidx.compose.koinViewModel
                         onName = { if (planting == null) plantName = it.take(100) else planting.setName(it) },
                         onPlot = { if (planting == null) selectedPlot = it else planting.selectPlot(it) },
                         onPlant = { planting?.plant() },
-                        canPlant = (planting?.count(id) ?: world.count(id)) > 0 && !ui.busy && (planting?.canPlant ?: true),
+                        canPlant = plantStock > 0 && !ui.busy && (planting?.canPlant ?: true),
                     )
                 else ->
                     BioModalMessages(
@@ -205,7 +217,7 @@ import org.koin.androidx.compose.koinViewModel
                         saleQuote = treeDisposition?.quote,
                         watering = gardenState?.garden?.waterAll,
                         unlockCost = gardenState?.nextUnlockCost,
-                        unlockCoins = gardenState?.garden?.coins ?: world.coins,
+                        unlockCoins = if (world.native) gardenState?.garden?.coins ?: 0 else world.coins,
                         requestPermission = settingsModel?.let { model -> { model.dispatch(SettingsAction.RequestPermission) } },
                         openPermissionSettings =
                             settingsModel?.let { model ->
@@ -274,7 +286,7 @@ import org.koin.androidx.compose.koinViewModel
                             }
                         },
                     gardenBusy = gardenState?.isLoading == true,
-                    canUnlock = gardenState?.canUnlock(id.toIntOrNull()),
+                    canUnlock = if (world.native) gardenState?.canUnlock(id.toIntOrNull()) == true else null,
                     confirmDisposition = treeDisposition?.confirm,
                     treeBusy = world.native && disposition && (treeDisposition?.quote == null || treeDisposition.loading),
                     confirmTicket =
@@ -296,7 +308,7 @@ import org.koin.androidx.compose.koinViewModel
                     insightsBusy = insightsBusy,
                     buy = shop?.let { live -> { live.buy(id, quantity) } },
                     shopBuying = shop?.state?.isPurchasing == true,
-                    pendingPurchase = shop?.state?.pendingAction,
+                    pendingPurchase = if (world.native) shop?.state?.pendingAction else ui.previewPurchase,
                     quantity = quantity,
                     equippedCan = equippedCan,
                     backupAction =

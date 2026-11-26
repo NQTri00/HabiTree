@@ -1,17 +1,12 @@
 package com.mamxanh.app.presentation.bio
 
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.ui.*
-import androidx.compose.ui.graphics.*
-import androidx.compose.ui.semantics.*
-import androidx.compose.ui.unit.*
-import com.mamxanh.app.core.components.design.*
 import com.mamxanh.app.feature.inventory.presentation.navigation.InventoryRouteContent
 import com.mamxanh.app.feature.shop.presentation.navigation.ShopRouteContent
 import com.mamxanh.app.feature.shop.presentation.ui.shop.ShopTreeContext
 import com.mamxanh.app.feature.tree.domain.repository.AccessorySnapshot
+import com.mamxanh.shared.model.careProducts
+import com.mamxanh.shared.model.catalog
+import com.mamxanh.shared.model.gardenCosmetics
 import org.json.JSONObject
 
 private fun catalogProducts(
@@ -24,58 +19,61 @@ private fun catalogProducts(
         else -> world.species
     }
 
+private fun liveProducts(tab: String): List<BioProductDisplay> =
+    when (tab) {
+        "care" -> careProducts.map { BioProductDisplay(it.id, it.name, it.price, permanent = it.permanent) }
+        "accessories" ->
+            gardenCosmetics.filter { it.category == "TREE" }.map {
+                BioProductDisplay(it.id, it.name, it.price, permanent = it.permanent)
+            }
+        else -> catalog.map { BioProductDisplay(it.id, it.name, it.price, seed = true, tier = it.tier) }
+    }
+
 internal fun inventoryRouteContent(
     world: BioWorld,
     ui: BioController,
-    live: LiveInventory? = null,
-    accessoryCatalog: AccessorySnapshot? = null,
 ): InventoryRouteContent {
-    val tab = live?.state?.tab ?: ui.shopSelection.inventoryTab
-    val items =
-        catalogProducts(world, tab).filter {
-            live?.state?.contains(it.s("id")) ?: (world.inventoryCount(it.s("id"), accessory = tab == "accessories") > 0)
-        }
+    val tab = ui.shopSelection.inventoryTab
+    val items = catalogProducts(world, tab).filter { world.inventoryCount(it.s("id"), accessory = tab == "accessories") > 0 }
     val openShop = {
-        if (live == null) {
-            ui.shopSelection.shopTab = tab
-            ui.go("shop")
-        } else {
-            live.openShop()
-        }
+        ui.shopSelection.shopTab = tab
+        ui.go("shop")
     }
     return InventoryRouteContent(
         tab = tab,
         itemCount = items.size,
-        onTab = { if (live == null) ui.shopSelection.inventoryTab = it else live.selectTab(it) },
+        onTab = { ui.shopSelection.inventoryTab = it },
         onShop = openShop,
         onBuy = openShop,
         item = { index, modifier ->
+            val target = ui.shopSelection.targetTree.ifBlank { ui.homeTreeState.selectedId }
+            BioProduct(world, ui, items[index], modifier, inventory = true, target = target)
+        },
+    )
+}
+
+internal fun inventoryRouteContent(
+    ui: BioController,
+    live: LiveInventory,
+    accessoryCatalog: AccessorySnapshot?,
+): InventoryRouteContent {
+    val state = live.state
+    val items = liveProducts(state.tab).filter { state.contains(it.id) }
+    val target = ui.accessoryTargetArgument.ifBlank { ui.homeTreeState.selectedId }
+    return InventoryRouteContent(
+        tab = state.tab,
+        itemCount = items.size,
+        onTab = live::selectTab,
+        onShop = live::openShop,
+        onBuy = live::openShop,
+        item = { index, modifier ->
             val item = items[index]
-            val target =
-                (
-                    if (live ==
-                        null
-                    ) {
-                        ui.shopSelection.targetTree
-                    } else {
-                        ui.accessoryTargetArgument
-                    }
-                ).ifBlank { ui.homeTreeState.selectedId }
-            BioProduct(
-                world,
-                ui,
-                item,
-                modifier,
-                inventory = true,
-                target = target,
-                ownedQuantity = live?.state?.count(item.s("id")),
-                equippedCan = live?.state?.equippedCan ?: world.state.s("equipped"),
-                accessoryCatalog = accessoryCatalog,
-                onProductClick =
-                    live?.let { binding ->
-                        { binding.use(item.s("id"), target, item.b("permanent")) }
-                    },
-            )
+            val use = { live.use(item.id, target, item.permanent) }
+            if (state.tab == "accessories") {
+                BioAccessoryCard(item.id, item.name, item.price, true, accessoryCatalog?.equipped(item.id) == true, modifier, use)
+            } else {
+                BioProductCard(item, modifier, state.count(item.id), state.equippedCan, inventory = true, onClick = use)
+            }
         },
     )
 }
@@ -84,47 +82,56 @@ internal fun shopRouteContent(
     world: BioWorld,
     ui: BioController,
     argument: String,
-    live: LiveShop? = null,
-    accessoryCatalog: AccessorySnapshot? = null,
 ): ShopRouteContent {
-    val tab = live?.state?.tab ?: ui.shopSelection.shopTab
+    val tab = ui.shopSelection.shopTab
     val items = catalogProducts(world, tab)
-    val selected =
-        if (live == null) {
-            world.tree(argument)?.let { ShopTreeContext(it.s("id"), it.s("name"), it.s("species")) }
-        } else {
-            accessoryCatalog
-                ?.trees
-                ?.firstOrNull { it.id == argument }
-                ?.let { ShopTreeContext(it.id, it.name, it.speciesId) }
-        }
+    val target = ui.shopSelection.targetTree.ifBlank { ui.homeTreeState.selectedId }
     return ShopRouteContent(
         tab = tab,
-        shoppingTree = selected,
+        shoppingTree = world.tree(argument)?.let { ShopTreeContext(it.s("id"), it.s("name"), it.s("species")) },
         itemCount = items.size,
-        onTab = {
-            if (live == null) ui.shopSelection.shopTab = it else live.selectTab(it)
-        },
+        onTab = { ui.shopSelection.shopTab = it },
+        onInventory = { ui.go("inventory") },
+        onTree = { ui.go("tree", it) },
+        onShop = { ui.go("shop") },
+        item = { index, modifier -> BioProduct(world, ui, items[index], modifier, target = target) },
+    )
+}
+
+internal fun shopRouteContent(
+    ui: BioController,
+    argument: String,
+    live: LiveShop,
+    accessoryCatalog: AccessorySnapshot?,
+): ShopRouteContent {
+    val state = live.state
+    val items = liveProducts(state.tab)
+    val target = argument.ifBlank { ui.accessoryTargetArgument }.ifBlank { ui.homeTreeState.selectedId }
+    val selected = accessoryCatalog?.trees?.firstOrNull { it.id == argument }
+    return ShopRouteContent(
+        tab = state.tab,
+        shoppingTree = selected?.let { ShopTreeContext(it.id, it.name, it.speciesId) },
+        itemCount = items.size,
+        onTab = live::selectTab,
         onInventory = { ui.go("inventory") },
         onTree = { ui.go("tree", it) },
         onShop = { ui.go("shop") },
         item = { index, modifier ->
             val item = items[index]
-            val preferredTarget = if (live == null) ui.shopSelection.targetTree else argument.ifBlank { ui.accessoryTargetArgument }
-            val target = preferredTarget.ifBlank { ui.homeTreeState.selectedId }
-            val accessoryTarget = target.takeIf { item.s("category") == "TREE" }
-            val wallet = live?.state?.wallet
-            BioProduct(
-                world,
-                ui,
-                item,
-                modifier,
-                target = target,
-                onProductClick = live?.let { binding -> { binding.selectProduct(item.s("id"), accessoryTarget) } },
-                ownedQuantity = if (wallet == null || tab == "accessories") null else wallet.inventory[item.s("id")] ?: 0,
-                equippedCan = wallet?.equippedCan ?: world.state.s("equipped"),
-                accessoryCatalog = accessoryCatalog,
-            )
+            if (state.tab == "accessories") {
+                BioAccessoryCard(
+                    item.id,
+                    item.name,
+                    item.price,
+                    accessoryCatalog?.owns(item.id) == true,
+                    accessoryCatalog?.equipped(item.id) == true,
+                    modifier,
+                ) { live.selectProduct(item.id, target) }
+            } else {
+                BioProductCard(item, modifier, state.wallet.inventory[item.id] ?: 0, state.wallet.equippedCan) {
+                    live.selectProduct(item.id, null)
+                }
+            }
         },
     )
 }

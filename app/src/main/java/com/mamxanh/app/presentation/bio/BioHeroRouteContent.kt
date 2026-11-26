@@ -46,12 +46,12 @@ internal fun BioHero(
         }
         when (action) {
             TreeHeroAction.ChooseTree -> ui.show("tree-picker")
-            TreeHeroAction.PinTree -> ui.act("bio-pin:$treeId")
+            TreeHeroAction.PinTree -> ui.selectPreviewTree(treeId)
             TreeHeroAction.OpenTree -> ui.go("tree", treeId)
-            TreeHeroAction.PreviousTree -> ui.act("tree-prev")
-            TreeHeroAction.NextTree -> ui.act("tree-next")
+            TreeHeroAction.PreviousTree -> ui.browsePreviewTree(forward = false)
+            TreeHeroAction.NextTree -> ui.browsePreviewTree(forward = true)
             TreeHeroAction.Water -> if (water != null) water() else Unit
-            TreeHeroAction.Decorate -> ui.act("bio-tree-decor:$treeId")
+            TreeHeroAction.Decorate -> ui.go("tree", treeId, treeTab = "decor")
         }
     }
 }
