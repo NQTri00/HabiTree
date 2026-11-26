@@ -14,9 +14,8 @@ internal fun OnboardingFooter(
     selectedCount: Int,
     onAction: (OnboardingAction) -> Unit,
 ) {
-    if (step ==
-        3
-    ) {
+    val selectionValid = selectedCount in 2..5
+    if (step == 3 && !selectionValid) {
         Bt(
             stringResource(R.string.copy_da_chon_0_5_chon_it_nhat_2_viec_e813b8, selectedCount),
             Modifier.fillMaxWidth().padding(bottom = AppDimensions.Dp8),
@@ -43,7 +42,7 @@ internal fun OnboardingFooter(
             { onAction(OnboardingAction.Next) },
             Modifier.weight(1f),
             enabled =
-                step != 3 || selectedCount in 2..5,
+                step != 3 || selectionValid,
         )
     }
 }

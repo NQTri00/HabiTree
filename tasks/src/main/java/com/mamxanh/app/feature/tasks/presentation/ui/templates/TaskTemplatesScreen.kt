@@ -27,7 +27,7 @@ import com.mamxanh.shared.localization.TextKey
             toggleableState = if (selected)ToggleableState.On else ToggleableState.Off
             role = Role.Checkbox
         },
-        padding = if (onboarding)12 else 14,
+        padding = if (onboarding)AppSpacing.VALUE_12 else AppSpacing.VALUE_14,
         radius = AppRadii.VALUE_18,
         tint = if (selected)bp.soft else bp.surface,
         onClick = onChange,
@@ -48,6 +48,9 @@ import com.mamxanh.shared.localization.TextKey
             }
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(AppDimensions.Dp4)) {
                 Bt(t.title, size = AppTypography.SIZE_13, semi = true)
+                val reward = stringResource(R.string.copy_0_xu_9c90c1, t.reward)
+                val cadence =
+                    if (t.weekends)stringResource(R.string.copy_cuoi_tuan_a0fb27)else stringResource(R.string.copy_moi_ngay_8270cb)
                 Bt(
                     AppText.category(t.category) + " · " +
                         (
@@ -57,28 +60,27 @@ import com.mamxanh.shared.localization.TextKey
                                 AppText.text(TextKey.CopyChamF4623f) +
                                     t.effort
                             }
-                        ),
-                    size = AppTypography.SIZE_12,
+                        ) + if (onboarding) reward else "",
+                    size = if (onboarding) AppTypography.SIZE_11 else AppTypography.SIZE_12,
                     tint = bp.muted,
                 )
                 Bt(
-                    (if (t.weekends)stringResource(R.string.copy_cuoi_tuan_a0fb27)else stringResource(R.string.copy_moi_ngay_8270cb)) +
-                        stringResource(R.string.copy_0_xu_9c90c1, t.reward),
-                    size = AppTypography.SIZE_12,
+                    if (onboarding) cadence else cadence + reward,
+                    size = if (onboarding) AppTypography.SIZE_11 else AppTypography.SIZE_12,
                     tint = bp.muted,
                 )
             }
             Box(
                 Modifier
                     .size(
-                        AppDimensions.Dp20,
+                        if (onboarding) AppDimensions.Dp14 else AppDimensions.Dp20,
                     ).background(
                         if (selected)bp.deep else AppColors.Transparent,
                         RoundedCornerShape(AppDimensions.Dp3),
                     ).border(AppDimensions.Dp1, if (selected)bp.deep else bp.control, RoundedCornerShape(AppDimensions.Dp3)),
                 contentAlignment = Alignment.Center,
             ) {
-                if (selected)Bi("check", size = AppIcons.SIZE_14, tint = AppColors.White)
+                if (selected)Bi("check", size = if (onboarding) AppIcons.SIZE_12 else AppIcons.SIZE_14, tint = AppColors.White)
             }
         }
     }
