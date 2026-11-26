@@ -88,6 +88,8 @@ The completed build and test entries below describe historical checkpoints. The 
 
   The Tree-to-Shop regression now scrolls the small-device Tree screen to expose the Decoration tab before tapping it. Test formatting and the instrumentation APK build passed. The local targeted retest installed successfully and started, but the memory guard stopped it below 700,000 KiB of available RAM before it could report a result.
 
+  The completed Encyclopedia milestone now distributes the title, count, and confirmation icon like the web reference. The local Vietnamese full-screen render shows the completed count at the same horizontal position as the equal-size web reference. The English variant rendered, and Catalog formatting, architecture verification, and the debug APK build passed locally.
+
 - [ ] **MVI09 · Verify the integrated implementation as a single batch.** Once MVI01–MVI08 are complete, run the formatting checks, `verifyArchitecture`, and all four Android assemblies. Then run the full hosted unit and device suites, including targeted lifecycle and event checks wherever the existing suites do not cover a migrated route. After builds and tests pass, render the full Compose inventory in one batch. Review screens, popups, both languages, and adaptive states against the preceding Android images and the approved web images. Record exact revision, commands, counts, and any differences under V02–V05.
 
 ## Remaining final delivery gates

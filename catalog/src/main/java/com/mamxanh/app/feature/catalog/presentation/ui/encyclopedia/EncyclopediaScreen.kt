@@ -60,13 +60,15 @@ fun EncyclopediaScreen(
     Column(verticalArrangement = Arrangement.spacedBy(AppDimensions.Dp12)) {
         goals.forEach { g ->
             BioCard(Modifier.fillMaxWidth()) {
-                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                    Bt(g.title, Modifier.weight(1f), size = AppTypography.SIZE_14, bold = true)
+                val completed = g.progress >= g.target
+                Row(
+                    Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Bt(g.title, Modifier.weight(1f, fill = !completed), size = AppTypography.SIZE_14, bold = true)
                     Bt("${g.progress}/${g.target}", size = AppTypography.SIZE_12)
-                    if (g.progress >= g.target) {
-                        Spacer(Modifier.width(AppDimensions.Dp18))
-                        Bi("check")
-                    }
+                    if (completed) Bi("check")
                 }
                 Bt(
                     when (g.reward) {
