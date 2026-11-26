@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import com.mamxanh.app.core.components.design.*
 import com.mamxanh.core.ui.R
 
@@ -45,4 +46,16 @@ internal fun OnboardingFooter(
                 step != 3 || selectedCount in 2..5,
         )
     }
+}
+
+@Preview(name = "Select tasks", showBackground = true, widthDp = 375)
+@Composable
+private fun OnboardingFooterSelectionPreview() {
+    Column { OnboardingFooter(step = 3, selectedCount = 1, onAction = {}) }
+}
+
+@Preview(name = "Enter garden", showBackground = true, widthDp = 375)
+@Composable
+private fun OnboardingFooterReadyPreview() {
+    Column { OnboardingFooter(step = 4, selectedCount = 2, onAction = {}) }
 }

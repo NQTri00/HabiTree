@@ -53,5 +53,15 @@
     "name": "tasks-calendar",
     "preview": "TaskCalendarPreview",
     "source": "tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/component/TaskCalendar.kt"
+  },
+  {
+    "name": "onboarding-footer-selection",
+    "preview": "OnboardingFooterSelectionPreview",
+    "source": "home/src/main/java/com/mamxanh/app/feature/home/presentation/ui/onboarding/OnboardingFooter.kt"
+  },
+  {
+    "name": "onboarding-footer-ready",
+    "preview": "OnboardingFooterReadyPreview",
+    "source": "home/src/main/java/com/mamxanh/app/feature/home/presentation/ui/onboarding/OnboardingFooter.kt"
   }
 ]
