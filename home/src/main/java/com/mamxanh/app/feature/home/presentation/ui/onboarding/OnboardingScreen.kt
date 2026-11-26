@@ -233,6 +233,8 @@ import com.mamxanh.shared.localization.TextKey
                             stringResource(R.string.copy_nhac_nhe_luc_09_00_cda6e7),
                             state.remind,
                         ) { onAction(OnboardingAction.Remind(it)) }
+                        HorizontalDivider(color = bp.line)
+                        Spacer(Modifier.height(AppDimensions.Dp7))
                         Bt(
                             stringResource(R.string.copy_khong_can_tai_khoan_cap_quyen_trong_tuy_chon_de_nhan_cc9847),
                             Modifier.fillMaxWidth(),
