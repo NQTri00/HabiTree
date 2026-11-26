@@ -92,6 +92,10 @@ The completed build and test entries below describe historical checkpoints. The 
 
   The Onboarding confirmation label now matches the Vietnamese web wording. Both locale previews rendered locally and the Vietnamese image shows the longer wording fitting on the existing metadata lines. The catalog now owns the existing backup version and accessory progress labels, preserving them across regeneration. All eight catalog tests passed and all 1,143 keys have both translations.
 
+  The local `7029451` batch passed all 21 unit cases, formatting, architecture verification, and all four assemblies. The SHA-256 checksum was verified against the packaged debug APK. The file hierarchy accounts for all 1,678 paths and 46 owners. The exact installed-app suite and full current-revision image review remain open.
+
+  The Rest protection-ticket heading and controls now line up with the equal-size Vietnamese web capture. English and Vietnamese Compose previews rendered locally. Recapturing the web page with the browser set to Vietnamese still showed month-first dates and AM time. Android retains its localized day-first date and 24-hour time display. The calendar icon and disabled-control styling still differ.
+
 - [ ] **MVI09 · Verify the integrated implementation as a single batch.** Once MVI01–MVI08 are complete, run the formatting checks, `verifyArchitecture`, and all four Android assemblies. Then run the full hosted unit and device suites, including targeted lifecycle and event checks wherever the existing suites do not cover a migrated route. After builds and tests pass, render the full Compose inventory in one batch. Review screens, popups, both languages, and adaptive states against the preceding Android images and the approved web images. Record exact revision, commands, counts, and any differences under V02–V05.
 
 ## Remaining final delivery gates

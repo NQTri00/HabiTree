@@ -57,7 +57,9 @@ fun RestScreen(
             )
         }
     }
-    BioSection(stringResource(R.string.copy_ve_bao_ve_5a852e))
+    Box(Modifier.padding(top = AppDimensions.Dp16)) {
+        BioSection(stringResource(R.string.copy_ve_bao_ve_5a852e))
+    }
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
         BioTag(stringResource(R.string.copy_0_ve_604049, state.tickets), "award")
         BioButton(stringResource(R.string.copy_mua_250_xu_aa5fe3), onBuy, secondary = true, enabled = state.canBuy && !busy)
