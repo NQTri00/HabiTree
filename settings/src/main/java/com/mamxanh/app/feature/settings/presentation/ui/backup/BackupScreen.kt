@@ -2,8 +2,11 @@ package com.mamxanh.app.feature.settings.presentation.ui.backup
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.tooling.preview.Preview
 import com.mamxanh.app.core.components.design.*
 import com.mamxanh.core.ui.R
@@ -32,7 +35,6 @@ fun BackupScreen(
                 true,
             )
         }
-        Spacer(Modifier.height(AppDimensions.Dp16))
         BioDetails(stringResource(R.string.copy_quyen_rieng_tu_cua_ban_sao_f03d3e)) {
             Bt(
                 stringResource(R.string.copy_ban_sao_co_the_chua_lich_su_va_ghi_chu_rieng_tu_chi_d59ce2),
@@ -41,18 +43,16 @@ fun BackupScreen(
             )
         }
     }
-    Column(verticalArrangement = Arrangement.spacedBy(AppDimensions.Dp6)) {
-        BioButton(stringResource(R.string.copy_ban_an_toan_gan_nhat_4ca154), {
-            onAction(BackupScreenAction.Recover)
-        }, Modifier.fillMaxWidth(), secondary = true, enabled = state.hasSafetyCopy)
-        if (!state.hasSafetyCopy) {
-            Bt(
-                stringResource(R.string.copy_chua_co_ban_an_toan_ban_nay_duoc_tao_truoc_khi_khoi_432d5b),
-                size = AppTypography.SIZE_12,
-                tint = bp.muted,
-            )
-        }
-    }
+    val safetyStatus = stringResource(R.string.copy_chua_co_ban_an_toan_ban_nay_duoc_tao_truoc_khi_khoi_432d5b)
+    BioButton(
+        stringResource(R.string.copy_ban_an_toan_gan_nhat_4ca154),
+        { onAction(BackupScreenAction.Recover) },
+        Modifier.fillMaxWidth().semantics {
+            if (!state.hasSafetyCopy) stateDescription = safetyStatus
+        },
+        secondary = true,
+        enabled = state.hasSafetyCopy,
+    )
     BioButton(
         stringResource(R.string.copy_xoa_du_lieu_398085),
         { onAction(BackupScreenAction.Clear) },
@@ -65,7 +65,9 @@ fun BackupScreen(
             size = AppTypography.SIZE_12,
             tint = bp.muted,
         )
-        BioTextAction(stringResource(R.string.copy_giay_phep_nguon_mo_2ecf92), { onAction(BackupScreenAction.License) })
+        Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+            BioTextAction(stringResource(R.string.copy_giay_phep_nguon_mo_2ecf92), { onAction(BackupScreenAction.License) })
+        }
     }
     BioDetails(stringResource(R.string.copy_chan_doan_906791)) {
         Bt(

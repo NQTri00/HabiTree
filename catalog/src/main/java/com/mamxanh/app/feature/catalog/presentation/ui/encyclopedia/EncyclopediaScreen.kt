@@ -55,7 +55,7 @@ fun EncyclopediaScreen(
         } else {
             2
         }
-    BioGrid(speciesCount, columns, content = item)
+    BioGrid(speciesCount, columns, rowSpacing = AppDimensions.Dp9, content = item)
     BioSection(stringResource(R.string.copy_dau_moc_suu_tam_1b494b))
     Column(verticalArrangement = Arrangement.spacedBy(AppDimensions.Dp12)) {
         goals.forEach { g ->
@@ -77,7 +77,7 @@ fun EncyclopediaScreen(
                     size = AppTypography.SIZE_12,
                     tint = bp.muted,
                 )
-                Spacer(Modifier.height(AppDimensions.Dp8))
+                Spacer(Modifier.height(AppDimensions.Dp11))
                 BioProgress(g.progress.toFloat() / g.target)
             }
         }

@@ -153,9 +153,10 @@ import com.mamxanh.core.ui.R
 @Composable fun BioGrid(
     count: Int,
     columns: Int = 2,
+    rowSpacing: Dp = AppDimensions.Dp12,
     content: @Composable (Int, Modifier) -> Unit,
 ) {
-    Column(verticalArrangement = Arrangement.spacedBy(AppDimensions.Dp12)) {
+    Column(verticalArrangement = Arrangement.spacedBy(rowSpacing)) {
         (0 until count).chunked(columns).forEach { row ->
             Row(
                 Modifier.fillMaxWidth().height(IntrinsicSize.Max),
