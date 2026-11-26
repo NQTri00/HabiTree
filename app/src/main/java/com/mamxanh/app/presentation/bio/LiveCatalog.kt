@@ -26,8 +26,9 @@ internal fun bindLiveCatalog(
         ui.param.takeIf { ui.route == "species" }?.let { argument ->
             lifecycleProfiles.firstOrNull { it.id == argument }?.id ?: lifecycleProfiles.first().id
         }
-    LaunchedEffect(model, world, speciesId) {
-        if (!world.loading) model.dispatch(CatalogAction.Refresh(speciesId))
+    val active = ui.route == "encyclopedia" || ui.route == "species"
+    LaunchedEffect(model, world, speciesId, active) {
+        if (active && !world.loading) model.dispatch(CatalogAction.Refresh(speciesId))
     }
     LaunchedEffect(model, lifecycle, ui) {
         lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {

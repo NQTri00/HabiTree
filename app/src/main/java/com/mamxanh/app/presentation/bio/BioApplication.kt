@@ -60,7 +60,7 @@ import com.mamxanh.shared.localization.TextKey
         } else {
             null
         }
-    val liveCatalog = if (world.native && ui.route in setOf("encyclopedia", "species")) bindLiveCatalog(world, ui) else null
+    val liveCatalog = if (world.native) bindLiveCatalog(world, ui) else null
     val liveShop = if (world.native) bindLiveShop(world, ui) else null
     val liveForm = if (world.native && ui.route == "task-new") bindLiveTaskForm(ui) else null
     val liveTemplates = if (world.native && ui.route == "templates") bindLiveTemplates(ui) else null

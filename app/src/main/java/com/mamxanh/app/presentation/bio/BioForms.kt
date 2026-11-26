@@ -195,7 +195,7 @@ internal fun templatesRouteContent(
 ): TemplatesRouteContent {
     val chosen = selection?.selected ?: selectedBioTemplates(ui).toSet()
     return TemplatesRouteContent(
-        templates = displayedTemplates(world.takeIf { selection == null }),
+        templates = displayedTemplates(world.takeUnless { it.native }),
         chosen = chosen,
         onToggle = selection?.let { it::toggle } ?: ui.taskSelection::toggleTemplate,
         actions = actions,
