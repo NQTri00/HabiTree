@@ -12,6 +12,8 @@ import com.mamxanh.app.feature.tree.presentation.ui.detail.component.TreeHeroAct
 import com.mamxanh.app.feature.tree.presentation.ui.detail.component.TreeHeroState
 import com.mamxanh.shared.localization.AppText
 import com.mamxanh.shared.localization.TextKey
+import com.mamxanh.shared.model.FertilizerTier
+import com.mamxanh.shared.model.catalog
 
 internal fun liveTreeContent(
     world: BioWorld,
@@ -23,7 +25,8 @@ internal fun liveTreeContent(
     selectHomeTree: (String) -> Unit,
 ): TreeRouteContent {
     val tree = live.state.detail?.takeIf { it.id.toString() == id }
-    val species = world.species(tree?.speciesId.orEmpty())
+    val speciesCatalog = catalog
+    val species = speciesCatalog.firstOrNull { it.id == tree?.speciesId } ?: speciesCatalog.first()
     val state =
         tree?.let {
             TreeScreenState(
@@ -34,16 +37,21 @@ internal fun liveTreeContent(
                 busy = ui.busy || live.state.isLoading,
                 hasDecoration = it.decoration.isNotBlank(),
                 decorationName = world.product(it.decoration).s("name").lowercase(),
-                speciesName = species.s("name"),
+                speciesName = species.name,
                 stage = it.stage,
-                stages = species.i("stages"),
+                stages = species.formCount,
                 progress = it.progress,
                 planted = it.planted,
-                description = species.s("description"),
+                description = species.description,
                 fertilizers =
-                    world.products.filter { product -> !product.b("permanent") }.map { product ->
-                        val sku = product.s("id")
-                        TreeScreenFertilizer(sku, product.s("name"), product.s("rate"), product.i("hours"), it.quantities[sku] ?: 0)
+                    FertilizerTier.entries.map { tier ->
+                        TreeScreenFertilizer(
+                            tier.itemId,
+                            tier.label,
+                            (tier.rate / 1000.0).toString(),
+                            tier.hours,
+                            it.quantities[tier.itemId] ?: 0,
+                        )
                     },
             )
         }
@@ -85,7 +93,7 @@ internal fun liveTreeContent(
                         stageLabel = AppText.text(stageLabel),
                         growthCaption = AppText.text(caption),
                         stage = tree.stage,
-                        stages = species.i("stages", 6),
+                        stages = species.formCount,
                         progress = tree.progress,
                         home = false,
                         compact = compact,

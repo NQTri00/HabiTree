@@ -15,6 +15,7 @@ import com.mamxanh.app.feature.garden.presentation.ui.garden.GardenEvent
 import com.mamxanh.app.feature.garden.presentation.ui.garden.GardenIntent
 import com.mamxanh.app.feature.garden.presentation.ui.garden.GardenViewModel
 import com.mamxanh.app.feature.garden.presentation.ui.livinggarden.LivingGardenViewModel
+import com.mamxanh.shared.model.catalog
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -60,7 +61,7 @@ internal fun liveGardenRouteContent(
         state.display(
             collection.snapshot.species.size.takeUnless {
                 collection.loading
-            } ?: world.species.size,
+            } ?: catalog.size,
         ),
     ) { action ->
         model.dispatch(

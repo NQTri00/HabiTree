@@ -35,6 +35,12 @@ Files with the Bio prefix are under `app/src/main/java/com/mamxanh/app/presentat
 
 At 50ee00b the installed-app suite verified task draft recreation and discard, and Focus duration recreation, invalid input, cancellation and end confirmation. The full render contains 521 PNGs identical to 4ca235d. [Installed-app report](https://github.com/NQTri00/HabiTree/actions/runs/45781310293) [Compose report](https://github.com/NQTri00/HabiTree/actions/runs/45782676958)
 
+## Remaining live data ownership
+
+- Garden renders collection size from LivingGardenViewModel after load. During collection loading, BioLiveGarden uses the shared typed species catalog for the count.
+- Tree takes its mutable care and placement state from TreeViewModel. BioLiveTreeContent uses the shared typed species catalog and FertilizerTier definitions for care rows. The accessory cards still use the reference product presentation metadata.
+- The accessory confirmation at 79af199 takes ownership, eligible trees, and selection from its live feature binding. The installed-app regression verified restoration of a nondefault target and one purchase charge after recreation. All 521 PNGs match 50ee00b byte for byte. [Android results](https://github.com/NQTri00/HabiTree/actions/runs/45785479825) [Compose results](https://github.com/NQTri00/HabiTree/actions/runs/45787091084)
+
 ## Preview entry points
 
 The default manifest is `docs/bio-parity/preview-jobs.json`. The English and Vietnamese manifests are `docs/localization/preview-jobs-en.json` and `docs/localization/preview-jobs-vi.json`. Their source and preview function fields identify each standalone Compose entry. The fixtures call `BioReferenceSurface` with route and popup IDs. These fixtures exercise rendering from prepared snapshots. Live loading and command errors originate at the host and result paths above.
