@@ -185,6 +185,7 @@ class NavigationRestorationTest {
         val product = AppText.text(TextKey.CopyNoDiuDangE01645)
         val chooseTree = AppText.text(TextKey.CopyDeoChoCayAfc821)
         ActivityScenario.launch<MainActivity>(intent).use {
+            revealLabel(decoration)
             clickLabel(decoration)
             revealLabel(browse)
             clickLabel(browse)
