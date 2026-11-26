@@ -4,7 +4,7 @@
 
 `MamXanhApp` in `presentation/ui/MamXanhApp.kt` passes the storage and external destination inputs to `BioNativeHost`. The host restores `BioController.Saver`, produces the `BioWorld` snapshot, and invokes `BioApplication`. The app registers typed feature destinations through `di/FeatureNavigation.kt`. Each `NavEntry` resolves its registered content and provides the shell adapter through a composition local. The `more` route falls back to the shell's `BioMore`.
 
-Files with the Bio prefix are under `app/src/main/java/com/mamxanh/app/presentation/bio/`. `BioApplication` chooses the live bindings below for the installed app. Feature actions dispatch to the named ViewModels. The bindings pass state to the screen and translate events into shell navigation or feedback. The host retains the platform launchers and global theme, launcher-icon and alarm inputs. Route IDs and arguments remain part of the saved navigation stack. The table records source wiring. Runtime acceptance is pending the integrated batch.
+Files with the Bio prefix are under `app/src/main/java/com/mamxanh/app/presentation/bio/`. `BioApplication` chooses the live bindings below for the installed app. Feature actions dispatch to the named ViewModels. The bindings pass state to the screen and translate events into shell navigation or feedback. The host retains the platform launchers and global theme, launcher-icon and alarm inputs. Route IDs and arguments remain part of the saved navigation stack. The table records source wiring and the behavior each route needs to preserve. The installed-app reports linked below verify the task draft and Focus confirmation flows on the same revision.
 
 ## Live routes
 
@@ -14,8 +14,8 @@ Files with the Bio prefix are under `app/src/main/java/com/mamxanh/app/presentat
 | onboard | Home | BioOnboarding.liveOnboardingRouteContent | OnboardingViewModel | SavedStateHandle draft and idempotent submit |
 | tasks | Tasks | BioLiveTaskList.liveTaskListRouteContent | TaskListViewModel | Filter, completion, typed detail and Focus links |
 | task | Tasks | BioLiveTaskDetail.liveTaskDetailRouteContent | TaskDetailViewModel | Task ID, edit, lifecycle and archive |
-| task-new | Tasks | LiveTaskForm.bindLiveTaskForm | TaskFormViewModel | Draft recovery, validation, submit and dirty Back |
-| focus | Tasks | LiveFocus.bindLiveFocus | FocusViewModel | Task argument, persisted timer, pause and end |
+| task-new | Tasks | LiveTaskForm.bindLiveTaskForm | TaskFormViewModel | Draft recovery, validation, submit and dirty Back. The route supplies dirty and busy checks and a discard callback to the navigator. |
+| focus | Tasks | LiveFocus.bindLiveFocus | FocusViewModel | Task argument, persisted timer, pause and end. The binding supplies the leave callback, and the modal receives the busy state and end action. |
 | templates | Tasks | LiveTemplates.bindLiveTemplates | TemplatesViewModel | Selected templates and apply |
 | garden | Garden | BioLiveGarden.liveGardenRouteContent | GardenViewModel | Filters, watering, unlock and planting entry |
 | tree | Tree | BioLiveTree.liveTreeRouteContent | TreeViewModel | Tree ID, care, tabs and placement |
@@ -32,6 +32,8 @@ Files with the Bio prefix are under `app/src/main/java/com/mamxanh/app/presentat
 | encyclopedia | Catalog | LiveCatalog.bindLiveCatalog | CatalogViewModel | Collection load and species selection |
 | species | Catalog | LiveCatalog.bindLiveCatalog | CatalogViewModel | Species ID and Shop navigation |
 | more | App shell | BioMore | BioController | Menu destinations and Back |
+
+At 50ee00b the installed-app suite verified task draft recreation and discard, and Focus duration recreation, invalid input, cancellation and end confirmation. The full render contains 521 PNGs identical to 4ca235d. [Installed-app report](https://github.com/NQTri00/HabiTree/actions/runs/45781310293) [Compose report](https://github.com/NQTri00/HabiTree/actions/runs/45782676958)
 
 ## Preview entry points
 
@@ -54,10 +56,10 @@ The default manifest is `docs/bio-parity/preview-jobs.json`. The English and Vie
 | remove | Tree | The modal uses the Tree ViewModel's quote for the route's tree ID and dispatches `TreeAction.Dispose` with selling disabled. |
 | sell | Tree | The modal uses the Tree ViewModel's selling quote and dispatches `TreeAction.Dispose` with selling enabled. |
 | archive | Tasks | The task detail supplies its ID. The modal dispatches `TaskDetailAction.Archive` to the matching ViewModel. |
-| discard | Tasks | BioController.go or back opens this for a dirty form. Footer invokes discard using the saved pending navigation. |
+| discard | Tasks | BioController.go or back opens this for a dirty form. The footer invokes the route-supplied discard callback before following the saved pending navigation. |
 | ticket | Tasks engagement | The Rest binding opens confirmation. The modal uses Rest's eligibility and dispatches `RestAction.BuyTicket`. |
 | adjust | Tasks engagement | The Insights binding passes the task ID. The modal dispatches `InsightsAction.ApplyAdjustment` using that ID. |
-| permission | Settings | BioForms.settingsRouteContent opens the popup. Footer requests native permission through the host or shows permission-choice in the fixture path. |
+| permission | Settings | The live Settings binding consumes the typed link event and opens the popup. Confirm dispatches SettingsAction.RequestPermission. The binding consumes the request event and invokes the Android host launcher. The fixture path opens permission-choice. |
 | permission-choice | Settings | BioModalFooter opens the permission choice from the non-native path. |
 | permission-settings | Settings | BioNativeHost opens this when permission requires system Settings. The host consumes the result of the system action. |
 | clear | Settings | `BackupViewModel` emits the first clear prompt. The footer dispatches `BackupAction.ClearNext`. |
@@ -65,7 +67,7 @@ The default manifest is `docs/bio-parity/preview-jobs.json`. The English and Vie
 | recover | Settings | `BackupViewModel` emits recovery confirmation and validates the pending operation before the host invokes the recovery file adapter. |
 | confirm-import | Settings | The host inspects the document and sends its summary to `BackupViewModel`. The ViewModel requests confirmation and dispatches restore to the host after the user chooses Replace. Document bytes stay in memory, and recreation requires choosing the document again. |
 | license | Settings | BioForms.backupRouteContent opens the license content. Dismisses locally. |
-| focus-end | Tasks engagement | The Focus action dock opens confirmation. The modal dispatches `FocusAction.End` and reads busy state from the Focus ViewModel. |
+| focus-end | Tasks engagement | The Focus action dock dispatches RequestEnd. The live binding consumes ConfirmEnd and opens the modal. The modal receives busy state and an end callback from the same binding, which dispatches FocusAction.End. |
 
 ## Per-entry preview index
 
