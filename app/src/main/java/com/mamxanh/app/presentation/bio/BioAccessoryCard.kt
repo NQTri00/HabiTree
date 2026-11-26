@@ -89,6 +89,8 @@ private fun BioAccessoryCardPreview() {
     val world = remember(context) { BioWorld.reference(context) }
     val item = world.accessories.first()
     BioTheme(world, "1") {
-        BioAccessoryCard(item.s("id"), item.s("name"), item.i("price"), false, false, Modifier) {}
+        Box(Modifier.padding(AppDimensions.Dp16)) {
+            BioAccessoryCard(item.s("id"), item.s("name"), item.i("price"), false, false, Modifier) {}
+        }
     }
 }

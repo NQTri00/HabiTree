@@ -240,7 +240,7 @@ import com.mamxanh.core.ui.R
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Bt(title, Modifier.weight(1f), size = AppTypography.SIZE_13, semi = true)
-            Bi("next", Modifier.rotate(if (open)270f else 90f), size = AppIcons.SIZE_18, tint = bp.muted)
+            Bi(if (open) "minus" else "plus", size = AppIcons.SIZE_14, tint = bp.ink)
         }
         if (open) {
             Column(
