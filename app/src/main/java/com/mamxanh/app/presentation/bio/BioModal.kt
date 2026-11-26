@@ -19,7 +19,6 @@ import com.mamxanh.app.feature.settings.presentation.ui.backup.BackupOperation
 import com.mamxanh.app.feature.settings.presentation.ui.settings.SettingsAction
 import com.mamxanh.app.feature.shop.presentation.ui.shop.purchaseAvailability
 import com.mamxanh.app.feature.tasks.presentation.ui.detail.TaskDetailAction
-import com.mamxanh.app.feature.tasks.presentation.ui.focus.FocusAction
 import com.mamxanh.app.feature.tree.domain.repository.AccessoryTree
 import com.mamxanh.shared.localization.AppText
 import org.koin.androidx.compose.koinViewModel
@@ -30,6 +29,7 @@ import org.koin.androidx.compose.koinViewModel
     planting: LivePlanting? = null,
     shop: LiveShop? = null,
     treeHomeSelection: HomeViewModel? = null,
+    activeFocus: LiveFocus? = null,
 ) {
     val type = ui.modal
     val backup = if (world.native && ui.route == "data") backupViewModel() else null
@@ -225,13 +225,7 @@ import org.koin.androidx.compose.koinViewModel
                         ?.collectAsStateWithLifecycle()
                         ?.value
                         ?.busy == true
-                val focus = ui.liveFocus.takeIf { type == "focus-end" }
-                val focusBusy =
-                    focus
-                        ?.state
-                        ?.collectAsStateWithLifecycle()
-                        ?.value
-                        ?.busy == true
+                val focus = activeFocus.takeIf { type == "focus-end" }
                 val rest = if (world.native && ui.route == "rest" && type == "ticket") restViewModel() else null
                 val restState = rest?.state?.collectAsStateWithLifecycle()?.value
                 val insights = if (world.native && ui.route == "insights" && type == "adjust") insightsViewModel() else null
@@ -254,8 +248,8 @@ import org.koin.androidx.compose.koinViewModel
                     dismiss,
                     confirmArchive = archive?.let { model -> { model.dispatch(TaskDetailAction.Archive) } },
                     archiveBusy = archiveBusy,
-                    confirmFocusEnd = focus?.let { model -> { model.dispatch(FocusAction.End) } },
-                    focusBusy = focusBusy,
+                    confirmFocusEnd = focus?.let { it::end },
+                    focusBusy = focus?.busy == true,
                     confirmGardenAction =
                         garden?.let { model ->
                             {

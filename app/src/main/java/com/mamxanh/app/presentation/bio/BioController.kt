@@ -9,8 +9,6 @@ import com.mamxanh.app.feature.home.presentation.ui.home.HomeTreeState
 import com.mamxanh.app.feature.home.presentation.ui.onboarding.OnboardingSelectionState
 import com.mamxanh.app.feature.settings.presentation.SettingsRequestState
 import com.mamxanh.app.feature.shop.presentation.ui.shop.ShopSelectionState
-import com.mamxanh.app.feature.tasks.presentation.ui.focus.FocusAction
-import com.mamxanh.app.feature.tasks.presentation.ui.focus.FocusViewModel
 import com.mamxanh.app.feature.tasks.presentation.ui.form.TaskDraftState
 import com.mamxanh.app.feature.tasks.presentation.ui.form.TaskFormAction
 import com.mamxanh.app.feature.tasks.presentation.ui.form.TaskFormViewModel
@@ -106,10 +104,10 @@ import org.json.JSONObject
     val tabs = mutableStateMapOf("insightDays" to "7")
     val fields = mutableStateMapOf<String, String>()
 
-    var liveFocus: FocusViewModel? = null
+    var onLeaveFocus: (() -> Unit)? = null
 
     private fun pauseFocus() {
-        if (route == "focus") liveFocus?.dispatch(FocusAction.Leave)
+        if (route == "focus") onLeaveFocus?.invoke()
     }
 
     private fun saved(): String =

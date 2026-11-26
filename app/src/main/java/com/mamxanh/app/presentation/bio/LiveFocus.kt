@@ -32,8 +32,9 @@ internal fun bindLiveFocus(ui: BioController): LiveFocus {
     val engagement by koinViewModel<EngagementViewModel>().state.collectAsStateWithLifecycle()
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     DisposableEffect(ui, model) {
-        ui.liveFocus = model
-        onDispose { if (ui.liveFocus == model) ui.liveFocus = null }
+        val leave: () -> Unit = { model.dispatch(FocusAction.Leave) }
+        ui.onLeaveFocus = leave
+        onDispose { if (ui.onLeaveFocus === leave) ui.onLeaveFocus = null }
     }
     LaunchedEffect(model, lifecycle, ui) {
         lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -61,6 +62,10 @@ internal class LiveFocus(
     private val engagement: EngagementUiState,
     private val dispatch: (FocusAction) -> Unit,
 ) {
+    val busy: Boolean get() = state.busy
+
+    fun end() = dispatch(FocusAction.End)
+
     fun display(date: String) = state.display(engagement, date)
 
     fun selectTask(id: String) = dispatch(FocusAction.SelectTask(id))

@@ -266,7 +266,7 @@ import com.mamxanh.shared.localization.TextKey
                 }
                 if (ui.modal.isNotBlank()) {
                     CompositionLocalProvider(LocalBioButtonSize provides AppTypography.SIZE_13) {
-                        BioModal(world, ui, livePlanting, liveShop, treeHomeSelection)
+                        BioModal(world, ui, livePlanting, liveShop, treeHomeSelection, activeFocus = liveFocus)
                     }
                 }
             }
