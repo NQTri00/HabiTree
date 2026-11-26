@@ -533,7 +533,10 @@ class NavigationRestorationTest {
 
             val durationField = AppText.text(TextKey.CopyPhutTapTrung5120Ca7d24)
 
-            fun setDuration(before: String, minutes: String) {
+            fun setDuration(
+                before: String,
+                minutes: String,
+            ) {
                 revealLabel(durationField, clickable = false)
                 val setText = AccessibilityNodeInfo.ACTION_SET_TEXT
                 val editor = checkNotNull(appRoot()?.findAction(setText))
