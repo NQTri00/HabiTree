@@ -35,8 +35,14 @@ internal fun bindLiveTaskForm(ui: BioController): LiveTaskForm {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     LaunchedEffect(model) { model.dispatch(TaskFormAction.Load) }
     DisposableEffect(ui, model) {
-        ui.liveTaskForm = model
-        onDispose { if (ui.liveTaskForm == model) ui.liveTaskForm = null }
+        val navigation =
+            TaskFormNavigation(
+                isDirty = { model.state.value.dirty },
+                isBusy = { model.state.value.busy },
+                discard = { model.dispatch(TaskFormAction.Discard) },
+            )
+        ui.taskFormNavigation = navigation
+        onDispose { if (ui.taskFormNavigation === navigation) ui.taskFormNavigation = null }
     }
     LaunchedEffect(model, lifecycle, ui) {
         lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -59,6 +65,12 @@ internal fun bindLiveTaskForm(ui: BioController): LiveTaskForm {
     }
     return LiveTaskForm(state, model::dispatch, ui::back)
 }
+
+internal class TaskFormNavigation(
+    val isDirty: () -> Boolean,
+    val isBusy: () -> Boolean,
+    val discard: () -> Unit,
+)
 
 internal class LiveTaskForm(
     private val state: TaskFormState,

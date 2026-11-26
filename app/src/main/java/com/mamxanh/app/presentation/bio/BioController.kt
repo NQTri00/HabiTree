@@ -10,8 +10,6 @@ import com.mamxanh.app.feature.home.presentation.ui.onboarding.OnboardingSelecti
 import com.mamxanh.app.feature.settings.presentation.SettingsRequestState
 import com.mamxanh.app.feature.shop.presentation.ui.shop.ShopSelectionState
 import com.mamxanh.app.feature.tasks.presentation.ui.form.TaskDraftState
-import com.mamxanh.app.feature.tasks.presentation.ui.form.TaskFormAction
-import com.mamxanh.app.feature.tasks.presentation.ui.form.TaskFormViewModel
 import com.mamxanh.app.feature.tasks.presentation.ui.list.TaskScreenSelection
 import com.mamxanh.app.feature.tree.presentation.ui.detail.TreeDetailSelection
 import org.json.JSONObject
@@ -89,10 +87,10 @@ import org.json.JSONObject
     val gardenBrowse = GardenBrowseState()
     val onboarding = OnboardingSelectionState()
     val taskDraft = TaskDraftState()
-    var liveTaskForm: TaskFormViewModel? = null
+    var taskFormNavigation: TaskFormNavigation? = null
     private val taskFormDirty: Boolean
-        get() = if (world?.native == true) liveTaskForm?.state?.value?.dirty == true else taskDraft.isDirty
-    private val taskFormBusy: Boolean get() = liveTaskForm?.state?.value?.busy == true
+        get() = if (world?.native == true) taskFormNavigation?.isDirty?.invoke() == true else taskDraft.isDirty
+    private val taskFormBusy: Boolean get() = taskFormNavigation?.isBusy?.invoke() == true
     val taskSelection = TaskScreenSelection()
     val settingsRequests = SettingsRequestState()
     var pendingRoute by mutableStateOf("tasks")
@@ -248,7 +246,7 @@ import org.json.JSONObject
 
     fun discard() {
         if (world?.native == true) {
-            liveTaskForm?.dispatch(TaskFormAction.Discard)
+            taskFormNavigation?.discard?.invoke()
         } else {
             clearFields()
         }
