@@ -64,8 +64,9 @@ import com.mamxanh.shared.localization.TextKey
                     size = if (onboarding) AppTypography.SIZE_11 else AppTypography.SIZE_12,
                     tint = bp.muted,
                 )
+                val cadenceDetails = if (t.timeWindow.isBlank()) cadence else "$cadence \u00b7 ${t.timeWindow}"
                 Bt(
-                    if (onboarding) cadence else cadence + reward,
+                    if (onboarding) cadenceDetails else cadence + reward,
                     size = if (onboarding) AppTypography.SIZE_11 else AppTypography.SIZE_12,
                     tint = bp.muted,
                 )

@@ -9,4 +9,5 @@ data class TaskTemplateDisplay(
     val timer: Boolean,
     val weekends: Boolean,
     val reward: Int,
+    val timeWindow: String = "",
 )

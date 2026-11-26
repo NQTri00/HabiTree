@@ -74,6 +74,10 @@ The completed build and test entries below describe historical checkpoints. The 
 
   At `9302fce`, all 522 Compose previews rendered, with 486 identical and 36 updated. Inspection against the equal-size Vietnamese web captures confirmed that Data centers the license link and brings its lower sections into alignment. Encyclopedia's tighter rows bring the milestone heading closer to its web position. The completed milestone count remains farther right on Android. [Android tests](https://github.com/NQTri00/HabiTree/actions/runs/45838250579) [Compose and isolated builds](https://github.com/NQTri00/HabiTree/actions/runs/45840100423)
 
+  At `42f42b9`, local formatting, architecture verification and all four APK assemblies passed. The Vietnamese full-height step 3 Compose preview was rendered locally and inspected against the equal-size web capture. Card heights and the footer now track the reference closely. Font shapes, confirmation wording and time-window copy still differ. The additional GitHub preview watcher was stopped at the user's request.
+
+  The Onboarding follow-up carries the catalog time window into the habit card cadence. Local English and Vietnamese full-screen previews show the three scheduled windows. The Vietnamese card and footer placement closely track the equal-size web reference. Local formatting, architecture verification, and all four APK assemblies passed without GitHub CI.
+
 - [ ] **MVI09 · Verify the integrated implementation as a single batch.** Once MVI01–MVI08 are complete, run the formatting checks, `verifyArchitecture`, and all four Android assemblies. Then run the full hosted unit and device suites, including targeted lifecycle and event checks wherever the existing suites do not cover a migrated route. After builds and tests pass, render the full Compose inventory in one batch. Review screens, popups, both languages, and adaptive states against the preceding Android images and the approved web images. Record exact revision, commands, counts, and any differences under V02–V05.
 
 ## Remaining final delivery gates

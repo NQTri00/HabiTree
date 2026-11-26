@@ -35,6 +35,7 @@ import com.mamxanh.app.feature.tasks.presentation.ui.templates.TaskTemplateDispl
 import com.mamxanh.app.feature.tasks.presentation.ui.templates.TemplateRow
 import com.mamxanh.shared.localization.AppText
 import com.mamxanh.shared.localization.TextKey
+import com.mamxanh.shared.model.clockLabel
 import com.mamxanh.shared.model.habitTemplates
 import org.json.JSONObject
 
@@ -156,6 +157,7 @@ internal fun displayedTemplates(reference: BioWorld?) =
                 timer = it.config.verification == "TIMER",
                 weekends = it.config.frequency == "WEEKENDS",
                 reward = it.config.reward,
+                timeWindow = templateTimeWindow(clockLabel(it.config.startMinute), clockLabel(it.config.endMinute)),
             )
         }
     } else {
@@ -164,6 +166,11 @@ internal fun displayedTemplates(reference: BioWorld?) =
             .objects()
             .map { it.toTemplateDisplay() }
     }
+
+private fun templateTimeWindow(
+    start: String,
+    end: String,
+): String = if (start.isBlank() || end.isBlank()) "" else "$start\u2013$end"
 
 private fun JSONObject.toTemplateDisplay() =
     TaskTemplateDisplay(
@@ -175,6 +182,7 @@ private fun JSONObject.toTemplateDisplay() =
         timer = s("verification") == "TIMER",
         weekends = s("frequency") == "WEEKENDS",
         reward = taskReward(this),
+        timeWindow = templateTimeWindow(s("start"), s("end")),
     )
 
 @Composable
