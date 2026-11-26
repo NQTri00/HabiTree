@@ -98,3 +98,9 @@ shop_increase_quantity:
   en: Increase quantity
   canonical: false
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioModal.kt
+shop_equipping_accessory:
+  order: 1143
+  vi: 'Đang đeo…'
+  en: 'Equipping…'
+  canonical: false
+  source: app/src/main/java/com/mamxanh/app/presentation/bio/BioCommerceModalContent.kt

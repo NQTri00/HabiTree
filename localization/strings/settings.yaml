@@ -277,3 +277,9 @@ data_safety_note:
   en: Recovering the safety copy replaces current data. Export current data first to keep both.
   canonical: false
   source: app/src/debug/java/com/mamxanh/app/presentation/ui/DataSettingsScreen.kt
+backup_version:
+  order: 1142
+  vi: 'Phiên bản sao lưu'
+  en: 'Backup version'
+  canonical: false
+  source: app/src/main/java/com/mamxanh/app/presentation/bio/BioModalMessages.kt

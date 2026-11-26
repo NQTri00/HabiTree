@@ -110,7 +110,7 @@
     <string name="copy_cac_phien_da_luu_0_hoan_thanh_bb1ef4">Saved sessions · %1$d completed</string>
     <string name="copy_chua_co_phien_hoan_thanh_fd9386" formatted="false">No completed sessions yet.</string>
     <string name="copy_bo_dem_0_phut_a99be5">Timer · %1$d min</string>
-    <string name="copy_cham_f4623f" formatted="false">Tap · </string>
+    <string name="copy_cham_f4623f" formatted="false">Tap to confirm · </string>
     <string name="copy_chon_viec_vua_suc_895fff" formatted="false">Choose your tasks</string>
     <string name="copy_them_mot_lan_chinh_sua_bat_cu_luc_nao_55b241" formatted="false">Add them once. Adjust them anytime.</string>
     <string name="copy_theo_nhip_cua_ban_8e2e15" formatted="false">At your own pace</string>
@@ -1152,14 +1152,12 @@
     <string name="data_policy" formatted="false">Days reset in local time; trees retain their planting timezone. Tree progress uses percentages. No sound is currently played; reduced motion is available in Settings.</string>
     <string name="data_accessibility" formatted="false">Text size follows system settings. Controls retain at least 48 dp touch targets; states include text and icons.</string>
     <string name="data_version">Version %1$s · build %2$d · schema %3$d</string>
-    <string name="backup_version">Backup version</string>
     <string name="data_licenses" formatted="false">Open source &amp; licenses</string>
     <string name="data_diagnostics" formatted="false">Export diagnostics</string>
     <string name="data_diagnostics_note" formatted="false">Exports version, Android API, size and row counts only; excludes task names, notes, balance and private tree state.</string>
     <string name="data_safety_note" formatted="false">Recovering the safety copy replaces current data. Export current data first to keep both.</string>
     <string name="shop_purchase_quantity" formatted="false">Purchase quantity</string>
     <string name="shop_decrease_quantity" formatted="false">Decrease quantity</string>
-    <string name="shop_equipping_accessory" formatted="false">Equipping…</string>
     <string name="shop_increase_quantity" formatted="false">Increase quantity</string>
     <string name="tasks_calendar_legend" formatted="false">✓ Complete · R Rest · ◇ Protected · Missed · Blank: unrecorded</string>
     <string name="tasks_calendar_completed" formatted="false">Complete</string>
@@ -1168,4 +1166,6 @@
     <string name="tasks_calendar_missed" formatted="false">Missed</string>
     <string name="tasks_calendar_unrecorded" formatted="false">Unrecorded</string>
     <string name="tasks_calendar_day_status">%1$s, %2$s</string>
+    <string name="backup_version" formatted="false">Backup version</string>
+    <string name="shop_equipping_accessory" formatted="false">Equipping…</string>
 </resources>

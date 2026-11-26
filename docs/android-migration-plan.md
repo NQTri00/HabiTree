@@ -90,6 +90,8 @@ The completed build and test entries below describe historical checkpoints. The 
 
   The completed Encyclopedia milestone now distributes the title, count, and confirmation icon like the web reference. The local Vietnamese full-screen render shows the completed count at the same horizontal position as the equal-size web reference. The English variant rendered, and Catalog formatting, architecture verification, and the debug APK build passed locally.
 
+  The Onboarding confirmation label now matches the Vietnamese web wording. Both locale previews rendered locally and the Vietnamese image shows the longer wording fitting on the existing metadata lines. The catalog now owns the existing backup version and accessory progress labels, preserving them across regeneration. All eight catalog tests passed and all 1,143 keys have both translations.
+
 - [ ] **MVI09 · Verify the integrated implementation as a single batch.** Once MVI01–MVI08 are complete, run the formatting checks, `verifyArchitecture`, and all four Android assemblies. Then run the full hosted unit and device suites, including targeted lifecycle and event checks wherever the existing suites do not cover a migrated route. After builds and tests pass, render the full Compose inventory in one batch. Review screens, popups, both languages, and adaptive states against the preceding Android images and the approved web images. Record exact revision, commands, counts, and any differences under V02–V05.
 
 ## Remaining final delivery gates
