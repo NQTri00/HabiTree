@@ -12,6 +12,8 @@ import com.mamxanh.shared.model.ReminderPreference
 internal class OfflineReminderSettingsRepositoryImpl(
     private val storage: GameStorage,
 ) : ReminderSettingsRepository {
+    override val changes get() = storage.changes
+
     override fun load(): ReminderSettings {
         val settings = storage.engagementSnapshot().settings
         return ReminderSettings(

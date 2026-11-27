@@ -120,7 +120,7 @@ import com.mamxanh.shared.localization.TextKey
                 LocalEncyclopediaRouteContent provides { encyclopediaRouteContent(world, ui, liveCatalog) },
                 LocalSpeciesRouteContent provides { argument -> speciesRouteContent(world, ui, argument, liveCatalog) },
                 LocalSettingsRouteContent provides {
-                    if (world.native) liveSettingsRouteContent(world, ui) else settingsRouteContent(world, ui)
+                    if (world.native) liveSettingsRouteContent(ui) else settingsRouteContent(world, ui)
                 },
                 LocalBackupRouteContent provides {
                     val model = if (world.native) backupViewModel() else null

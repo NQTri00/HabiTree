@@ -104,7 +104,7 @@ import java.util.*
                 Dispatchers.IO,
             ) {
                 com.mamxanh.app.data.TaskReminders
-                    .schedule(context.applicationContext, emptyList())
+                    .schedule(context.applicationContext)
             }
         }
     }

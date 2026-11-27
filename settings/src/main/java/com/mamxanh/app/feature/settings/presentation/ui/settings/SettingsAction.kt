@@ -4,8 +4,6 @@ import com.mamxanh.app.core.presentation.UiAction
 import com.mamxanh.app.feature.settings.presentation.NotificationPermissionResult
 
 sealed interface SettingsAction : UiAction {
-    data object Refresh : SettingsAction
-
     data class ChangeLanguage(
         val tag: String,
     ) : SettingsAction

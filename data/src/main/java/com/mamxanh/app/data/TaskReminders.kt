@@ -85,7 +85,7 @@ class TaskReminderReceiver : BroadcastReceiver() {
                         }
                     }
                 }
-                TaskReminders.schedule(context, emptyList())
+                TaskReminders.schedule(context)
             } finally {
                 pending.finish()
             }
@@ -111,7 +111,7 @@ class ReminderRescheduleReceiver : BroadcastReceiver() {
         val pending = goAsync()
         TaskReminders.executor.execute {
             try {
-                TaskReminders.schedule(context, emptyList())
+                TaskReminders.schedule(context)
             } finally {
                 pending.finish()
             }
@@ -123,10 +123,7 @@ object TaskReminders {
     internal val executor = Executors.newSingleThreadExecutor()
 
     @Synchronized
-    fun schedule(
-        context: Context,
-        @Suppress("UNUSED_PARAMETER")tasks: List<com.mamxanh.shared.model.Task>,
-    ) {
+    fun schedule(context: Context) {
         val manager = context.getSystemService(AlarmManager::class.java)
         val prefs = context.getSharedPreferences("scheduled_gentle_reminders", Context.MODE_PRIVATE)
         // Persist pending identities so completed/archived/deleted and disabled alerts can be cancelled too.

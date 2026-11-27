@@ -12,7 +12,6 @@ import com.mamxanh.shared.localization.AppText
 import com.mamxanh.shared.localization.TextKey
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -32,12 +31,15 @@ class SettingsViewModel(
             quietEnd = savedState["quietEnd"],
         ),
     ) {
-    private var refreshJob: Job? = null
+    init {
+        viewModelScope.launch {
+            repository.changes.collect { refresh() }
+        }
+    }
 
     override fun handleAction(action: SettingsAction) {
         val current = state.value
         when (action) {
-            SettingsAction.Refresh -> refresh()
             is SettingsAction.Toggle -> {
                 val options = current.overrides + (action.key to action.enabled)
                 savedState["settingsOptions"] = Bundle().apply { options.forEach { (key, enabled) -> putBoolean(key, enabled) } }
@@ -58,19 +60,15 @@ class SettingsViewModel(
         }
     }
 
-    private fun refresh() {
-        refreshJob?.cancel()
-        refreshJob =
-            viewModelScope.launch {
-                try {
-                    val settings = withContext(Dispatchers.IO) { repository.load() }
-                    mutableState.value = state.value.copy(persisted = settings)
-                } catch (cancelled: CancellationException) {
-                    throw cancelled
-                } catch (_: Exception) {
-                    emitEvent(SettingsEvent.Feedback(AppText.text(TextKey.CopyChuaTheCapNhatVuiLongThuLai42c8ac)))
-                }
-            }
+    private suspend fun refresh() {
+        try {
+            val settings = withContext(Dispatchers.IO) { repository.load() }
+            mutableState.value = state.value.copy(persisted = settings)
+        } catch (cancelled: CancellationException) {
+            throw cancelled
+        } catch (_: Exception) {
+            emitEvent(SettingsEvent.Feedback(AppText.text(TextKey.CopyChuaTheCapNhatVuiLongThuLai42c8ac)))
+        }
     }
 
     private fun send(event: SettingsEvent) {
@@ -95,7 +93,10 @@ class SettingsViewModel(
             try {
                 val message =
                     when (val result = withContext(Dispatchers.IO) { saveReminders(request) }) {
-                        is RepositoryResult.Success -> result.value
+                        is RepositoryResult.Success -> {
+                            finishSave(current, request)
+                            result.value
+                        }
                         is RepositoryResult.Error -> result.message
                     }
                 emitEvent(SettingsEvent.Feedback(message))
@@ -107,6 +108,21 @@ class SettingsViewModel(
                 mutableState.value = state.value.copy(busy = false)
             }
         }
+    }
+
+    private fun finishSave(
+        submitted: SettingsState,
+        persisted: ReminderSettings,
+    ) {
+        val latest = state.value
+        val overrides = latest.overrides.filter { (key, enabled) -> submitted.overrides[key] != enabled }
+        val quietStart = latest.quietStart.takeUnless { it == submitted.quietStart }
+        val quietEnd = latest.quietEnd.takeUnless { it == submitted.quietEnd }
+
+        savedState["settingsOptions"] = Bundle().apply { overrides.forEach { (key, enabled) -> putBoolean(key, enabled) } }
+        savedState["quietStart"] = quietStart
+        savedState["quietEnd"] = quietEnd
+        mutableState.value = latest.copy(overrides = overrides, quietStart = quietStart, quietEnd = quietEnd, persisted = persisted)
     }
 
     private fun parseClock(value: String): Int {

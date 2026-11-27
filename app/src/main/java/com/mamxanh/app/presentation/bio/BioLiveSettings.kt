@@ -22,16 +22,10 @@ internal fun settingsViewModel(): SettingsViewModel = koinViewModel()
 internal fun backupViewModel(): BackupViewModel = koinViewModel()
 
 @Composable
-internal fun liveSettingsRouteContent(
-    world: BioWorld,
-    ui: BioController,
-): SettingsRouteContent {
+internal fun liveSettingsRouteContent(ui: BioController): SettingsRouteContent {
     val model = settingsViewModel()
     val state by model.state.collectAsStateWithLifecycle()
     val lifecycle = LocalLifecycleOwner.current.lifecycle
-    LaunchedEffect(model, world.reminderScheduleInput?.settings) {
-        model.dispatch(SettingsAction.Refresh)
-    }
     LaunchedEffect(model, lifecycle, ui) {
         lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
             model.events.collect { event ->

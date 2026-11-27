@@ -74,7 +74,7 @@ class BackupService(
         // OS handles are derived state, never imported from a backup. Rebuild even if UI values compare equal.
         try {
             context.getSystemService(android.app.NotificationManager::class.java)?.cancelAll()
-            TaskReminders.schedule(context, emptyList())
+            TaskReminders.schedule(context)
         } catch (_: Exception) {
             // The transaction has already committed: do not misreport a reminder failure as data rollback.
             android.util.Log.w("BackupService", "Reminder refresh needs lifecycle retry")
