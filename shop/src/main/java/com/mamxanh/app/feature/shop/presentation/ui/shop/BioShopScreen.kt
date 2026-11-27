@@ -35,7 +35,6 @@ fun BioShopScreen(
         ),
         tab,
         onTab,
-        verticalPadding = AppDimensions.Dp5,
     )
     if (shoppingTree !=
         null
@@ -63,7 +62,12 @@ fun BioShopScreen(
         }
     }
     if (tab == "accessories") {
-        Bt(stringResource(R.string.copy_chon_mot_mon_deo_ngay_cho_cay_32c723), size = AppTypography.SIZE_12, tint = bp.muted)
+        Bt(
+            stringResource(R.string.copy_chon_mot_mon_deo_ngay_cho_cay_32c723),
+            Modifier.padding(top = AppDimensions.Dp4, bottom = AppDimensions.Dp3),
+            size = AppTypography.SIZE_12,
+            tint = bp.muted,
+        )
     }
     if (itemCount >
         0

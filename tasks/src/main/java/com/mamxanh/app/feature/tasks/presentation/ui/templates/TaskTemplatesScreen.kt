@@ -27,7 +27,7 @@ import com.mamxanh.shared.localization.TextKey
             toggleableState = if (selected)ToggleableState.On else ToggleableState.Off
             role = Role.Checkbox
         },
-        padding = if (onboarding)AppSpacing.VALUE_12 else AppSpacing.VALUE_14,
+        padding = AppSpacing.VALUE_12,
         radius = AppRadii.VALUE_18,
         tint = if (selected)bp.soft else bp.surface,
         onClick = onChange,
@@ -46,7 +46,10 @@ import com.mamxanh.shared.localization.TextKey
                     Bi(if (t.timer)"clock"else "leaf", size = AppIcons.SIZE_20)
                 }
             }
-            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(AppDimensions.Dp4)) {
+            Column(
+                Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(if (onboarding) AppDimensions.Dp4 else AppDimensions.Dp3),
+            ) {
                 Bt(t.title, size = AppTypography.SIZE_13, semi = true)
                 val reward = stringResource(R.string.copy_0_xu_9c90c1, t.reward)
                 val cadence =
@@ -68,7 +71,7 @@ import com.mamxanh.shared.localization.TextKey
                 )
                 val cadenceDetails = if (t.timeWindow.isBlank()) cadence else "$cadence \u00b7 ${t.timeWindow}"
                 Bt(
-                    if (onboarding) cadenceDetails else cadence + reward,
+                    if (onboarding) cadenceDetails else cadenceDetails + reward,
                     size = if (onboarding) AppTypography.SIZE_11 else AppTypography.SIZE_12,
                     tint = bp.muted,
                 )
@@ -94,6 +97,7 @@ fun TaskTemplatesScreen(
     templates: List<TaskTemplateDisplay>,
     chosen: Set<String>,
     onToggle: (String) -> Unit,
+    actions: (@Composable () -> Unit)? = null,
 ) {
     Column {
         Bt(
@@ -113,6 +117,7 @@ fun TaskTemplatesScreen(
             ) { onToggle(template.id) }
         }
     }
+    actions?.invoke()
 }
 
 @Preview(showBackground = true, widthDp = 375)

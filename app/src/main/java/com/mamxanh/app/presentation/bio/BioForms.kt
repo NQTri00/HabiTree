@@ -198,6 +198,7 @@ internal fun BioTemplateRow(
 internal fun templatesRouteContent(
     world: BioWorld,
     ui: BioController,
+    actions: (@Composable () -> Unit)?,
     selection: LiveTemplates? = null,
 ): TemplatesRouteContent {
     val chosen = selection?.selected ?: selectedBioTemplates(ui).toSet()
@@ -205,6 +206,7 @@ internal fun templatesRouteContent(
         templates = displayedTemplates(world.takeUnless { it.native }),
         chosen = chosen,
         onToggle = selection?.let { it::toggle } ?: ui.preview.taskSelection::toggleTemplate,
+        actions = actions,
     )
 }
 

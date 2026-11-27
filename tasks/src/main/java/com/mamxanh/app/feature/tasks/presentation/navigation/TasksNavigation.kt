@@ -108,6 +108,7 @@ class TemplatesRouteContent(
     val templates: List<TaskTemplateDisplay>,
     val chosen: Set<String>,
     val onToggle: (String) -> Unit,
+    val actions: (@Composable () -> Unit)?,
 )
 
 val LocalTemplatesRouteContent =
@@ -209,6 +210,7 @@ val tasksFeatureNavigation =
                 templates = content.templates,
                 chosen = content.chosen,
                 onToggle = content.onToggle,
+                actions = content.actions,
             )
         }) { TemplatesKey.takeIf { _ -> it.isEmpty() } },
         HabiTreeFeatureDestination("rest", content = {
