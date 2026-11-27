@@ -14,8 +14,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalInputModeManager
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import com.mamxanh.app.feature.settings.presentation.BackupImportSummary
 import com.mamxanh.app.feature.shop.presentation.ui.shop.ShopPendingAction
-import com.mamxanh.shared.data.sql.GameSchema
 import com.mamxanh.shared.localization.AppLanguage
 import com.mamxanh.shared.localization.AppText
 import com.mamxanh.shared.localization.TextKey
@@ -83,13 +83,17 @@ import com.mamxanh.shared.localization.TextKey
                     this.busy = true
                     previewPurchase = ShopPendingAction.Buy
                 }
-                val fields =
-                    if (modal == "confirm-import") {
-                        mapOf("backupVersion" to GameSchema.VERSION.toString()) + referenceFields
-                    } else {
-                        referenceFields
-                    }
-                preview.restoreFields(fields)
+                preview.restoreFields(referenceFields)
+                if (modal == "confirm-import") {
+                    preview.settingsRequests.backupImport =
+                        BackupImportSummary(
+                            tasks = "4",
+                            trees = "3",
+                            occurrences = "1",
+                            created = "01:20:01 17/11/2026",
+                            version = "1",
+                        )
+                }
                 preview.expanded = expanded
                 preview.scrollBottom = bottom
                 preview.sheetBottom = sheetBottom

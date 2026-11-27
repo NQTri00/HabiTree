@@ -25,11 +25,7 @@ fun TaskListScreen(
 ) {
     val filter = state.filter
     BioIntro(
-        when (filter) {
-            "paused" -> stringResource(R.string.copy_viec_tam_dung_b756a3)
-            "archived" -> stringResource(R.string.copy_viec_luu_tru_911d4f)
-            else -> stringResource(R.string.copy_viec_hom_nay_22a0a4)
-        },
+        stringResource(R.string.copy_viec_hom_nay_22a0a4),
         stringResource(R.string.copy_tung_chut_mot_238966),
         action = {
             BioIconButton(
@@ -39,26 +35,24 @@ fun TaskListScreen(
             )
         },
     )
-    if (filter == "today") {
-        BioCard(Modifier.fillMaxWidth(), bp.soft, padding = AppSpacing.VALUE_18) {
-            Row(
-                Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(AppDimensions.Dp12),
-            ) {
-                val progressLabel =
-                    pluralStringResource(
-                        R.plurals.copy_0_1_viec_da_xong_cf7a5d,
-                        state.required,
-                        state.completed,
-                        state.required,
-                    )
-                Bt(progressLabel, Modifier.weight(1f), size = AppTypography.SIZE_14, semi = true)
-                BioTag(AppText.text(TextKey.Copy0Xu7c2391, state.earned), "spark")
-            }
-            Spacer(Modifier.height(AppDimensions.Dp12))
-            BioProgress(if (state.required > 0) state.completed.toFloat() / state.required else 0f)
+    BioCard(Modifier.fillMaxWidth(), bp.soft, padding = AppSpacing.VALUE_18) {
+        Row(
+            Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(AppDimensions.Dp12),
+        ) {
+            val progressLabel =
+                pluralStringResource(
+                    R.plurals.copy_0_1_viec_da_xong_cf7a5d,
+                    state.required,
+                    state.completed,
+                    state.required,
+                )
+            Bt(progressLabel, Modifier.weight(1f), size = AppTypography.SIZE_14, semi = true)
+            BioTag(AppText.text(TextKey.Copy0Xu7c2391, state.earned), "spark")
         }
+        Spacer(Modifier.height(AppDimensions.Dp12))
+        BioProgress(if (state.required > 0) state.completed.toFloat() / state.required else 0f)
     }
     Row(horizontalArrangement = Arrangement.spacedBy(AppDimensions.Dp12)) {
         BioButton(stringResource(R.string.copy_tap_trung_964002), { onAction(TaskListAction.Focus) }, Modifier.weight(1f), "clock", true)

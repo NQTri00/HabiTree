@@ -130,9 +130,9 @@ Each cell identifies a representative runnable manifest method. The manifests al
 
 ## Current live binding audit
 
-The table records the implementation path from the registered destination through the feature ViewModel to the shell event consumer. The earlier inventory records the pre-migration paths and preview fixtures. Runtime and rendered evidence remain pending.
+The table records the implementation path from the registered destination through the feature ViewModel to the shell event consumer. The earlier inventory records the pre-migration paths and preview fixtures. At `d6c40a5`, local architecture verification, 32 host and unit tests, 33 Android 15 app tests, and 128 SQLite tests passed. These tests cover route registration, recreation, and transaction paths described in the migration plan. The [migration plan](android-migration-plan.md) records the remaining runtime and visual checks.
 
-The live shell keeps a typed tree index for theme, launcher icon, navigation, and reminder refresh. Growth-stage content, accessory ownership, and decoration no longer pass through a shell JSON tree projection.
+The live shell keeps a typed tree index for theme, launcher icon, navigation, and reminder refresh. Growth-stage content, accessory ownership, and decoration no longer pass through a shell JSON tree projection. Preview-only scroll positions and form inputs are grouped under `BioPreviewState`. The latest Compose regression rendered all 522 images and found only the intended Focus and license differences against `8082570`.
 
 A source scan across all nine features checked 291 Kotlin files for sibling-feature imports and domain imports of platform, shared-storage, or outer-layer packages. It found no violations. Gradle configuration and dependency resolution remain part of the integrated `verifyArchitecture` run.
 
