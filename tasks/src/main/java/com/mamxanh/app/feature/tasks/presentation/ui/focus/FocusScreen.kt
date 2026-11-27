@@ -185,11 +185,11 @@ private fun FocusSetupFields(
                 horizontalArrangement = Arrangement.spacedBy(FocusLayout.PresetToDurationGap),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Box(Modifier.weight(FocusLayout.PRESETS_WEIGHT)) { BioChips(presets, minutes, onMinutes) }
+                Box(Modifier.weight(FocusLayout.PRESETS_WEIGHT)) { BioChips(presets, "", onMinutes) }
                 FocusDurationField(minutes, onMinutes, Modifier.weight(FocusLayout.CUSTOM_DURATION_WEIGHT))
             }
         } else {
-            BioChips(presets, minutes, onMinutes)
+            BioChips(presets, "", onMinutes)
             FocusDurationField(minutes, onMinutes)
         }
     }

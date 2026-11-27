@@ -221,15 +221,7 @@ internal fun BioModalMessages(
                         .bufferedReader()
                         .use {
                             it.readText()
-                        }.replace(
-                            "\r\n",
-                            "\n",
-                        ).replace(
-                            Regex("(?m)^[ \\t]+"),
-                            "",
-                        ).replace(Regex("(?<!\\n)\\n(?!\\n)"), " ")
-                        .replace(Regex("[ \\t]{2,}"), " ")
-                        .trim()
+                        }.replace("\r\n", "\n")
                 }
             Bt(license, size = AppTypography.SIZE_13, line = AppTypography.LINE_HEIGHT_21_45)
         }
