@@ -150,7 +150,7 @@ import org.koin.androidx.compose.koinViewModel
         title = title,
         busy = ui.busy,
         message = ui.modalMessage,
-        scrollToBottom = ui.tabs["sheetBottom"] == "true",
+        scrollToBottom = !world.native && ui.preview.sheetBottom,
         dismiss = dismiss,
         content = {
             when (type) {

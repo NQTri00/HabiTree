@@ -3,10 +3,8 @@ package com.mamxanh.app.presentation.bio
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.Saver
 import com.mamxanh.app.core.presentation.navigation.HabiTreeNavigator
-import com.mamxanh.app.feature.garden.presentation.ui.garden.GardenBrowseState
 import com.mamxanh.app.feature.home.presentation.ui.home.HomeTreeState
 import com.mamxanh.app.feature.shop.presentation.ui.shop.ShopPendingAction
-import com.mamxanh.app.feature.tasks.presentation.ui.list.TaskScreenSelection
 import org.json.JSONObject
 
 @Stable internal class BioController(
@@ -87,8 +85,6 @@ import org.json.JSONObject
     var pendingRoot by mutableStateOf(false)
     private var pendingDiscardTreeTab: String? = null
     var world: BioWorld? = null
-    val tabs = mutableStateMapOf("insightDays" to "7")
-    val fields = mutableStateMapOf<String, String>()
 
     var onLeaveFocus: (() -> Unit)? = null
 
@@ -171,31 +167,6 @@ import org.json.JSONObject
         if (world?.native == true) pendingShopTab = tab else preview.shopSelection.shopTab = tab
     }
 
-    fun setTab(
-        key: String,
-        value: String,
-    ) {
-        when (key) {
-            TaskScreenSelection.FILTER_KEY -> preview.taskSelection.filter = value
-            GardenBrowseState.SAVED_FILTER_KEY -> preview.gardenBrowse.filter = value
-            "tree" -> preview.treeDetail.tab = value
-            "shop" -> preview.shopSelection.shopTab = value
-            "inventory" -> preview.shopSelection.inventoryTab = value
-            else -> tabs[key] = value
-        }
-    }
-
-    fun restoreFields(values: Map<String, String>) {
-        fields.putAll(preview.settingsRequests.restoreFields(preview.taskSelection.restoreFields(preview.taskDraft.restore(values, false))))
-    }
-
-    private fun clearFields() {
-        preview.taskDraft.clear()
-        preview.taskSelection.clearFields()
-        preview.settingsRequests.clear()
-        fields.clear()
-    }
-
     fun go(
         next: String,
         id: String = "",
@@ -225,7 +196,7 @@ import org.json.JSONObject
         if (next == "tree") {
             if (world?.native == true) pendingTreeTab = treeTab ?: "care" else preview.treeDetail.open(treeTab)
         }
-        if (world?.native != true && next == "task-new") clearFields()
+        if (world?.native != true && next == "task-new") preview.clearFields()
     }
 
     fun back() {
@@ -253,7 +224,7 @@ import org.json.JSONObject
         if (world?.native == true) {
             taskFormNavigation?.discard?.invoke()
         } else {
-            clearFields()
+            preview.clearFields()
         }
         modal = ""
         if (pendingBack) {
@@ -285,7 +256,7 @@ import org.json.JSONObject
             modal = ""
             if (result.route.isNotBlank()) {
                 if (world?.native != true && route == "task-new") {
-                    clearFields()
+                    preview.clearFields()
                 }
                 go(result.route, result.param, root = result.route in listOf("home", "tasks", "garden", "shop", "stats"))
             }

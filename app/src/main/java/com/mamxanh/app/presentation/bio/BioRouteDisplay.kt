@@ -47,9 +47,7 @@ internal fun BioRouteDisplay(
                                     .fillMaxSize()
                                     .verticalScroll(
                                         rememberScrollState(
-                                            if (ui.tabs["scrollBottom"] ==
-                                                "true"
-                                            ) {
+                                            if (!world.native && ui.preview.scrollBottom) {
                                                 Int.MAX_VALUE
                                             } else {
                                                 0

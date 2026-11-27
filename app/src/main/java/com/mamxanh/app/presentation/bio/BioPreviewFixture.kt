@@ -89,16 +89,13 @@ import com.mamxanh.shared.localization.TextKey
                     } else {
                         referenceFields
                     }
-                restoreFields(fields)
-                if (expanded)tabs["expanded"] = "true"
-                if (bottom)tabs["scrollBottom"] = "true"
-                if (sheetBottom) {
-                    tabs["sheetBottom"] =
-                        "true"
-                }
+                preview.restoreFields(fields)
+                preview.expanded = expanded
+                preview.scrollBottom = bottom
+                preview.sheetBottom = sheetBottom
                 if (tab.isNotBlank()) {
                     val parts = tab.split(':')
-                    setTab(parts[0], parts[1])
+                    preview.setTab(parts[0], parts[1])
                 }
             }
         }

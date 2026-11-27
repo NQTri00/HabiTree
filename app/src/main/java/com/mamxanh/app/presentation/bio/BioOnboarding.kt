@@ -94,7 +94,7 @@ internal fun onboardingRouteContent(
                         if (liveState == null) world.species(it).s("name") else seedNames[it] ?: seedNames.values.first()
                     },
                 templateCount = byCategory.size,
-                remind = liveState?.reminders ?: (ui.fields["onboard-remind"] == "true"),
+                remind = liveState?.reminders ?: ui.preview.onboardingReminders,
             ),
         gutter = gutter,
         onAction =
@@ -114,7 +114,7 @@ internal fun onboardingRouteContent(
                         } else {
                             ui.preview.onboarding.category = action.id
                         }
-                    is OnboardingAction.Remind -> ui.fields["onboard-remind"] = action.enabled.toString()
+                    is OnboardingAction.Remind -> ui.preview.onboardingReminders = action.enabled
                     is OnboardingAction.ToggleTemplate -> Unit
                 }
                 Unit

@@ -158,12 +158,12 @@ internal fun insightsRouteContent(
                 followUp = reminder.b("followUp"),
             )
         }
-    val period = ui.tabs["insightDays"] ?: "7"
+    val period = ui.preview.insightDays
     return InsightsRouteContent(
         task = display,
         tasks = if (display == null) world.tasks.map { InsightTaskLink(it.s("id"), it.s("title")) } else emptyList(),
         period = period,
-        onPeriod = { ui.tabs["insightDays"] = it },
+        onPeriod = { ui.preview.insightDays = it },
         onAddTask = { ui.go("task-new") },
         onTask = { ui.go("insights", it) },
         onAdjust = { ui.show("adjust", id) },

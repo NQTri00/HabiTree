@@ -97,7 +97,7 @@ import com.mamxanh.shared.localization.TextKey
             val actionDockVisible = compactScreen && ui.route in listOf("task-new", "templates", "focus")
             val navigationVisible = ui.route !in listOf("onboard", "data") && !actionDockVisible
             CompositionLocalProvider(
-                LocalBioExpanded provides (ui.tabs["expanded"] == "true"),
+                LocalBioExpanded provides (!world.native && ui.preview.expanded),
                 LocalStatisticsRouteContent provides {
                     if (world.native) liveStatisticsRouteContent(world, ui) else statisticsRouteContent(world, ui)
                 },
