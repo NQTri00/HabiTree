@@ -1169,4 +1169,5 @@
     <string name="backup_version" formatted="false">Backup version</string>
     <string name="shop_equipping_accessory" formatted="false">Equipping…</string>
     <string name="tasks_onboarding_confirm_effort">Tap to confirm · %1$s</string>
+    <string name="reference_lavender_tree_name" formatted="false">Gentle lavender</string>
 </resources>

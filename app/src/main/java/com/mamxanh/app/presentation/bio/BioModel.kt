@@ -124,11 +124,7 @@ internal data class BioWorld(
             val palettes = data.o("palettes")
             palettes.keys().forEach { key -> owned(listOf(palettes.o(key)), "name") }
             owned(data.o("state").a("memories").objects(), "title")
-            data.o("state").a("trees").objects().forEach { tree ->
-                // Reference trees are app-provided sample defaults, not persisted user nicknames.
-                val species = catalog.a("species").objects().firstOrNull { it.s("id") == tree.s("species") }
-                tree.put("name", species?.s("name") ?: AppText.plantName(tree.s("species"), tree.s("name")))
-            }
+            owned(data.o("state").a("trees").objects(), "name")
             return BioWorld(data)
         }
     }

@@ -1163,4 +1163,5 @@
     <string name="backup_version" formatted="false">Phiên bản sao lưu</string>
     <string name="shop_equipping_accessory" formatted="false">Đang đeo…</string>
     <string name="tasks_onboarding_confirm_effort">Bấm xác nhận · %1$s</string>
+    <string name="reference_lavender_tree_name" formatted="false">Oải hương dịu</string>
 </resources>

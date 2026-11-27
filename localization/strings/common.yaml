@@ -4905,3 +4905,9 @@ choose_weekdays:
   en: Choose days
   canonical: false
   source: 'bilingual visual review: contextual labels'
+reference_lavender_tree_name:
+  order: 1145
+  vi: Oải hương dịu
+  en: Gentle lavender
+  canonical: false
+  source: app/src/main/assets/bio_reference.json

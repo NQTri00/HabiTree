@@ -32,6 +32,7 @@ internal fun BioTreePickerBody(
 ) {
     Bt(
         stringResource(R.string.copy_chon_cay_sac_mau_se_di_cung_ban_58b284),
+        Modifier.padding(top = AppDimensions.Dp8),
         size = AppTypography.SIZE_12,
         tint = bp.muted,
     )
