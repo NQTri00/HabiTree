@@ -109,7 +109,7 @@ internal fun speciesRouteContent(
         onTree = { if (live == null) ui.go("tree", it) else live.openTree(it) },
         onShop = {
             if (live == null) {
-                ui.shopSelection.shopTab = "seeds"
+                ui.preview.shopSelection.shopTab = "seeds"
                 ui.go("shop")
             } else {
                 live.openSeeds()

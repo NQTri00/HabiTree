@@ -186,7 +186,7 @@ internal fun BioModalMessages(
                 tint = bp.muted,
             )
         "confirm-import" -> {
-            val summary = importSummary ?: ui.settingsRequests.backupImport
+            val summary = importSummary ?: ui.preview.settingsRequests.backupImport
             BioFacts(
                 listOf(
                     stringResource(R.string.copy_viec_818768) to (summary?.tasks ?: "0"),

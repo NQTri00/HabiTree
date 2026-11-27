@@ -78,7 +78,7 @@ import com.mamxanh.shared.localization.TextKey
             BioController(route, param, modal).apply {
                 modalId = id
                 homeTreeState.selectedId = home
-                onboarding.step = step
+                preview.onboarding.step = step
                 if (requestedBusy) {
                     this.busy = true
                     previewPurchase = ShopPendingAction.Buy

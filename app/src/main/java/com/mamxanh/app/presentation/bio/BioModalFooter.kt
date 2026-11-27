@@ -49,7 +49,7 @@ internal fun BioModalFooter(
     buyAndEquip: (() -> Unit)? = null,
     equip: (() -> Unit)? = null,
     buyAndPlant: (() -> Unit)? = null,
-    quantity: Int = ui.shopSelection.quantity,
+    quantity: Int = ui.preview.shopSelection.quantity,
     equippedCan: String = world.state.s("equipped"),
     requestPermission: (() -> Unit)? = null,
     backupAction: (() -> Unit)? = null,
@@ -195,7 +195,7 @@ private fun BioModalFooterPreview() {
     val context = LocalContext.current
     val world = remember(context) { BioWorld.reference(context) }
     val ui = remember { BioController("tree") }
-    val purchase = ui.shopSelection.purchaseAvailability(world.coins, 0, false, false, false)
+    val purchase = ui.preview.shopSelection.purchaseAvailability(world.coins, 0, false, false, false)
     BioTheme(world, "1") {
         Column { BioModalFooter("remove", "1", world, ui, purchase, false, false, false, false, {}) }
     }

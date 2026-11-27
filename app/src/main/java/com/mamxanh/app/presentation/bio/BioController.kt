@@ -4,15 +4,9 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.Saver
 import com.mamxanh.app.core.presentation.navigation.HabiTreeNavigator
 import com.mamxanh.app.feature.garden.presentation.ui.garden.GardenBrowseState
-import com.mamxanh.app.feature.garden.presentation.ui.garden.PlantingSelectionState
 import com.mamxanh.app.feature.home.presentation.ui.home.HomeTreeState
-import com.mamxanh.app.feature.home.presentation.ui.onboarding.OnboardingSelectionState
-import com.mamxanh.app.feature.settings.presentation.SettingsRequestState
 import com.mamxanh.app.feature.shop.presentation.ui.shop.ShopPendingAction
-import com.mamxanh.app.feature.shop.presentation.ui.shop.ShopSelectionState
-import com.mamxanh.app.feature.tasks.presentation.ui.form.TaskDraftState
 import com.mamxanh.app.feature.tasks.presentation.ui.list.TaskScreenSelection
-import com.mamxanh.app.feature.tree.presentation.ui.detail.TreeDetailSelection
 import org.json.JSONObject
 
 @Stable internal class BioController(
@@ -32,15 +26,13 @@ import org.json.JSONObject
     var modal by mutableStateOf(initialModal)
     var modalId by mutableStateOf("")
     val homeTreeState = HomeTreeState()
-    val treeDetail = TreeDetailSelection()
+    val preview by lazy(LazyThreadSafetyMode.NONE) { BioPreviewState() }
     var pendingTreeTab by mutableStateOf<String?>(null)
     var pendingShopTab by mutableStateOf<String?>(null)
     var message by mutableStateOf("")
     var modalMessage by mutableStateOf("")
     var busy by mutableStateOf(false)
     var previewPurchase by mutableStateOf<ShopPendingAction?>(null)
-    val shopSelection = ShopSelectionState()
-    val plantingSelection = PlantingSelectionState()
     var preferredPlantingPlot by mutableStateOf<Int?>(null)
     var accessoryTargetArgument by mutableStateOf("")
         private set
@@ -54,7 +46,7 @@ import org.json.JSONObject
 
     fun openSeedPicker(plot: Int?) {
         preferredPlantingPlot = plot
-        if (world?.native != true) plantingSelection.select(plot?.toString().orEmpty())
+        if (world?.native != true) preview.plantingSelection.select(plot?.toString().orEmpty())
         show("seed-picker")
     }
 
@@ -65,7 +57,7 @@ import org.json.JSONObject
         if (world?.native == true) {
             accessoryTargetArgument = target.ifBlank { accessoryTargetArgument.ifBlank { homeTreeState.selectedId } }
         } else {
-            shopSelection.targetTree = target.ifBlank { shopSelection.targetTree.ifBlank { homeTreeState.selectedId } }
+            preview.shopSelection.targetTree = target.ifBlank { preview.shopSelection.targetTree.ifBlank { homeTreeState.selectedId } }
         }
         show("accessory", sku)
     }
@@ -74,8 +66,8 @@ import org.json.JSONObject
         preferredPlantingPlot = null
         accessoryTargetArgument = ""
         if (world?.native != true) {
-            shopSelection.targetTree = ""
-            plantingSelection.clear()
+            preview.shopSelection.targetTree = ""
+            preview.plantingSelection.clear()
         }
     }
 
@@ -85,15 +77,10 @@ import org.json.JSONObject
     var selectLanguage: (String) -> Unit = {}
     var requestNotificationPermission: () -> Unit = {}
     var openNotificationSettings: () -> Unit = {}
-    val gardenBrowse = GardenBrowseState()
-    val onboarding = OnboardingSelectionState()
-    val taskDraft = TaskDraftState()
     var taskFormNavigation: TaskFormNavigation? = null
     private val taskFormDirty: Boolean
-        get() = if (world?.native == true) taskFormNavigation?.isDirty?.invoke() == true else taskDraft.isDirty
+        get() = if (world?.native == true) taskFormNavigation?.isDirty?.invoke() == true else preview.taskDraft.isDirty
     private val taskFormBusy: Boolean get() = taskFormNavigation?.isBusy?.invoke() == true
-    val taskSelection = TaskScreenSelection()
-    val settingsRequests = SettingsRequestState()
     var pendingRoute by mutableStateOf("tasks")
     var pendingParam by mutableStateOf("")
     var pendingBack by mutableStateOf(false)
@@ -176,12 +163,12 @@ import org.json.JSONObject
         tree: String,
     ) {
         requestShopTab(tab)
-        if (world?.native == true) accessoryTargetArgument = tree else shopSelection.targetTree = tree
+        if (world?.native == true) accessoryTargetArgument = tree else preview.shopSelection.targetTree = tree
         go("shop", tree)
     }
 
     fun requestShopTab(tab: String) {
-        if (world?.native == true) pendingShopTab = tab else shopSelection.shopTab = tab
+        if (world?.native == true) pendingShopTab = tab else preview.shopSelection.shopTab = tab
     }
 
     fun setTab(
@@ -189,23 +176,23 @@ import org.json.JSONObject
         value: String,
     ) {
         when (key) {
-            TaskScreenSelection.FILTER_KEY -> taskSelection.filter = value
-            GardenBrowseState.SAVED_FILTER_KEY -> gardenBrowse.filter = value
-            "tree" -> treeDetail.tab = value
-            "shop" -> shopSelection.shopTab = value
-            "inventory" -> shopSelection.inventoryTab = value
+            TaskScreenSelection.FILTER_KEY -> preview.taskSelection.filter = value
+            GardenBrowseState.SAVED_FILTER_KEY -> preview.gardenBrowse.filter = value
+            "tree" -> preview.treeDetail.tab = value
+            "shop" -> preview.shopSelection.shopTab = value
+            "inventory" -> preview.shopSelection.inventoryTab = value
             else -> tabs[key] = value
         }
     }
 
     fun restoreFields(values: Map<String, String>) {
-        fields.putAll(settingsRequests.restoreFields(taskSelection.restoreFields(taskDraft.restore(values, false))))
+        fields.putAll(preview.settingsRequests.restoreFields(preview.taskSelection.restoreFields(preview.taskDraft.restore(values, false))))
     }
 
     private fun clearFields() {
-        taskDraft.clear()
-        taskSelection.clearFields()
-        settingsRequests.clear()
+        preview.taskDraft.clear()
+        preview.taskSelection.clearFields()
+        preview.settingsRequests.clear()
         fields.clear()
     }
 
@@ -230,13 +217,13 @@ import org.json.JSONObject
         }
         if (next != route)pauseFocus()
         if (world?.native != true && next == "focus" && id.isNotBlank() && (route != "focus" || id != param)) {
-            taskSelection.clearFocus()
+            preview.taskSelection.clearFocus()
         }
         navigator.goTo(BioDestination(next, id), replaceStack = root)
         modal = ""
         message = ""
         if (next == "tree") {
-            if (world?.native == true) pendingTreeTab = treeTab ?: "care" else treeDetail.open(treeTab)
+            if (world?.native == true) pendingTreeTab = treeTab ?: "care" else preview.treeDetail.open(treeTab)
         }
         if (world?.native != true && next == "task-new") clearFields()
     }
@@ -287,7 +274,7 @@ import org.json.JSONObject
         modal = type
         modalId = id
         modalMessage = ""
-        if (world?.native != true) shopSelection.updateQuantity(1)
+        if (world?.native != true) preview.shopSelection.updateQuantity(1)
         message = ""
     }
 

@@ -83,9 +83,9 @@ internal fun BioPurchaseBody(
     }
     if (!permanent) {
         BioPurchaseQuantity(
-            quantity = shop?.quantity(id) ?: ui.shopSelection.quantity,
+            quantity = shop?.quantity(id) ?: ui.preview.shopSelection.quantity,
             busy = ui.busy || shop?.state?.isPurchasing == true,
-            onQuantity = { if (shop == null) ui.shopSelection.updateQuantity(it) else shop.setQuantity(it) },
+            onQuantity = { if (shop == null) ui.preview.shopSelection.updateQuantity(it) else shop.setQuantity(it) },
         )
     }
     BioMetrics(
@@ -174,7 +174,7 @@ internal fun BioAccessoryBody(
                     it.name
             },
             target?.id.orEmpty(),
-            onSelect = { if (live == null) ui.shopSelection.targetTree = it else live.select(it) },
+            onSelect = { if (live == null) ui.preview.shopSelection.targetTree = it else live.select(it) },
         )
     } else {
         Bt(

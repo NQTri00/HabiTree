@@ -201,7 +201,7 @@ internal fun BioBoundPlantDialog(
 ) {
     var plantName by rememberSaveable(id) { mutableStateOf("") }
     var selectedPlot by rememberSaveable(id) {
-        mutableStateOf(if (world.native) "" else ui.plantingSelection.initialDialogPlot(world.emptyPlots()))
+        mutableStateOf(if (world.native) "" else ui.preview.plantingSelection.initialDialogPlot(world.emptyPlots()))
     }
     BioPlantBody(
         id,

@@ -53,7 +53,7 @@ internal fun taskListRouteContent(
     world: BioWorld,
     ui: BioController,
 ): TaskListRouteContent {
-    val filter = ui.taskSelection.filter
+    val filter = ui.preview.taskSelection.filter
     val lifecycle =
         when (filter) {
             "paused" -> "PAUSED"
@@ -78,7 +78,7 @@ internal fun taskListRouteContent(
                 TaskListAction.Focus -> ui.go("focus")
                 TaskListAction.Templates -> ui.go("templates")
                 TaskListAction.Insights -> ui.go("insights")
-                is TaskListAction.Filter -> ui.taskSelection.filter = action.value
+                is TaskListAction.Filter -> ui.preview.taskSelection.filter = action.value
                 is TaskListAction.Open -> ui.go("task", action.id)
                 is TaskListAction.Complete -> ui.completeTask(action.id, action.timer)
             }

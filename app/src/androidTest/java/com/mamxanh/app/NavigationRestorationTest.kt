@@ -396,7 +396,7 @@ class NavigationRestorationTest {
         controller.go("tree", "14")
         controller.go("tree", "31")
         controller.go("task-new", "2")
-        controller.taskDraft.update(TaskFormField.Title, "Draft title")
+        controller.preview.taskDraft.update(TaskFormField.Title, "Draft title")
         controller.back()
 
         val saver = BioController.Saver

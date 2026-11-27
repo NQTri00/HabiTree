@@ -27,7 +27,7 @@ internal fun gardenRouteContent(
     ui: BioController,
 ): GardenRouteContent {
     val open = world.state.i("unlocked", 5)
-    val filter = ui.gardenBrowse.filter
+    val filter = ui.preview.gardenBrowse.filter
 
     fun thirsty(tree: JSONObject) = GardenBrowseState.isThirsty(tree.s("state"), tree.b("watered"))
     val trees = world.trees
@@ -36,7 +36,7 @@ internal fun gardenRouteContent(
         buildList {
             for (plot in 1..open) {
                 val tree = byPlot[plot]?.firstOrNull()
-                if (!ui.gardenBrowse.includes(tree?.s("state"), tree?.b("watered") == true)) continue
+                if (!ui.preview.gardenBrowse.includes(tree?.s("state"), tree?.b("watered") == true)) continue
                 val displayTree =
                     tree?.let {
                         GardenDisplayTree(
@@ -63,7 +63,7 @@ internal fun gardenRouteContent(
                 GardenAction.WaterAll -> ui.show("water-all")
                 GardenAction.PickSeed -> ui.show("seed-picker")
                 GardenAction.Encyclopedia -> ui.go("encyclopedia")
-                is GardenAction.Filter -> ui.gardenBrowse.filter = action.value
+                is GardenAction.Filter -> ui.preview.gardenBrowse.filter = action.value
                 is GardenAction.Plot -> {
                     val plot = action.value
                     val tree = plot.tree
@@ -71,7 +71,7 @@ internal fun gardenRouteContent(
                         tree != null -> ui.go("tree", tree.id)
                         plot.price != null -> ui.show("unlock", plot.number.toString())
                         else -> {
-                            ui.plantingSelection.select(plot.number.toString())
+                            ui.preview.plantingSelection.select(plot.number.toString())
                             ui.show("seed-picker")
                         }
                     }
@@ -116,9 +116,9 @@ internal fun treeRouteContent(
         }
     return TreeRouteContent(
         state = state,
-        tab = ui.treeDetail.tab,
+        tab = ui.preview.treeDetail.tab,
         onTab = {
-            ui.treeDetail.tab = it
+            ui.preview.treeDetail.tab = it
         },
         onAction = { action ->
             when (action) {

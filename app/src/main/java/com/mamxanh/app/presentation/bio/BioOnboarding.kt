@@ -75,16 +75,16 @@ internal fun onboardingRouteContent(
     dispatch: ((OnboardingAction) -> Unit)? = null,
 ): OnboardingRouteContent {
     val templates = displayedTemplates(world.takeIf { liveState == null })
-    val category = liveState?.category ?: ui.onboarding.category
-    val chosen = (liveState?.templateIds ?: ui.onboarding.selectedTemplates).toSet()
-    val seed = liveState?.seed ?: ui.onboarding.seed
+    val category = liveState?.category ?: ui.preview.onboarding.category
+    val chosen = (liveState?.templateIds ?: ui.preview.onboarding.selectedTemplates).toSet()
+    val seed = liveState?.seed ?: ui.preview.onboarding.seed
     val seedNames = if (liveState == null) emptyMap() else catalog.associate { it.id to it.name }
     val byCategory = templates.sortedBy { it.category != category }
 
     return OnboardingRouteContent(
         state =
             OnboardingDisplay(
-                step = liveState?.step ?: ui.onboarding.step,
+                step = liveState?.step ?: ui.preview.onboarding.step,
                 seed = seed,
                 category = category,
                 selectedCount = chosen.size,
@@ -100,9 +100,9 @@ internal fun onboardingRouteContent(
         onAction =
             dispatch ?: { action ->
                 when (action) {
-                    OnboardingAction.Back -> ui.onboarding.previousStep()
+                    OnboardingAction.Back -> ui.preview.onboarding.previousStep()
                     OnboardingAction.Next -> {
-                        ui.onboarding.advance()
+                        ui.preview.onboarding.advance()
                     }
                     OnboardingAction.Skip -> ui.go("home", root = true)
                     OnboardingAction.ContinueCompleted -> ui.go("home", root = true)
@@ -110,9 +110,9 @@ internal fun onboardingRouteContent(
                         if (action.step ==
                             1
                         ) {
-                            ui.onboarding.seed = action.id
+                            ui.preview.onboarding.seed = action.id
                         } else {
-                            ui.onboarding.category = action.id
+                            ui.preview.onboarding.category = action.id
                         }
                     is OnboardingAction.Remind -> ui.fields["onboard-remind"] = action.enabled.toString()
                     is OnboardingAction.ToggleTemplate -> Unit
@@ -125,7 +125,7 @@ internal fun onboardingRouteContent(
             TemplateRow(template, id in chosen, onboarding = true) {
                 if (dispatch != null) {
                     dispatch(OnboardingAction.ToggleTemplate(id))
-                } else if (!ui.onboarding.toggleTemplate(id)) {
+                } else if (!ui.preview.onboarding.toggleTemplate(id)) {
                     ui.message = AppText.text(TextKey.CopyBanDaChon5ViecBoChonMotViecDeDoi95f1ae)
                 }
             }

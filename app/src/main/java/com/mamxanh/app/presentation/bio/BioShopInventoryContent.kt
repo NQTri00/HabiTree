@@ -33,20 +33,22 @@ internal fun inventoryRouteContent(
     world: BioWorld,
     ui: BioController,
 ): InventoryRouteContent {
-    val tab = ui.shopSelection.inventoryTab
+    val tab = ui.preview.shopSelection.inventoryTab
     val items = catalogProducts(world, tab).filter { world.inventoryCount(it.s("id"), accessory = tab == "accessories") > 0 }
     val openShop = {
-        ui.shopSelection.shopTab = tab
+        ui.preview.shopSelection.shopTab = tab
         ui.go("shop")
     }
     return InventoryRouteContent(
         tab = tab,
         itemCount = items.size,
-        onTab = { ui.shopSelection.inventoryTab = it },
+        onTab = { ui.preview.shopSelection.inventoryTab = it },
         onShop = openShop,
         onBuy = openShop,
         item = { index, modifier ->
-            val target = ui.shopSelection.targetTree.ifBlank { ui.homeTreeState.selectedId }
+            val target =
+                ui.preview.shopSelection.targetTree
+                    .ifBlank { ui.homeTreeState.selectedId }
             BioProduct(world, ui, items[index], modifier, inventory = true, target = target)
         },
     )
@@ -83,14 +85,16 @@ internal fun shopRouteContent(
     ui: BioController,
     argument: String,
 ): ShopRouteContent {
-    val tab = ui.shopSelection.shopTab
+    val tab = ui.preview.shopSelection.shopTab
     val items = catalogProducts(world, tab)
-    val target = ui.shopSelection.targetTree.ifBlank { ui.homeTreeState.selectedId }
+    val target =
+        ui.preview.shopSelection.targetTree
+            .ifBlank { ui.homeTreeState.selectedId }
     return ShopRouteContent(
         tab = tab,
         shoppingTree = world.tree(argument)?.let { ShopTreeContext(it.s("id"), it.s("name"), it.s("species")) },
         itemCount = items.size,
-        onTab = { ui.shopSelection.shopTab = it },
+        onTab = { ui.preview.shopSelection.shopTab = it },
         onInventory = { ui.go("inventory") },
         onTree = { ui.go("tree", it) },
         onShop = { ui.go("shop") },

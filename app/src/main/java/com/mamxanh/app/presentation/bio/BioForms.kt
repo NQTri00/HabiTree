@@ -92,7 +92,7 @@ internal fun taskFormRouteContent(
     val values =
         TaskFormField.entries.associateWith { field ->
             val key = field.savedKey
-            ui.taskDraft[field] ?: initial.s(key, if (field == TaskFormField.Minutes) "5" else "")
+            ui.preview.taskDraft[field] ?: initial.s(key, if (field == TaskFormField.Minutes) "5" else "")
         }
     val reward =
         taskFormReward(
@@ -100,8 +100,8 @@ internal fun taskFormRouteContent(
             values[TaskFormField.Minutes].orEmpty(),
         )
     return TaskFormRouteContent(
-        state = TaskFormDisplay(values, ui.taskDraft.error, ui.taskDraft.errorAttempt, reward),
-        onFieldChanged = ui.taskDraft::update,
+        state = TaskFormDisplay(values, ui.preview.taskDraft.error, ui.preview.taskDraft.errorAttempt, reward),
+        onFieldChanged = ui.preview.taskDraft::update,
         actions = actions,
     )
 }
@@ -139,8 +139,8 @@ internal fun focusRouteContent(
                         .objects()
                         .map { it.s("title") },
             ),
-        onTask = selection?.let { it::selectTask } ?: { ui.taskSelection.focusTask = it },
-        onMinutes = selection?.let { it::setMinutes } ?: { ui.taskSelection.focusMinutes = it },
+        onTask = selection?.let { it::selectTask } ?: { ui.preview.taskSelection.focusTask = it },
+        onMinutes = selection?.let { it::setMinutes } ?: { ui.preview.taskSelection.focusMinutes = it },
         actions = actions,
     )
 }
@@ -205,7 +205,7 @@ internal fun templatesRouteContent(
     return TemplatesRouteContent(
         templates = displayedTemplates(world.takeUnless { it.native }),
         chosen = chosen,
-        onToggle = selection?.let { it::toggle } ?: ui.taskSelection::toggleTemplate,
+        onToggle = selection?.let { it::toggle } ?: ui.preview.taskSelection::toggleTemplate,
         actions = actions,
     )
 }
@@ -215,11 +215,11 @@ internal fun settingsRouteContent(
     ui: BioController,
 ): SettingsRouteContent {
     val settings = world.settings
-    val options = ui.settingsRequests.reminderOptions { settings.b(it) }
+    val options = ui.preview.settingsRequests.reminderOptions { settings.b(it) }
     return SettingsRouteContent(
         state = SettingsDisplay(options, settings.s("quietStart", "22:00"), settings.s("quietEnd", "07:00")),
         onLanguage = { Unit },
-        onToggle = ui.settingsRequests::setReminder,
+        onToggle = ui.preview.settingsRequests::setReminder,
         onSave = { start, end ->
             Unit
         },

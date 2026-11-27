@@ -46,7 +46,7 @@ private fun taskFormValue(
     ui: BioController,
     field: TaskFormField,
     default: String = "",
-) = ui.taskDraft[field] ?: taskFormInitial(world, ui.param).s(field.savedKey, default)
+) = ui.preview.taskDraft[field] ?: taskFormInitial(world, ui.param).s(field.savedKey, default)
 
 @Composable internal fun BioTaskFormActions(
     world: BioWorld,
@@ -56,12 +56,12 @@ private fun taskFormValue(
     Row(horizontalArrangement = Arrangement.spacedBy(AppDimensions.Dp12)) {
         BioButton(stringResource(R.string.copy_huy_74fcd3), { ui.back() }, Modifier.weight(1f), secondary = true, enabled = !ui.busy)
         BioButton(stringResource(R.string.copy_luu_viec_522a3d), {
-            ui.taskDraft.validate(::value)
+            ui.preview.taskDraft.validate(::value)
         }, Modifier.weight(1f), enabled = !ui.busy)
     }
 }
 
-internal fun selectedBioTemplates(ui: BioController) = ui.taskSelection.selectedTemplates()
+internal fun selectedBioTemplates(ui: BioController) = ui.preview.taskSelection.selectedTemplates()
 
 @Composable internal fun BioTemplateActions(ui: BioController) {
     val chosen = selectedBioTemplates(ui)
@@ -82,13 +82,13 @@ internal fun selectedBioTemplates(ui: BioController) = ui.taskSelection.selected
 internal fun focusTask(
     ui: BioController,
     argument: String = ui.param,
-) = ui.taskSelection.focusTask ?: argument.ifBlank { "0" }
+) = ui.preview.taskSelection.focusTask ?: argument.ifBlank { "0" }
 
 internal fun focusMinutes(
     world: BioWorld,
     ui: BioController,
     argument: String = ui.param,
-) = world.task(focusTask(ui, argument))?.i("minutes")?.toString() ?: ui.taskSelection.focusMinutes ?: "25"
+) = world.task(focusTask(ui, argument))?.i("minutes")?.toString() ?: ui.preview.taskSelection.focusMinutes ?: "25"
 
 @Composable internal fun BioFocusActions(
     world: BioWorld,

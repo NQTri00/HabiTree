@@ -88,10 +88,10 @@ import org.koin.androidx.compose.koinViewModel
         when {
             type != "accessory" -> null
             world.native -> accessory?.selected
-            else -> ui.shopSelection.accessoryTarget(living.map { it.id }, ui.homeTreeState.selectedId)
+            else -> ui.preview.shopSelection.accessoryTarget(living.map { it.id }, ui.homeTreeState.selectedId)
         }
     val target = living.firstOrNull { it.id == targetId }
-    val quantity = shop?.quantity(id) ?: ui.shopSelection.quantity
+    val quantity = shop?.quantity(id) ?: ui.preview.shopSelection.quantity
     val purchase =
         purchaseAvailability(
             coins,
