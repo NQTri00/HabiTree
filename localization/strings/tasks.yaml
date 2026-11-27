@@ -908,3 +908,11 @@ tasks_calendar_day_status:
     status: string
   canonical: false
   source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/component/TaskCalendar.kt
+tasks_onboarding_confirm_effort:
+  order: 1144
+  vi: 'Bấm xác nhận · {effort}'
+  en: 'Tap to confirm · {effort}'
+  placeholders:
+    effort: string
+  canonical: false
+  source: tasks/src/main/java/com/mamxanh/app/feature/tasks/presentation/ui/templates/TaskTemplatesScreen.kt

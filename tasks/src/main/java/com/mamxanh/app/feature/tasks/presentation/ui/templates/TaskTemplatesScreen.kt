@@ -56,6 +56,8 @@ import com.mamxanh.shared.localization.TextKey
                         (
                             if (t.timer) {
                                 stringResource(R.string.copy_bo_dem_0_phut_a99be5, t.minutes)
+                            } else if (onboarding) {
+                                AppText.text(TextKey.TasksOnboardingConfirmEffort, t.effort)
                             } else {
                                 AppText.text(TextKey.CopyChamF4623f) +
                                     t.effort
@@ -92,7 +94,6 @@ fun TaskTemplatesScreen(
     templates: List<TaskTemplateDisplay>,
     chosen: Set<String>,
     onToggle: (String) -> Unit,
-    actions: (@Composable () -> Unit)? = null,
 ) {
     Column {
         Bt(
@@ -112,7 +113,6 @@ fun TaskTemplatesScreen(
             ) { onToggle(template.id) }
         }
     }
-    actions?.invoke()
 }
 
 @Preview(showBackground = true, widthDp = 375)

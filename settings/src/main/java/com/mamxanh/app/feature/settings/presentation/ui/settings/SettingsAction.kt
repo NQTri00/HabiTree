@@ -15,9 +15,7 @@ sealed interface SettingsAction : UiAction {
         val enabled: Boolean,
     ) : SettingsAction
 
-    data class Save(
-        val display: SettingsDisplay,
-    ) : SettingsAction
+    data object Save : SettingsAction
 
     data class Open(
         val link: SettingsLink,

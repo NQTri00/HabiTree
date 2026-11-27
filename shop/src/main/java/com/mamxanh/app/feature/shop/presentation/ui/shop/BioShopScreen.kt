@@ -35,6 +35,7 @@ fun BioShopScreen(
         ),
         tab,
         onTab,
+        verticalPadding = AppDimensions.Dp5,
     )
     if (shoppingTree !=
         null

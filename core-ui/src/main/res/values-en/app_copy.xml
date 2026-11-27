@@ -110,7 +110,7 @@
     <string name="copy_cac_phien_da_luu_0_hoan_thanh_bb1ef4">Saved sessions · %1$d completed</string>
     <string name="copy_chua_co_phien_hoan_thanh_fd9386" formatted="false">No completed sessions yet.</string>
     <string name="copy_bo_dem_0_phut_a99be5">Timer · %1$d min</string>
-    <string name="copy_cham_f4623f" formatted="false">Tap to confirm · </string>
+    <string name="copy_cham_f4623f" formatted="false">Tap · </string>
     <string name="copy_chon_viec_vua_suc_895fff" formatted="false">Choose your tasks</string>
     <string name="copy_them_mot_lan_chinh_sua_bat_cu_luc_nao_55b241" formatted="false">Add them once. Adjust them anytime.</string>
     <string name="copy_theo_nhip_cua_ban_8e2e15" formatted="false">At your own pace</string>
@@ -1168,4 +1168,5 @@
     <string name="tasks_calendar_day_status">%1$s, %2$s</string>
     <string name="backup_version" formatted="false">Backup version</string>
     <string name="shop_equipping_accessory" formatted="false">Equipping…</string>
+    <string name="tasks_onboarding_confirm_effort">Tap to confirm · %1$s</string>
 </resources>

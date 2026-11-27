@@ -48,7 +48,7 @@ class SettingsViewModel(
                 savedState["quietEnd"] = action.end
                 mutableState.value = current.copy(quietStart = action.start, quietEnd = action.end)
             }
-            is SettingsAction.Save -> save(action.display)
+            SettingsAction.Save -> save(current)
             is SettingsAction.ChangeLanguage -> send(SettingsEvent.ChangeLanguage(action.tag))
             is SettingsAction.Open -> send(SettingsEvent.Open(action.link))
             SettingsAction.RequestPermission -> send(SettingsEvent.RequestPermission)
@@ -77,8 +77,9 @@ class SettingsViewModel(
         viewModelScope.launch { emitEvent(event) }
     }
 
-    private fun save(display: SettingsDisplay) {
-        if (state.value.busy || state.value.persisted == null) return
+    private fun save(current: SettingsState) {
+        if (current.busy || current.persisted == null) return
+        val display = current.display()
         val options = display.options
         val request =
             ReminderSettings(
@@ -89,7 +90,7 @@ class SettingsViewModel(
                 reducedMotion = options["reducedMotion"] == true,
                 breakPrompts = options["breakPrompts"] == true,
             )
-        mutableState.value = state.value.copy(busy = true)
+        mutableState.value = current.copy(busy = true)
         viewModelScope.launch {
             try {
                 val message =

@@ -682,8 +682,8 @@ copy_bo_dem_0_phut_a99be5:
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioForms.kt
 copy_cham_f4623f:
   order: 109
-  vi: 'Bấm xác nhận · '
-  en: 'Tap to confirm · '
+  vi: 'Chạm · '
+  en: 'Tap · '
   canonical: false
   source: app/src/main/java/com/mamxanh/app/presentation/bio/BioForms.kt
 copy_chon_viec_vua_suc_895fff:

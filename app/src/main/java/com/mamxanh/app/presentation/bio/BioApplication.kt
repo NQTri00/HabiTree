@@ -94,7 +94,7 @@ import com.mamxanh.shared.localization.TextKey
                 } else {
                     AppDimensions.Dp20
                 }
-            val actionDockVisible = compactScreen && ui.route in listOf("task-new", "templates", "focus")
+            val actionDockVisible = ui.route == "templates" || (compactScreen && ui.route in listOf("task-new", "focus"))
             val navigationVisible = ui.route !in listOf("onboard", "data") && !actionDockVisible
             CompositionLocalProvider(
                 LocalBioExpanded provides (ui.tabs["expanded"] == "true"),
@@ -134,16 +134,7 @@ import com.mamxanh.shared.localization.TextKey
                     insightsRouteContent(world, ui, argument, if (world.native) bindLiveInsights(world, ui, argument) else null)
                 },
                 LocalTemplatesRouteContent provides {
-                    templatesRouteContent(
-                        world,
-                        ui,
-                        if (compactScreen) {
-                            null
-                        } else {
-                            { if (liveTemplates == null) BioTemplateActions(ui) else liveTemplates.Actions() }
-                        },
-                        selection = liveTemplates,
-                    )
+                    templatesRouteContent(world, ui, selection = liveTemplates)
                 },
                 LocalTaskListRouteContent provides {
                     if (world.native) liveTaskListRouteContent(ui) else taskListRouteContent(world, ui)

@@ -58,9 +58,7 @@ internal fun liveSettingsRouteContent(
         state = display,
         onLanguage = { model.dispatch(SettingsAction.ChangeLanguage(it)) },
         onToggle = { key, value -> model.dispatch(SettingsAction.Toggle(key, value)) },
-        onSave = { start, end ->
-            model.dispatch(SettingsAction.Save(display.copy(quietStart = start, quietEnd = end)))
-        },
+        onSave = { _, _ -> model.dispatch(SettingsAction.Save) },
         onLink = { model.dispatch(SettingsAction.Open(it)) },
         editQuietHours = { start, end -> model.dispatch(SettingsAction.EditQuietHours(start, end)) },
         busy = state.busy || state.persisted == null,

@@ -110,7 +110,7 @@
     <string name="copy_cac_phien_da_luu_0_hoan_thanh_bb1ef4">Các phiên đã lưu · %1$d hoàn thành</string>
     <string name="copy_chua_co_phien_hoan_thanh_fd9386" formatted="false">Chưa có phiên hoàn thành.</string>
     <string name="copy_bo_dem_0_phut_a99be5">Bộ đếm · %1$d phút</string>
-    <string name="copy_cham_f4623f" formatted="false">Bấm xác nhận · </string>
+    <string name="copy_cham_f4623f" formatted="false">Chạm · </string>
     <string name="copy_chon_viec_vua_suc_895fff" formatted="false">Chọn việc vừa sức</string>
     <string name="copy_them_mot_lan_chinh_sua_bat_cu_luc_nao_55b241" formatted="false">Thêm một lần, chỉnh sửa bất cứ lúc nào.</string>
     <string name="copy_theo_nhip_cua_ban_8e2e15" formatted="false">Theo nhịp của bạn</string>
@@ -1162,4 +1162,5 @@
     <string name="tasks_calendar_day_status">%1$s, %2$s</string>
     <string name="backup_version" formatted="false">Phiên bản sao lưu</string>
     <string name="shop_equipping_accessory" formatted="false">Đang đeo…</string>
+    <string name="tasks_onboarding_confirm_effort">Bấm xác nhận · %1$s</string>
 </resources>

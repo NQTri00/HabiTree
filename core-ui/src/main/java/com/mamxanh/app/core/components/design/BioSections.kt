@@ -96,6 +96,7 @@ import com.mamxanh.core.ui.R
     options: List<Pair<String, String>>,
     selected: String,
     onSelect: (String) -> Unit,
+    verticalPadding: Dp = AppDimensions.Dp3,
 ) {
     Row(
         Modifier
@@ -107,7 +108,7 @@ import com.mamxanh.core.ui.R
                 AppDimensions.Dp1,
                 AppColors.White.copy(alpha = AppOpacity.VALUE_5),
                 RoundedCornerShape(AppDimensions.Dp15),
-            ).padding(horizontal = AppDimensions.Dp5, vertical = AppDimensions.Dp3),
+            ).padding(horizontal = AppDimensions.Dp5, vertical = verticalPadding),
         horizontalArrangement = Arrangement.spacedBy(AppDimensions.Dp3),
     ) {
         options.forEach { (id, label) ->

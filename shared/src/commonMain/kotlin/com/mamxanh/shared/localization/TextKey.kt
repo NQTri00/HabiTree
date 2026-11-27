@@ -1144,5 +1144,6 @@ enum class TextKey {
     TasksCalendarUnrecorded,
     TasksCalendarDayStatus,
     BackupVersion,
-    ShopEquippingAccessory
+    ShopEquippingAccessory,
+    TasksOnboardingConfirmEffort
 }

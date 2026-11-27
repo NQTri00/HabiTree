@@ -8,9 +8,11 @@ import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.database.sqlite.SQLiteDatabase
+import android.graphics.Rect
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.ParcelFileDescriptor
 import android.os.SystemClock
 import android.view.KeyEvent
 import android.view.accessibility.AccessibilityNodeInfo
@@ -427,8 +429,15 @@ class NavigationRestorationTest {
                 ActivityScenario.launch<MainActivity>(Intent(context, MainActivity::class.java)).use { scenario ->
                     clickLabel(AppText.text(TextKey.CopyNhatKy1e6c3c))
                     clickLabel(AppText.text(TextKey.CopyTuyChon598c1b))
-                    val option = AppText.text(TextKey.CopyGoiYNghiSau25Phut6e7319)
-                    clickLabel(option)
+                    lateinit var settingsHeading: String
+                    lateinit var option: String
+                    scenario.onActivity {
+                        settingsHeading = it.getString(CopyR.string.copy_theo_nhip_cua_ban_8e2e15)
+                        option = it.getString(CopyR.string.copy_goi_y_nghi_sau_25_phut_6e7319)
+                    }
+                    awaitLabel(settingsHeading)
+                    instrumentation.waitForIdleSync()
+                    clickLabel(option, scrollForward = true)
                     val save = AppText.text(TextKey.CopyLuuTuyChon3847ca)
                     revealLabel(save)
                     clickLabel(save)
@@ -734,8 +743,7 @@ class NavigationRestorationTest {
         ActivityScenario.launch<MainActivity>(Intent(context, MainActivity::class.java)).use { scenario ->
             clickLabel(AppText.text(TextKey.CopyVuon9e4c10))
             val encyclopedia = AppText.text(TextKey.CopyBachThaoF2ed64)
-            revealLabel(encyclopedia)
-            clickLabel(encyclopedia)
+            clickLabel(encyclopedia, scrollForward = true)
             revealLabel(species)
             clickLabel(species)
             revealLabel(treeName)
@@ -818,14 +826,34 @@ class NavigationRestorationTest {
         label: String,
         clickable: Boolean = false,
         descendant: String? = null,
+        scrollForward: Boolean = false,
     ): AccessibilityNodeInfo {
         val deadline = SystemClock.uptimeMillis() + 20_000
         while (SystemClock.uptimeMillis() < deadline) {
-            val node = appRoot()?.findLabel(label, clickable)
+            val root = appRoot()
+            val node = root?.findLabel(label, clickable)
             if (node != null && (descendant == null || node.findLabel(descendant) != null)) return node
+            val scroller = if (scrollForward) root?.findAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD) else null
+            if (scroller != null) {
+                val bounds = Rect()
+                scroller.getBoundsInScreen(bounds)
+                val x = bounds.centerX()
+                val start = bounds.top + bounds.height() * 3 / 4
+                val end = bounds.centerY()
+                val output = instrumentation.uiAutomation.executeShellCommand("input swipe $x $start $x $end 450")
+                ParcelFileDescriptor.AutoCloseInputStream(output).use { it.readBytes() }
+                instrumentation.waitForIdleSync()
+                SystemClock.sleep(250)
+            }
             SystemClock.sleep(100)
         }
-        error("Timed out waiting for Android accessibility label: $label ${descendant.orEmpty()}")
+        val visibleLabels =
+            appRoot()
+                ?.visibleLabels()
+                .orEmpty()
+                .take(30)
+                .joinToString(" | ")
+        error("Timed out waiting for Android accessibility label: $label ${descendant.orEmpty()}. Visible labels: $visibleLabels")
     }
 
     private fun awaitLabelGone(label: String) {
@@ -842,9 +870,23 @@ class NavigationRestorationTest {
         instrumentation.uiAutomation.rootInActiveWindow
             ?.takeIf { it.packageName?.toString() == context.packageName }
 
-    private fun clickLabel(label: String) {
+    private fun AccessibilityNodeInfo.visibleLabels(): Sequence<String> =
+        sequence {
+            if (isVisibleToUser) {
+                text?.let { yield(it.toString()) }
+                contentDescription?.let { yield(it.toString()) }
+            }
+            for (index in 0 until childCount) {
+                getChild(index)?.let { yieldAll(it.visibleLabels()) }
+            }
+        }
+
+    private fun clickLabel(
+        label: String,
+        scrollForward: Boolean = false,
+    ) {
         repeat(3) {
-            val target = awaitLabel(label, clickable = true)
+            val target = awaitLabel(label, clickable = true, scrollForward = scrollForward)
             if (target.performAction(AccessibilityNodeInfo.ACTION_CLICK)) return
             instrumentation.waitForIdleSync()
             SystemClock.sleep(100)
@@ -865,8 +907,9 @@ class NavigationRestorationTest {
             val controller = root?.packageName?.toString()
             if (root != null && controller != null && controller in permissionControllers) {
                 val button =
-                    root
-                        .findAccessibilityNodeInfosByViewId("$controller:id/$id")
+                    permissionControllers
+                        .asSequence()
+                        .flatMap { root.findAccessibilityNodeInfosByViewId("$it:id/$id").asSequence() }
                         .firstOrNull { it.isVisibleToUser && it.isEnabled }
                 if (button?.performAction(AccessibilityNodeInfo.ACTION_CLICK) == true) return
             }
