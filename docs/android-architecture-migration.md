@@ -4,7 +4,7 @@ The [migration checklist](android-migration-plan.md) records the active Android 
 
 ## Latest published checkpoint
 
-Revision `5865063` moved backup operation progress into its feature ViewModel. The Android host rejects callbacks for an unrelated or already-consumed document picker. The published checkpoint passed 32 host and unit tests, 34 app tests, and 128 SQLite tests. Its evidence archive contains 522 Compose renders and the hierarchy of all 1,680 tracked paths across 46 owners. [Verified checkpoint and APK](https://github.com/NQTri00/HabiTree/releases/tag/android-migration-local-58650630)
+Revision `755c435` separates Android reminder scheduling from the shell display model. It passed 32 host and unit tests, 34 app tests, and 128 SQLite tests. Its evidence archive contains 522 Compose renders and the hierarchy of all 1,679 tracked paths across 46 owners. The exact revision also passed independent app and Catalog builds against 790 verified files in temporary Maven storage. [Verified checkpoint and APK](https://github.com/NQTri00/HabiTree/releases/tag/android-migration-local-755c435f)
 
 The current route and popup ownership is recorded in the [live MVI inventory](android-live-mvi-inventory.md). The [migration checklist](android-migration-plan.md) tracks the remaining work on feature ownership, visual parity, independent publication and production verification.
 
