@@ -4,6 +4,12 @@ The [migration checklist](android-migration-plan.md) records the active Android 
 
 ## Latest published checkpoint
 
+Revision `5865063` moved backup operation progress into its feature ViewModel. The Android host rejects callbacks for an unrelated or already-consumed document picker. The published checkpoint passed 32 host and unit tests, 34 app tests, and 128 SQLite tests. Its evidence archive contains 522 Compose renders and the hierarchy of all 1,680 tracked paths across 46 owners. [Verified checkpoint and APK](https://github.com/NQTri00/HabiTree/releases/tag/android-migration-local-58650630)
+
+The current route and popup ownership is recorded in the [live MVI inventory](android-live-mvi-inventory.md). The [migration checklist](android-migration-plan.md) tracks the remaining work on feature ownership, visual parity, independent publication and production verification.
+
+## Shop domain checkpoint
+
 At `f47e3e2`, Android Shop owns a JVM domain contract and maps existing purchase transactions at the data boundary. Inventory owns its data binding. Focus owns its persisted session commands. A clean app export also resolved the independently built `core-domain` and `core-utils` artifacts from their pinned local Maven coordinates and passed its app unit tests.
 
 The release includes the matching APK, 432 Compose preview PNGs, per-image checksums, and a hierarchy of all 1,448 tracked paths. The preview inventory covers 22 routes and 23 popups. The source report also identifies Kotlin symbol occurrences, generated-resource inputs, and linked tests. [Shop domain release](https://github.com/NQTri00/HabiTree/releases/tag/android-shop-domain-f47e3e2c).

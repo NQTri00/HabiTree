@@ -48,7 +48,6 @@ internal data class BioWorld(
     val data: JSONObject,
     val loading: Boolean = false,
     val native: Boolean = false,
-    val reminderScheduleInput: BioReminderScheduleInput? = null,
     val liveTrees: List<BioShellTree> = emptyList(),
     val liveCoins: Int = 0,
     val liveOnboarded: Boolean = true,

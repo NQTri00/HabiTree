@@ -9,6 +9,7 @@ import android.os.Build
 import com.mamxanh.app.data.local.GardenDatabase
 import com.mamxanh.shared.localization.AppText
 import com.mamxanh.shared.localization.TextKey
+import com.mamxanh.shared.model.ReminderDelivery
 import java.util.concurrent.Executors
 
 /** Inexact, opt-in local scheduling. Receipts and validation live in shared SQLite. */
@@ -121,9 +122,16 @@ class ReminderRescheduleReceiver : BroadcastReceiver() {
 
 object TaskReminders {
     internal val executor = Executors.newSingleThreadExecutor()
+    private var lastSchedule: Set<ReminderDelivery>? = null
 
     @Synchronized
-    fun schedule(context: Context) {
+    fun schedule(
+        context: Context,
+        onlyIfChanged: Boolean = false,
+    ) {
+        val candidates = GardenDatabase(context).use { it.reminderCandidates() }.toSet()
+        if (onlyIfChanged && candidates == lastSchedule) return
+        lastSchedule = null
         val manager = context.getSystemService(AlarmManager::class.java)
         val prefs = context.getSharedPreferences("scheduled_gentle_reminders", Context.MODE_PRIVATE)
         // Persist pending identities so completed/archived/deleted and disabled alerts can be cancelled too.
@@ -141,7 +149,6 @@ object TaskReminders {
                 pending.cancel()
             }
         }
-        val candidates = GardenDatabase(context).use { it.reminderCandidates() }
         val keys = mutableSetOf<String>()
         candidates.forEach { d ->
             val identity = "mamxanh://reminder/${d.taskId}/${d.date}/${Uri.encode(d.kind)}"
@@ -161,5 +168,6 @@ object TaskReminders {
             }
         }
         prefs.edit().putStringSet("keys", keys).apply()
+        if (keys.size == candidates.size) lastSchedule = candidates
     }
 }

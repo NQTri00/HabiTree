@@ -1,6 +1,5 @@
 package com.mamxanh.app.presentation.bio
 
-import com.mamxanh.app.feature.garden.domain.model.GardenTreeGrowth
 import com.mamxanh.app.feature.garden.domain.usecase.GardenRepository
 import com.mamxanh.shared.data.GameStorage
 import org.json.JSONObject
@@ -26,8 +25,7 @@ internal fun nativeWorld(
     return BioWorld(
         liveBioData(reference),
         native = true,
-        reminderScheduleInput = BioReminderScheduleInput(storage.tasks(), e.settings, e.reminders),
-        liveTrees = g.trees.map { BioShellTree(it.id.toString(), it.speciesId, it.status.state, it.status.waterActive) },
+        liveTrees = g.trees.map { BioShellTree(it.id.toString(), it.speciesId) },
         liveCoins = g.coins,
         liveOnboarded = e.onboarded,
     )
@@ -36,8 +34,6 @@ internal fun nativeWorld(
 internal data class BioShellTree(
     val id: String,
     val species: String,
-    val growth: GardenTreeGrowth,
-    val watered: Boolean,
 )
 
 /** Native database/OS adapter. The presentation used here is also the preview target. */

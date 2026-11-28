@@ -21,6 +21,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.mamxanh.app.BuildConfig
 import com.mamxanh.app.core.presentation.navigation.HabiTreeRouteRegistry
 import com.mamxanh.app.data.BackupService
+import com.mamxanh.app.data.TaskReminders
 import com.mamxanh.app.feature.garden.domain.usecase.GardenRepository
 import com.mamxanh.app.feature.home.domain.usecase.HomeTreeSelection
 import com.mamxanh.app.feature.settings.presentation.NotificationPermissionResult
@@ -96,18 +97,18 @@ import java.util.*
                 }
         }
     }
-    // Refresh Android alarms when scheduling inputs change.
-    LaunchedEffect(
-        world.loading,
-        world.liveTrees,
-        world.reminderScheduleInput,
-    ) {
-        if (!world.loading) {
-            withContext(
-                Dispatchers.IO,
-            ) {
-                com.mamxanh.app.data.TaskReminders
-                    .schedule(context.applicationContext)
+    LaunchedEffect(storage, lifecycleOwner, context) {
+        lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            storage.changes.collect {
+                try {
+                    withContext(Dispatchers.IO) {
+                        TaskReminders.schedule(context.applicationContext, onlyIfChanged = true)
+                    }
+                } catch (cancelled: CancellationException) {
+                    throw cancelled
+                } catch (failure: Exception) {
+                    android.util.Log.w("BioNativeHost", "Reminder scheduling failed", failure)
+                }
             }
         }
     }
