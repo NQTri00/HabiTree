@@ -262,7 +262,7 @@ import org.koin.androidx.compose.koinViewModel
                     insightsBusy = insightsBusy,
                     buy = shop?.let { live -> { live.buy(id, quantity) } },
                     shopBuying = shop?.state?.isPurchasing == true,
-                    pendingPurchase = if (world.native) shop?.state?.pendingAction else ui.previewPurchase,
+                    pendingPurchase = if (world.native) shop?.state?.pendingAction else ui.preview.purchase,
                     quantity = quantity,
                     equippedCan = equippedCan,
                     backupAction =

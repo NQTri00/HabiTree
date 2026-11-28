@@ -80,8 +80,8 @@ import com.mamxanh.shared.localization.TextKey
                 homeTreeState.selectedId = home
                 preview.onboarding.step = step
                 if (requestedBusy) {
-                    this.busy = true
-                    previewPurchase = ShopPendingAction.Buy
+                    preview.busy = true
+                    preview.purchase = ShopPendingAction.Buy
                 }
                 preview.restoreFields(referenceFields)
                 if (modal == "confirm-import") {

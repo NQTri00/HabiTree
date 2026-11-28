@@ -7,6 +7,7 @@ import com.mamxanh.app.feature.garden.presentation.ui.garden.GardenBrowseState
 import com.mamxanh.app.feature.garden.presentation.ui.garden.PlantingSelectionState
 import com.mamxanh.app.feature.home.presentation.ui.onboarding.OnboardingSelectionState
 import com.mamxanh.app.feature.settings.presentation.SettingsRequestState
+import com.mamxanh.app.feature.shop.presentation.ui.shop.ShopPendingAction
 import com.mamxanh.app.feature.shop.presentation.ui.shop.ShopSelectionState
 import com.mamxanh.app.feature.tasks.presentation.ui.form.TaskDraftState
 import com.mamxanh.app.feature.tasks.presentation.ui.list.TaskScreenSelection
@@ -21,6 +22,8 @@ internal class BioPreviewState {
     val taskDraft = TaskDraftState()
     val taskSelection = TaskScreenSelection()
     val settingsRequests = SettingsRequestState()
+    var busy by mutableStateOf(false)
+    var purchase by mutableStateOf<ShopPendingAction?>(null)
     var expanded = false
     var scrollBottom = false
     var sheetBottom = false

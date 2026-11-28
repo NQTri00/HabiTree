@@ -46,8 +46,8 @@ internal fun BindAndroidBackup(
         operation: BackupOperation,
         action: () -> Unit,
     ) {
-        if (ui.busy)return
-        ui.busy = true
+        val state = backupModel.state.value
+        if (!state.working || state.pending != operation) return
         scope.launch {
             try {
                 withContext(Dispatchers.IO) { action() }
@@ -76,40 +76,36 @@ internal fun BindAndroidBackup(
                         AppText.text(TextKey.CopyKhongTheXuLyTepDuLieuHienTaiGiuNguyenAa333d),
                     ),
                 )
-            } finally {
-                ui.busy = false
             }
         }
     }
+
+    fun acceptDocument(
+        operation: BackupOperation,
+        received: Boolean,
+    ): Boolean {
+        val state = backupModel.state.value
+        if (state.pending != operation || !state.awaitingDocument) return false
+        backupModel.dispatch(if (received) BackupAction.DocumentReceived(operation) else BackupAction.Cancelled)
+        return received
+    }
+
     val export =
         rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("application/octet-stream")) { uri ->
-            if (uri !=
-                null
-            ) {
-                backupModel.dispatch(BackupAction.DocumentReceived(BackupOperation.Export))
+            if (acceptDocument(BackupOperation.Export, uri != null) && uri != null) {
                 fileOperation(BackupOperation.Export) { service.export(uri) }
-            } else {
-                backupModel.dispatch(BackupAction.Cancelled)
             }
         }
     val diagnostics =
         rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("text/plain")) { uri ->
-            if (uri !=
-                null
-            ) {
-                backupModel.dispatch(BackupAction.DocumentReceived(BackupOperation.Diagnostics))
+            if (acceptDocument(BackupOperation.Diagnostics, uri != null) && uri != null) {
                 fileOperation(BackupOperation.Diagnostics) { service.diagnostics(uri) }
-            } else {
-                backupModel.dispatch(BackupAction.Cancelled)
             }
         }
     val import =
         rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
-            if (uri == null) backupModel.dispatch(BackupAction.Cancelled)
-            if (uri != null && !ui.busy) {
-                backupModel.dispatch(BackupAction.DocumentReceived(BackupOperation.Import))
+            if (acceptDocument(BackupOperation.Import, uri != null) && uri != null) {
                 pending = null
-                ui.busy = true
                 scope.launch {
                     try {
                         val backup = withContext(Dispatchers.IO) { service.inspect(uri) }
@@ -133,7 +129,6 @@ internal fun BindAndroidBackup(
                                 created = created,
                                 version = backup.schema.toString(),
                             )
-                        ui.busy = false
                         backupModel.dispatch(BackupAction.ImportInspected(summary))
                     } catch (cancelled: CancellationException) {
                         backupModel.dispatch(BackupAction.Cancelled)
@@ -146,8 +141,6 @@ internal fun BindAndroidBackup(
                                 AppText.text(TextKey.CopyKhongTheXuLyTepDuLieuHienTaiGiuNguyenAa333d),
                             ),
                         )
-                    } finally {
-                        ui.busy = false
                     }
                 }
             }

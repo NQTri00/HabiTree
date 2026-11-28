@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import com.mamxanh.app.BuildConfig
 import com.mamxanh.app.core.presentation.navigation.HabiTreeRouteRegistry
@@ -54,6 +55,8 @@ import java.util.*
         mutableStateOf(loadingNativeWorld(reference))
     }
     val backupModel = backupViewModel()
+    val backupState by backupModel.state.collectAsStateWithLifecycle()
+    ui.backupWorking = { backupState.working }
     val homeSpecies = world.treeSpecies(ui.homeTreeState.selectedId).orEmpty()
     LaunchedEffect(homeSpecies, world.loading) {
         if (!world.loading)withContext(Dispatchers.IO) { HabiTreeLauncherIcon.update(context.applicationContext, homeSpecies) }

@@ -8,7 +8,10 @@ import kotlinx.coroutines.launch
 class BackupViewModel(
     private val savedState: SavedStateHandle,
 ) : BaseViewModel<BackupState, BackupEvent, BackupAction>(
-        BackupState(pending = BackupOperation.entries.firstOrNull { it.name == savedState.get<String>(PICKER_KEY) }),
+        pickerOperations
+            .firstOrNull { it.name == savedState.get<String>(PICKER_KEY) }
+            ?.let { BackupState(pending = it, awaitingDocument = true) }
+            ?: BackupState(),
     ) {
     override fun handleAction(action: BackupAction) {
         when (action) {
@@ -18,18 +21,21 @@ class BackupViewModel(
             is BackupAction.Confirm -> start(action.operation)
             BackupAction.Cancelled -> {
                 savedState.remove<String>(PICKER_KEY)
-                mutableState.value = state.value.copy(pending = null, importSummary = null)
+                mutableState.value = state.value.copy(pending = null, importSummary = null, awaitingDocument = false)
             }
             is BackupAction.DocumentReceived -> {
-                if (state.value.pending == action.operation) savedState.remove<String>(PICKER_KEY)
+                val current = state.value
+                if (current.pending != action.operation || !current.awaitingDocument) return
+                savedState.remove<String>(PICKER_KEY)
+                mutableState.value = current.copy(awaitingDocument = false)
             }
             is BackupAction.ImportInspected -> {
-                if (state.value.pending != BackupOperation.Import) return
+                if (state.value.pending != BackupOperation.Import || !state.value.working) return
                 mutableState.value = state.value.copy(pending = null, importSummary = action.summary)
                 send(BackupEvent.ConfirmImport)
             }
             is BackupAction.Finished -> {
-                if (state.value.pending != action.operation) return
+                if (state.value.pending != action.operation || !state.value.working) return
                 mutableState.value =
                     if (action.operation == BackupOperation.Restore && !action.success) {
                         state.value.copy(pending = null)
@@ -56,8 +62,9 @@ class BackupViewModel(
     private fun start(operation: BackupOperation) {
         if (state.value.pending != null) return
         if (operation == BackupOperation.Restore && state.value.importSummary == null) return
-        if (operation in pickerOperations) savedState[PICKER_KEY] = operation.name
-        mutableState.value = state.value.copy(pending = operation)
+        val awaitingDocument = operation in pickerOperations
+        if (awaitingDocument) savedState[PICKER_KEY] = operation.name
+        mutableState.value = state.value.copy(pending = operation, awaitingDocument = awaitingDocument)
         send(BackupEvent.Run(operation))
     }
 

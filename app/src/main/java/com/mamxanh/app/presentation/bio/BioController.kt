@@ -4,7 +4,6 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.Saver
 import com.mamxanh.app.core.presentation.navigation.HabiTreeNavigator
 import com.mamxanh.app.feature.home.presentation.ui.home.HomeTreeState
-import com.mamxanh.app.feature.shop.presentation.ui.shop.ShopPendingAction
 import org.json.JSONObject
 
 @Stable internal class BioController(
@@ -29,8 +28,8 @@ import org.json.JSONObject
     var pendingShopTab by mutableStateOf<String?>(null)
     var message by mutableStateOf("")
     var modalMessage by mutableStateOf("")
-    var busy by mutableStateOf(false)
-    var previewPurchase by mutableStateOf<ShopPendingAction?>(null)
+    var backupWorking: (() -> Boolean)? = null
+    val busy: Boolean get() = backupWorking?.invoke() ?: preview.busy
     var preferredPlantingPlot by mutableStateOf<Int?>(null)
     var accessoryTargetArgument by mutableStateOf("")
         private set
@@ -250,8 +249,10 @@ import org.json.JSONObject
     }
 
     fun result(result: BioResult) {
-        busy = false
-        previewPurchase = null
+        if (world?.native != true) {
+            preview.busy = false
+            preview.purchase = null
+        }
         if (result.success) {
             modal = ""
             if (result.route.isNotBlank()) {

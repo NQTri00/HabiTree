@@ -7,4 +7,7 @@ data class BackupState(
     val pending: BackupOperation? = null,
     val display: BackupDisplay = BackupDisplay(0, false),
     val importSummary: BackupImportSummary? = null,
-) : UiState
+    val awaitingDocument: Boolean = false,
+) : UiState {
+    val working: Boolean get() = pending != null && !awaitingDocument
+}
