@@ -91,7 +91,7 @@ import org.koin.androidx.compose.koinViewModel
             else -> ui.preview.shopSelection.accessoryTarget(living.map { it.id }, ui.homeTreeState.selectedId)
         }
     val target = living.firstOrNull { it.id == targetId }
-    val quantity = shop?.quantity(id) ?: ui.preview.shopSelection.quantity
+    val quantity = if (world.native) shop?.quantity(id) ?: 1 else ui.preview.shopSelection.quantity
     val purchase =
         purchaseAvailability(
             coins,
@@ -156,7 +156,22 @@ import org.koin.androidx.compose.koinViewModel
             when (type) {
                 "tree-picker" -> BioBoundTreePicker(world, ui, treeHomeSelection)
                 "seed-picker" -> BioSeedPickerBody(world, ui, planting)
-                "purchase" -> BioPurchaseBody(id, world, ui, details, seed, permanent, total, full, shop, coins, stock)
+                "purchase" ->
+                    BioPurchaseBody(
+                        id = id,
+                        item = details,
+                        seed = seed,
+                        permanent = permanent,
+                        total = total,
+                        full = full,
+                        coins = coins,
+                        stock = stock,
+                        quantity = quantity,
+                        quantityBusy = ui.busy || world.native && (shop?.state?.isLoading != false || shop.state.isPurchasing),
+                        onQuantity = { value ->
+                            if (world.native) shop?.setQuantity(value) else ui.preview.shopSelection.updateQuantity(value)
+                        },
+                    )
                 "accessory" -> BioAccessoryBody(id, ui, price, owned, purchase, accessoryTrees, living, target, accessory, coins)
                 "plant" -> BioBoundPlantDialog(world, ui, id, details.name, full, plantStock, planting)
                 else ->

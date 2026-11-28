@@ -25,16 +25,16 @@ import com.mamxanh.core.ui.R
 @Composable
 internal fun BioPurchaseBody(
     id: String,
-    world: BioWorld,
-    ui: BioController,
     item: BioPurchaseDetails,
     seed: Boolean,
     permanent: Boolean,
     total: Int,
     full: Boolean,
-    shop: LiveShop? = null,
-    coins: Int = world.coins,
-    stock: Int = world.count(id),
+    coins: Int,
+    stock: Int,
+    quantity: Int,
+    quantityBusy: Boolean,
+    onQuantity: (Int) -> Unit,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -83,9 +83,9 @@ internal fun BioPurchaseBody(
     }
     if (!permanent) {
         BioPurchaseQuantity(
-            quantity = shop?.quantity(id) ?: ui.preview.shopSelection.quantity,
-            busy = ui.busy || shop?.state?.isPurchasing == true,
-            onQuantity = { if (shop == null) ui.preview.shopSelection.updateQuantity(it) else shop.setQuantity(it) },
+            quantity = quantity,
+            busy = quantityBusy,
+            onQuantity = onQuantity,
         )
     }
     BioMetrics(
@@ -249,7 +249,20 @@ private fun BioPurchaseBodyPreview() {
         Column {
             val seed = world.species.first()
             val item = seed.referencePurchaseDetails()
-            BioPurchaseBody(seed.s("id"), world, remember { BioController("shop") }, item, true, false, item.price, false)
+            var quantity by remember { mutableIntStateOf(1) }
+            BioPurchaseBody(
+                id = seed.s("id"),
+                item = item,
+                seed = true,
+                permanent = false,
+                total = item.price * quantity,
+                full = false,
+                coins = world.coins,
+                stock = world.count(seed.s("id")),
+                quantity = quantity,
+                quantityBusy = false,
+                onQuantity = { quantity = it },
+            )
         }
     }
 }
