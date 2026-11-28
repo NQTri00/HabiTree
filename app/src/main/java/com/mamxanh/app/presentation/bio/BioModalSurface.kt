@@ -2,6 +2,7 @@ package com.mamxanh.app.presentation.bio
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
@@ -32,6 +33,13 @@ internal fun BioModalSurface(
     BoxWithConstraints(Modifier.fillMaxSize()) {
         Box(Modifier.fillMaxSize().background(AppColors.Swatch60252A2E).clickable(onClick = dismiss))
         val limit = maxHeight - AppDimensions.Dp32
+        val shape =
+            RoundedCornerShape(
+                topStart = AppDimensions.Dp28,
+                topEnd = AppDimensions.Dp14,
+                bottomStart = AppDimensions.Dp28,
+                bottomEnd = AppDimensions.Dp28,
+            )
         Column(
             Modifier
                 .align(
@@ -45,25 +53,25 @@ internal fun BioModalSurface(
                     max = limit,
                 ).shadow(
                     AppDimensions.Dp12,
-                    bioShape(AppRadii.VALUE_28),
+                    shape,
                 ).background(
                     bp.bg,
-                    bioShape(AppRadii.VALUE_28),
+                    shape,
                 ).border(
                     AppDimensions.Dp1,
                     AppColors.White.copy(alpha = AppOpacity.VALUE_6),
-                    bioShape(AppRadii.VALUE_28),
+                    shape,
                 ).padding(AppDimensions.Dp1)
-                .clip(bioShape(AppRadii.VALUE_28))
+                .clip(shape)
                 .clickable(enabled = false) {
                 },
         ) {
             Row(
                 Modifier.fillMaxWidth().padding(
                     start = AppDimensions.Dp16,
-                    end = AppDimensions.Dp8,
-                    top = AppDimensions.Dp8,
-                    bottom = AppDimensions.Dp4,
+                    end = AppDimensions.Dp16,
+                    top = AppDimensions.Dp14,
+                    bottom = AppDimensions.Dp8,
                 ),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(AppDimensions.Dp8),
